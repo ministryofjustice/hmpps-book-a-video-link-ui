@@ -98,6 +98,38 @@ export default {
       agent: new AgentConfig(Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000))),
       enabled: get('TOKEN_VERIFICATION_ENABLED', 'false') === 'true',
     },
+    activitiesApi: {
+      url: get('ACTIVITIES_API_URL', 'http://localhost:8089', requiredInProduction),
+      timeout: {
+        response: Number(get('ACTIVITIES_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('ACTIVITIES_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('ACTIVITIES_API_TIMEOUT_RESPONSE', 30000))),
+    },
+    locationsInsidePrisonApi: {
+      url: get('LOCATIONS_INSIDE_PRISON_API_URL', 'http://localhost:8089', requiredInProduction),
+      timeout: {
+        response: Number(get('LOCATIONS_INSIDE_PRISON_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('LOCATIONS_INSIDE_PRISON_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('ACTIVITIES_API_TIMEOUT_RESPONSE', 30000))),
+    },
+    prisonApi: {
+      url: get('PRISON_API_URL', 'http://localhost:8080', requiredInProduction),
+      timeout: {
+        response: Number(get('PRISON_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('PRISON_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('PRISON_API_TIMEOUT_RESPONSE', 30000))),
+    },
+    prisonerSearchApi: {
+      url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8090', requiredInProduction),
+      timeout: {
+        response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000)),
+        deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 30000)),
+      },
+      agent: new AgentConfig(Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000))),
+    },
   },
   sqs: {
     audit: auditConfig(),

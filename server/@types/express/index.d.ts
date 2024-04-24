@@ -28,3 +28,9 @@ export declare global {
     }
   }
 }
+
+export type ServiceUser = Express.User &
+  UserDetails & {
+    displayName: string
+    roles: string[]
+  }

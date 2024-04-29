@@ -4,62 +4,89 @@
 
 This front end service provides allows court and probation users to book and manage video link hearings/appointments with people in prison.
 
-## Running the app
-The easiest way to run the app is to use docker compose to create the service and all dependencies. 
+## Running the application locally
 
-`docker compose pull`
+### Install the dependencies using npm:
 
-`docker compose up`
+`npm install`
 
-### Dependencies
-The app requires: 
-* hmpps-auth - for authentication
-* redis - session store and token caching
+### Build the service (package SCSS, JS)
 
-### Running the app for development
+`npm run build`
 
-To start the main services excluding the example typescript template app: 
-
-`docker compose up --scale=app=0`
-
-Install dependencies using `npm install`, ensuring you are using `node v18.x` and `npm v9.x`
-
-Note: Using `nvm` (or [fnm](https://github.com/Schniz/fnm)), run `nvm install --latest-npm` within the repository folder to use the correct version of node, and the latest version of npm. This matches the `engines` config in `package.json` and the CircleCI build config.
-
-And then, to build the assets and start the app with nodemon:
-
-`npm run start:dev`
-
-### Run linter
-
-`npm run lint`
-
-### Run tests
+### Run the unit tests
 
 `npm run test`
 
+### To run against DEV dependencies (recommended)
+
+Ensure you have a local .env file, with the following content:
+
+```
+export INGRESS_URL=http://localhost:3000
+export REDIS_ENABLED=true
+export AUDIT_ENABLED=false
+export TOKEN_VERIFICATION_ENABLED=false
+export ENVIRONMENT_NAME=DEV
+
+export HMPPS_AUTH_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+export HMPPS_AUTH_EXTERNAL_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+export ACTIVITIES_API_URL=https://activities-api-dev.prison.service.justice.gov.uk
+export LOCATIONS_INSIDE_PRISON_API_URL=https://locations-inside-prison-api-dev.hmpps.service.justice.gov.uk
+export PRISON_API_URL=https://prison-api-dev.prison.service.justice.gov.uk
+export PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.uk
+export MANAGE_USERS_API_URL=https://manage-users-api-dev.hmpps.service.justice.gov.uk
+export TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
+
+export API_CLIENT_ID=<obtain these from team members>
+export API_CLIENT_SECRET=<obtain these from team members>
+export SYSTEM_CLIENT_ID=<obtain these from team members>
+export SYSTEM_CLIENT_SECRET<obtain these from team members>
+```
+
+Start a local container for redis on its default port tcp/6379.
+
+`docker-compose -f docker-compose-local.yml up -d`
+
+Start the application locally.
+
+`npm run start:dev`
+
+Access the service in a browser locally on
+
+`http://localhost:3000/`
+
+
+### Dependencies
+
+The app requires access to several services, but only requires a redis container running locally.
+The rest of the dependencies can reference the DEV environment locations (recommended).
+
+### Run lint
+
+`npm run lint`
+
 ### Running integration tests
 
-For local running, start a test db and wiremock instance by:
+For local running, pull and start a wiremock container:
 
-`docker compose -f docker-compose-test.yml up`
+`docker compose -f docker-compose-test.yml up -d`
 
-Then run the server in test mode by:
+Run the service in test mode:
 
 `npm run start-feature` (or `npm run start-feature:dev` to run with nodemon)
 
-And then either, run tests in headless mode with:
+And then either run tests in headless mode with:
 
 `npm run int-test`
  
-Or run tests with the cypress UI:
+Or run tests with the interactive Cypress UI:
 
 `npm run int-test-ui`
 
 ## Change log
 
 A changelog for the service is available [here](./CHANGELOG.md)
-
 
 ## Dependency Checks
 

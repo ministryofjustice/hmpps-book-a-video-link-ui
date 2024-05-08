@@ -7,6 +7,7 @@ declare module 'express-session' {
   interface SessionData {
     returnTo: string
     nowInMinutes: number
+    journey: object // Define journey fields here
   }
 }
 

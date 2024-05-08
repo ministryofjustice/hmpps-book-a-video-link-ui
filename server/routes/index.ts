@@ -1,19 +1,19 @@
-import { type RequestHandler, Router } from 'express'
+import { Router } from 'express'
 
 import asyncMiddleware from '../middleware/asyncMiddleware'
 import type { Services } from '../services'
-import { Page } from '../services/auditService'
+import HomeHandler from './handlers/home'
+import { PageHandler } from './handlers/interfaces/pageHandler'
+import logPageViewMiddleware from '../middleware/logPageViewMiddleware'
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function routes({ auditService }: Services): Router {
   const router = Router()
-  const get = (path: string | string[], handler: RequestHandler) => router.get(path, asyncMiddleware(handler))
+  const get = (path: string | string[], handler: PageHandler) =>
+    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET))
 
-  get('/', async (req, res, next) => {
-    await auditService.logPageView(Page.EXAMPLE_PAGE, { who: res.locals.user.username, correlationId: req.id })
+  const homeHandler = new HomeHandler()
 
-    res.render('pages/index')
-  })
+  get('/', homeHandler)
 
   return router
 }

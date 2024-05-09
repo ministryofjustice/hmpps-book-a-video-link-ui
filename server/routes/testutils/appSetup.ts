@@ -37,6 +37,8 @@ export const flashProvider = jest.fn()
 function appSetup(services: Services, production: boolean, userSupplier: () => Express.User): Express {
   const app = express()
 
+  flashProvider.mockReturnValue([])
+
   app.set('view engine', 'njk')
 
   nunjucksSetup(app, testAppInfo)

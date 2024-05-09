@@ -1,5 +1,7 @@
 {% extends "govuk/template.njk" %}
 
+{% set mainClasses = 'govuk-main-wrapper--l' %}
+
 {% block head %}
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
 {% endblock %}
@@ -8,6 +10,10 @@
 
 {% block header %}
   {% include "./header.njk" %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% include 'partials/beforeContent.njk' %}
 {% endblock %}
 
 {% block bodyStart %}

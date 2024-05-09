@@ -1,5 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express'
-import { PageHandler } from '../routes/handlers/interfaces/pageHandler'
+import { PageHandler } from '../routes/interfaces/pageHandler'
 import AuditService from '../services/auditService'
 
 export default function logPageViewMiddleware(auditService: AuditService, pageHandler: PageHandler): RequestHandler {

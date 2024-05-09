@@ -3,8 +3,8 @@ import { validate, ValidationError } from 'class-validator'
 import { RequestHandler } from 'express'
 
 export type FieldValidationError = {
-  field: string
-  message: string
+  href: string
+  text: string
 }
 
 export default function validationMiddleware(type: new () => object): RequestHandler {
@@ -35,19 +35,18 @@ export default function validationMiddleware(type: new () => object): RequestHan
       },
       parent?: string,
     ): FieldValidationError => ({
-      field: `${parent ? `${parent}-` : ''}${error.property}`,
-      message: Object.values(constraints)[Object.values(constraints).length - 1],
+      href: `#${parent ? `${parent}-` : ''}${error.property}`,
+      text: Object.values(constraints)[0],
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const flattenErrors: any = (errorList: ValidationError[], parent?: string) => {
+    const flattenErrors = (errorList: ValidationError[], parent?: string): FieldValidationError[] => {
       // Flat pack a list of errors with child errors into a 1-dimensional list of errors.
       return errorList.flatMap(error => {
         const property = `${parent ? `${parent}-` : ''}${error.property}`
 
         return error.children.length > 0
           ? flattenErrors(error.children, property)
-          : buildError(error, error.constraints, parent)
+          : [buildError(error, error.constraints, parent)]
       })
     }
 

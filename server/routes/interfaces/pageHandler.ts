@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { Page } from '../../../services/auditService'
+import { Page } from '../../services/auditService'
 
 type RequestBody = { new (): object }
 

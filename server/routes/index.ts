@@ -1,22 +1,24 @@
 import { Router } from 'express'
+import homeRoutes from './journeys/home'
+import manageCourtsRoutes from './journeys/manageCourts'
+import { Services } from '../services'
 
-import asyncMiddleware from '../middleware/asyncMiddleware'
-import type { Services } from '../services'
-import HomeHandler from './handlers/home'
-import { PageHandler } from './handlers/interfaces/pageHandler'
-import logPageViewMiddleware from '../middleware/logPageViewMiddleware'
-import validationMiddleware from '../middleware/validationMiddleware'
-
-export default function routes({ auditService }: Services): Router {
+export default function routes(services: Services): Router {
   const router = Router()
-  const get = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET))
-  const post = (path: string | string[], handler: PageHandler) =>
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.GET))
 
-  const homeHandler = new HomeHandler()
+  router.use((req, res, next) => {
+    const successMessageFlash = req.flash('successMessage')[0]
+    const validationErrorsFlash = req.flash('validationErrors')[0]
+    const formResponsesFlash = req.flash('formResponses')[0]
 
-  get('/', homeHandler)
+    res.locals.successMessage = successMessageFlash ? JSON.parse(successMessageFlash) : null
+    res.locals.validationErrors = validationErrorsFlash ? JSON.parse(validationErrorsFlash) : null
+    res.locals.formResponses = formResponsesFlash ? JSON.parse(formResponsesFlash) : null
+    next()
+  })
+
+  router.use('/', homeRoutes(services))
+  router.use('/manage-courts', manageCourtsRoutes(services))
 
   return router
 }

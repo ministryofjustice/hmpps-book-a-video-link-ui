@@ -30,6 +30,7 @@ export default function setUpWebSecurity(): Router {
           formAction: [`'self' ${config.apis.hmppsAuth.externalUrl}`],
         },
       },
+      referrerPolicy: { policy: 'same-origin' },
       crossOriginEmbedderPolicy: true,
     }),
   )

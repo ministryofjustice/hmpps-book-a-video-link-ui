@@ -34,6 +34,16 @@
       ],
       "rules": {
         "no-shadow": "off",
+        "lines-between-class-members": [
+          "error",
+          {
+            "enforce": [
+              { "blankLine": "always", "prev": "*", "next": "method" },
+              { "blankLine": "always", "prev": "method", "next": "*" },
+              { "blankLine": "never", "prev": "field", "next": "field" }
+            ]
+          }
+        ],
         "max-classes-per-file": "off",
         "@typescript-eslint/no-shadow": ["error"],
         "@typescript-eslint/no-use-before-define": 0,

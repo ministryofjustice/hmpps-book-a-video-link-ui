@@ -1,0 +1,21 @@
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+
+{{ govukPhaseBanner({
+  attributes: {
+    role: "complementary"
+  },
+  tag: {
+    text: "ALPHA"
+  },
+  classes: 'govuk-!-display-none-print',
+  html: '
+         <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noopener noreferrer" target="_blank">Provide feedback</a>
+         or
+         <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noopener noreferrer" target="_blank">report a fault</a>
+         to help us improve this service.
+        '
+}) }}
+
+{% include './formErrorSummary.njk' %}
+{% include './successMessage.njk' %}

@@ -23,7 +23,6 @@ interface SendDataRequest extends Request {
 
 export default abstract class AbstractHmppsRestClient {
   private agent: Agent
-
   private tokenStore: TokenStore
 
   protected constructor(

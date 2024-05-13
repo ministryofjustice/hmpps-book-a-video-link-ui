@@ -6,7 +6,7 @@ import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
-import ManageCourtsHandler from './handlers/manageCourtsHandler'
+import ManageProbationAreasHandler from './handlers/manageProbationAreasHandler'
 
 export default function routes({ auditService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -15,16 +15,16 @@ export default function routes({ auditService }: Services): Router {
   const post = (path: string | string[], handler: PageHandler) =>
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  // The following routes are only accessible to court users
+  // The following routes are only accessible to probation users
   router.use((req, res, next) => {
-    return res.locals.user.isCourtUser ? next() : next(createError(404, 'Not found'))
+    return res.locals.user.isProbationUser ? next() : next(createError(404, 'Not found'))
   })
 
-  const manageCourtsHandler = new ManageCourtsHandler()
+  const manageProbationAreasHandler = new ManageProbationAreasHandler()
   // const confirmationHandler = new HomeHandler()
 
-  get('/', manageCourtsHandler)
-  post('/', manageCourtsHandler)
+  get('/', manageProbationAreasHandler)
+  post('/', manageProbationAreasHandler)
 
   return router
 }

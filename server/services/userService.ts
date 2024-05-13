@@ -1,19 +1,39 @@
 import { jwtDecode } from 'jwt-decode'
 import { convertToTitleCase } from '../utils/utils'
-import type { User } from '../data/manageUsersApiClient'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
+import { User } from '../@types/manageUsersApi/types'
+import { HmppsAuthClient } from '../data'
 
 export interface UserDetails extends User {
   displayName: string
   roles: string[]
+  isProbationUser: boolean
+  isCourtUser: boolean
 }
 
 export default class UserService {
-  constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
+  constructor(
+    private readonly manageUsersApiClient: ManageUsersApiClient,
+    private readonly hmppsAuthClient: HmppsAuthClient,
+  ) {}
 
   async getUser(token: string): Promise<UserDetails> {
     const user = await this.manageUsersApiClient.getUser(token)
-    return { ...user, roles: this.getUserRoles(token), displayName: convertToTitleCase(user.name) }
+    const userGroups = await this.manageUsersApiClient.getUserGroups(
+      user.userId,
+      await this.hmppsAuthClient.getSystemClientToken(user.username),
+    )
+
+    const isProbationUser = userGroups.some(g => g.groupCode === 'VIDEO_LINK_PROBATION_USER')
+    const isCourtUser = userGroups.some(g => g.groupCode === 'VIDEO_LINK_COURT_USER')
+
+    return {
+      ...user,
+      roles: this.getUserRoles(token),
+      displayName: convertToTitleCase(user.name),
+      isProbationUser,
+      isCourtUser,
+    }
   }
 
   getUserRoles(token: string): string[] {

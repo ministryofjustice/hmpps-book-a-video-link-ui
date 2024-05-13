@@ -1,8 +1,10 @@
-import AbstractHmppsRestClient from './abstractHmppsRestClient'
-import config, { ApiConfig } from '../config'
+import config from '../config'
+import RestClient from './restClient'
 
-export default class PrisonApiClient extends AbstractHmppsRestClient {
-  constructor() {
-    super('Prison API', config.apis.prisonApi as ApiConfig)
+export default class PrisonApiClient {
+  constructor() {}
+
+  private static restClient(token: string): RestClient {
+    return new RestClient('Prison API', config.apis.prisonApi, token)
   }
 }

@@ -4,7 +4,7 @@ import superagent from 'superagent'
 
 import type TokenStore from './tokenStore/tokenStore'
 import logger from '../../logger'
-import config from '../config'
+import config, { ApiConfig } from '../config'
 import generateOauthClientToken from '../authentication/clientCredentials'
 import RestClient from './restClient'
 
@@ -36,7 +36,7 @@ export default class HmppsAuthClient {
   constructor(private readonly tokenStore: TokenStore) {}
 
   private static restClient(token: string): RestClient {
-    return new RestClient('HMPPS Auth Client', config.apis.hmppsAuth, token)
+    return new RestClient('HMPPS Auth Client', config.apis.hmppsAuth as ApiConfig, token)
   }
 
   async getSystemClientToken(username?: string): Promise<string> {

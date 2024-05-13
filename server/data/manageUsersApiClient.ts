@@ -1,20 +1,7 @@
 import logger from '../../logger'
 import config from '../config'
 import RestClient from './restClient'
-
-export interface User {
-  username: string
-  name?: string
-  active?: boolean
-  authSource?: string
-  uuid?: string
-  userId?: string
-  activeCaseLoadId?: string // Will be removed from User. For now, use 'me/caseloads' endpoint in 'nomis-user-roles-api'
-}
-
-export interface UserRole {
-  roleCode: string
-}
+import { User, UserGroup } from '../@types/manageUsersApi/types'
 
 export default class ManageUsersApiClient {
   constructor() {}
@@ -26,5 +13,10 @@ export default class ManageUsersApiClient {
   getUser(token: string): Promise<User> {
     logger.info('Getting user details: calling HMPPS Manage Users Api')
     return ManageUsersApiClient.restClient(token).get<User>({ path: '/users/me' })
+  }
+
+  getUserGroups(userId: string, token: string): Promise<UserGroup[]> {
+    logger.info(`Getting user groups for user ID ${userId}: calling HMPPS Manage Users Api`)
+    return ManageUsersApiClient.restClient(token).get<UserGroup[]>({ path: `/externalusers/${userId}/groups` })
   }
 }

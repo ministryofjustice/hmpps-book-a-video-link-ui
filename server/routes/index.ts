@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import homeRoutes from './journeys/home'
 import manageCourtsRoutes from './journeys/manageCourts'
+import manageProbationAreasRoutes from './journeys/manageProbationAreas'
 import { Services } from '../services'
 
 export default function routes(services: Services): Router {
@@ -19,6 +20,7 @@ export default function routes(services: Services): Router {
 
   router.use('/', homeRoutes(services))
   router.use('/manage-courts', manageCourtsRoutes(services))
+  router.use('/manage-probation-areas', manageProbationAreasRoutes(services))
 
   return router
 }

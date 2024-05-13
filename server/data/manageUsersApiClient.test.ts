@@ -34,4 +34,18 @@ describe('manageUsersApiClient', () => {
       expect(output).toEqual(response)
     })
   })
+
+  describe('getUserGroups', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeManageUsersApiClient
+        .get('/externalusers/userid/groups')
+        .matchHeader('authorization', `Bearer ${token.access_token}`)
+        .reply(200, response)
+
+      const output = await manageUsersApiClient.getUserGroups('userid', token.access_token)
+      expect(output).toEqual(response)
+    })
+  })
 })

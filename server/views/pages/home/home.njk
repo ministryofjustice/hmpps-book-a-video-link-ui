@@ -28,15 +28,29 @@
             }) }}
         </div>
 
-        <div class="govuk-grid-column-one-third card-group__item">
-            {{ card({
-                "href": "manage-courts",
-                "clickable": "true",
-                "heading": "Manage your list of courts",
-                "description": "Choose the courts you book video links for.",
-                "data-qa": "choose-courts-card"
-            }) }}
-        </div>
+       {% if user.isCourtUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "manage-courts",
+                    "clickable": "true",
+                    "heading": "Manage your list of courts",
+                    "description": "Choose the courts you book video links for.",
+                    "data-qa": "choose-courts-card"
+                }) }}
+            </div>
+       {% endif %}
+
+       {% if user.isProbationUser %}
+           <div class="govuk-grid-column-one-third card-group__item">
+               {{ card({
+                   "href": "manage-probation-areas",
+                   "clickable": "true",
+                   "heading": "Manage your list of probation areas",
+                   "description": "Choose the probation areas you book video links for.",
+                   "data-qa": "choose-probation-areas-card"
+               }) }}
+           </div>
+       {% endif %}
     </div>
 {% endblock %}
 

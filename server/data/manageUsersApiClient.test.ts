@@ -2,10 +2,11 @@ import nock from 'nock'
 
 import config from '../config'
 import ManageUsersApiClient from './manageUsersApiClient'
+import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
-jest.mock('./tokenStore/redisTokenStore')
+jest.mock('./tokenStore/inMemoryTokenStore')
 
-const token = { access_token: 'token-1', expires_in: 300 }
+const user = { token: 'userToken', username: 'jbloggs' } as Express.User
 
 describe('manageUsersApiClient', () => {
   let fakeManageUsersApiClient: nock.Scope
@@ -14,6 +15,7 @@ describe('manageUsersApiClient', () => {
   beforeEach(() => {
     fakeManageUsersApiClient = nock(config.apis.manageUsersApi.url)
     manageUsersApiClient = new ManageUsersApiClient()
+    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
   })
 
   afterEach(() => {
@@ -27,10 +29,10 @@ describe('manageUsersApiClient', () => {
 
       fakeManageUsersApiClient
         .get('/users/me')
-        .matchHeader('authorization', `Bearer ${token.access_token}`)
+        .matchHeader('authorization', `Bearer ${user.token}`)
         .reply(200, response)
 
-      const output = await manageUsersApiClient.getUser(token.access_token)
+      const output = await manageUsersApiClient.getUser(user)
       expect(output).toEqual(response)
     })
   })
@@ -41,10 +43,10 @@ describe('manageUsersApiClient', () => {
 
       fakeManageUsersApiClient
         .get('/externalusers/userid/groups')
-        .matchHeader('authorization', `Bearer ${token.access_token}`)
+        .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await manageUsersApiClient.getUserGroups('userid', token.access_token)
+      const output = await manageUsersApiClient.getUserGroups('userid', user)
       expect(output).toEqual(response)
     })
   })

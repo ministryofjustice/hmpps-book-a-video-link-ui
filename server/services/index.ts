@@ -3,9 +3,9 @@ import AuditService from './auditService'
 import UserService from './userService'
 
 export const services = () => {
-  const { applicationInfo, manageUsersApiClient, hmppsAuditClient, hmppsAuthClient } = dataAccess()
+  const { applicationInfo, manageUsersApiClient, hmppsAuditClient } = dataAccess()
 
-  const userService = new UserService(manageUsersApiClient, hmppsAuthClient)
+  const userService = new UserService(manageUsersApiClient)
   const auditService = new AuditService(hmppsAuditClient)
 
   return {

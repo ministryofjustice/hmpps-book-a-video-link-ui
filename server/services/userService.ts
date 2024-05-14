@@ -2,7 +2,6 @@ import { jwtDecode } from 'jwt-decode'
 import { convertToTitleCase } from '../utils/utils'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { User } from '../@types/manageUsersApi/types'
-import { HmppsAuthClient } from '../data'
 
 export interface UserDetails extends User {
   displayName: string
@@ -12,25 +11,19 @@ export interface UserDetails extends User {
 }
 
 export default class UserService {
-  constructor(
-    private readonly manageUsersApiClient: ManageUsersApiClient,
-    private readonly hmppsAuthClient: HmppsAuthClient,
-  ) {}
+  constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
 
-  async getUser(token: string): Promise<UserDetails> {
-    const user = await this.manageUsersApiClient.getUser(token)
-    const userGroups = await this.manageUsersApiClient.getUserGroups(
-      user.userId,
-      await this.hmppsAuthClient.getSystemClientToken(user.username),
-    )
+  async getUser(user: Express.User): Promise<UserDetails> {
+    const serviceUser = await this.manageUsersApiClient.getUser(user)
+    const userGroups = await this.manageUsersApiClient.getUserGroups(serviceUser.userId, user)
 
     const isProbationUser = userGroups.some(g => g.groupCode === 'VIDEO_LINK_PROBATION_USER')
     const isCourtUser = userGroups.some(g => g.groupCode === 'VIDEO_LINK_COURT_USER')
 
     return {
-      ...user,
-      roles: this.getUserRoles(token),
-      displayName: convertToTitleCase(user.name),
+      ...serviceUser,
+      roles: this.getUserRoles(user.token),
+      displayName: convertToTitleCase(serviceUser.name),
       isProbationUser,
       isCourtUser,
     }

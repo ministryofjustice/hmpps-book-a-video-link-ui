@@ -13,7 +13,7 @@ export interface UserDetails extends User {
 export default class UserService {
   constructor(private readonly manageUsersApiClient: ManageUsersApiClient) {}
 
-  async getUser(user: Express.User): Promise<UserDetails> {
+  public async getUser(user: Express.User): Promise<UserDetails> {
     const serviceUser = await this.manageUsersApiClient.getUser(user)
     const userGroups = await this.manageUsersApiClient.getUserGroups(serviceUser.userId, user)
 
@@ -29,7 +29,7 @@ export default class UserService {
     }
   }
 
-  getUserRoles(token: string): string[] {
+  private getUserRoles(token: string): string[] {
     const { authorities: roles = [] } = jwtDecode(token) as { authorities?: string[] }
     return roles.map(role => role.substring(role.indexOf('_') + 1))
   }

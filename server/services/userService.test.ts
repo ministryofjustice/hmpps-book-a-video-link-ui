@@ -9,12 +9,12 @@ describe('User service', () => {
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
   let userService: UserService
 
-  describe('getUser', () => {
-    beforeEach(() => {
-      manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
-      userService = new UserService(manageUsersApiClient)
-    })
+  beforeEach(() => {
+    manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
+    userService = new UserService(manageUsersApiClient)
+  })
 
+  describe('getUser', () => {
     it('Retrieves and formats user name', async () => {
       manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
       manageUsersApiClient.getUserGroups.mockResolvedValue([])

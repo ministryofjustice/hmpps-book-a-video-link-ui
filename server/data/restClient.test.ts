@@ -1,7 +1,7 @@
 import nock from 'nock'
 
 import { AgentConfig } from '../config'
-import RestClient, { Client } from './restClient'
+import RestClient, { TokenType } from './restClient'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -184,7 +184,7 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
         path: '/test',
       },
       user,
-      Client.USER_CLIENT,
+      TokenType.USER_TOKEN,
     )
 
     expect(nock.isDone()).toBe(true)

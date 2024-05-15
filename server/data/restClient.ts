@@ -16,9 +16,9 @@ import RedisTokenStore from './tokenStore/redisTokenStore'
 import { createRedisClient } from './redisClient'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 
-export enum Client {
-  USER_CLIENT = 'USER_CLIENT',
-  SYSTEM_CLIENT = 'SYSTEM_CLIENT',
+export enum TokenType {
+  USER_TOKEN = 'USER_TOKEN',
+  SYSTEM_TOKEN = 'SYSTEM_TOKEN',
 }
 
 interface Request {
@@ -54,7 +54,7 @@ function getSystemClientTokenFromHmppsAuth(username: string): Promise<superagent
     username,
   }).toString()
 
-  logger.info(`${grantRequest} HMPPS Auth request for client id '${config.apis.hmppsAuth.systemClientId}''`)
+  logger.info(`${grantRequest} HMPPS Auth request for client id '${config.apis.hmppsAuth.systemClientId}'`)
 
   return superagent
     .post(`${hmppsAuthUrl}/oauth/token`)
@@ -101,11 +101,11 @@ export default abstract class RestClient {
   async get<Response = unknown>(
     { path, query = {}, headers = {}, responseType = '', raw = false }: Request,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
     logger.info(`${this.name} GET: ${path}`)
 
-    const token = client === Client.SYSTEM_CLIENT ? await this.getSystemClientToken(user.username) : user.token
+    const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
     try {
       const result = await superagent
@@ -134,11 +134,11 @@ export default abstract class RestClient {
     method: 'patch' | 'post' | 'put',
     { path, query = {}, headers = {}, responseType = '', data = {}, raw = false, retry = false }: RequestWithBody,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
     logger.info(`${this.name} ${method.toUpperCase()}: ${path}`)
 
-    const token = client === Client.SYSTEM_CLIENT ? await this.getSystemClientToken(user.username) : user.token
+    const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
     try {
       const result = await superagent[method](`${this.apiUrl()}${path}`)
@@ -169,7 +169,7 @@ export default abstract class RestClient {
   async patch<Response = unknown>(
     request: RequestWithBody,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
     return this.requestWithBody('patch', request, user, client)
   }
@@ -177,7 +177,7 @@ export default abstract class RestClient {
   async post<Response = unknown>(
     request: RequestWithBody,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
     return this.requestWithBody('post', request, user, client)
   }
@@ -185,7 +185,7 @@ export default abstract class RestClient {
   async put<Response = unknown>(
     request: RequestWithBody,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
     return this.requestWithBody('put', request, user, client)
   }
@@ -193,11 +193,11 @@ export default abstract class RestClient {
   async delete<Response = unknown>(
     { path, query = {}, headers = {}, responseType = '', raw = false }: Request,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
     logger.info(`${this.name} DELETE: ${path}`)
 
-    const token = client === Client.SYSTEM_CLIENT ? await this.getSystemClientToken(user.username) : user.token
+    const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
     try {
       const result = await superagent
@@ -225,11 +225,11 @@ export default abstract class RestClient {
   async stream(
     { path = null, headers = {} }: StreamRequest,
     user: Express.User,
-    client = Client.SYSTEM_CLIENT,
+    client = TokenType.SYSTEM_TOKEN,
   ): Promise<Readable> {
     logger.info(`${this.name} streaming: ${path}`)
 
-    const token = client === Client.SYSTEM_CLIENT ? await this.getSystemClientToken(user.username) : user.token
+    const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
     return new Promise((resolve, reject) => {
       superagent

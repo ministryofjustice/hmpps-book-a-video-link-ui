@@ -6,9 +6,9 @@ import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
-import ManageProbationAreasHandler from './handlers/manageProbationAreasHandler'
+import ManageProbationTeamsHandler from './handlers/manageProbationTeamsHandler'
 
-export default function routes({ auditService }: Services): Router {
+export default function routes({ auditService, probationTeamsService }: Services): Router {
   const router = Router({ mergeParams: true })
   const get = (path: string | string[], handler: PageHandler) =>
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET))
@@ -20,7 +20,7 @@ export default function routes({ auditService }: Services): Router {
     return res.locals.user.isProbationUser ? next() : next(createError(404, 'Not found'))
   })
 
-  const manageProbationAreasHandler = new ManageProbationAreasHandler()
+  const manageProbationAreasHandler = new ManageProbationTeamsHandler(probationTeamsService)
   // const confirmationHandler = new HomeHandler()
 
   get('/', manageProbationAreasHandler)

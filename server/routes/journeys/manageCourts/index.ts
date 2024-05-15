@@ -8,7 +8,7 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ManageCourtsHandler from './handlers/manageCourtsHandler'
 
-export default function routes({ auditService }: Services): Router {
+export default function routes({ auditService, courtsService }: Services): Router {
   const router = Router({ mergeParams: true })
   const get = (path: string | string[], handler: PageHandler) =>
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET))
@@ -20,7 +20,7 @@ export default function routes({ auditService }: Services): Router {
     return res.locals.user.isCourtUser ? next() : next(createError(404, 'Not found'))
   })
 
-  const manageCourtsHandler = new ManageCourtsHandler()
+  const manageCourtsHandler = new ManageCourtsHandler(courtsService)
   // const confirmationHandler = new HomeHandler()
 
   get('/', manageCourtsHandler)

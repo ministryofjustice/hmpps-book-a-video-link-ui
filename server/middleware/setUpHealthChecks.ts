@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 
-import healthcheck from '../services/healthCheck'
+import healthcheck from '../utils/healthCheck'
 import type { ApplicationInfo } from '../applicationInfo'
 
 export default function setUpHealthChecks(applicationInfo: ApplicationInfo): Router {

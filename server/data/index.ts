@@ -13,11 +13,13 @@ buildAppInsightsClient(applicationInfo)
 import ManageUsersApiClient from './manageUsersApiClient'
 import config from '../config'
 import HmppsAuditClient from './hmppsAuditClient'
+import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   manageUsersApiClient: new ManageUsersApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
+  bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>

@@ -30,6 +30,8 @@ export const user: Express.User = {
   active: true,
   activeCaseLoadId: 'MDI',
   authSource: 'NOMIS',
+  isCourtUser: true,
+  isProbationUser: true,
 }
 
 export const flashProvider = jest.fn()

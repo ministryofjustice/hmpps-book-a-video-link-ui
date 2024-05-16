@@ -40,9 +40,10 @@
             "enforce": [
               { "blankLine": "always", "prev": "*", "next": "method" },
               { "blankLine": "always", "prev": "method", "next": "*" },
-              { "blankLine": "never", "prev": "field", "next": "field" }
+              { "blankLine": "always", "prev": "field", "next": "field" }
             ]
-          }
+          },
+          { "exceptAfterSingleLine": true }
         ],
         "max-classes-per-file": "off",
         "@typescript-eslint/no-shadow": ["error"],

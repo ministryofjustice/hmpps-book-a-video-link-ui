@@ -18,6 +18,11 @@ export default class CourtsService {
     return groupBy(courts, court => court.description.charAt(0).toUpperCase())
   }
 
+  public async getUserPreferences(user: Express.User): Promise<Court[]> {
+    const courtsList = await this.bookAVideoLinkApiClient.getUserCourtPreferences(user)
+    return this.sortAlphabetically(courtsList)
+  }
+
   private sortAlphabetically(courts: Court[]): Court[] {
     return courts.sort((a, b) => a.description.localeCompare(b.description))
   }

@@ -37,6 +37,20 @@ describe('manageUsersApiClient', () => {
     })
   })
 
+  describe('getUserCourtPreferences', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/courts/user-preferences/jbloggs')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getUserCourtPreferences(user)
+      expect(output).toEqual(response)
+    })
+  })
+
   describe('getAllEnabledProbationTeams', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
@@ -47,6 +61,20 @@ describe('manageUsersApiClient', () => {
         .reply(200, response)
 
       const output = await bookAVideoLinkApiClient.getAllEnabledProbationTeams(user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('getUserProbationTeamPreferences', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/probation-teams/user-preferences/jbloggs')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getUserProbationTeamPreferences(user)
       expect(output).toEqual(response)
     })
   })

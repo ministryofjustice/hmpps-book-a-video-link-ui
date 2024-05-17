@@ -7,6 +7,7 @@ import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ManageCourtsHandler from './handlers/manageCourtsHandler'
+import ConfirmationHandler from './handlers/confirmationHandler'
 
 export default function routes({ auditService, courtsService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -21,10 +22,11 @@ export default function routes({ auditService, courtsService }: Services): Route
   })
 
   const manageCourtsHandler = new ManageCourtsHandler(courtsService)
-  // const confirmationHandler = new HomeHandler()
+  const confirmationHandler = new ConfirmationHandler(courtsService)
 
   get('/', manageCourtsHandler)
   post('/', manageCourtsHandler)
+  get('/confirmation', confirmationHandler)
 
   return router
 }

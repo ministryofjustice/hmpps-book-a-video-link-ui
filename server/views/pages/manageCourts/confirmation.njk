@@ -1,0 +1,30 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Your court list has been updated" %}
+
+{% block content %}
+    <div class="govuk-grid-row govuk-body">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({
+                titleText: pageTitle,
+                classes: "govuk-!-margin-bottom-6"
+            }) }}
+
+            <p class = "govuk-!-margin-top-8">You can now create video link bookings and view existing bookings for the following courts:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                {% for item in courts %}
+                    <li data-qa="court">{{item.description}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    {{ govukButton({
+        text: "Continue",
+        href: '/',
+        attributes: { 'data-qa': 'confirm'}
+    }) }}
+{% endblock %}

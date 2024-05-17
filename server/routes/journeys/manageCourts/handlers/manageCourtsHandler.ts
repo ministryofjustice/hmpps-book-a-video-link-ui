@@ -26,7 +26,6 @@ export default class ManageCourtsHandler implements PageHandler {
   }
 
   public POST = async (req: Request, res: Response) => {
-    req.flash('successMessage', JSON.stringify({ heading: 'successHeading', message: 'test' }))
-    res.redirect('/')
+    res.redirect('/manage-courts/confirmation')
   }
 }

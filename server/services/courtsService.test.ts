@@ -66,4 +66,16 @@ describe('Courts service', () => {
       })
     })
   })
+
+  describe('getUserPreferences', () => {
+    it('Retrieves the user preferences sorted alphabetically', async () => {
+      bookAVideoLinkApiClient.getUserCourtPreferences.mockResolvedValue([
+        { code: 'GTSHMC', description: 'Gateshead Magistrates' },
+      ] as unknown as Court[])
+
+      const result = await courtsService.getUserPreferences(user)
+
+      expect(result).toStrictEqual([{ code: 'GTSHMC', description: 'Gateshead Magistrates' }])
+    })
+  })
 })

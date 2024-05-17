@@ -66,4 +66,16 @@ describe('Probation teams service', () => {
       })
     })
   })
+
+  describe('getUserPreferences', () => {
+    it('Retrieves the user preferences sorted alphabetically', async () => {
+      bookAVideoLinkApiClient.getUserProbationTeamPreferences.mockResolvedValue([
+        { code: 'LANCCE', description: 'Central Lancashire' },
+      ] as unknown as ProbationTeam[])
+
+      const result = await probationTeamsService.getUserPreferences(user)
+
+      expect(result).toStrictEqual([{ code: 'LANCCE', description: 'Central Lancashire' }])
+    })
+  })
 })

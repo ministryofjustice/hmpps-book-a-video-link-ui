@@ -1,5 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
+import cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 
@@ -28,7 +29,10 @@ describe('GET /', () => {
       .get('/')
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(res.text).toContain('Book a video link with a prison')
+        const $ = cheerio.load(res.text)
+        const heading = $('h1').text().trim()
+
+        expect(heading).toContain('Book a video link with a prison')
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.HOME_PAGE, {
           who: user.username,
           correlationId: expect.any(String),

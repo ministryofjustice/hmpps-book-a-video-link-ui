@@ -18,6 +18,10 @@ export default class ProbationTeamsService {
     return this.sortAlphabetically(probationTeamsList)
   }
 
+  public setUserPreferences(probationTeamCodes: string[], user: Express.User): Promise<void> {
+    return this.bookAVideoLinkApiClient.setUserProbationTeamPreferences(probationTeamCodes, user)
+  }
+
   public async getProbationTeamsByLetter(user: Express.User): Promise<ProbationTeamsByLetter> {
     const probationTeams = await this.getAllEnabledProbationTeams(user)
     return groupBy(probationTeams, probationTeam => probationTeam.description.charAt(0).toUpperCase())

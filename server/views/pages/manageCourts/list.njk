@@ -30,13 +30,15 @@
                             {% set items = (items.push(
                                 {
                                     value: court.code,
-                                    text: court.description
+                                    text: court.description,
+                                    checked: court.code in selectedCourts | map('code')
                                 }
                             ), items) %}
                         {% endfor %}
 
                         {{ govukCheckboxes({
                             name: "courts",
+                            idPrefix: letter + "-courts",
                             items: items
                         }) }}
                     {% endset %}

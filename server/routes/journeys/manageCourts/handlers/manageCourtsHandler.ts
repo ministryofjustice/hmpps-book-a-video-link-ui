@@ -20,12 +20,21 @@ export default class ManageCourtsHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const courts = await this.courtsService.getCourtsByLetter(user)
 
-    res.render('pages/manageCourts/list', { courts })
+    const [courts, selectedCourts] = await Promise.all([
+      this.courtsService.getCourtsByLetter(user),
+      this.courtsService.getUserPreferences(user),
+    ])
+
+    res.render('pages/manageCourts/list', { courts, selectedCourts })
   }
 
   public POST = async (req: Request, res: Response) => {
+    const { user } = res.locals
+    const { courts } = req.body
+
+    await this.courtsService.setUserPreferences(courts, user)
+
     res.redirect('/manage-courts/confirmation')
   }
 }

@@ -23,6 +23,10 @@ describe('Probation teams service', () => {
     ] as unknown as ProbationTeam[])
   })
 
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('getAllEnabledProbationTeams', () => {
     it('Retrieves all probation teams sorted alphabetically', async () => {
       const result = await probationTeamsService.getAllEnabledProbationTeams(user)
@@ -76,6 +80,14 @@ describe('Probation teams service', () => {
       const result = await probationTeamsService.getUserPreferences(user)
 
       expect(result).toStrictEqual([{ code: 'LANCCE', description: 'Central Lancashire' }])
+    })
+  })
+
+  describe('setUserPreferences', () => {
+    it('should call the rest client to post the probation team preferences', async () => {
+      await probationTeamsService.setUserPreferences(['TEST'], user)
+
+      expect(bookAVideoLinkApiClient.setUserProbationTeamPreferences).toHaveBeenCalledWith(['TEST'], user)
     })
   })
 })

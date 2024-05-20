@@ -23,6 +23,10 @@ describe('Courts service', () => {
     ] as unknown as Court[])
   })
 
+  afterEach(() => {
+    jest.resetAllMocks()
+  })
+
   describe('getAllEnabledCourts', () => {
     it('Retrieves all courts sorted alphabetically', async () => {
       const result = await courtsService.getAllEnabledCourts(user)
@@ -76,6 +80,14 @@ describe('Courts service', () => {
       const result = await courtsService.getUserPreferences(user)
 
       expect(result).toStrictEqual([{ code: 'GTSHMC', description: 'Gateshead Magistrates' }])
+    })
+  })
+
+  describe('setUserPreferences', () => {
+    it('should call the rest client to post the court preferences', async () => {
+      await courtsService.setUserPreferences(['TEST'], user)
+
+      expect(bookAVideoLinkApiClient.setUserCourtPreferences).toHaveBeenCalledWith(['TEST'], user)
     })
   })
 })

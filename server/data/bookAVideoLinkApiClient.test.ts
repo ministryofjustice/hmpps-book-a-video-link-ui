@@ -51,6 +51,22 @@ describe('manageUsersApiClient', () => {
     })
   })
 
+  describe('setUserCourtPreferences', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/courts/user-preferences/set', {
+          courtCodes: ['TEST'],
+        })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.setUserCourtPreferences(['TEST'], user)
+      expect(output).toEqual(response)
+    })
+  })
+
   describe('getAllEnabledProbationTeams', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }
@@ -75,6 +91,22 @@ describe('manageUsersApiClient', () => {
         .reply(200, response)
 
       const output = await bookAVideoLinkApiClient.getUserProbationTeamPreferences(user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('setUserProbationTeamPreferences', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/probation-teams/user-preferences/set', {
+          probationTeamCodes: ['TEST'],
+        })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.setUserProbationTeamPreferences(['TEST'], user)
       expect(output).toEqual(response)
     })
   })

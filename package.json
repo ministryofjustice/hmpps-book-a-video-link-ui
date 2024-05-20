@@ -128,6 +128,7 @@
   "devDependencies": {
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
+    "@types/cheerio": "^0.22.35",
     "@types/compression": "^1.7.5",
     "@types/connect-flash": "0.0.40",
     "@types/cookie-session": "^2.0.48",
@@ -148,6 +149,7 @@
     "@typescript-eslint/parser": "^7.5.0",
     "audit-ci": "^6.6.1",
     "aws-sdk-client-mock": "^4.0.0",
+    "cheerio": "^1.0.0-rc.12",
     "concurrently": "^8.2.2",
     "cookie-session": "^2.1.0",
     "cypress": "^13.7.2",

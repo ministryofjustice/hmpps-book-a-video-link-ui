@@ -23,6 +23,10 @@ export default class CourtsService {
     return this.sortAlphabetically(courtsList)
   }
 
+  public setUserPreferences(courtCodes: string[], user: Express.User): Promise<void> {
+    return this.bookAVideoLinkApiClient.setUserCourtPreferences(courtCodes, user)
+  }
+
   private sortAlphabetically(courts: Court[]): Court[] {
     return courts.sort((a, b) => a.description.localeCompare(b.description))
   }

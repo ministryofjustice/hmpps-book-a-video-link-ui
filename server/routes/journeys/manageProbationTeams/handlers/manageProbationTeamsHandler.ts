@@ -20,12 +20,21 @@ export default class ManageProbationTeamsHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const probationTeams = await this.probationTeamsService.getProbationTeamsByLetter(user)
 
-    res.render('pages/manageProbationTeams/list', { probationTeams })
+    const [probationTeams, selectedProbationTeams] = await Promise.all([
+      this.probationTeamsService.getProbationTeamsByLetter(user),
+      this.probationTeamsService.getUserPreferences(user),
+    ])
+
+    res.render('pages/manageProbationTeams/list', { probationTeams, selectedProbationTeams })
   }
 
   public POST = async (req: Request, res: Response) => {
+    const { user } = res.locals
+    const { probationTeams } = req.body
+
+    await this.probationTeamsService.setUserPreferences(probationTeams, user)
+
     res.redirect('/manage-probation-teams/confirmation')
   }
 }

@@ -42,7 +42,7 @@ describe('manageUsersApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/courts/user-preferences/jbloggs')
+        .get('/courts/user-preferences')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
@@ -86,7 +86,7 @@ describe('manageUsersApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/probation-teams/user-preferences/jbloggs')
+        .get('/probation-teams/user-preferences')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 

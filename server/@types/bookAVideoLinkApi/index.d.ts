@@ -8,9 +8,25 @@ export interface paths {
     /** Endpoint to support the creation of video link bookings */
     post: operations['create']
   }
+  '/probation-teams/user-preferences/set': {
+    /** Endpoint to set the probation team preferences for a user (identified from the token content) */
+    post: operations['setUserProbationTeamPreferences']
+  }
+  '/courts/user-preferences/set': {
+    /** Endpoint to set the court preferences for a user (identified from the token content) */
+    post: operations['setUserCourtPreferences']
+  }
+  '/probation-teams/user-preferences': {
+    /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
+    get: operations['probationTeamsUserPreferences']
+  }
   '/probation-teams/enabled': {
     /** Endpoint to return a list of enabled probation teams for video link bookings */
     get: operations['enabledProbationTeams']
+  }
+  '/courts/user-preferences': {
+    /** Endpoint to return the list of enabled courts selected by a user (identified from the token content) */
+    get: operations['getUserCourtPreferences']
   }
   '/courts/enabled': {
     /** Endpoint to return a list of enabled courts for video link bookings */
@@ -166,6 +182,32 @@ export interface components {
       developerMessage?: string
       moreInfo?: string
     }
+    /** @description The request body containing the user probation team preferences */
+    SetProbationTeamPreferencesRequest: {
+      /** @description The list of probation team codes to set as the preferences for this username. */
+      probationTeamCodes: string[]
+    }
+    /** @description Describes the response from setting the user probation team preferences */
+    SetProbationTeamPreferencesResponse: {
+      /**
+       * Format: int32
+       * @description The count of probation teams saved as preferences for this user
+       */
+      probationTeamsSaved: number
+    }
+    /** @description The request body containing the user court preferences */
+    SetCourtPreferencesRequest: {
+      /** @description The list of court codes to set as the preferences for this username. */
+      courtCodes: string[]
+    }
+    /** @description Describes the response from setting the user court preferences */
+    SetCourtPreferencesResponse: {
+      /**
+       * Format: int32
+       * @description The count of courts saved as preferences for this user
+       */
+      courtsSaved: number
+    }
     /** @description Describes the details of a probation team */
     ProbationTeam: {
       /**
@@ -265,6 +307,97 @@ export interface operations {
       }
     }
   }
+  /** Endpoint to set the probation team preferences for a user (identified from the token content) */
+  setUserProbationTeamPreferences: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetProbationTeamPreferencesRequest']
+      }
+    }
+    responses: {
+      /** @description Count of the number of probation teams saved in this request */
+      200: {
+        content: {
+          'application/json': components['schemas']['SetProbationTeamPreferencesResponse']
+        }
+      }
+      /** @description Invalid request provided */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to set the court preferences for a user (identified from the token content) */
+  setUserCourtPreferences: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['SetCourtPreferencesRequest']
+      }
+    }
+    responses: {
+      /** @description Count of the number of courts saved in this request */
+      200: {
+        content: {
+          'application/json': components['schemas']['SetCourtPreferencesResponse']
+        }
+      }
+      /** @description Invalid request provided */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
+  probationTeamsUserPreferences: {
+    responses: {
+      /** @description Probation teams select by this user */
+      200: {
+        content: {
+          'application/json': components['schemas']['ProbationTeam'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   /** Endpoint to return a list of enabled probation teams for video link bookings */
   enabledProbationTeams: {
     responses: {
@@ -272,6 +405,29 @@ export interface operations {
       200: {
         content: {
           'application/json': components['schemas']['ProbationTeam'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to return the list of enabled courts selected by a user (identified from the token content) */
+  getUserCourtPreferences: {
+    responses: {
+      /** @description Courts selected by this user */
+      200: {
+        content: {
+          'application/json': components['schemas']['Court'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */

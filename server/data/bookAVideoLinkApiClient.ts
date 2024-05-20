@@ -12,7 +12,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
   }
 
   public getUserCourtPreferences(user: Express.User): Promise<Court[]> {
-    return this.get({ path: `/courts/user-preferences/${user.username}` }, user)
+    return this.get({ path: '/courts/user-preferences' }, user)
   }
 
   public setUserCourtPreferences(courtCodes: string[], user: Express.User): Promise<void> {
@@ -32,7 +32,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
   }
 
   public getUserProbationTeamPreferences(user: Express.User): Promise<ProbationTeam[]> {
-    return this.get({ path: `/probation-teams/user-preferences/${user.username}` }, user)
+    return this.get({ path: '/probation-teams/user-preferences' }, user)
   }
 
   public setUserProbationTeamPreferences(probationTeamCodes: string[], user: Express.User): Promise<void> {

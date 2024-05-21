@@ -41,9 +41,6 @@ build/Release
 node_modules/
 jspm_packages/
 
-# Cypress download directory
-cypress
-
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
@@ -119,8 +116,8 @@ dist
 .pnp.*
 
 
-
-assets/stylesheets/*.css
+cypress
+assets
 .idea
 .vscode
 dist/
@@ -129,4 +126,5 @@ integration_tests/videos/
 integration_tests/screenshots/
 */*.iml
 **/Chart.lock
+/.run/
 **/.DS_Store

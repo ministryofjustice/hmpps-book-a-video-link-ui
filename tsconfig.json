@@ -1,7 +1,7 @@
 {
   "compileOnSave": true,
   "compilerOptions": {
-    "target": "es2018",
+    "target": "es2022",
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./dist",
@@ -17,6 +17,17 @@
     "experimentalDecorators": true,
     "typeRoots": ["./server/@types", "./node_modules/@types"]
   },
-  "exclude": ["node_modules", "assets/**/*.js", "integration_tests", "dist", "cypress.config.ts"],
+  "exclude": [
+    "node_modules",
+    "assets/**/*.js",
+    "frontend",
+    "integration_tests",
+    "dist",
+    "cypress.config.ts",
+    "coverage",
+    "gruntfile.js",
+    "**/*.test.js",
+    "**/*.test.ts"
+  ],
   "include": ["**/*.js", "**/*.ts"]
 }

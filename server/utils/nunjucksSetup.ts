@@ -38,6 +38,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     {
       autoescape: true,
       express: app,
+      watch: process.env.NODE_ENV === 'live-development',
     },
   )
 

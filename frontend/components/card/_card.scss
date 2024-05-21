@@ -1,4 +1,3 @@
-
 /* ==========================================================================
    COMPONENTS / #CARD
    ========================================================================== */
@@ -26,7 +25,7 @@ $card-border-color: lighten($card-border-hover-color, 15%);
   }
 
   /* Clickable card
-   ========================================================================== */
+  ========================================================================== */
   &--clickable {
     border-bottom-width: $card-border-bottom-width;
 
@@ -57,11 +56,10 @@ $card-border-color: lighten($card-border-hover-color, 15%);
 }
 
 /* Card group
-   ========================================================================== */
+========================================================================== */
 
 /**
- * Card group allows you to have a row of cards.
- *
+ * A card group allows you to have a row of cards.
  * Flexbox is used to make each card in a row the same height.
  */
 
@@ -70,8 +68,6 @@ $card-border-color: lighten($card-border-hover-color, 15%);
   flex-wrap: wrap;
   margin-bottom: govuk-spacing(3);
   padding: 0;
-  //  justify-content: normal;
-  //  justify-content: space-around;
 
   @include govuk-media-query($until: desktop) {
     margin-bottom: govuk-spacing(6);
@@ -85,7 +81,6 @@ $card-border-color: lighten($card-border-hover-color, 15%);
     @include govuk-media-query($until: desktop) {
       flex: 0 0 100%;
     }
-
     .card {
       margin-bottom: govuk-spacing(5);
     }

@@ -8,6 +8,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .govuk-phase-banner {
+      @include govuk-width-container;
+      border: none;
+    }
   }
 
   &__logo {
@@ -112,35 +117,4 @@
   @media print {
     display: none;
   }
-}
-
-.location-bar {
-  @include govuk-width-container;
-  @include govuk-responsive-margin(3, 'bottom');
-  @include govuk-responsive-padding(3, 'top');
-  @include govuk-responsive-padding(3, 'bottom');
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  border-bottom: 1px solid $govuk-border-colour;
-
-  &__location {
-    @include govuk-font($size: 19, $weight: 'bold');
-    @include govuk-responsive-margin(3, 'right');
-  }
-
-  &__link {
-    @include govuk-link-common;
-    @include govuk-link-style-default;
-    @include govuk-font($size: 19, $weight: 'normal');
-  }
-
-  @media print {
-    display: none;
-  }
-}
-
-.govuk-phase-banner {
-  @include govuk-width-container;
-  border: none;
 }

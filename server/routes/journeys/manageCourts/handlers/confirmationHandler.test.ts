@@ -1,6 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService from '../../../../services/courtsService'
 import { Court } from '../../../../@types/bookAVideoLinkApi/types'
@@ -24,7 +24,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /', () => {
+describe('GET /confirmation', () => {
   it('should render the correct view page', () => {
     auditService.logPageView.mockResolvedValue(null)
     courtsService.getUserPreferences.mockResolvedValue([
@@ -35,7 +35,7 @@ describe('GET /', () => {
     ] as unknown as Court[])
 
     return request(app)
-      .get('/manage-courts/confirmation')
+      .get(`/manage-courts/${journeyId()}/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Your court list has been updated')

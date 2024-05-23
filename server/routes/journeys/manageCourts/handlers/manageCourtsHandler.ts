@@ -35,6 +35,6 @@ export default class ManageCourtsHandler implements PageHandler {
 
     await this.courtsService.setUserPreferences(courts, user)
 
-    res.redirect('/manage-courts/confirmation')
+    res.redirect('confirmation')
   }
 }

@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import cheerio from 'cheerio'
-import { appWithAllRoutes, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService, { CourtsByLetter } from '../../../../services/courtsService'
 import expectErrorMessages from '../../../testutils/expectErrorMessage'
@@ -63,12 +63,12 @@ afterEach(() => {
 })
 
 describe('Manage courts handler', () => {
-  describe('GET /manage-courts', () => {
+  describe('GET /select-courts', () => {
     it('should render the correct view page', () => {
       auditService.logPageView.mockResolvedValue(null)
 
       return request(app)
-        .get('/manage-courts')
+        .get(`/manage-courts/${journeyId()}/select-courts`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -86,10 +86,10 @@ describe('Manage courts handler', () => {
     })
   })
 
-  describe('POST /manage-courts', () => {
+  describe('POST /select-courts', () => {
     it('should validate empty form', () => {
       return request(app)
-        .post('/manage-courts')
+        .post(`/manage-courts/${journeyId()}/select-courts`)
         .send({ courts: [] })
         .expect(() => {
           expectErrorMessages([{ href: '#courts', text: 'You need to select at least one court' }])
@@ -98,10 +98,10 @@ describe('Manage courts handler', () => {
 
     it('should set user preferences and redirect to confirmation', () => {
       return request(app)
-        .post('/manage-courts')
+        .post(`/manage-courts/${journeyId()}/select-courts`)
         .send({ courts: ['TEST'] })
         .expect(302)
-        .expect('location', '/manage-courts/confirmation')
+        .expect('location', 'confirmation')
         .expect(() => {
           expect(courtsService.setUserPreferences).toHaveBeenCalledWith(['TEST'], user)
         })

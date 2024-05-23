@@ -17,8 +17,8 @@ export default function Routes({ auditService, probationTeamsService }: Services
   const manageProbationTeamsHandler = new ManageProbationTeamsHandler(probationTeamsService)
   const confirmationHandler = new ConfirmationHandler(probationTeamsService)
 
-  get('/select-probation-teams', manageProbationTeamsHandler)
-  post('/select-probation-teams', manageProbationTeamsHandler)
+  get('/', manageProbationTeamsHandler)
+  post('/', manageProbationTeamsHandler)
   get('/confirmation', confirmationHandler)
 
   return router

@@ -17,8 +17,8 @@ export default function Routes({ auditService, courtsService }: Services): Route
   const manageCourtsHandler = new ManageCourtsHandler(courtsService)
   const confirmationHandler = new ConfirmationHandler(courtsService)
 
-  get('/select-courts', manageCourtsHandler)
-  post('/select-courts', manageCourtsHandler)
+  get('/', manageCourtsHandler)
+  post('/', manageCourtsHandler)
   get('/confirmation', confirmationHandler)
 
   return router

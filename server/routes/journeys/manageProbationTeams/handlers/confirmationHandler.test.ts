@@ -1,6 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import { ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
@@ -24,7 +24,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /confirmation', () => {
+describe('GET', () => {
   it('should render the correct view page', () => {
     auditService.logPageView.mockResolvedValue(null)
     probationTeamsService.getUserPreferences.mockResolvedValue([
@@ -35,7 +35,7 @@ describe('GET /confirmation', () => {
     ] as unknown as ProbationTeam[])
 
     return request(app)
-      .get(`/manage-probation-teams/${journeyId()}/confirmation`)
+      .get(`/manage-probation-teams/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Your probation team list has been updated')

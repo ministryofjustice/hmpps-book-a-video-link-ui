@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService, { CourtsByLetter } from '../../../../services/courtsService'
 import expectErrorMessages from '../../../testutils/expectErrorMessage'
@@ -63,12 +63,12 @@ afterEach(() => {
 })
 
 describe('Manage courts handler', () => {
-  describe('GET /select-courts', () => {
+  describe('GET', () => {
     it('should render the correct view page', () => {
       auditService.logPageView.mockResolvedValue(null)
 
       return request(app)
-        .get(`/manage-courts/${journeyId()}/select-courts`)
+        .get(`/manage-courts`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -86,10 +86,10 @@ describe('Manage courts handler', () => {
     })
   })
 
-  describe('POST /select-courts', () => {
+  describe('POST', () => {
     it('should validate empty form', () => {
       return request(app)
-        .post(`/manage-courts/${journeyId()}/select-courts`)
+        .post(`/manage-courts`)
         .send({ courts: [] })
         .expect(() => {
           expectErrorMessages([{ href: '#courts', text: 'You need to select at least one court' }])
@@ -98,10 +98,10 @@ describe('Manage courts handler', () => {
 
     it('should set user preferences and redirect to confirmation', () => {
       return request(app)
-        .post(`/manage-courts/${journeyId()}/select-courts`)
+        .post(`/manage-courts`)
         .send({ courts: ['TEST'] })
         .expect(302)
-        .expect('location', 'confirmation')
+        .expect('location', '/manage-courts/confirmation')
         .expect(() => {
           expect(courtsService.setUserPreferences).toHaveBeenCalledWith(['TEST'], user)
         })

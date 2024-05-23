@@ -35,6 +35,6 @@ export default class ManageProbationTeamsHandler implements PageHandler {
 
     await this.probationTeamsService.setUserPreferences(probationTeams, user)
 
-    res.redirect('confirmation')
+    res.redirect('/manage-probation-teams/confirmation')
   }
 }

@@ -21,7 +21,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /', () => {
+describe('GET', () => {
   it('should render index page', () => {
     auditService.logPageView.mockResolvedValue(null)
 

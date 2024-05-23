@@ -24,7 +24,7 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET /', () => {
+describe('GET', () => {
   it('should render the correct view page', () => {
     auditService.logPageView.mockResolvedValue(null)
     courtsService.getUserPreferences.mockResolvedValue([
@@ -35,7 +35,7 @@ describe('GET /', () => {
     ] as unknown as Court[])
 
     return request(app)
-      .get('/manage-courts/confirmation')
+      .get(`/manage-courts/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(res.text).toContain('Your court list has been updated')

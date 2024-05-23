@@ -63,12 +63,12 @@ afterEach(() => {
 })
 
 describe('Manage probation teams handler', () => {
-  describe('GET /manage-probation-teams', () => {
+  describe('GET', () => {
     it('should render the correct view page', () => {
       auditService.logPageView.mockResolvedValue(null)
 
       return request(app)
-        .get('/manage-probation-teams')
+        .get(`/manage-probation-teams`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -86,10 +86,10 @@ describe('Manage probation teams handler', () => {
     })
   })
 
-  describe('POST /manage-probation-teams', () => {
+  describe('POST', () => {
     it('should validate empty form', () => {
       return request(app)
-        .post('/manage-probation-teams')
+        .post(`/manage-probation-teams`)
         .send({ probationTeams: [] })
         .expect(() => {
           expectErrorMessages([{ href: '#probationTeams', text: 'You need to select at least one probation team' }])
@@ -98,7 +98,7 @@ describe('Manage probation teams handler', () => {
 
     it('should set user preferences and redirect to confirmation', () => {
       return request(app)
-        .post('/manage-probation-teams')
+        .post(`/manage-probation-teams`)
         .send({ probationTeams: ['TEST'] })
         .expect(302)
         .expect('location', '/manage-probation-teams/confirmation')

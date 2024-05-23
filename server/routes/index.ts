@@ -1,7 +1,7 @@
 import { Router } from 'express'
-import homeRoutes from './journeys/home'
-import manageCourtsRoutes from './journeys/manageCourts'
-import manageProbationAreasRoutes from './journeys/manageProbationTeams'
+import home from './journeys/home'
+import manageCourts from './journeys/manageCourts'
+import manageProbationTeams from './journeys/manageProbationTeams'
 import { Services } from '../services'
 
 export default function routes(services: Services): Router {
@@ -18,9 +18,9 @@ export default function routes(services: Services): Router {
     next()
   })
 
-  router.use('/', homeRoutes(services))
-  router.use('/manage-courts', manageCourtsRoutes(services))
-  router.use('/manage-probation-teams', manageProbationAreasRoutes(services))
+  router.use('/', home(services))
+  router.use('/manage-courts', manageCourts(services))
+  router.use('/manage-probation-teams', manageProbationTeams(services))
 
   return router
 }

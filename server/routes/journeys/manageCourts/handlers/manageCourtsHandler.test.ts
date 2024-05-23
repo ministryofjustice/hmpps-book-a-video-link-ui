@@ -63,12 +63,12 @@ afterEach(() => {
 })
 
 describe('Manage courts handler', () => {
-  describe('GET /manage-courts', () => {
+  describe('GET', () => {
     it('should render the correct view page', () => {
       auditService.logPageView.mockResolvedValue(null)
 
       return request(app)
-        .get('/manage-courts')
+        .get(`/manage-courts`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -86,10 +86,10 @@ describe('Manage courts handler', () => {
     })
   })
 
-  describe('POST /manage-courts', () => {
+  describe('POST', () => {
     it('should validate empty form', () => {
       return request(app)
-        .post('/manage-courts')
+        .post(`/manage-courts`)
         .send({ courts: [] })
         .expect(() => {
           expectErrorMessages([{ href: '#courts', text: 'You need to select at least one court' }])
@@ -98,7 +98,7 @@ describe('Manage courts handler', () => {
 
     it('should set user preferences and redirect to confirmation', () => {
       return request(app)
-        .post('/manage-courts')
+        .post(`/manage-courts`)
         .send({ courts: ['TEST'] })
         .expect(302)
         .expect('location', '/manage-courts/confirmation')

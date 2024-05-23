@@ -2,12 +2,21 @@ import type { UserDetails } from '../../services/userService'
 
 export default {}
 
+export interface JourneyData {
+  instanceUnixEpoch: number
+}
+
+export interface Journey {
+  // Define journey types here
+}
+
 declare module 'express-session' {
   // Declare that the session will potentially contain these additional fields
   interface SessionData {
     returnTo: string
     nowInMinutes: number
-    journey: object // Define journey fields here
+    journey: Journey
+    journeyData: Map<string, JourneyData>
   }
 }
 

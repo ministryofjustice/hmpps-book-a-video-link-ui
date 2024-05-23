@@ -13,6 +13,8 @@ import AuditService from '../../services/auditService'
 
 jest.mock('../../services/auditService')
 
+export const journeyId = () => uuidv4()
+
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
   buildNumber: '1',

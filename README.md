@@ -47,7 +47,7 @@ SYSTEM_CLIENT_SECRET<obtain these from team members>
 
 Start a local container for redis on its default port tcp/6379.
 
-`docker-compose -f docker-compose-local.yml up -d`
+`docker-compose up -d`
 
 Start the application locally.
 
@@ -69,9 +69,9 @@ The rest of the dependencies can reference the DEV environment locations (recomm
 
 ### Running integration tests
 
-For local running, pull and start a wiremock container:
+Start a local container for redis on its default port tcp/6379.
 
-`docker compose -f docker-compose-test.yml up -d`
+`docker compose up -d`
 
 Run the service in test mode:
 

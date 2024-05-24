@@ -13,8 +13,8 @@
     "build:dev": "npx grunt clean-dev-build",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
     "start:dev": "NODE_ENV=live-development concurrently --kill-signal=SIGKILL -k -p \"[{name}]\" -n \"TypeScript,Assets\" -c \"green.bold,blue.bold\" \"npm run watch-node\" \"npm run watch-assets\"",
-    "start-feature": "export $(cat feature.env) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
-    "start-feature:dev": "export $(cat feature.env) && npm run start:dev",
+    "start-feature": "export $(cat feature.env) && $(wiremock --port 9091 >> /dev/null &) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
+    "start-feature:dev": "export $(cat feature.env) && $(wiremock --port 9091 >> /dev/null &) && npm run start:dev",
     "lint": "eslint . --cache --max-warnings 0",
     "lint:fix": "eslint . --cache --max-warnings 0 --fix",
     "typecheck": "tsc && tsc -p integration_tests",
@@ -181,6 +181,7 @@
     "supertest": "^6.3.4",
     "ts-jest": "^29.1.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "wiremock": "^3.6.0"
   }
 }

@@ -23,26 +23,26 @@ This front end service provides allows court and probation users to book and man
 Ensure you have a local .env file, with the following content:
 
 ```
-export INGRESS_URL=http://localhost:3000
-export REDIS_ENABLED=true
-export AUDIT_ENABLED=false
-export TOKEN_VERIFICATION_ENABLED=false
-export ENVIRONMENT_NAME=DEV
+INGRESS_URL=http://localhost:3000
+REDIS_ENABLED=true
+AUDIT_ENABLED=false
+TOKEN_VERIFICATION_ENABLED=false
+ENVIRONMENT_NAME=DEV
 
-export HMPPS_AUTH_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-export HMPPS_AUTH_EXTERNAL_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-export ACTIVITIES_API_URL=https://activities-api-dev.prison.service.justice.gov.uk
-export LOCATIONS_INSIDE_PRISON_API_URL=https://locations-inside-prison-api-dev.hmpps.service.justice.gov.uk
-export PRISON_API_URL=https://prison-api-dev.prison.service.justice.gov.uk
-export PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.uk
-export MANAGE_USERS_API_URL=https://manage-users-api-dev.hmpps.service.justice.gov.uk
-export BOOK_A_VIDEO_LINK_API_URL=https://book-a-video-link-api-dev.prison.service.justice.gov.uk
-export TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
+HMPPS_AUTH_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+HMPPS_AUTH_EXTERNAL_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+ACTIVITIES_API_URL=https://activities-api-dev.prison.service.justice.gov.uk
+LOCATIONS_INSIDE_PRISON_API_URL=https://locations-inside-prison-api-dev.hmpps.service.justice.gov.uk
+PRISON_API_URL=https://prison-api-dev.prison.service.justice.gov.uk
+PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.uk
+MANAGE_USERS_API_URL=https://manage-users-api-dev.hmpps.service.justice.gov.uk
+BOOK_A_VIDEO_LINK_API_URL=https://book-a-video-link-api-dev.prison.service.justice.gov.uk
+TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
 
-export API_CLIENT_ID=<obtain these from team members>
-export API_CLIENT_SECRET=<obtain these from team members>
-export SYSTEM_CLIENT_ID=<obtain these from team members>
-export SYSTEM_CLIENT_SECRET<obtain these from team members>
+API_CLIENT_ID=<obtain these from team members>
+API_CLIENT_SECRET=<obtain these from team members>
+SYSTEM_CLIENT_ID=<obtain these from team members>
+SYSTEM_CLIENT_SECRET<obtain these from team members>
 ```
 
 Start a local container for redis on its default port tcp/6379.

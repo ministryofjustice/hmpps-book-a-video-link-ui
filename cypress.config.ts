@@ -3,6 +3,11 @@ import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
 import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
+import activitiesApi from './integration_tests/mockApis/activitiesApi'
+import bookAVideoLinkApi from './integration_tests/mockApis/bookAVideoLinkApi'
+import locationsInsidePrisonApi from './integration_tests/mockApis/locationsInsidePrisonApi'
+import prisonApi from './integration_tests/mockApis/prisonApi'
+import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -20,6 +25,11 @@ export default defineConfig({
         reset: resetStubs,
         ...auth,
         ...manageUsersApi,
+        ...activitiesApi,
+        ...locationsInsidePrisonApi,
+        ...bookAVideoLinkApi,
+        ...prisonApi,
+        ...prisonerSearchApi,
         ...tokenVerification,
       })
     },

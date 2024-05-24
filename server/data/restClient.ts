@@ -8,7 +8,6 @@ import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
 import type { ApiConfig } from '../config'
 import type { UnsanitisedError } from '../sanitisedError'
-import { restClientMetricsMiddleware } from './restClientMetricsMiddleware'
 import generateOauthClientToken from '../authentication/clientCredentials'
 import config from '../config'
 import TokenStore from './tokenStore/tokenStore'
@@ -110,7 +109,6 @@ export default abstract class RestClient {
         .get(`${this.apiUrl()}${path}`)
         .query(query)
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
@@ -143,7 +141,6 @@ export default abstract class RestClient {
         .query(query)
         .send(data)
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (retry === false) {
             return false
@@ -202,7 +199,6 @@ export default abstract class RestClient {
         .delete(`${this.apiUrl()}${path}`)
         .query(query)
         .agent(this.agent)
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
@@ -234,7 +230,6 @@ export default abstract class RestClient {
         .get(`${this.apiUrl()}${path}`)
         .agent(this.agent)
         .auth(token, { type: 'bearer' })
-        .use(restClientMetricsMiddleware)
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic

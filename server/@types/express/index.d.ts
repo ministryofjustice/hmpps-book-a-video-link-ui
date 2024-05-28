@@ -1,4 +1,5 @@
 import type { UserDetails } from '../../services/userService'
+import { BookAVideoLinkJourney } from '../../routes/journeys/bookAVideoLink/journey'
 
 export default {}
 
@@ -7,7 +8,7 @@ export interface JourneyData {
 }
 
 export interface Journey {
-  // Define journey types here
+  bookAVideoLink?: BookAVideoLinkJourney
 }
 
 declare module 'express-session' {
@@ -17,6 +18,14 @@ declare module 'express-session' {
     nowInMinutes: number
     journey: Journey
     journeyData: Map<string, JourneyData>
+  }
+}
+
+declare module 'express-serve-static-core' {
+  interface Response {
+    addSuccessMessage?(heading: string, message?: string): void
+    addValidationError?(field: string, message: string): void
+    validationFailed?(field?: string, message?: string): void
   }
 }
 

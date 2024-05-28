@@ -1,0 +1,79 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% macro hmppsTimePicker(params) %}
+    {%  set hours = [
+        '00','01','02','03','04','05','06','07','08','09','10','11','12',
+        '13','14','15','16','17','18','19','20','21','22','23'
+    ] %}
+    {% set hoursItems = [{ value: "", text: "-" }] %}
+    {% for hour in hours %}
+        {% set hoursItems = (hoursItems.push({
+            value: hour,
+            text: hour,
+            selected: params.formResponses['hour'] == hour or params.formResponses | formatDate('HH') == hour
+        }), hoursItems) %}
+    {% endfor %}
+
+    {% set minutes = [
+        '00','15','30','45'
+    ] %}
+    {% set minutesItems = [{ value: "", text: "-" }] %}
+    {% for minute in minutes %}
+        {% set minutesItems = (minutesItems.push({
+            value: minute,
+            text: minute,
+            selected: params.formResponses['minute'] == minute or params.formResponses | formatDate('mm') == minute
+        }), minutesItems) %}
+    {% endfor %}
+
+    <div class="govuk-form-group{% if params.errorMessage %} govuk-form-group--error{% endif %} hmpps-timepicker {{ params.classes }}">
+        <fieldset class="govuk-fieldset" role="group" aria-describedby="{{ params.hint.id }}">
+            {% if params.label %}
+                <legend class="govuk-fieldset__legend {{ params.label.classes }}">
+                    {{ params.label.text }}
+                </legend>
+            {% endif %}
+            {% if params.hint %}
+                <div id="{{ params.id }}-hint" class="govuk-hint {{ params.hint.classes }}">
+                    {{ params.hint.text }}
+                </div>
+            {% endif %}
+            {% if params.errorMessage %}
+                <span id="{{ params.id }}-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span>
+                    <span>{{ params.errorMessage.text }}</span>
+                </span>
+            {% endif %}
+            <div class="govuk-date-input">
+                <div class="govuk-date-input__item">
+                    {{ govukSelect({
+                        id: params.id,
+                        name: params.name + '[hour]',
+                        label: {
+                            text: "Hour"
+                        } if not params.hideLabels,
+                        items: hoursItems,
+                        classes: "govuk-select--error" if params.errorMessage,
+                        attributes: {
+                            'aria-label': 'Hour'
+                        }
+                    }) }}
+                </div>
+                <div class="govuk-date-input__item">
+                    {{ govukSelect({
+                        id: params.id +'-minute',
+                        name: params.name + '[minute]',
+                        label: {
+                            text: "Minute"
+                        } if not params.hideLabels,
+                        classes: "govuk-select--error" if params.errorMessage,
+                        items: minutesItems,
+                        attributes: {
+                            'aria-label': 'Minute'
+                        }
+                    }) }}
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endmacro %}

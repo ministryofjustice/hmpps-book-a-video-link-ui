@@ -9,17 +9,13 @@ import ConfirmationHandler from './handlers/confirmationHandler'
 
 export default function Routes({ auditService, courtsService }: Services): Router {
   const router = Router({ mergeParams: true })
-  const get = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET))
-  const post = (path: string | string[], handler: PageHandler) =>
+
+  const route = (path: string | string[], handler: PageHandler) =>
+    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  const manageCourtsHandler = new ManageCourtsHandler(courtsService)
-  const confirmationHandler = new ConfirmationHandler(courtsService)
-
-  get('/', manageCourtsHandler)
-  post('/', manageCourtsHandler)
-  get('/confirmation', confirmationHandler)
+  route('/', new ManageCourtsHandler(courtsService))
+  route('/confirmation', new ConfirmationHandler(courtsService))
 
   return router
 }

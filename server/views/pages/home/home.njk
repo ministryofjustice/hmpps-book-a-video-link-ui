@@ -4,31 +4,34 @@
 {% set pageTitle = "Book a video link with a prison" %}
 
 {% block content %}
-  <h1 class="govuk-heading-l govuk-!-margin-top-7">{{ pageTitle }}</h1>
+    <h1 class="govuk-heading-l govuk-!-margin-top-7">{{ pageTitle }}</h1>
+    <p class="govuk-body govuk-!-margin-bottom-7">If you work in a court or probation team, you can book a video link with a prison for a court appearance.</p>
+    <div class="card-group govuk-grid-row">
+        {% if user.isCourtUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/booking/court/create/prisoner-search",
+                    "clickable": "true",
+                    "heading": "Book a new video link",
+                    "description": "Create a new video link booking between a court and a prison.",
+                    "data-qa": "create-booking-card-court"
+                }) }}
+            </div>
+        {% endif %}
 
-  <p class="govuk-body govuk-!-margin-bottom-7">If you work in a court, you can book a video link with a prison for a court appearance.</p>
-   <div class="card-group govuk-grid-row">
-        <div class="govuk-grid-column-one-third card-group__item">
-            {{ card({
-                "href": "#",
-                "clickable": "true",
-                "heading": "Book a new video link",
-                "description": "Create a new video link booking between a court and a prison.",
-                "data-qa": "create-booking-card"
-            }) }}
-        </div>
+        {% if user.isProbationUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/booking/probation/create/prisoner-search",
+                    "clickable": "true",
+                    "heading": "Book a new video link",
+                    "description": "Create a new video link booking between a probation team and a prison.",
+                    "data-qa": "create-booking-card-probation"
+                }) }}
+            </div>
+        {% endif %}
 
-        <div class="govuk-grid-column-one-third card-group__item">
-            {{ card({
-                "href": "#",
-                "clickable": "true",
-                "heading": "View and change video links",
-                "description": "You can view and change existing video link bookings for your courts.",
-                "data-qa": "view-and-amend-card"
-            }) }}
-        </div>
-
-       {% if user.isCourtUser %}
+        {% if user.isCourtUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
                     "href": "/manage-courts",
@@ -38,19 +41,19 @@
                     "data-qa": "choose-courts-card"
                 }) }}
             </div>
-       {% endif %}
+        {% endif %}
 
-       {% if user.isProbationUser %}
-           <div class="govuk-grid-column-one-third card-group__item">
-               {{ card({
-                   "href": "/manage-probation-teams",
-                   "clickable": "true",
-                   "heading": "Manage your list of probation teams",
-                   "description": "Choose the probation teams you book video links for.",
-                   "data-qa": "choose-probation-teams-card"
-               }) }}
-           </div>
-       {% endif %}
+        {% if user.isProbationUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/manage-probation-teams",
+                    "clickable": "true",
+                    "heading": "Manage your list of probation teams",
+                    "description": "Choose the probation teams you book video links for.",
+                    "data-qa": "choose-probation-teams-card"
+                }) }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

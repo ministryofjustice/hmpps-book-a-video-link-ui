@@ -3,12 +3,30 @@ import { validate, ValidationError } from 'class-validator'
 import { RequestHandler } from 'express'
 
 export type FieldValidationError = {
+  fieldId: string
   href: string
   text: string
 }
 
 export default function validationMiddleware(type: new () => object): RequestHandler {
+  // Recursively iterate into an object and trim any strings inside
+  const deepTrim = (object: object): object => {
+    const o = object
+    if (o) {
+      Object.keys(o).forEach(key => {
+        if (typeof o[key] === 'string') {
+          o[key] = o[key].trim() || null
+        } else if (typeof o[key] === 'object') {
+          o[key] = deepTrim(o[key])
+        }
+      })
+    }
+    return o as object
+  }
+
   return async (req, res, next) => {
+    req.body = deepTrim(req.body)
+
     if (!type) {
       return next()
     }
@@ -16,7 +34,10 @@ export default function validationMiddleware(type: new () => object): RequestHan
     // Build an object which is used by validators to check things against
     const requestObject = plainToInstance(type, {
       ...req.body,
-      ...req.session.journey,
+      journey: {
+        ...req.session.journey,
+        ...req.session.journeyData[req.params.journeyId],
+      },
     })
 
     const errors: ValidationError[] = await validate(requestObject, {
@@ -36,6 +57,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
       },
       parent?: string,
     ): FieldValidationError => ({
+      fieldId: `${parent ? `${parent}-` : ''}${error.property}`,
       href: `#${parent ? `${parent}-` : ''}${error.property}`,
       text: Object.values(constraints)[0],
     })

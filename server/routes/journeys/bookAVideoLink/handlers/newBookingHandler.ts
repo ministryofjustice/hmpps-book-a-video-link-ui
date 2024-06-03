@@ -2,12 +2,12 @@ import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsEnum, IsNotEmpty, IsOptional, Matches, ValidateIf, ValidationArguments } from 'class-validator'
 import { SessionData } from 'express-session'
-import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
+import { addMinutes, isValid, startOfTomorrow, subMinutes } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
-import { convertToTitleCase, dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
+import { convertToTitleCase, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
 import YesNo from '../../../enumerator/yesNo'
 import IsValidDate from '../../../validators/isValidDate'
 import Validator from '../../../validators/validator'
@@ -27,20 +27,17 @@ class Body {
 
   @Expose()
   @IsNotEmpty({ message: `Select a hearing type` })
-  hearingType: string
+  hearingTypeCode: string
 
   @Expose()
   @Transform(({ value }) => parseDatePickerDate(value))
-  @Validator(date => date >= startOfToday(), { message: "Enter a date which is on or after today's date" })
+  @Validator(date => date >= startOfTomorrow(), { message: "Enter a date which is after today's date" })
   @IsValidDate({ message: 'Enter a valid date' })
   @IsNotEmpty({ message: 'Enter a date' })
   date: Date
 
   @Expose()
   @Transform(({ value }) => simpleTimeToDate(value))
-  @Validator((startTime, { date }) => (isValid(date) ? dateAtTime(date, startTime) > new Date() : true), {
-    message: 'Select a start time that is not in the past',
-  })
   @IsValidDate({ message: 'Enter a valid start time' })
   @IsNotEmpty({ message: 'Enter a start time' })
   startTime: Date
@@ -49,9 +46,6 @@ class Body {
   @Transform(({ value }) => simpleTimeToDate(value))
   @Validator((endTime, { startTime }) => (isValid(startTime) ? endTime > startTime : true), {
     message: 'Select a end time that is after the start time',
-  })
-  @Validator((endTime, { date }) => (isValid(date) ? dateAtTime(date, endTime) > new Date() : true), {
-    message: 'Select a end time that is not in the past',
   })
   @IsValidDate({ message: 'Enter a valid end time' })
   @IsNotEmpty({ message: 'Enter an end time' })
@@ -67,7 +61,7 @@ class Body {
   preRequired: YesNo
 
   @Expose()
-  @Transform(({ value, obj }) => (obj.preRequired === YesNo.YES ? value : null))
+  @Transform(({ value, obj }) => (obj.preRequired === YesNo.YES ? value : undefined))
   @ValidateIf(o => o.journey.bookAVideoLink.type === 'COURT')
   @ValidateIf(o => o.preRequired === YesNo.YES)
   @IsNotEmpty({ message: 'Select a prison room for the pre-court hearing' })
@@ -79,7 +73,7 @@ class Body {
   postRequired: YesNo
 
   @Expose()
-  @Transform(({ value, obj }) => (obj.postRequired === YesNo.YES ? value : null))
+  @Transform(({ value, obj }) => (obj.postRequired === YesNo.YES ? value : undefined))
   @ValidateIf(o => o.journey.bookAVideoLink.type === 'COURT')
   @ValidateIf(o => o.postRequired === YesNo.YES)
   @IsNotEmpty({ message: 'Select a prison room for the post-court hearing' })
@@ -137,7 +131,7 @@ export default class NewBookingHandler implements PageHandler {
     const { user } = res.locals
     const {
       agencyCode,
-      hearingType,
+      hearingTypeCode,
       date,
       startTime,
       endTime,
@@ -160,14 +154,14 @@ export default class NewBookingHandler implements PageHandler {
         prisonName: prisoner.prisonName,
       },
       agencyCode,
-      hearingType,
+      hearingTypeCode,
       date: date.toISOString(),
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
-      preHearingStartTime: preRequired === YesNo.YES ? subMinutes(startTime, 15).toISOString() : null,
-      preHearingEndTime: preRequired === YesNo.YES ? startTime.toISOString() : null,
-      postHearingStartTime: postRequired === YesNo.YES ? endTime.toISOString() : null,
-      postHearingEndTime: postRequired === YesNo.YES ? addMinutes(endTime, 15).toISOString() : null,
+      preHearingStartTime: preRequired === YesNo.YES ? subMinutes(startTime, 15).toISOString() : undefined,
+      preHearingEndTime: preRequired === YesNo.YES ? startTime.toISOString() : undefined,
+      postHearingStartTime: postRequired === YesNo.YES ? endTime.toISOString() : undefined,
+      postHearingEndTime: postRequired === YesNo.YES ? addMinutes(endTime, 15).toISOString() : undefined,
       locationCode: location,
       preLocationCode: preLocation,
       postLocationCode: postLocation,

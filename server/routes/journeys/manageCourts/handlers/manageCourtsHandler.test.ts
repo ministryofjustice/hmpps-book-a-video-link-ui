@@ -92,7 +92,7 @@ describe('Manage courts handler', () => {
         .post(`/manage-courts`)
         .send({ courts: [] })
         .expect(() => {
-          expectErrorMessages([{ href: '#courts', text: 'You need to select at least one court' }])
+          expectErrorMessages([{ fieldId: 'courts', href: '#courts', text: 'You need to select at least one court' }])
         })
     })
 

@@ -91,18 +91,18 @@
                     {% set items = (items.push({
                         value: hearingType.code,
                         text: hearingType.description,
-                        selected: formResponses.hearingType == hearingType.code or session.journey.bookAVideoLink.hearingType == hearingType.code
+                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookAVideoLink.hearingTypeCode == hearingType.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({
-                    name: "hearingType",
-                    id: "hearingType",
+                    name: "hearingTypeCode",
+                    id: "hearingTypeCode",
                     label: {
                         text: "Which type of hearing is this?",
                         classes: 'govuk-label--s'
                     },
                     items: items,
-                    errorMessage: validationErrors | findError("hearingType"),
+                    errorMessage: validationErrors | findError("hearingTypeCode"),
                     classes: "govuk-!-width-one-third"
                 }) }}
 
@@ -264,19 +264,19 @@
                             }
                         ]
                     }) }}
-
-                    {{ govukInput({
-                        id: "videoLinkUrl",
-                        name: "videoLinkUrl",
-                        label: {
-                            text: "Video link url",
-                            classes: 'govuk-label--s'
-                        },
-                        classes: 'govuk-!-width-three-quarters',
-                        errorMessage: validationErrors | findError('videoLinkUrl'),
-                        value: formResponses.videoLinkUrl
-                    }) }}
                 {% endif %}
+
+                {{ govukInput({
+                    id: "videoLinkUrl",
+                    name: "videoLinkUrl",
+                    label: {
+                        text: "Video link url",
+                        classes: 'govuk-label--s'
+                    },
+                    classes: 'govuk-!-width-three-quarters',
+                    errorMessage: validationErrors | findError('videoLinkUrl'),
+                    value: formResponses.videoLinkUrl
+                }) }}
 
                 {{ govukButton({
                     text: "Continue",

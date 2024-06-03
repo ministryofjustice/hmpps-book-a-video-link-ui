@@ -44,10 +44,26 @@
                     },
                     {
                         key: {
+                            text: "Hearing type"
+                        },
+                        value: {
+                            text: (hearingTypes | filter('code', session.journey.bookAVideoLink.hearingTypeCode))[0].description
+                        }
+                    },
+                    {
+                        key: {
                             text: "Date"
                         },
                         value: {
                             text: session.journey.bookAVideoLink.date | formatDate
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Prison room for court hearing"
+                        },
+                        value: {
+                            text: (rooms | filter('key', session.journey.bookAVideoLink.locationCode))[0].description
                         }
                     },
                     {
@@ -68,14 +84,6 @@
                     },
                     {
                         key: {
-                            text: "Prison room for court hearing"
-                        },
-                        value: {
-                            text: (rooms | filter('key', session.journey.bookAVideoLink.locationCode))[0].description
-                        }
-                    },
-                    {
-                        key: {
                             text: "Prison room for pre-court hearing"
                         },
                         value: {
@@ -84,12 +92,44 @@
                     } if session.journey.bookAVideoLink.preLocationCode,
                     {
                         key: {
+                            text: "Pre-hearing start time"
+                        },
+                        value: {
+                            text: session.journey.bookAVideoLink.preHearingStartTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookAVideoLink.preHearingStartTime,
+                    {
+                        key: {
+                            text: "Pre-hearing end time"
+                        },
+                        value: {
+                            text: session.journey.bookAVideoLink.preHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookAVideoLink.preHearingEndTime,
+                    {
+                        key: {
                             text: "Prison room for post-court hearing"
                         },
                         value: {
                             text: (rooms | filter('key', session.journey.bookAVideoLink.postLocationCode))[0].description
                         }
-                    } if session.journey.bookAVideoLink.postLocationCode
+                    } if session.journey.bookAVideoLink.postLocationCode,
+                    {
+                        key: {
+                            text: "Post-hearing start time"
+                        },
+                        value: {
+                            text: session.journey.bookAVideoLink.postHearingStartTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookAVideoLink.postHearingStartTime,
+                    {
+                        key: {
+                            text: "Post-hearing end time"
+                        },
+                        value: {
+                            text: session.journey.bookAVideoLink.postHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookAVideoLink.postHearingEndTime
                 ]
             }) }}
 

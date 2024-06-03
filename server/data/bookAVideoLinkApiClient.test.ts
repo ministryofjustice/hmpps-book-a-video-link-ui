@@ -3,6 +3,7 @@ import nock from 'nock'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
+import { CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -107,6 +108,53 @@ describe('manageUsersApiClient', () => {
         .reply(200, response)
 
       const output = await bookAVideoLinkApiClient.setUserProbationTeamPreferences(['TEST'], user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('getAppointmentLocations', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/prisons/MDI/locations')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getAppointmentLocations('MDI', user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('getReferenceCodesForGroup', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/reference-codes/group/GROUP')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getReferenceCodesForGroup('GROUP', user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('createVideoLinkBooking', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/video-link-booking', {
+          bookingType: 'COURT',
+        })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.createVideoLinkBooking(
+        { bookingType: 'COURT' } as CreateVideoBookingRequest,
+        user,
+      )
       expect(output).toEqual(response)
     })
   })

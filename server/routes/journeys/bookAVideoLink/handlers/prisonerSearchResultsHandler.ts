@@ -6,6 +6,8 @@ export default class PrisonerSearchResultsHandler implements PageHandler {
   public PAGE_NAME = Page.PRISONER_SEARCH_RESULTS_PAGE
 
   public GET = async (req: Request, res: Response) => {
+    // TODO: Search prisoners on attributes
+
     const results = [
       {
         name: 'Boba Smith',

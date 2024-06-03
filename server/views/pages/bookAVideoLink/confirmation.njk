@@ -10,7 +10,7 @@
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({ titleText: pageTitle }) }}
 
-            <a href='/booking/{{ session.req.params.type}}/create/prisoner-search' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Book another video link</a>
+            <a href='/booking/{{ session.req.params.type}}/create/prisoner-search' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='bookAnotherLink'>Book another video link</a>
 
             <div class='govuk-!-margin-top-3'>
                 {{ govukButton({

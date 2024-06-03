@@ -56,7 +56,9 @@ export const simpleDateToDate = (date: { day: string; month: string; year: strin
     : null
 
 export const simpleTimeToDate = (time: { hour: string; minute: string }): Date =>
-  time.hour || time.minute ? parse(`${time.hour}:${time.minute}`, 'HH:mm', new Date(0), { locale: enGB }) : null
+  time && (time.hour || time.minute)
+    ? parse(`${time.hour}:${time.minute}`, 'HH:mm', new Date(0), { locale: enGB })
+    : null
 
 export const dateAtTime = (date: Date, time: Date): Date =>
   set(date, { hours: time.getHours(), minutes: time.getMinutes() })

@@ -92,7 +92,13 @@ describe('Manage probation teams handler', () => {
         .post(`/manage-probation-teams`)
         .send({ probationTeams: [] })
         .expect(() => {
-          expectErrorMessages([{ href: '#probationTeams', text: 'You need to select at least one probation team' }])
+          expectErrorMessages([
+            {
+              fieldId: 'probationTeams',
+              href: '#probationTeams',
+              text: 'You need to select at least one probation team',
+            },
+          ])
         })
     })
 

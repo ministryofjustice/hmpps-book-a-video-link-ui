@@ -38,10 +38,16 @@ export default class CheckBookingHandler implements PageHandler {
 
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
+    const hearingTypes =
+      type === 'court'
+        ? await this.videoLinkService.getCourtHearingTypes(user)
+        : await this.videoLinkService.getProbationMeetingTypes(user)
+
     res.render('pages/bookAVideoLink/checkBooking', {
       prisoner,
       agencies,
       rooms,
+      hearingTypes,
     })
   }
 
@@ -54,9 +60,9 @@ export default class CheckBookingHandler implements PageHandler {
       comments: body.comments,
     }
 
-    await this.videoLinkService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+    const id = await this.videoLinkService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
     req.session.journey.bookAVideoLink = null
 
-    res.redirect('confirmation/1')
+    res.redirect(`confirmation/${id}`)
   }
 }

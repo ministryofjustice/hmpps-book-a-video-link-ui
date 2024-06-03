@@ -46,6 +46,7 @@ export default class PrisonerSearchHandler implements PageHandler {
   public BODY = Body
 
   public GET = async (req: Request, res: Response) => {
+    // TODO: Fetch a list of Prisons
     const prisons = [{ prisonId: 'MDI', prisonName: 'Moorland' }]
     res.render('pages/bookAVideoLink/prisonerSearch', { prisons })
   }

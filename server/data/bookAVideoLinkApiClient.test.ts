@@ -122,6 +122,21 @@ describe('manageUsersApiClient', () => {
     })
   })
 
+  describe('getPrisons', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/prisons/list')
+        .query({ enabledOnly: true })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getPrisons(true, user)
+      expect(output).toEqual(response)
+    })
+  })
+
   describe('getReferenceCodesForGroup', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }

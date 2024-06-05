@@ -10,7 +10,7 @@ import ProbationTeamsService from '../../../../services/probationTeamsService'
 import PrisonService from '../../../../services/prisonService'
 import PrisonerService from '../../../../services/prisonerService'
 import VideoLinkService from '../../../../services/videoLinkService'
-import expectErrorMessages from '../../../testutils/expectErrorMessage'
+import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 
@@ -30,7 +30,7 @@ const videoLinkService = new VideoLinkService(null) as jest.Mocked<VideoLinkServ
 
 let app: Express
 
-const appSetup = (journeySession?) => {
+const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService },
     userSupplier: () => user,

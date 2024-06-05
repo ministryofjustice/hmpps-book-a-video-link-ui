@@ -81,9 +81,9 @@
                 {% set items = [{ text: "Select prison", value: "" }] %}
                 {% for prison in prisons %}
                     {% set items = (items.push({
-                        value: prison.prisonId,
-                        text: prison.prisonName,
-                        selected: formResponses.prison == prison.prisonId
+                        value: prison.code,
+                        text: prison.name,
+                        selected: formResponses.prison == prison.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({

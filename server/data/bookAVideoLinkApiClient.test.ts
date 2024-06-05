@@ -57,9 +57,7 @@ describe('manageUsersApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .post('/courts/user-preferences/set', {
-          courtCodes: ['TEST'],
-        })
+        .post('/courts/user-preferences/set', { courtCodes: ['TEST'] })
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
@@ -101,9 +99,7 @@ describe('manageUsersApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .post('/probation-teams/user-preferences/set', {
-          probationTeamCodes: ['TEST'],
-        })
+        .post('/probation-teams/user-preferences/set', { probationTeamCodes: ['TEST'] })
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
@@ -145,11 +141,9 @@ describe('manageUsersApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .post('/video-link-booking', {
-          bookingType: 'COURT',
-        })
+        .post('/video-link-booking', { bookingType: 'COURT' })
         .matchHeader('authorization', `Bearer systemToken`)
-        .reply(200, response)
+        .reply(201, response)
 
       const output = await bookAVideoLinkApiClient.createVideoLinkBooking(
         { bookingType: 'COURT' } as CreateVideoBookingRequest,

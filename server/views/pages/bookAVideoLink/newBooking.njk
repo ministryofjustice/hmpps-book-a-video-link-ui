@@ -77,7 +77,7 @@
                         name: "agencyCode",
                         id: "agencyCode",
                         label: {
-                            text: "Which court is the hearing for?" if session.req.params.type == 'court' else "Which probation team is the hearing for?",
+                            text: "Which court is the hearing for?" if session.req.params.type == 'court' else "Which probation team is the meeting for?",
                             classes: 'govuk-label--s'
                         },
                         items: items,
@@ -86,7 +86,7 @@
                     }) }}
                 {% endif %}
 
-                {% set items = [{ text: "Select hearing type", value: "" }] %}
+                {% set items = [{ text: "Select hearing type" if session.req.params.type == 'court' else "Select meeting type", value: "" }] %}
                 {% for hearingType in hearingTypes %}
                     {% set items = (items.push({
                         value: hearingType.code,
@@ -98,7 +98,7 @@
                     name: "hearingTypeCode",
                     id: "hearingTypeCode",
                     label: {
-                        text: "Which type of hearing is this?",
+                        text: "Which type of hearing is this?" if session.req.params.type == 'court' else "Which type of meeting is this?",
                         classes: 'govuk-label--s'
                     },
                     items: items,
@@ -157,7 +157,7 @@
                     name: "location",
                     id: "location",
                     label: {
-                        text: "Prison room for court hearing" if session.req.params.type == 'court' else "Prison room for probation hearing",
+                        text: "Prison room for court hearing" if session.req.params.type == 'court' else "Prison room for probation meeting",
                         classes: 'govuk-label--s'
                     },
                     items: items,

@@ -27,14 +27,14 @@ export default function Routes({
   route('/prisoner-search', new PrisonerSearchHandler())
   route('/prisoner-search/results', new PrisonerSearchResultsHandler())
   route(
-    '/:prisonerNumber/add-appointment',
+    '/:prisonerNumber/add-video-link-booking',
     new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route(
-    '/:prisonerNumber/add-appointment/check-booking',
+    '/:prisonerNumber/add-video-link-booking/check-booking',
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
-  route('/:prisonerNumber/add-appointment/confirmation/:bookingId', new ConfirmationHandler())
+  route('/:prisonerNumber/add-video-link-booking/confirmation/:bookingId', new ConfirmationHandler())
 
   return router
 }

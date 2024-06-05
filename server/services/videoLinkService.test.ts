@@ -67,7 +67,7 @@ describe('Video link service', () => {
             prisonerNumber: 'ABC123',
             appointments: [
               {
-                type: 'VLB_COURT_PROBATION',
+                type: 'VLB_PROBATION',
                 locationKey: 'LOCATION',
                 date: '2022-03-20',
                 startTime: '13:30',

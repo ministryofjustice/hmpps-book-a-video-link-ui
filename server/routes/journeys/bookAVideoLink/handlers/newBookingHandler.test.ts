@@ -64,7 +64,7 @@ describe('New Booking handler', () => {
       ])
 
       return request(app)
-        .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-appointment`)
+        .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -94,8 +94,8 @@ describe('New Booking handler', () => {
             expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
             expect(existsByName($, 'preRequired')).toBe(false)
             expect(existsByName($, 'postRequired')).toBe(false)
-            expect(existsByLabel($, 'Which probation team is the hearing for?')).toBe(true)
-            expect(existsByLabel($, 'Which type of hearing is this?')).toBe(true)
+            expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)
+            expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
           }
         })
     })
@@ -118,7 +118,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -170,7 +170,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'PROBATION' } })
 
       return request(app)
-        .post(`/booking/probation/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/probation/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -212,7 +212,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           preRequired: 'yes',
@@ -238,7 +238,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           date: '31/02/2022',
@@ -276,7 +276,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           date: formatDate(startOfToday(), 'dd/MM/yyyy'),
@@ -296,7 +296,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           startTime: { hour: 17, minute: 30 },
@@ -325,7 +325,7 @@ describe('New Booking handler', () => {
       })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-appointment`)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           preRequired: 'yes',
@@ -334,7 +334,7 @@ describe('New Booking handler', () => {
           postLocation: 'POST_LOCATION',
         })
         .expect(302)
-        .expect('location', 'add-appointment/check-booking')
+        .expect('location', 'add-video-link-booking/check-booking')
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {
             agencyCode: 'CODE',

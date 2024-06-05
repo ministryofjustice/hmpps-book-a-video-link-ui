@@ -168,6 +168,6 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     }
 
-    res.redirect('add-appointment/check-booking')
+    res.redirect('add-video-link-booking/check-booking')
   }
 }

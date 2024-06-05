@@ -49,13 +49,7 @@ export default class VideoLinkService {
           )
         : undefined,
       journey.type === 'PROBATION'
-        ? createAppointment(
-            'VLB_COURT_PROBATION',
-            journey.locationCode,
-            journey.date,
-            journey.startTime,
-            journey.endTime,
-          )
+        ? createAppointment('VLB_PROBATION', journey.locationCode, journey.date, journey.startTime, journey.endTime)
         : undefined,
     ].filter(Boolean)
 

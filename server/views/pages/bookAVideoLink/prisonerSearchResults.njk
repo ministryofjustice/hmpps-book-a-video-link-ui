@@ -31,7 +31,7 @@
             {% set rows = [] %}
             {% for result in results %}
                 {% set bookLinkHtml %}
-                    <a href="../{{ result.prisonerNumber }}/add-appointment" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
+                    <a href="../{{ result.prisonerNumber }}/add-video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
                 {% endset %}
 
                 {% set rows = (rows.push([

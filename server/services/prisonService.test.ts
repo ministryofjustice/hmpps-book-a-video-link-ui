@@ -27,4 +27,13 @@ describe('Prison service', () => {
       expect(result).toEqual([{ key: 'key', description: 'description' }])
     })
   })
+
+  describe('getPrisons', () => {
+    it('Retrieves all prisons with an enabledOnly flag', async () => {
+      bookAVideoLinkApiClient.getPrisons.mockResolvedValue([{ code: 'code', description: 'description' }])
+      const result = await prisonService.getPrisons(true, user)
+      expect(bookAVideoLinkApiClient.getPrisons).toHaveBeenCalledWith(true, user)
+      expect(result).toEqual([{ code: 'code', description: 'description' }])
+    })
+  })
 })

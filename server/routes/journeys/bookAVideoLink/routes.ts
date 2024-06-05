@@ -24,7 +24,7 @@ export default function Routes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  route('/prisoner-search', new PrisonerSearchHandler())
+  route('/prisoner-search', new PrisonerSearchHandler(prisonService))
   route('/prisoner-search/results', new PrisonerSearchResultsHandler())
   route(
     '/:prisonerNumber/add-video-link-booking',

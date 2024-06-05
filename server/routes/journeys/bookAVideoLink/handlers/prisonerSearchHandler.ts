@@ -7,6 +7,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import Validator from '../../../validators/validator'
 import { simpleDateToDate } from '../../../../utils/utils'
 import IsValidDate from '../../../validators/isValidDate'
+import PrisonService from '../../../../services/prisonService'
 
 class Body {
   @Expose()
@@ -45,9 +46,11 @@ export default class PrisonerSearchHandler implements PageHandler {
   public PAGE_NAME = Page.PRISONER_SEARCH_PAGE
   public BODY = Body
 
+  constructor(private readonly prisonService: PrisonService) {}
+
   public GET = async (req: Request, res: Response) => {
-    // TODO: Fetch a list of Prisons
-    const prisons = [{ prisonId: 'MDI', prisonName: 'Moorland' }]
+    const { user } = res.locals
+    const prisons = await this.prisonService.getPrisons(false, user)
     res.render('pages/bookAVideoLink/prisonerSearch', { prisons })
   }
 

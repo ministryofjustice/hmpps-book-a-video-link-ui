@@ -4,7 +4,7 @@ import cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService, { CourtsByLetter } from '../../../../services/courtsService'
-import expectErrorMessages from '../../../testutils/expectErrorMessage'
+import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { Court } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')

@@ -8,7 +8,7 @@ import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import PrisonService from '../../../../services/prisonService'
 import VideoLinkService from '../../../../services/videoLinkService'
-import expectErrorMessages from '../../../testutils/expectErrorMessage'
+import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 
 jest.mock('../../../../services/auditService')
@@ -25,7 +25,7 @@ const videoLinkService = new VideoLinkService(null) as jest.Mocked<VideoLinkServ
 
 let app: Express
 
-const appSetup = (journeySession?) => {
+const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, courtsService, probationTeamsService, prisonService, videoLinkService },
     userSupplier: () => user,

@@ -14,12 +14,14 @@ import ManageUsersApiClient from './manageUsersApiClient'
 import config from '../config'
 import HmppsAuditClient from './hmppsAuditClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
+import PrisonerOffenderSearchApiClient from './prisonerOffenderSearchApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   manageUsersApiClient: new ManageUsersApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
+  prisonerOffenderSearchApiClient: new PrisonerOffenderSearchApiClient(),
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>

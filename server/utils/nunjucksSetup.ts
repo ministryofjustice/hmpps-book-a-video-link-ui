@@ -3,9 +3,11 @@ import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
 import { map } from 'lodash'
-import { initialiseName } from './utils'
+import { addYears } from 'date-fns'
+import { formatDate, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
+import { FieldValidationError } from '../middleware/validationMiddleware'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -16,6 +18,11 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.applicationName = 'Book A Video Link'
   app.locals.environmentName = config.environmentName
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
+
+  app.use((req, res, next) => {
+    res.locals.session = req.session
+    next()
+  })
 
   // Cachebusting version string
   if (production) {
@@ -44,4 +51,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('map', map)
+  njkEnv.addFilter('filter', (l: object[], iteratee: string, eq: unknown) => l.filter(o => o[iteratee] === eq))
+  njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
+  njkEnv.addFilter('formatDate', formatDate)
+
+  njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
 }

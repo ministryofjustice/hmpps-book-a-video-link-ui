@@ -1,0 +1,68 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = "Search for a prisoner" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+            {{ govukInsetText({
+                html: "<p class='govuk-body'>This page can only be used to search for a person who is already in prison.</p><a href='#' class='govuk-link govuk-link--no-visited-state'>Request a video link for someone not currently in prison</a>"
+            }) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full-from-desktop">
+            {% set resultString = 'result' if results.length === 1 else 'results' %}
+            <p class="govuk-body">
+                Showing {{ results.length or 0 }} {{ resultString }}.
+                <a href="../prisoner-search" class="govuk-link govuk-!-font-size-19">Search again</a>
+            </p>
+
+            {% set rows = [] %}
+            {% for result in results %}
+                {% set bookLinkHtml %}
+                    <a href="../{{ result.prisonerNumber }}/add-appointment" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
+                {% endset %}
+
+                {% set rows = (rows.push([
+                    { text: result.name },
+                    { text: result.prisonerNumber },
+                    { text: result.dateOfBirth | formatDate },
+                    { text: result.prisonName },
+                    { text: result.pncNumber },
+                    { html: bookLinkHtml }
+                ]), rows) %}
+            {% else %}
+                {% set rows = (rows.push([
+                    {
+                        text: 'No results',
+                        attributes: { colspan:6 },
+                        classes: 'govuk-!-text-align-centre'
+                    }
+                ]), rows) %}
+            {% endfor %}
+
+            {{ govukTable({
+                head: [
+                    { text: "Name" },
+                    { text: "Prison number" },
+                    { text: "Date of birth" },
+                    { text: "Prison name" },
+                    { text: "PNC" },
+                    { html: "<span class='govuk-visually-hidden'>Book video link</span>" }
+                ],
+                rows: rows
+            }) }}
+        </div>
+    </div>
+{% endblock %}

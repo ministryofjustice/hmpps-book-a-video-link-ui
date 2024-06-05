@@ -1,5 +1,4 @@
 import express, { Express } from 'express'
-import cookieSession from 'cookie-session'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -10,10 +9,13 @@ import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
 import AuditService from '../../services/auditService'
+import setUpWebSession from '../../middleware/setUpWebSession'
+import { Journey, JourneyData } from '../../@types/express'
+import { testUtilRoutes } from './testUtilRoute'
 
 jest.mock('../../services/auditService')
 
-export const journeyId = () => uuidv4()
+export const journeyId = () => '9211b69b-826f-4f48-a43f-8af59dddf39f'
 
 const testAppInfo: ApplicationInfo = {
   applicationName: 'test',
@@ -38,17 +40,24 @@ export const user: Express.User = {
 
 export const flashProvider = jest.fn()
 
-function appSetup(services: Services, production: boolean, userSupplier: () => Express.User): Express {
+function appSetup(
+  services: Services,
+  production: boolean,
+  userSupplier: () => Express.User,
+  journeySessionSupplier: () => Journey,
+): Express {
   const app = express()
 
   flashProvider.mockReturnValue([])
 
   app.set('view engine', 'njk')
 
-  nunjucksSetup(app, testAppInfo)
-  app.use(cookieSession({ keys: [''] }))
+  app.use(setUpWebSession())
   app.use((req, res, next) => {
     req.user = userSupplier()
+    req.session.journey = journeySessionSupplier()
+    req.session.journeyData = new Map<string, JourneyData>()
+    req.session.journeyData[journeyId()] = { instanceUnixEpoch: Date.now(), ...journeySessionSupplier() }
     req.flash = flashProvider
     res.locals = {
       user: { ...req.user },
@@ -61,7 +70,9 @@ function appSetup(services: Services, production: boolean, userSupplier: () => E
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  nunjucksSetup(app, testAppInfo)
   app.use(routes(services))
+  app.use(testUtilRoutes())
   app.use((req, res, next) => next(new NotFound()))
   app.use(errorHandler(production))
 
@@ -74,11 +85,13 @@ export function appWithAllRoutes({
     auditService: new AuditService(null) as jest.Mocked<AuditService>,
   },
   userSupplier = () => user,
+  journeySessionSupplier = () => ({}),
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => Express.User
+  journeySessionSupplier?: () => Journey
 }): Express {
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(services as Services, production, userSupplier)
+  return appSetup(services as Services, production, userSupplier, journeySessionSupplier)
 }

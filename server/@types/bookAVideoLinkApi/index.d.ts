@@ -16,6 +16,10 @@ export interface paths {
     /** Endpoint to set the court preferences for a user (identified from the token content) */
     post: operations['setUserCourtPreferences']
   }
+  '/reference-codes/group/{groupCode}': {
+    /** Endpoint to return reference data for a provided group key */
+    get: operations['getReferenceDataByGroup']
+  }
   '/probation-teams/user-preferences': {
     /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
     get: operations['probationTeamsUserPreferences']
@@ -24,6 +28,14 @@ export interface paths {
     /** Endpoint to return a list of enabled probation teams for video link bookings */
     get: operations['enabledProbationTeams']
   }
+  '/prisons/{prisonCode}/locations': {
+    /** Endpoint to return a list of suitable appointment locations at a given prison */
+    get: operations['getAppointmentLocationsAtPrison']
+  }
+  '/prisons/list': {
+    /** Endpoint to return the list of prisons known to the service */
+    get: operations['prisonsList']
+  }
   '/courts/user-preferences': {
     /** Endpoint to return the list of enabled courts selected by a user (identified from the token content) */
     get: operations['getUserCourtPreferences']
@@ -31,6 +43,10 @@ export interface paths {
   '/courts/enabled': {
     /** Endpoint to return a list of enabled courts for video link bookings */
     get: operations['enabledCourts']
+  }
+  '/booking-contacts/id/{videoBookingId}': {
+    /** Endpoint to return a list of contacts associated with a booking */
+    get: operations['getContactsForBooking']
   }
 }
 
@@ -90,11 +106,10 @@ export interface components {
       /** @description The prisoner or prisoners associated with the video link booking */
       prisoners: components['schemas']['PrisonerDetails'][]
       /**
-       * Format: int64
-       * @description The court identifier is needed if booking type is COURT, otherwise null
-       * @example 123456
+       * @description The court code is needed if booking type is COURT, otherwise null
+       * @example DRBYMC
        */
-      courtId?: number
+      courtCode?: string
       /**
        * @description The court hearing type is needed if booking type is COURT, otherwise null
        * @example APPEAL
@@ -127,11 +142,10 @@ export interface components {
         | 'TRIBUNAL'
         | 'OTHER'
       /**
-       * Format: int64
-       * @description The probation team identifier is needed if booking type is PROBATION, otherwise null
-       * @example 123456
+       * @description The probation team code is needed if booking type is PROBATION, otherwise null
+       * @example BLKPPP
        */
-      probationTeamId?: number
+      probationTeamCode?: string
       /**
        * @description The probation meeting type is needed if booking type is PROBATION, otherwise null
        * @example PSR
@@ -148,6 +162,11 @@ export interface components {
        * @example https://video.here.com
        */
       videoLinkUrl?: string
+      /**
+       * @description Set to true when called by a prison request. Will default to false.
+       * @example false
+       */
+      createdByPrison?: boolean
     }
     /** @description The prisoner or prisoners associated with the video link booking */
     PrisonerDetails: {
@@ -208,6 +227,30 @@ export interface components {
        */
       courtsSaved: number
     }
+    /** @description Describes the details of a reference code */
+    ReferenceCode: {
+      /**
+       * Format: int64
+       * @description An internally-generated unique identifier for this reference code.
+       * @example 12345
+       */
+      referenceCodeId: number
+      /**
+       * @description The group name for related reference codes.
+       * @example COURT_HEARING_TYPE
+       */
+      groupCode: string
+      /**
+       * @description The code for this reference data
+       * @example SEN
+       */
+      code: string
+      /**
+       * @description A fuller description of the reference code
+       * @example Sentencing hearing
+       */
+      description?: string
+    }
     /** @description Describes the details of a probation team */
     ProbationTeam: {
       /**
@@ -233,6 +276,52 @@ export interface components {
       enabled: boolean
       /**
        * @description Notes relating to this probation team for opening hours, postal address, main contact.
+       * @example Free form notes
+       */
+      notes?: string
+    }
+    Location: {
+      /**
+       * @description The unique location key for the location
+       * @example BMI-VIDEOLINK
+       */
+      key: string
+      /**
+       * @description The description for the location, can be null
+       * @example VIDEO LINK
+       */
+      description?: string
+      /**
+       * @description Flag indicates if the location is enabled, true is enabled and false is disabled.
+       * @example true
+       */
+      enabled: boolean
+    }
+    /** @description Describes the details of a prison */
+    Prison: {
+      /**
+       * Format: int64
+       * @description An internally-generated unique identifier for this prison.
+       * @example 12345
+       */
+      prisonId: number
+      /**
+       * @description A short code for this prison.
+       * @example BMI
+       */
+      code: string
+      /**
+       * @description A fuller description for this prison
+       * @example HMP Birmingham
+       */
+      name: string
+      /**
+       * @description A boolean value to show whether the prison is enabled for self-service video link bookings by court/probation.
+       * @example true
+       */
+      enabled: boolean
+      /**
+       * @description Notes relating to this prison, e.g. number of video-enabled rooms, address.
        * @example Free form notes
        */
       notes?: string
@@ -265,6 +354,41 @@ export interface components {
        * @example Free form notes
        */
       notes?: string
+    }
+    /** @description Describes the details of a booking contact */
+    BookingContact: {
+      /**
+       * Format: int64
+       * @description Describes the internal id of the video booking
+       * @example 123
+       */
+      videoBookingId: number
+      /**
+       * @description Describes the contact type
+       * @example PRISON
+       * @enum {string}
+       */
+      contactType: 'OWNER' | 'COURT' | 'PROBATION' | 'PRISON' | 'THIRD_PARTY'
+      /**
+       * @description Describes the contact name (optional)
+       * @example Mr. Person-contact
+       */
+      name?: string
+      /**
+       * @description Describes the position or role of the contact person (optional)
+       * @example BVLS Administrator
+       */
+      position?: string
+      /**
+       * @description Describes the email address of this contact (optional)
+       * @example example@example.com
+       */
+      email?: string
+      /**
+       * @description Describes the telephone number of this contact (optional)
+       * @example 00902 0909779
+       */
+      telephone?: string
     }
   }
   responses: never
@@ -375,6 +499,35 @@ export interface operations {
       }
     }
   }
+  /** Endpoint to return reference data for a provided group key */
+  getReferenceDataByGroup: {
+    parameters: {
+      path: {
+        /** @description EnabledOnly true or false. Defaults to false if not supplied. */
+        groupCode: string
+      }
+    }
+    responses: {
+      /** @description List of reference data codes/values */
+      200: {
+        content: {
+          'application/json': components['schemas']['ReferenceCode'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
   probationTeamsUserPreferences: {
     responses: {
@@ -405,6 +558,70 @@ export interface operations {
       200: {
         content: {
           'application/json': components['schemas']['ProbationTeam'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to return a list of suitable appointment locations at a given prison */
+  getAppointmentLocationsAtPrison: {
+    parameters: {
+      query?: {
+        /** @description Enabled (active) locations only, true or false. Defaults to true if not supplied. */
+        enabledOnly?: boolean
+        /** @description Video link only, true or false. When true only returns video link suitable locations. Defaults to true if not supplied. */
+        videoLinkOnly?: boolean
+      }
+      path: {
+        /** @description The prison code for which locations will be retrieved. */
+        prisonCode: string
+      }
+    }
+    responses: {
+      /** @description Locations */
+      200: {
+        content: {
+          'application/json': components['schemas']['Location'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to return the list of prisons known to the service */
+  prisonsList: {
+    parameters: {
+      query?: {
+        /** @description EnabledOnly true or false. Defaults to false if not supplied. */
+        enabledOnly?: boolean
+      }
+    }
+    responses: {
+      /** @description List of prisons */
+      200: {
+        content: {
+          'application/json': components['schemas']['Prison'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -461,6 +678,40 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to return a list of contacts associated with a booking */
+  getContactsForBooking: {
+    parameters: {
+      path: {
+        videoBookingId: number
+      }
+    }
+    responses: {
+      /** @description Contacts for this booking */
+      200: {
+        content: {
+          'application/json': components['schemas']['BookingContact'][]
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The video booking ID was not found. */
+      404: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }

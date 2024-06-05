@@ -1,0 +1,145 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = "Search for a prisoner" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+            {{ govukInsetText({
+                html: "<p class='govuk-body'>This page can only be used to search for a person who is already in prison.</p><a href='#' class='govuk-link govuk-link--no-visited-state'>Request a video link for someone not currently in prison</a>"
+            }) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukInput({
+                    id: "firstName",
+                    name: "firstName",
+                    label: { text: "First name" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.firstName
+                }) }}
+
+                {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    errorMessage: validationErrors | findError('lastName'),
+                    label: { text: "Last name" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.lastName
+                }) }}
+
+                {{ govukDateInput({
+                    id: "dateOfBirth",
+                    fieldset: {
+                        legend: {
+                            text: "Date of birth (optional)"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 31 3 1980"
+                    },
+                    errorMessage: validationErrors | findError('dateOfBirth'),
+                    items: [
+                        {
+                            id: "dateOfBirth-day",
+                            name: "dateOfBirth[day]",
+                            label: "Day",
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
+                            value: formResponses.dateOfBirth['day']
+                        },
+                        {
+                            id: "dateOfBirth-month",
+                            name: "dateOfBirth[month]",
+                            label: "Month",
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
+                            value: formResponses.dateOfBirth['month']
+                        },
+                        {
+                            id: "dateOfBirth-year",
+                            name: "dateOfBirth[year]",
+                            label: "Year",
+                            classes: "govuk-input--width-4" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
+                            value: formResponses.dateOfBirth['year']
+                        }
+                    ]
+                }) }}
+
+                {% set items = [{ text: "Select prison", value: "" }] %}
+                {% for prison in prisons %}
+                    {% set items = (items.push({
+                        value: prison.prisonId,
+                        text: prison.prisonName,
+                        selected: formResponses.prison == prison.prisonId
+                    }), items) %}
+                {% endfor %}
+                {{ govukSelect({
+                    name: "prison",
+                    label: {
+                        text: "Prison (optional)"
+                    },
+                    items: items
+                }) }}
+
+                {% set otherSearchDetails %}
+                    <p class="govuk-hint">Your search must include either a name, prison number or PNC number</p>
+
+                    {{ govukInput({
+                        id: "prisonerNumber",
+                        name: "prisonerNumber",
+                        hint: {
+                            text: "Enter in the format 'A1234AA'"
+                        },
+                        label: {
+                            text: "Prison number"
+                        },
+                        classes: 'govuk-!-width-one-third',
+                        errorMessage: validationErrors | findError('prisonerNumber'),
+                        value: formResponses.prisonerNumber
+                    }) }}
+
+                    {{ govukInput({
+                        name: "pncNumber",
+                        hint: {
+                            text: "Enter in the format '01/123456A'"
+                        },
+                        label: {
+                            text: "PNC number"
+                        },
+                        classes: 'govuk-!-width-one-third',
+                        errorMessage: validationErrors | findError('pncNumber'),
+                        value: formResponses.pncNumber
+                    }) }}
+                {% endset %}
+
+                {{ govukDetails({
+                    summaryText: "Search using prison number or PNC number",
+                    html: otherSearchDetails,
+                    open: hasOtherSearchDetails,
+                    attributes: { "data-qa": "other-search-details" }
+                }) }}
+
+                {{ govukButton({
+                    html: "Search<span class='govuk-visually-hidden'> and display the results below</span>",
+                    isStartButton: true,
+                    type: "submit"
+                }) }}
+            </form>
+
+            <a href="#" class="govuk-link govuk-!-font-size-19">The prisoner is not listed</a>
+        </div>
+    </div>
+{% endblock %}

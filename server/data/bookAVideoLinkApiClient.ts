@@ -1,6 +1,12 @@
 import config from '../config'
 import RestClient from './restClient'
-import { Court, ProbationTeam } from '../@types/bookAVideoLinkApi/types'
+import {
+  Court,
+  Location,
+  ProbationTeam,
+  CreateVideoBookingRequest,
+  ReferenceCode,
+} from '../@types/bookAVideoLinkApi/types'
 
 export default class BookAVideoLinkApiClient extends RestClient {
   constructor() {
@@ -45,5 +51,17 @@ export default class BookAVideoLinkApiClient extends RestClient {
       },
       user,
     )
+  }
+
+  public getAppointmentLocations(prisonCode: string, user: Express.User): Promise<Location[]> {
+    return this.get({ path: `/prisons/${prisonCode}/locations` }, user)
+  }
+
+  public getReferenceCodesForGroup(groupCode: string, user: Express.User): Promise<ReferenceCode[]> {
+    return this.get({ path: `/reference-codes/group/${groupCode}` }, user)
+  }
+
+  public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {
+    return this.post({ path: '/video-link-booking', data: request }, user)
   }
 }

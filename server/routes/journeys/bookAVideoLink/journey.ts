@@ -1,5 +1,4 @@
 export type BookAVideoLinkJourney = {
-  type?: string
   search?: {
     firstName?: string
     lastName?: string
@@ -8,6 +7,7 @@ export type BookAVideoLinkJourney = {
     prisonerNumber?: string
     pncNumber?: string
   }
+  type?: string
   prisoner?: {
     name: string
     prisonerNumber: string

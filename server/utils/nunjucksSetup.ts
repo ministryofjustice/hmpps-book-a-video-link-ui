@@ -8,6 +8,7 @@ import { formatDate, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import { FieldValidationError } from '../middleware/validationMiddleware'
+import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -56,4 +57,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatDate', formatDate)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
+
+  // Enums
+  njkEnv.addGlobal('BavlJourneyType', BavlJourneyType)
 }

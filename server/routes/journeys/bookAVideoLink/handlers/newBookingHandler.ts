@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, IsOptional, Matches, ValidateIf, ValidationArguments } from 'class-validator'
-import { SessionData } from 'express-session'
+import { IsEnum, IsNotEmpty, IsOptional, Matches, ValidateIf } from 'class-validator'
 import { addMinutes, isValid, startOfTomorrow, subMinutes } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
@@ -14,14 +13,13 @@ import Validator from '../../../validators/validator'
 import PrisonService from '../../../../services/prisonService'
 import PrisonerService from '../../../../services/prisonerService'
 import VideoLinkService from '../../../../services/videoLinkService'
-
-const getJourneyTypeFromSession = (args: ValidationArguments) =>
-  (args.object as SessionData).journey.bookAVideoLink.type
+import BavlJourneyType from '../../../enumerator/bavlJourneyType'
 
 class Body {
   @Expose()
   @IsNotEmpty({
-    message: args => `Select a ${getJourneyTypeFromSession(args) === 'COURT' ? 'court' : 'probation team'}`,
+    message: args =>
+      `Select a ${(args.object as { type: string }).type === BavlJourneyType.COURT ? 'court' : 'probation team'}`,
   })
   agencyCode: string
 
@@ -56,25 +54,25 @@ class Body {
   location: string
 
   @Expose()
-  @ValidateIf(o => o.journey.bookAVideoLink.type === 'COURT')
+  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsEnum(YesNo, { message: 'Select if a pre-court hearing should be added' })
   preRequired: YesNo
 
   @Expose()
   @Transform(({ value, obj }) => (obj.preRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.journey.bookAVideoLink.type === 'COURT')
+  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @ValidateIf(o => o.preRequired === YesNo.YES)
   @IsNotEmpty({ message: 'Select a prison room for the pre-court hearing' })
   preLocation: string
 
   @Expose()
-  @ValidateIf(o => o.journey.bookAVideoLink.type === 'COURT')
+  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsEnum(YesNo, { message: 'Select if a post-court hearing should be added' })
   postRequired: YesNo
 
   @Expose()
   @Transform(({ value, obj }) => (obj.postRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.journey.bookAVideoLink.type === 'COURT')
+  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @ValidateIf(o => o.postRequired === YesNo.YES)
   @IsNotEmpty({ message: 'Select a prison room for the post-court hearing' })
   postLocation: string
@@ -102,7 +100,7 @@ export default class NewBookingHandler implements PageHandler {
     const { type, prisonerNumber } = req.params
 
     const agencies =
-      type === 'court'
+      type === BavlJourneyType.COURT
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
@@ -110,7 +108,7 @@ export default class NewBookingHandler implements PageHandler {
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
     const hearingTypes =
-      type === 'court'
+      type === BavlJourneyType.COURT
         ? await this.videoLinkService.getCourtHearingTypes(user)
         : await this.videoLinkService.getProbationMeetingTypes(user)
 
@@ -153,6 +151,7 @@ export default class NewBookingHandler implements PageHandler {
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
+      type: req.params.type.toUpperCase(),
       agencyCode,
       hearingTypeCode,
       date: date.toISOString(),
@@ -168,6 +167,6 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     }
 
-    res.redirect('add-appointment/check-booking')
+    res.redirect('add-video-link-booking/check-booking')
   }
 }

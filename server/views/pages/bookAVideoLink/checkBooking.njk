@@ -36,7 +36,7 @@
                     },
                     {
                         key: {
-                            text: "Court"
+                            text: "Court" if session.req.params.type == BavlJourneyType.COURT else "Probation team"
                         },
                         value: {
                             text: (agencies | filter('code', session.journey.bookAVideoLink.agencyCode))[0].description
@@ -44,7 +44,7 @@
                     },
                     {
                         key: {
-                            text: "Hearing type"
+                            text: "Hearing type" if session.req.params.type == BavlJourneyType.COURT else "Meeting type"
                         },
                         value: {
                             text: (hearingTypes | filter('code', session.journey.bookAVideoLink.hearingTypeCode))[0].description
@@ -60,7 +60,7 @@
                     },
                     {
                         key: {
-                            text: "Prison room for court hearing"
+                            text: "Prison room for court hearing" if session.req.params.type == BavlJourneyType.COURT else "Prison room for probation meeting"
                         },
                         value: {
                             text: (rooms | filter('key', session.journey.bookAVideoLink.locationCode))[0].description
@@ -68,7 +68,7 @@
                     },
                     {
                         key: {
-                            text: "Hearing start time"
+                            text: "Hearing start time" if session.req.params.type == BavlJourneyType.COURT else "Meeting start time"
                         },
                         value: {
                             text: session.journey.bookAVideoLink.startTime | formatDate('HH:mm')
@@ -76,7 +76,7 @@
                     },
                     {
                         key: {
-                            text: "Hearing end time"
+                            text: "Hearing end time" if session.req.params.type == BavlJourneyType.COURT else "Meeting end time"
                         },
                         value: {
                             text: session.journey.bookAVideoLink.endTime | formatDate('HH:mm')
@@ -156,7 +156,7 @@
                 }) }}
             </form>
 
-            <a href='../add-appointment' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change booking</a>
+            <a href='../add-video-link-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change booking</a>
         </div>
     </div>
 {% endblock %}

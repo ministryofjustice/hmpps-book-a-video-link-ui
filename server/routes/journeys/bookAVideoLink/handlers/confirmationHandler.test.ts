@@ -30,7 +30,7 @@ describe('GET', () => {
     auditService.logPageView.mockResolvedValue(null)
 
     return request(app)
-      .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-appointment/confirmation/1`)
+      .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
         const $ = cheerio.load(res.text)

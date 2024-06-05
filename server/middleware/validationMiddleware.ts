@@ -34,6 +34,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
     // Build an object which is used by validators to check things against
     const requestObject = plainToInstance(type, {
       ...req.body,
+      ...req.params,
       journey: {
         ...req.session.journey,
         ...req.session.journeyData?.[req.params.journeyId],

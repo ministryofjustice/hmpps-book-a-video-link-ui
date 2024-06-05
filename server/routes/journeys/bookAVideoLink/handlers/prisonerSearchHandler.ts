@@ -54,7 +54,6 @@ export default class PrisonerSearchHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { body } = req
     req.session.journey.bookAVideoLink = {
-      type: req.params.type.toUpperCase(),
       search: {
         firstName: body.firstName,
         lastName: body.lastName,

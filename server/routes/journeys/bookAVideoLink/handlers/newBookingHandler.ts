@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsEnum, IsNotEmpty, IsOptional, Matches, ValidateIf } from 'class-validator'
-import { addMinutes, isValid, startOfTomorrow, subMinutes } from 'date-fns'
+import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
-import { convertToTitleCase, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
+import { convertToTitleCase, dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
 import YesNo from '../../../enumerator/yesNo'
 import IsValidDate from '../../../validators/isValidDate'
 import Validator from '../../../validators/validator'
@@ -29,13 +29,20 @@ class Body {
 
   @Expose()
   @Transform(({ value }) => parseDatePickerDate(value))
-  @Validator(date => date >= startOfTomorrow(), { message: "Enter a date which is after today's date" })
+  @Validator(date => date >= startOfToday(), { message: "Enter a date which is on or after today's date" })
   @IsValidDate({ message: 'Enter a valid date' })
   @IsNotEmpty({ message: 'Enter a date' })
   date: Date
 
   @Expose()
   @Transform(({ value }) => simpleTimeToDate(value))
+  @Validator(
+    (startTime, { date }) => date < startOfToday() || dateAtTime(date, startTime) > addMinutes(new Date(), 15),
+    {
+      // To allow for a pre-court hearing starting 15 minutes before the main hearing
+      message: 'Enter a time which is at least 15 minutes in the future',
+    },
+  )
   @IsValidDate({ message: 'Enter a valid start time' })
   @IsNotEmpty({ message: 'Enter a start time' })
   startTime: Date

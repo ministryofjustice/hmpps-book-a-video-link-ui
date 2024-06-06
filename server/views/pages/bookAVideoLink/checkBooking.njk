@@ -129,7 +129,15 @@
                         value: {
                             text: session.journey.bookAVideoLink.postHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookAVideoLink.postHearingEndTime
+                    } if session.journey.bookAVideoLink.postHearingEndTime,
+                    {
+                        key: {
+                            text: "Video Link URL"
+                        },
+                        value: {
+                            text: session.journey.bookAVideoLink.videoLinkUrl
+                        }
+                    } if session.journey.bookAVideoLink.videoLinkUrl
                 ]
             }) }}
 

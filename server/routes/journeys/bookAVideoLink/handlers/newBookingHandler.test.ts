@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import cheerio from 'cheerio'
-import { startOfToday, startOfTomorrow } from 'date-fns'
+import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import { existsByLabel, existsByName, getPageHeader } from '../../../testutils/cheerio'
@@ -272,7 +272,27 @@ describe('New Booking handler', () => {
         })
     })
 
-    it('should validate that the date is in the future', () => {
+    it('should validate that the date is on or after today', () => {
+      appSetup({ bookAVideoLink: { type: 'COURT' } })
+
+      return request(app)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .send({
+          ...validForm,
+          date: formatDate(startOfYesterday(), 'dd/MM/yyyy'),
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'date',
+              href: '#date',
+              text: "Enter a date which is on or after today's date",
+            },
+          ])
+        })
+    })
+
+    it('should validate that the start time is more than 15 minutes into the future', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
@@ -280,13 +300,14 @@ describe('New Booking handler', () => {
         .send({
           ...validForm,
           date: formatDate(startOfToday(), 'dd/MM/yyyy'),
+          startTime: { hour: '00', minute: '00' },
         })
         .expect(() => {
           expectErrorMessages([
             {
-              fieldId: 'date',
-              href: '#date',
-              text: "Enter a date which is after today's date",
+              fieldId: 'startTime',
+              href: '#startTime',
+              text: 'Enter a time which is at least 15 minutes in the future',
             },
           ])
         })

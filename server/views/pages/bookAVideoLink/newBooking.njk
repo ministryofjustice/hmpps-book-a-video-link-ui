@@ -271,12 +271,12 @@
                     id: "videoLinkUrl",
                     name: "videoLinkUrl",
                     label: {
-                        text: "Video link url",
+                        text: "Video link url (optional)",
                         classes: 'govuk-label--s'
                     },
                     classes: 'govuk-!-width-three-quarters',
                     errorMessage: validationErrors | findError('videoLinkUrl'),
-                    value: formResponses.videoLinkUrl
+                    value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
                 }) }}
 
                 {{ govukButton({

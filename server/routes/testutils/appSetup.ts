@@ -32,7 +32,6 @@ export const user: Express.User = {
   username: 'user1',
   displayName: 'First Last',
   active: true,
-  activeCaseLoadId: 'MDI',
   authSource: 'NOMIS',
   isCourtUser: true,
   isProbationUser: true,

@@ -1,0 +1,23 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+    <h1 class="govuk-heading-l">Sorry, there is a problem with the service</h1>
+
+    <p class="govuk-body">The error has been logged.</p>
+    <p class="govuk-body">You can try again.</p>
+
+    <div class="govuk-button-group">
+        {{ govukButton({
+            text: "Retry",
+            href: url
+        }) }}
+
+        {{ govukButton({
+            text: "Go to " + applicationName,
+            href: '/',
+            classes: "govuk-button--secondary"
+        }) }}
+    </div>
+{% endblock %}

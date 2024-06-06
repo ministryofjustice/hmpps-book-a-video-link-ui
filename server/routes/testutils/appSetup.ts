@@ -12,6 +12,7 @@ import AuditService from '../../services/auditService'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import { Journey, JourneyData } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
+import setUpFlash from '../../middleware/setUpFlash'
 
 jest.mock('../../services/auditService')
 
@@ -69,6 +70,7 @@ function appSetup(
   })
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  app.use(setUpFlash())
   nunjucksSetup(app, testAppInfo)
   app.use(routes(services))
   app.use(testUtilRoutes())

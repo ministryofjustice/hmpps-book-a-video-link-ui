@@ -1,5 +1,5 @@
 import { flashProvider } from './appSetup'
-import { FieldValidationError } from '../../middleware/validationMiddleware'
+import { FieldValidationError } from '../../middleware/setUpFlash'
 
 export function expectErrorMessages(errorMessages: FieldValidationError[]) {
   expect(flashProvider).toHaveBeenNthCalledWith(1, 'validationErrors', JSON.stringify(errorMessages))

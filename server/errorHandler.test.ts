@@ -94,7 +94,7 @@ describe('Error handler', () => {
 
       handler(error, req, res, jest.fn)
 
-      expect(res.validationFailed).toHaveBeenCalledWith('', 'User friendly message')
+      expect(res.validationFailed).toHaveBeenCalledWith('User friendly message')
     })
 
     it('should render error page with stacktrace if not in production', () => {

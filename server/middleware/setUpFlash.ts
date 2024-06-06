@@ -1,17 +1,23 @@
 import express, { Router } from 'express'
 
+export type FieldValidationError = {
+  fieldId: string
+  href: string
+  text: string
+}
+
 export default function setUpFlash(): Router {
   const router = express.Router()
 
   router.use((req, res, next) => {
-    const validationErrors: { field: string; message: string }[] = []
-    res.addValidationError = (field: string, message: string): void => {
-      validationErrors.push({ field, message })
+    const validationErrors: FieldValidationError[] = []
+    res.addValidationError = (message: string, field?: string): void => {
+      validationErrors.push({ fieldId: field, href: `#${field}`, text: message })
     }
 
-    res.validationFailed = (field?: string, message?: string): void => {
+    res.validationFailed = (message?: string, field?: string): void => {
       if (message) {
-        res.addValidationError(field, message)
+        res.addValidationError(message, field)
       }
 
       req.flash('validationErrors', JSON.stringify(validationErrors))
@@ -27,13 +33,16 @@ export default function setUpFlash(): Router {
   })
 
   router.use((req, res, next) => {
-    const successMessageFlash = req.flash('successMessage')[0]
-    const validationErrorsFlash = req.flash('validationErrors')[0]
-    const formResponsesFlash = req.flash('formResponses')[0]
+    if (req.method === 'GET') {
+      const successMessageFlash = req.flash('successMessage')[0]
+      const validationErrorsFlash = req.flash('validationErrors')[0]
+      const formResponsesFlash = req.flash('formResponses')[0]
 
-    res.locals.successMessage = successMessageFlash ? JSON.parse(successMessageFlash) : null
-    res.locals.validationErrors = validationErrorsFlash ? JSON.parse(validationErrorsFlash) : null
-    res.locals.formResponses = formResponsesFlash ? JSON.parse(formResponsesFlash) : null
+      res.locals.successMessage = successMessageFlash ? JSON.parse(successMessageFlash) : null
+      res.locals.validationErrors = validationErrorsFlash ? JSON.parse(validationErrorsFlash) : null
+      res.locals.formResponses = formResponsesFlash ? JSON.parse(formResponsesFlash) : null
+    }
+
     next()
   })
 

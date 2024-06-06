@@ -16,7 +16,7 @@ export default function createErrorHandler(production: boolean) {
     switch (error.status) {
       case 400: {
         const badRequest = JSON.parse(error.text) as BadRequest
-        return res.validationFailed('', badRequest?.userMessage)
+        return res.validationFailed(badRequest?.userMessage)
       }
       case 401:
         logger.info('Logging user out')

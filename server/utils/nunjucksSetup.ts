@@ -7,8 +7,8 @@ import { addYears } from 'date-fns'
 import { formatDate, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
-import { FieldValidationError } from '../middleware/validationMiddleware'
 import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
+import { FieldValidationError } from '../middleware/setUpFlash'
 
 const production = process.env.NODE_ENV === 'production'
 

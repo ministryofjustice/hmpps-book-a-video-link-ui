@@ -24,8 +24,8 @@ declare module 'express-session' {
 declare module 'express-serve-static-core' {
   interface Response {
     addSuccessMessage?(heading: string, message?: string): void
-    addValidationError?(field: string, message: string): void
-    validationFailed?(field?: string, message?: string): void
+    addValidationError?(message: string, field?: string): void
+    validationFailed?(message?: string, field?: string): void
   }
 }
 

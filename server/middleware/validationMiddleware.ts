@@ -2,10 +2,9 @@ import { plainToInstance } from 'class-transformer'
 import { validate, ValidationError } from 'class-validator'
 import { RequestHandler } from 'express'
 
-export type FieldValidationError = {
-  fieldId: string
-  href: string
-  text: string
+interface Error {
+  field: string
+  message: string
 }
 
 export default function validationMiddleware(type: new () => object): RequestHandler {
@@ -57,13 +56,12 @@ export default function validationMiddleware(type: new () => object): RequestHan
         [type: string]: string
       },
       parent?: string,
-    ): FieldValidationError => ({
-      fieldId: `${parent ? `${parent}-` : ''}${error.property}`,
-      href: `#${parent ? `${parent}-` : ''}${error.property}`,
-      text: Object.values(constraints)[0],
+    ): Error => ({
+      field: `${parent ? `${parent}-` : ''}${error.property}`,
+      message: Object.values(constraints)[0],
     })
 
-    const flattenErrors = (errorList: ValidationError[], parent?: string): FieldValidationError[] => {
+    const flattenErrors = (errorList: ValidationError[], parent?: string): Error[] => {
       // Flat pack a list of errors with child errors into a 1-dimensional list of errors.
       return errorList.flatMap(error => {
         const property = `${parent ? `${parent}-` : ''}${error.property}`
@@ -74,9 +72,10 @@ export default function validationMiddleware(type: new () => object): RequestHan
       })
     }
 
-    req.flash('validationErrors', JSON.stringify(flattenErrors(errors)))
-    req.flash('formResponses', JSON.stringify(req.body))
+    flattenErrors(errors).forEach(e => {
+      res.addValidationError(e.message, e.field)
+    })
 
-    return res.redirect('back')
+    return res.validationFailed()
   }
 }

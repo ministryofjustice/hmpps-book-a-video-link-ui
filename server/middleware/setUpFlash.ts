@@ -12,7 +12,7 @@ export default function setUpFlash(): Router {
   router.use((req, res, next) => {
     const validationErrors: FieldValidationError[] = []
     res.addValidationError = (message: string, field?: string): void => {
-      validationErrors.push({ fieldId: field, href: `#${field}`, text: message })
+      validationErrors.push({ fieldId: field, href: `#${field || ''}`, text: message })
     }
 
     res.validationFailed = (message?: string, field?: string): void => {

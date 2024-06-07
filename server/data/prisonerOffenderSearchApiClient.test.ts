@@ -1,8 +1,9 @@
-import nock from 'nock'
+import nock, { RequestBodyMatcher } from 'nock'
 
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import PrisonerOffenderSearchApiClient from './prisonerOffenderSearchApiClient'
+import { AttributeSearchRequest } from '../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -33,6 +34,56 @@ describe('prisonerOffenderSearchApiClient', () => {
         .reply(200, response)
 
       const output = await prisonerOffenderSearchApiClient.getByPrisonerNumber('ABC123', user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('getByAttributes', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakePrisonerOffenderSearchApiClient
+        .post('/attribute-search', { joinType: 'OR', queries: [] } as RequestBodyMatcher)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await prisonerOffenderSearchApiClient.getByAttributes(
+        { joinType: 'OR', queries: [] } as AttributeSearchRequest,
+        user,
+      )
+      expect(output).toEqual(response)
+    })
+
+    it('with pagination - should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakePrisonerOffenderSearchApiClient
+        .post('/attribute-search?page=1&size=10', { joinType: 'OR', queries: [] } as RequestBodyMatcher)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await prisonerOffenderSearchApiClient.getByAttributes(
+        { joinType: 'OR', queries: [] } as AttributeSearchRequest,
+        user,
+        { page: 1, size: 10 },
+      )
+      expect(output).toEqual(response)
+    })
+
+    it('with sorting - should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakePrisonerOffenderSearchApiClient
+        .post('/attribute-search?sort=firstName&sort=ASC', { joinType: 'OR', queries: [] } as RequestBodyMatcher)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await prisonerOffenderSearchApiClient.getByAttributes(
+        { joinType: 'OR', queries: [] } as AttributeSearchRequest,
+        user,
+        null,
+        { attribute: 'firstName', order: 'ASC' },
+      )
       expect(output).toEqual(response)
     })
   })

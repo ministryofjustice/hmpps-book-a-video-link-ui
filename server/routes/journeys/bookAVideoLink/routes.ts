@@ -25,7 +25,7 @@ export default function Routes({
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
-  route('/prisoner-search/results', new PrisonerSearchResultsHandler())
+  route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
     '/:prisonerNumber/add-video-link-booking',
     new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),

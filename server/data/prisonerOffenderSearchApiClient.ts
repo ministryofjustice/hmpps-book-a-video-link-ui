@@ -1,6 +1,11 @@
 import config from '../config'
 import RestClient from './restClient'
-import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
+import {
+  AttributeSearchRequest,
+  PagePrisoner,
+  PaginationRequest,
+  Prisoner,
+} from '../@types/prisonerOffenderSearchApi/types'
 
 export default class PrisonerOffenderSearchApiClient extends RestClient {
   constructor() {
@@ -9,5 +14,24 @@ export default class PrisonerOffenderSearchApiClient extends RestClient {
 
   async getByPrisonerNumber(prisonerNumber: string, user: Express.User): Promise<Prisoner> {
     return this.get({ path: `/prisoner/${prisonerNumber}` }, user)
+  }
+
+  async getByAttributes(
+    attributeSearchRequest: AttributeSearchRequest,
+    user: Express.User,
+    pagination?: PaginationRequest,
+    sortBy?: { attribute: string; order: 'ASC' | 'DESC' },
+  ): Promise<PagePrisoner> {
+    const paginationParams = pagination ?? {}
+    const sortParams = sortBy ? [sortBy.attribute, sortBy.order === 'DESC' ? 'DESC' : 'ASC'] : undefined
+
+    return this.post(
+      {
+        path: `/attribute-search`,
+        data: attributeSearchRequest,
+        query: { ...paginationParams, ...(sortParams && { sort: sortParams }) },
+      },
+      user,
+    )
   }
 }

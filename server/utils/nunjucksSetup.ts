@@ -4,7 +4,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import { map } from 'lodash'
 import { addYears } from 'date-fns'
-import { formatDate, initialiseName } from './utils'
+import { convertToTitleCase, formatDate, initialiseName } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
@@ -51,6 +51,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   )
 
   njkEnv.addFilter('initialiseName', initialiseName)
+  njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('map', map)
   njkEnv.addFilter('filter', (l: object[], iteratee: string, eq: unknown) => l.filter(o => o[iteratee] === eq))
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))

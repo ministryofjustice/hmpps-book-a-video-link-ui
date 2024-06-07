@@ -30,7 +30,7 @@
                     name: "firstName",
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
-                    value: formResponses.firstName
+                    value: formResponses.firstName or session.journey.bookAVideoLink.search.firstName
                 }) }}
 
                 {{ govukInput({
@@ -39,7 +39,7 @@
                     errorMessage: validationErrors | findError('lastName'),
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
-                    value: formResponses.lastName
+                    value: formResponses.lastName or session.journey.bookAVideoLink.search.lastName
                 }) }}
 
                 {{ govukDateInput({
@@ -59,21 +59,21 @@
                             name: "dateOfBirth[day]",
                             label: "Day",
                             classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['day']
+                            value: formResponses.dateOfBirth['day'] or session.journey.bookAVideoLink.search.dateOfBirth | formatDate('dd')
                         },
                         {
                             id: "dateOfBirth-month",
                             name: "dateOfBirth[month]",
                             label: "Month",
                             classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['month']
+                            value: formResponses.dateOfBirth['month'] or session.journey.bookAVideoLink.search.dateOfBirth | formatDate('MM')
                         },
                         {
                             id: "dateOfBirth-year",
                             name: "dateOfBirth[year]",
                             label: "Year",
                             classes: "govuk-input--width-4" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['year']
+                            value: formResponses.dateOfBirth['year'] or session.journey.bookAVideoLink.search.dateOfBirth | formatDate('yyyy')
                         }
                     ]
                 }) }}
@@ -83,7 +83,7 @@
                     {% set items = (items.push({
                         value: prison.code,
                         text: prison.name,
-                        selected: formResponses.prison == prison.code
+                        selected: formResponses.prison == prison.code or session.journey.bookAVideoLink.search.prison == prison.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({
@@ -108,7 +108,7 @@
                         },
                         classes: 'govuk-!-width-one-third',
                         errorMessage: validationErrors | findError('prisonerNumber'),
-                        value: formResponses.prisonerNumber
+                        value: formResponses.prisonerNumber or session.journey.bookAVideoLink.search.prisonerNumber
                     }) }}
 
                     {{ govukInput({
@@ -121,15 +121,14 @@
                         },
                         classes: 'govuk-!-width-one-third',
                         errorMessage: validationErrors | findError('pncNumber'),
-                        value: formResponses.pncNumber
+                        value: formResponses.pncNumber or session.journey.bookAVideoLink.search.pncNumber
                     }) }}
                 {% endset %}
 
                 {{ govukDetails({
                     summaryText: "Search using prison number or PNC number",
                     html: otherSearchDetails,
-                    open: hasOtherSearchDetails,
-                    attributes: { "data-qa": "other-search-details" }
+                    open: formResponses.prisonerNumber or session.journey.bookAVideoLink.search.prisonerNumber or formResponses.pncNumber or session.journey.bookAVideoLink.search.pncNumber
                 }) }}
 
                 {{ govukButton({

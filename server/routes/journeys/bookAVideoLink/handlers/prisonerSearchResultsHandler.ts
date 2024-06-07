@@ -1,23 +1,25 @@
 import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
+import PrisonerService from '../../../../services/prisonerService'
+import PrisonService from '../../../../services/prisonService'
 
 export default class PrisonerSearchResultsHandler implements PageHandler {
   public PAGE_NAME = Page.PRISONER_SEARCH_RESULTS_PAGE
 
+  constructor(
+    private readonly prisonerService: PrisonerService,
+    private readonly prisonService: PrisonService,
+  ) {}
+
   public GET = async (req: Request, res: Response) => {
-    // TODO: Search prisoners on attributes
+    const { user } = res.locals
+    const page = req.query.page as unknown as number
 
-    const results = [
-      {
-        name: 'Boba Smith',
-        prisonerNumber: 'G5662GI',
-        dateOfBirth: '1970-06-01',
-        prisonName: 'HMP Birmingham',
-        pncNumber: '05/213362Q',
-      },
-    ]
+    const { search } = req.session.journey.bookAVideoLink
+    const results = await this.prisonerService.searchPrisonersByCriteria(search, { page, size: 10 }, user)
+    const enabledPrisons = await this.prisonService.getPrisons(true, user)
 
-    res.render('pages/bookAVideoLink/prisonerSearchResults', { results })
+    res.render('pages/bookAVideoLink/prisonerSearchResults', { results, enabledPrisons })
   }
 }

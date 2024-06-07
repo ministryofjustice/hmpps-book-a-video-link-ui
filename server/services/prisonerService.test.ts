@@ -28,4 +28,106 @@ describe('Prisoner service', () => {
       expect(result).toEqual({ prisonerNumber: 'ABC123' })
     })
   })
+
+  describe('searchPrisonersByCriteria', () => {
+    const pagination = { page: 1, size: 10 }
+
+    it('should create correct search query for given criteria', async () => {
+      const criteria = {
+        firstName: 'John',
+        lastName: 'Doe',
+        dateOfBirth: '1990-01-01',
+        prison: 'XYZ',
+        prisonerNumber: 'A12345',
+        pncNumber: 'PNC123',
+      }
+
+      await prisonerService.searchPrisonersByCriteria(criteria, pagination, user)
+
+      expect(prisonerOffenderSearchApiClient.getByAttributes).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queries: [
+            {
+              matchers: [{ type: 'String', attribute: 'inOutStatus', condition: 'IS', searchTerm: 'IN' }],
+              joinType: 'AND',
+              subQueries: [
+                {
+                  joinType: 'AND',
+                  matchers: [
+                    { type: 'String', attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'John' },
+                    { type: 'String', attribute: 'lastName', condition: 'CONTAINS', searchTerm: 'Doe' },
+                    { type: 'Date', attribute: 'dateOfBirth', minValue: '1990-01-01', maxValue: '1990-01-01' },
+                    { type: 'String', attribute: 'prisonId', condition: 'IS', searchTerm: 'XYZ' },
+                  ],
+                },
+                {
+                  joinType: 'OR',
+                  matchers: [
+                    { type: 'String', attribute: 'prisonerNumber', condition: 'IS', searchTerm: 'A12345' },
+                    { type: 'PNC', pncNumber: 'PNC123' },
+                  ],
+                },
+              ],
+            },
+          ],
+        }),
+        user,
+        pagination,
+        { attribute: 'firstName', order: 'ASC' },
+      )
+    })
+
+    it('should handle missing optional fields', async () => {
+      const criteria = {
+        firstName: 'Jane',
+        lastName: '',
+        dateOfBirth: '',
+        prison: '',
+        prisonerNumber: '',
+        pncNumber: '',
+      }
+
+      await prisonerService.searchPrisonersByCriteria(criteria, pagination, user)
+
+      expect(prisonerOffenderSearchApiClient.getByAttributes).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queries: [
+            {
+              matchers: [{ type: 'String', attribute: 'inOutStatus', condition: 'IS', searchTerm: 'IN' }],
+              joinType: 'AND',
+              subQueries: [
+                {
+                  joinType: 'AND',
+                  matchers: [{ type: 'String', attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'Jane' }],
+                },
+              ],
+            },
+          ],
+        }),
+        user,
+        pagination,
+        { attribute: 'firstName', order: 'ASC' },
+      )
+    })
+
+    it('should call API with correct pagination', async () => {
+      const criteria = {
+        firstName: 'John',
+        lastName: 'Doe',
+        dateOfBirth: '1990-01-01',
+        prison: 'XYZ',
+        prisonerNumber: '',
+        pncNumber: '',
+      }
+
+      await prisonerService.searchPrisonersByCriteria(criteria, pagination, user)
+
+      expect(prisonerOffenderSearchApiClient.getByAttributes).toHaveBeenCalledWith(
+        expect.any(Object),
+        user,
+        pagination,
+        { attribute: 'firstName', order: 'ASC' },
+      )
+    })
+  })
 })

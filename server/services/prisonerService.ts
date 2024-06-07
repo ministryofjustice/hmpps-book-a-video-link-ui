@@ -54,9 +54,9 @@ export default class PrisonerService {
 
     return this.prisonerOffenderSearchApiClient.getByAttributes(
       searchQuery as AttributeSearchRequest,
+      user,
       pagination,
       { attribute: 'firstName', order: 'ASC' },
-      user,
     )
   }
 }

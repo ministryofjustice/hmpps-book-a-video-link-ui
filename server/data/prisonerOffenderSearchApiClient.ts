@@ -18,15 +18,18 @@ export default class PrisonerOffenderSearchApiClient extends RestClient {
 
   async getByAttributes(
     attributeSearchRequest: AttributeSearchRequest,
-    pagination: PaginationRequest,
-    sortBy: { attribute: string; order: 'ASC' | 'DESC' },
     user: Express.User,
+    pagination?: PaginationRequest,
+    sortBy?: { attribute: string; order: 'ASC' | 'DESC' },
   ): Promise<PagePrisoner> {
+    const paginationParams = pagination ?? {}
+    const sortParams = sortBy ? [sortBy.attribute, sortBy.order === 'DESC' ? 'DESC' : 'ASC'] : undefined
+
     return this.post(
       {
         path: `/attribute-search`,
         data: attributeSearchRequest,
-        query: { ...pagination, sort: [sortBy.attribute, sortBy.order === 'DESC' ? 'DESC' : 'ASC'] },
+        query: { ...paginationParams, ...(sortParams && { sort: sortParams }) },
       },
       user,
     )

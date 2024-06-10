@@ -20,6 +20,8 @@ export default class ConfirmationHandler implements PageHandler {
 
     const booking = await this.videoLinkService.getVideoLinkBookingById(bookingId, user)
 
+    // TODO: This currently assumes that there is only 1 prisoner associated with a booking.
+    //  It does not cater for co-defendants at different prisons.
     const { prisonerNumber } = booking.prisonAppointments[0]
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)

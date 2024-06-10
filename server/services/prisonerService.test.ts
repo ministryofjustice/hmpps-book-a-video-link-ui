@@ -102,7 +102,6 @@ describe('Prisoner service', () => {
                   joinType: 'AND',
                   matchers: [{ attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'Jane', type: 'String' }],
                 },
-                { joinType: 'AND', matchers: [] },
               ],
             },
           ],

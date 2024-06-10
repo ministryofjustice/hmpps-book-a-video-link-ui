@@ -1,3 +1,4 @@
+import sinon from 'sinon'
 import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import VideoLinkService from './videoLinkService'
@@ -215,6 +216,57 @@ describe('Video link service', () => {
 
       expect(bookAVideoLinkClient.createVideoLinkBooking).toHaveBeenCalledWith(expectedBody, user)
       expect(result).toEqual(1)
+    })
+  })
+
+  describe('prisonShouldBeWarnedOfBooking', () => {
+    let clock: sinon.SinonFakeTimers
+
+    afterEach(() => {
+      if (clock) {
+        clock.restore()
+      }
+    })
+
+    it('should return true if booking is today before tomorrow', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-10T10:00:00Z').getTime())
+      const dateOfBooking = new Date('2024-06-10')
+      const timeOfBooking = new Date('2024-06-10T14:00:00Z')
+      expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking, timeOfBooking)).toBe(true)
+    })
+
+    it('should return true if booking is tomorrow but "now" is past 3 PM', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-10T16:00:00Z').getTime())
+      const dateOfBooking = new Date('2024-06-11')
+      const timeOfBooking = new Date('2024-06-11T14:00:00Z')
+      expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking, timeOfBooking)).toBe(true)
+    })
+
+    it('should return false if booking is tomorrow but "now" is before 3 PM', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-10T14:00:00Z').getTime())
+      const dateOfBooking = new Date('2024-06-11')
+      const timeOfBooking = new Date('2024-06-11T14:00:00Z')
+      expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking, timeOfBooking)).toBe(false)
+    })
+
+    it('should return false if booking is more than two days away', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-10T14:00:00Z').getTime())
+      const dateOfBooking = new Date('2024-06-13')
+      const timeOfBooking = new Date('2024-06-13T14:00:00Z')
+      expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking, timeOfBooking)).toBe(false)
+    })
+
+    it('should handle edge cases of exact boundary times correctly', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-10T15:00:00Z').getTime())
+      const dateOfBooking1 = new Date('2024-06-11')
+      const timeOfBooking1 = new Date('2024-06-11T00:00:00Z')
+      expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking1, timeOfBooking1)).toBe(false)
+
+      clock.restore()
+      clock = sinon.useFakeTimers(new Date('2024-06-10T14:59:00Z').getTime())
+      const dateOfBooking2 = new Date('2024-06-11')
+      const timeOfBooking2 = new Date('2024-06-11T00:00:00Z')
+      expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking2, timeOfBooking2)).toBe(false)
     })
   })
 })

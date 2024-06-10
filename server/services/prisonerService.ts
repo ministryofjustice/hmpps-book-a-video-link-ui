@@ -39,15 +39,20 @@ export default class PrisonerService {
       createPncMatcher(criteria.pncNumber),
     ].filter(Boolean)
 
+    // For example:
+    // (inOutStatus = IN) AND ((firstName CONTAINS :firstName AND lastName CONTAINS :lastName) OR (prisonerNumber = :prisonerNumber AND pncNumber = :pncNumber))
     const searchQuery = {
+      joinType: 'AND',
       queries: [
         {
           matchers: [createStringMatcher('inOutStatus', 'IS', 'IN')],
-          joinType: 'AND',
+        },
+        {
+          joinType: 'OR',
           subQueries: [
             { joinType: 'AND', matchers },
-            { joinType: 'OR', matchers: secondaryMatchers },
-          ].filter(m => m.matchers.length > 0),
+            { joinType: 'AND', matchers: secondaryMatchers },
+          ],
         },
       ],
     }

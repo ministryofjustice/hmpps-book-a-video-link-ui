@@ -72,7 +72,7 @@ describe('Prisoner search handler', () => {
             {
               fieldId: 'lastName',
               href: '#lastName',
-              text: "You must search using either the prisoner's last name, prison number or PNC Number",
+              text: "You must search using either the prisoner's first name, last name, prison number or PNC Number",
             },
           ]),
         )
@@ -136,6 +136,13 @@ describe('Prisoner search handler', () => {
             },
           ]),
         )
+    })
+
+    it('should accept firstName on its own as the search criteria', () => {
+      return request(app)
+        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .send({ dateOfBirth: {}, firstName: 'John' })
+        .expect(() => expectNoErrorMessages())
     })
 
     it('should accept lastName on its own as the search criteria', () => {

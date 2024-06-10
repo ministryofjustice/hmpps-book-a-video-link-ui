@@ -14,9 +14,12 @@ class Body {
   firstName: string
 
   @Expose()
-  @Validator((lastName, { prisonerNumber, pncNumber }) => lastName || prisonerNumber || pncNumber, {
-    message: "You must search using either the prisoner's last name, prison number or PNC Number",
-  })
+  @Validator(
+    (lastName, { firstName, prisonerNumber, pncNumber }) => firstName || lastName || prisonerNumber || pncNumber,
+    {
+      message: "You must search using either the prisoner's first name, last name, prison number or PNC Number",
+    },
+  )
   lastName: string
 
   @Expose()

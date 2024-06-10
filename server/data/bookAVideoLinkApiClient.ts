@@ -7,6 +7,7 @@ import {
   CreateVideoBookingRequest,
   ReferenceCode,
   Prison,
+  VideoLinkBooking,
 } from '../@types/bookAVideoLinkApi/types'
 
 export default class BookAVideoLinkApiClient extends RestClient {
@@ -72,6 +73,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public getReferenceCodesForGroup(groupCode: string, user: Express.User): Promise<ReferenceCode[]> {
     return this.get({ path: `/reference-codes/group/${groupCode}` }, user)
+  }
+
+  public getVideoLinkBookingById(id: number, user: Express.User): Promise<VideoLinkBooking> {
+    return this.get({ path: `/video-link-booking/id/${id}` }, user)
   }
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {

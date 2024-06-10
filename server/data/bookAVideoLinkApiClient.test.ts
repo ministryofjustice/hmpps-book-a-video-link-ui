@@ -151,6 +151,20 @@ describe('manageUsersApiClient', () => {
     })
   })
 
+  describe('getVideoLinkBookingById', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/video-link-booking/id/1')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getVideoLinkBookingById(1, user)
+      expect(output).toEqual(response)
+    })
+  })
+
   describe('createVideoLinkBooking', () => {
     it('should post the correct data', async () => {
       const response = { data: 'data' }

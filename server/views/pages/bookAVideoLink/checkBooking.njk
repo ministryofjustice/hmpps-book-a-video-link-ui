@@ -16,7 +16,6 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             {{ govukSummaryList({
-                classes: "govuk-summary-list--no-border",
                 rows: [
                     {
                         key: {
@@ -39,7 +38,7 @@
                             text: "Court" if session.req.params.type == BavlJourneyType.COURT else "Probation team"
                         },
                         value: {
-                            text: (agencies | filter('code', session.journey.bookAVideoLink.agencyCode))[0].description
+                            text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
                         }
                     },
                     {
@@ -47,7 +46,7 @@
                             text: "Hearing type" if session.req.params.type == BavlJourneyType.COURT else "Meeting type"
                         },
                         value: {
-                            text: (hearingTypes | filter('code', session.journey.bookAVideoLink.hearingTypeCode))[0].description
+                            text: (hearingTypes | find('code', session.journey.bookAVideoLink.hearingTypeCode)).description
                         }
                     },
                     {
@@ -63,7 +62,7 @@
                             text: "Prison room for court hearing" if session.req.params.type == BavlJourneyType.COURT else "Prison room for probation meeting"
                         },
                         value: {
-                            text: (rooms | filter('key', session.journey.bookAVideoLink.locationCode))[0].description
+                            text: (rooms | find('key', session.journey.bookAVideoLink.locationCode)).description
                         }
                     },
                     {
@@ -87,7 +86,7 @@
                             text: "Prison room for pre-court hearing"
                         },
                         value: {
-                            text: (rooms | filter('key', session.journey.bookAVideoLink.preLocationCode))[0].description
+                            text: (rooms | find('key', session.journey.bookAVideoLink.preLocationCode)).description
                         }
                     } if session.journey.bookAVideoLink.preLocationCode,
                     {
@@ -111,7 +110,7 @@
                             text: "Prison room for post-court hearing"
                         },
                         value: {
-                            text: (rooms | filter('key', session.journey.bookAVideoLink.postLocationCode))[0].description
+                            text: (rooms | find('key', session.journey.bookAVideoLink.postLocationCode)).description
                         }
                     } if session.journey.bookAVideoLink.postLocationCode,
                     {

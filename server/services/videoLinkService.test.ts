@@ -37,6 +37,15 @@ describe('Video link service', () => {
     })
   })
 
+  describe('getVideoLinkBookingById', () => {
+    it('Retrieves a video link booking by ID', async () => {
+      bookAVideoLinkClient.getVideoLinkBookingById.mockResolvedValue({ data: 'data' })
+      const result = await videoLinkService.getVideoLinkBookingById(1, user)
+      expect(bookAVideoLinkClient.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+      expect(result).toEqual({ data: 'data' })
+    })
+  })
+
   describe('createVideoLinkBooking', () => {
     it('Posts a request to create a probation meeting booking', async () => {
       bookAVideoLinkClient.createVideoLinkBooking.mockResolvedValue(1)

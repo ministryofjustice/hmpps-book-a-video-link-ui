@@ -34,7 +34,10 @@ export default function Routes({
     '/:prisonerNumber/add-video-link-booking/check-booking',
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
-  route('/:prisonerNumber/add-video-link-booking/confirmation/:bookingId', new ConfirmationHandler())
+  route(
+    '/:prisonerNumber/add-video-link-booking/confirmation/:bookingId',
+    new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
+  )
 
   return router
 }

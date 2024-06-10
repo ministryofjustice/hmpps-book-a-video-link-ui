@@ -53,6 +53,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('map', map)
+  njkEnv.addFilter('find', (l: object[], iteratee: string, eq: unknown) => l.find(o => o[iteratee] === eq))
   njkEnv.addFilter('filter', (l: object[], iteratee: string, eq: unknown) => l.filter(o => o[iteratee] === eq))
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
   njkEnv.addFilter('formatDate', formatDate)

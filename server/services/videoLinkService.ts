@@ -14,6 +14,10 @@ export default class VideoLinkService {
     return this.bookAVideoLinkApiClient.getReferenceCodesForGroup('PROBATION_MEETING_TYPE', user)
   }
 
+  public async getVideoLinkBookingById(id: number, user: Express.User) {
+    return this.bookAVideoLinkApiClient.getVideoLinkBookingById(id, user)
+  }
+
   public async createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
     const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
       locationCode

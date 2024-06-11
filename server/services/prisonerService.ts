@@ -52,7 +52,7 @@ export default class PrisonerService {
           subQueries: [
             { joinType: 'AND', matchers },
             { joinType: 'AND', matchers: secondaryMatchers },
-          ],
+          ].filter(q => q.matchers.length > 0),
         },
       ],
     }

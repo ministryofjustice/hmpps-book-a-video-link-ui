@@ -1,7 +1,8 @@
+import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
 import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
-import { formatDate } from '../utils/utils'
+import { dateAtTime, formatDate } from '../utils/utils'
 
 export default class VideoLinkService {
   constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}
@@ -61,6 +62,8 @@ export default class VideoLinkService {
       bookingType: journey.type,
       prisoners: [
         {
+          // TODO: The journey object currently assumes that there is only 1 prisoner associated with a booking.
+          //  It does not cater for co-defendants at different prisons
           prisonCode: journey.prisoner.prisonId,
           prisonerNumber: journey.prisoner.prisonerNumber,
           appointments,
@@ -75,5 +78,14 @@ export default class VideoLinkService {
     } as CreateVideoBookingRequest
 
     return this.bookAVideoLinkApiClient.createVideoLinkBooking(request, user)
+  }
+
+  public prisonShouldBeWarnedOfBooking(dateOfBooking: Date, timeOfBooking: Date): boolean {
+    const now = new Date()
+    const exactTimeOfBooking = dateAtTime(dateOfBooking, timeOfBooking)
+    const todayAt3PM = set(startOfToday(), { hours: 15 })
+    const twoDaysFromNow = addDays(startOfToday(), 2)
+
+    return exactTimeOfBooking < startOfTomorrow() || (now > todayAt3PM && exactTimeOfBooking < twoDaysFromNow)
   }
 }

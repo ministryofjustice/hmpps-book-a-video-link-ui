@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { Expose } from 'class-transformer'
 import { IsOptional, MaxLength } from 'class-validator'
+import { parseISO } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import CourtsService from '../../../../services/courtsService'
@@ -29,7 +30,7 @@ export default class CheckBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { type } = req.params
     const { user } = res.locals
-    const { prisoner } = req.session.journey.bookAVideoLink
+    const { prisoner, date, startTime } = req.session.journey.bookAVideoLink
 
     const agencies =
       type === 'court'
@@ -43,7 +44,10 @@ export default class CheckBookingHandler implements PageHandler {
         ? await this.videoLinkService.getCourtHearingTypes(user)
         : await this.videoLinkService.getProbationMeetingTypes(user)
 
+    const warnPrison = this.videoLinkService.prisonShouldBeWarnedOfBooking(parseISO(date), parseISO(startTime))
+
     res.render('pages/bookAVideoLink/checkBooking', {
+      warnPrison,
       prisoner,
       agencies,
       rooms,

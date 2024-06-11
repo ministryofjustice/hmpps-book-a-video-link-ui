@@ -3,10 +3,16 @@ import request from 'supertest'
 import cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
+import CourtsService from '../../../../services/courtsService'
+import ProbationTeamsService from '../../../../services/probationTeamsService'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/courtsService')
+jest.mock('../../../../services/probationTeamsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
+const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 
 let app: Express
 
@@ -23,8 +29,6 @@ afterEach(() => {
 
 describe('GET', () => {
   it('should render index page', () => {
-    auditService.logPageView.mockResolvedValue(null)
-
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
@@ -38,5 +42,35 @@ describe('GET', () => {
           correlationId: expect.any(String),
         })
       })
+  })
+
+  it('court user should be redirected to select court preferences if they have not selected any', () => {
+    courtsService.getUserPreferences.mockResolvedValue([])
+
+    app = appWithAllRoutes({
+      services: { courtsService },
+      userSupplier: () => ({
+        ...user,
+        isCourtUser: true,
+        isProbationUser: false,
+      }),
+    })
+
+    return request(app).get('/').expect(302).expect('location', '/manage-courts')
+  })
+
+  it('probation user should be redirected to select court preferences if they have not selected any', () => {
+    probationTeamsService.getUserPreferences.mockResolvedValue([])
+
+    app = appWithAllRoutes({
+      services: { probationTeamsService },
+      userSupplier: () => ({
+        ...user,
+        isCourtUser: false,
+        isProbationUser: true,
+      }),
+    })
+
+    return request(app).get('/').expect(302).expect('location', '/manage-probation-teams')
   })
 })

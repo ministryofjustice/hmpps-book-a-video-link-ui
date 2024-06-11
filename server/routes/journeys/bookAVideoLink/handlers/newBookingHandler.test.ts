@@ -40,6 +40,15 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup()
+
+  courtsService.getUserPreferences.mockResolvedValue([
+    { code: 'C1', description: 'Court 1' },
+    { code: 'C2', description: 'Court 2' },
+  ])
+  probationTeamsService.getUserPreferences.mockResolvedValue([
+    { code: 'P1', description: 'Probation 1' },
+    { code: 'P2', description: 'Probation 2' },
+  ])
 })
 
 afterEach(() => {
@@ -52,16 +61,7 @@ describe('New Booking handler', () => {
       ['Probation', 'probation'],
       ['Court', 'court'],
     ])('%s journey - should render the correct view page', (_: string, journey: string) => {
-      auditService.logPageView.mockResolvedValue(null)
       prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({ prisonId: 'MDI' })
-      courtsService.getUserPreferences.mockResolvedValue([
-        { code: 'C1', description: 'Court 1' },
-        { code: 'C2', description: 'Court 2' },
-      ])
-      probationTeamsService.getUserPreferences.mockResolvedValue([
-        { code: 'P1', description: 'Probation 1' },
-        { code: 'P2', description: 'Probation 2' },
-      ])
 
       return request(app)
         .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking`)
@@ -77,8 +77,8 @@ describe('New Booking handler', () => {
           })
 
           if (journey === 'court') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledWith(user)
-            expect(probationTeamsService.getUserPreferences).not.toHaveBeenCalled()
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
             expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
             expect(videoLinkService.getProbationMeetingTypes).not.toHaveBeenCalled()
             expect(existsByName($, 'preRequired')).toBe(true)
@@ -88,8 +88,8 @@ describe('New Booking handler', () => {
           }
 
           if (journey === 'probation') {
-            expect(courtsService.getUserPreferences).not.toHaveBeenCalled()
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledWith(user)
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
             expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
             expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
             expect(existsByName($, 'preRequired')).toBe(false)

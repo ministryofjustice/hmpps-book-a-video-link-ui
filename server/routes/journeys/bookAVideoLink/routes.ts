@@ -9,6 +9,7 @@ import validationMiddleware from '../../../middleware/validationMiddleware'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import PrisonerSearchResultsHandler from './handlers/prisonerSearchResultsHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
+import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function Routes({
   auditService,
@@ -34,6 +35,7 @@ export default function Routes({
     '/:prisonerNumber/add-video-link-booking/check-booking',
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
+  route('/:prisonerNumber/add-video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
   route(
     '/:prisonerNumber/add-video-link-booking/confirmation/:bookingId',
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),

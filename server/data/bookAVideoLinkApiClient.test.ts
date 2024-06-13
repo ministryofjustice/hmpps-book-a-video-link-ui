@@ -3,7 +3,7 @@ import nock from 'nock'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
-import { CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
+import { AvailabilityRequest, CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -161,6 +161,23 @@ describe('manageUsersApiClient', () => {
         .reply(200, response)
 
       const output = await bookAVideoLinkApiClient.getVideoLinkBookingById(1, user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('checkAvailability', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/availability', { bookingType: 'COURT' })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.checkAvailability(
+        { bookingType: 'COURT' } as AvailabilityRequest,
+        user,
+      )
       expect(output).toEqual(response)
     })
   })

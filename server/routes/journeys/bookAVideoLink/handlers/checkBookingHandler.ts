@@ -30,7 +30,14 @@ export default class CheckBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { type } = req.params
     const { user } = res.locals
-    const { prisoner, date, startTime } = req.session.journey.bookAVideoLink
+    const { bookAVideoLink } = req.session.journey
+    const { prisoner, date, startTime } = bookAVideoLink
+
+    const { availabilityOk } = await this.videoLinkService.checkAvailability(bookAVideoLink, user)
+
+    if (!availabilityOk) {
+      return res.redirect('not-available')
+    }
 
     const agencies =
       type === 'court'
@@ -46,7 +53,7 @@ export default class CheckBookingHandler implements PageHandler {
 
     const warnPrison = this.videoLinkService.prisonShouldBeWarnedOfBooking(parseISO(date), parseISO(startTime))
 
-    res.render('pages/bookAVideoLink/checkBooking', {
+    return res.render('pages/bookAVideoLink/checkBooking', {
       warnPrison,
       prisoner,
       agencies,

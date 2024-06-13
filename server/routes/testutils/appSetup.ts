@@ -13,8 +13,13 @@ import setUpWebSession from '../../middleware/setUpWebSession'
 import { Journey, JourneyData } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
 import setUpFlash from '../../middleware/setUpFlash'
+import CourtsService from '../../services/courtsService'
+import ProbationTeamsService from '../../services/probationTeamsService'
+import { Court, ProbationTeam } from '../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../services/auditService')
+jest.mock('../../services/courtsService')
+jest.mock('../../services/probationTeamsService')
 
 export const journeyId = () => '9211b69b-826f-4f48-a43f-8af59dddf39f'
 
@@ -82,9 +87,7 @@ function appSetup(
 
 export function appWithAllRoutes({
   production = false,
-  services = {
-    auditService: new AuditService(null) as jest.Mocked<AuditService>,
-  },
+  services = {},
   userSupplier = () => user,
   journeySessionSupplier = () => ({}),
 }: {
@@ -93,6 +96,30 @@ export function appWithAllRoutes({
   userSupplier?: () => Express.User
   journeySessionSupplier?: () => Journey
 }): Express {
+  const auditService = new AuditService(null) as jest.Mocked<AuditService>
+  const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
+  const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
+
+  auditService.logPageView.mockResolvedValue(null)
+  courtsService.getUserPreferences.mockResolvedValue([
+    { code: 'C1', description: 'Court 1' },
+    { code: 'C2', description: 'Court 2' },
+  ] as Court[])
+  probationTeamsService.getUserPreferences.mockResolvedValue([
+    { code: 'P1', description: 'Probation 1' },
+    { code: 'P2', description: 'Probation 2' },
+  ] as ProbationTeam[])
+
   auth.default.authenticationMiddleware = () => (req, res, next) => next()
-  return appSetup(services as Services, production, userSupplier, journeySessionSupplier)
+  return appSetup(
+    {
+      auditService,
+      courtsService,
+      probationTeamsService,
+      ...services,
+    } as Services,
+    production,
+    userSupplier,
+    journeySessionSupplier,
+  )
 }

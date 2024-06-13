@@ -49,7 +49,6 @@ afterEach(() => {
 
 describe('Check Booking handler', () => {
   beforeEach(() => {
-    auditService.logPageView.mockResolvedValue(null)
     courtsService.getUserPreferences.mockResolvedValue([
       { code: 'C1', description: 'Court 1' },
       { code: 'C2', description: 'Court 2' },
@@ -83,15 +82,15 @@ describe('Check Booking handler', () => {
           })
 
           if (journey === 'court') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledWith(user)
-            expect(probationTeamsService.getUserPreferences).not.toHaveBeenCalled()
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
             expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
             expect(videoLinkService.getProbationMeetingTypes).not.toHaveBeenCalled()
           }
 
           if (journey === 'probation') {
-            expect(courtsService.getUserPreferences).not.toHaveBeenCalled()
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledWith(user)
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
             expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
             expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
           }

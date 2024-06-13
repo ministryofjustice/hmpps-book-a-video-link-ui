@@ -26,7 +26,6 @@ afterEach(() => {
 
 describe('GET', () => {
   it('should render the correct view page', () => {
-    auditService.logPageView.mockResolvedValue(null)
     probationTeamsService.getUserPreferences.mockResolvedValue([
       {
         code: 'LANCCE',

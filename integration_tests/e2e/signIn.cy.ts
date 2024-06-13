@@ -8,6 +8,7 @@ context('Sign In', () => {
     cy.task('reset')
     cy.task('stubSignIn', ['VIDEO_LINK_COURT_USER'])
     cy.task('stubManageUser')
+    cy.task('stubUserPreferences')
   })
 
   it('Unauthenticated user directed to auth', () => {

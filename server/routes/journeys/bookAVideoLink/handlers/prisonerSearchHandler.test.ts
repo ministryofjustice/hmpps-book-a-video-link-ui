@@ -35,8 +35,6 @@ afterEach(() => {
 describe('Prisoner search handler', () => {
   describe('GET', () => {
     it('should render the correct view page', () => {
-      auditService.logPageView.mockResolvedValue(null)
-
       return request(app)
         .get(`/booking/court/create/${journeyId()}/prisoner-search`)
         .expect('Content-Type', /html/)

@@ -38,8 +38,8 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpAuthentication())
   app.use(authorisationMiddleware([AuthorisedRoles.VIDEO_LINK_COURT_USER]))
   app.use(setUpCsrf())
-  app.use(setUpCurrentUser(services))
   app.use(setUpFlash())
+  app.use(setUpCurrentUser(services))
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

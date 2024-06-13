@@ -8,9 +8,21 @@ import { Services } from '../services'
 export default function routes(services: Services): Router {
   const router = Router()
 
-  router.use('/', home(services))
   router.use('/manage-courts', manageCourts(services))
   router.use('/manage-probation-teams', manageProbationTeams(services))
+
+  // The rest of the routes cannot be accessed unless the user has selected some court or probation team preferences
+  router.use(async (req, res, next) => {
+    const { user } = res.locals
+    const courtPreferences = await services.courtsService.getUserPreferences(user)
+    const probationTeamPreferences = await services.probationTeamsService.getUserPreferences(user)
+
+    if (user.isCourtUser && courtPreferences.length === 0) return res.redirect('/manage-courts')
+    if (user.isProbationUser && probationTeamPreferences.length === 0) return res.redirect('/manage-probation-teams')
+    return next()
+  })
+
+  router.use('/', home(services))
   router.use('/booking/:type(court|probation)/create', bookAVideoLink(services))
 
   return router

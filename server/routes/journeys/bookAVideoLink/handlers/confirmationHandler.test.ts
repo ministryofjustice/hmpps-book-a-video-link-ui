@@ -36,7 +36,6 @@ describe('GET', () => {
     ['Probation', 'probation'],
     ['Court', 'court'],
   ])('%s journey - should render the correct view page', (_: string, journey: string) => {
-    auditService.logPageView.mockResolvedValue(null)
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(
       journey === 'court' ? getCourtBooking('AA1234A') : getProbationBooking('AA1234A'),
     )

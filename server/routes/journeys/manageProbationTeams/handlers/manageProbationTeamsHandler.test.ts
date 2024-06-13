@@ -46,16 +46,7 @@ beforeEach(() => {
     ],
   } as unknown as ProbationTeamsByLetter)
 
-  probationTeamsService.getUserPreferences.mockResolvedValue([
-    {
-      code: 'LANCCE',
-      description: 'Central Lancashire',
-    },
-    {
-      code: 'CROYCC',
-      description: 'Croydon MC',
-    },
-  ] as unknown as ProbationTeam[])
+  probationTeamsService.getUserPreferences.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -64,9 +55,7 @@ afterEach(() => {
 
 describe('Manage probation teams handler', () => {
   describe('GET', () => {
-    it('should render the correct view page', () => {
-      auditService.logPageView.mockResolvedValue(null)
-
+    it('should render the correct view page when the user has not selected any preferences', () => {
       return request(app)
         .get(`/manage-probation-teams`)
         .expect('Content-Type', /html/)
@@ -76,12 +65,34 @@ describe('Manage probation teams handler', () => {
           const checkedCheckboxes = $('input[type="checkbox"]:checked')
 
           expect(heading).toBe('Manage your list of probation teams')
-          expect(checkedCheckboxes.length).toBe(2)
+          expect(checkedCheckboxes.length).toBe(0)
 
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_PROBATION_TEAMS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
           })
+        })
+    })
+
+    it('should pre-check the checkboxes where the user has selected some preferences', () => {
+      probationTeamsService.getUserPreferences.mockResolvedValue([
+        {
+          code: 'LANCCE',
+          description: 'Central Lancashire',
+        },
+        {
+          code: 'CROYCC',
+          description: 'Croydon MC',
+        },
+      ] as unknown as ProbationTeam[])
+
+      return request(app)
+        .get(`/manage-probation-teams`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const checkedCheckboxes = $('input[type="checkbox"]:checked')
+          expect(checkedCheckboxes.length).toBe(2)
         })
     })
   })

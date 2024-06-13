@@ -46,16 +46,7 @@ beforeEach(() => {
     ],
   } as unknown as CourtsByLetter)
 
-  courtsService.getUserPreferences.mockResolvedValue([
-    {
-      code: 'ABERCV',
-      description: 'Aberystwyth Civil',
-    },
-    {
-      code: 'AYLSCC',
-      description: 'Aylesbury Crown',
-    },
-  ] as unknown as Court[])
+  courtsService.getUserPreferences.mockResolvedValue([])
 })
 
 afterEach(() => {
@@ -64,9 +55,7 @@ afterEach(() => {
 
 describe('Manage courts handler', () => {
   describe('GET', () => {
-    it('should render the correct view page', () => {
-      auditService.logPageView.mockResolvedValue(null)
-
+    it('should render the correct view page when the user has not selected any preferences', () => {
       return request(app)
         .get(`/manage-courts`)
         .expect('Content-Type', /html/)
@@ -76,12 +65,34 @@ describe('Manage courts handler', () => {
           const checkedCheckboxes = $('input[type="checkbox"]:checked')
 
           expect(heading).toBe('Manage your list of courts')
-          expect(checkedCheckboxes.length).toBe(2)
+          expect(checkedCheckboxes.length).toBe(0)
 
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.MANAGE_COURTS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
           })
+        })
+    })
+
+    it('should pre-check the checkboxes where the user has selected some preferences', () => {
+      courtsService.getUserPreferences.mockResolvedValue([
+        {
+          code: 'ABERCV',
+          description: 'Aberystwyth Civil',
+        },
+        {
+          code: 'AYLSCC',
+          description: 'Aylesbury Crown',
+        },
+      ] as unknown as Court[])
+
+      return request(app)
+        .get(`/manage-courts`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const checkedCheckboxes = $('input[type="checkbox"]:checked')
+          expect(checkedCheckboxes.length).toBe(2)
         })
     })
   })

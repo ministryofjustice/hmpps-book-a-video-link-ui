@@ -1,6 +1,6 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
+import { AvailabilityRequest, CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
 import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
 import { dateAtTime, formatDate } from '../utils/utils'
 
@@ -17,6 +17,38 @@ export default class VideoLinkService {
 
   public async getVideoLinkBookingById(id: number, user: Express.User) {
     return this.bookAVideoLinkApiClient.getVideoLinkBookingById(id, user)
+  }
+
+  public async checkAvailability(journey: BookAVideoLinkJourney, user: Express.User) {
+    const formatInterval = (start: string, end: string) => ({
+      start: formatDate(start, 'HH:mm'),
+      end: formatDate(end, 'HH:mm'),
+    })
+    return this.bookAVideoLinkApiClient.checkAvailability(
+      {
+        bookingType: journey.type,
+        courtOrProbationCode: journey.agencyCode,
+        prisonCode: journey.prisoner.prisonId,
+        date: formatDate(journey.date, 'yyyy-MM-dd'),
+        preAppointment: journey.preLocationCode
+          ? {
+              prisonLocKey: journey.preLocationCode,
+              interval: formatInterval(journey.preHearingStartTime, journey.preHearingEndTime),
+            }
+          : undefined,
+        mainAppointment: {
+          prisonLocKey: journey.locationCode,
+          interval: formatInterval(journey.startTime, journey.endTime),
+        },
+        postAppointment: journey.postLocationCode
+          ? {
+              prisonLocKey: journey.postLocationCode,
+              interval: formatInterval(journey.postHearingStartTime, journey.postHearingEndTime),
+            }
+          : undefined,
+      } as AvailabilityRequest,
+      user,
+    )
   }
 
   public async createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {

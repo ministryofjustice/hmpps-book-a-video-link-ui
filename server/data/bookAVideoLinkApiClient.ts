@@ -8,6 +8,8 @@ import {
   ReferenceCode,
   Prison,
   VideoLinkBooking,
+  AvailabilityRequest,
+  AvailabilityResponse,
 } from '../@types/bookAVideoLinkApi/types'
 
 export default class BookAVideoLinkApiClient extends RestClient {
@@ -77,6 +79,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public getVideoLinkBookingById(id: number, user: Express.User): Promise<VideoLinkBooking> {
     return this.get({ path: `/video-link-booking/id/${id}` }, user)
+  }
+
+  public checkAvailability(request: AvailabilityRequest, user: Express.User): Promise<AvailabilityResponse> {
+    return this.post({ path: '/availability', data: request }, user)
   }
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {

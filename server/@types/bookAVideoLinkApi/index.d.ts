@@ -16,6 +16,10 @@ export interface paths {
     /** Endpoint to set the court preferences for a user (identified from the token content) */
     post: operations['setUserCourtPreferences']
   }
+  '/availability': {
+    /** Endpoint to assess booking availability and to suggest alternatives */
+    post: operations['checkAvailability']
+  }
   '/video-link-booking/id/{videoBookingId}': {
     /** Endpoint to return the details of a video link booking using its internal ID */
     get: operations['getVideoLinkBookingById']
@@ -230,6 +234,74 @@ export interface components {
        * @description The count of courts saved as preferences for this user
        */
       courtsSaved: number
+    }
+    /** @description The request containing the times and locations of hearings to check for availability */
+    AvailabilityRequest: {
+      /**
+       * @description The booking type
+       * @example COURT
+       * @enum {string}
+       */
+      bookingType: 'COURT' | 'PROBATION'
+      /**
+       * @description The court code or probation team code
+       * @example DRBYMC
+       */
+      courtOrProbationCode: string
+      /**
+       * @description The prison code where these appointment will take place
+       * @example MDI
+       */
+      prisonCode: string
+      /**
+       * Format: date
+       * @description The date for the appointments on this booking (must all be on the same day)
+       * @example 2024-04-05
+       */
+      date: string
+      preAppointment?: components['schemas']['LocationAndInterval']
+      mainAppointment: components['schemas']['LocationAndInterval']
+      postAppointment?: components['schemas']['LocationAndInterval']
+    }
+    /** @description A time interval between a start and end time */
+    Interval: {
+      /**
+       * Format: partial-time
+       * @description The interval start time, inclusive. ISO-8601 format (hh:mm)
+       * @example 09:00
+       */
+      start: string
+      /**
+       * Format: partial-time
+       * @description The interval end time (inclusive). ISO-8601 format (hh:mm)
+       * @example 09:30
+       */
+      end: string
+    }
+    /** @description The prison location key and start/end interval for an appointment slot */
+    LocationAndInterval: {
+      /**
+       * @description The location of the appointment at the prison
+       * @example VCC-ROOM-1
+       */
+      prisonLocKey: string
+      interval?: components['schemas']['Interval']
+    }
+    /** @description Availability check response */
+    AvailabilityResponse: {
+      /**
+       * @description Set to true when all the locations and times for this booking are available, or false when not.
+       * @example true
+       */
+      availabilityOk: boolean
+      /** @description A list of alternative times and locations for the requested appointment on this booking, or empty list */
+      alternatives: components['schemas']['BookingOption'][]
+    }
+    /** @description Video link booking option */
+    BookingOption: {
+      pre?: components['schemas']['LocationAndInterval']
+      main: components['schemas']['LocationAndInterval']
+      post?: components['schemas']['LocationAndInterval']
     }
     /** @description A representation of a prison appointment */
     PrisonAppointment: {
@@ -672,6 +744,34 @@ export interface operations {
       400: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to assess booking availability and to suggest alternatives */
+  checkAvailability: {
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AvailabilityRequest']
+      }
+    }
+    responses: {
+      /** @description Availability response, including any suggested alternative booking options */
+      200: {
+        content: {
+          'application/json': components['schemas']['AvailabilityResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */

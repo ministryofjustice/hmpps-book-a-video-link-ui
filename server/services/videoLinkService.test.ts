@@ -47,6 +47,137 @@ describe('Video link service', () => {
     })
   })
 
+  describe('checkAvailability', () => {
+    const commonJourney = {
+      type: 'COURT',
+      prisoner: {
+        prisonId: 'MDI',
+        prisonerNumber: 'ABC123',
+        prisonName: 'Moorland',
+        name: 'Joe Bloggs',
+      },
+      date: '2022-03-20T00:00:00Z',
+      locationCode: 'LOCATION_CODE',
+      startTime: '1970-01-01T13:30:00Z',
+      endTime: '1970-01-01T14:30:00Z',
+      agencyCode: 'AGENCY_CODE',
+    }
+
+    it('should correctly handle the case with only main appointment', async () => {
+      const journey = { ...commonJourney }
+
+      await videoLinkService.checkAvailability(journey, user)
+
+      expect(bookAVideoLinkClient.checkAvailability).toHaveBeenCalledWith(
+        {
+          bookingType: 'COURT',
+          courtOrProbationCode: 'AGENCY_CODE',
+          date: '2022-03-20',
+          prisonCode: 'MDI',
+          mainAppointment: {
+            prisonLocKey: 'LOCATION_CODE',
+            interval: { start: '13:30', end: '14:30' },
+          },
+        },
+        user,
+      )
+    })
+
+    it('should correctly handle the case with pre and post appointments', async () => {
+      const journey = {
+        ...commonJourney,
+        preLocationCode: 'PRE_LOC',
+        preHearingStartTime: '1970-01-01T13:15:00Z',
+        preHearingEndTime: '1970-01-01T13:30:00Z',
+        postLocationCode: 'POST_LOC',
+        postHearingStartTime: '1970-01-01T14:30:00Z',
+        postHearingEndTime: '1970-01-01T14:45:00Z',
+      }
+
+      await videoLinkService.checkAvailability(journey, user)
+
+      expect(bookAVideoLinkClient.checkAvailability).toHaveBeenCalledWith(
+        {
+          bookingType: 'COURT',
+          courtOrProbationCode: 'AGENCY_CODE',
+          date: '2022-03-20',
+          prisonCode: 'MDI',
+          preAppointment: {
+            prisonLocKey: 'PRE_LOC',
+            interval: { start: '13:15', end: '13:30' },
+          },
+          mainAppointment: {
+            prisonLocKey: 'LOCATION_CODE',
+            interval: { start: '13:30', end: '14:30' },
+          },
+          postAppointment: {
+            prisonLocKey: 'POST_LOC',
+            interval: { start: '14:30', end: '14:45' },
+          },
+        },
+        user,
+      )
+    })
+
+    it('should correctly handle the case with pre appointment only', async () => {
+      const journey = {
+        ...commonJourney,
+        preLocationCode: 'PRE_LOC',
+        preHearingStartTime: '1970-01-01T13:15:00Z',
+        preHearingEndTime: '1970-01-01T13:30:00Z',
+      }
+
+      await videoLinkService.checkAvailability(journey, user)
+
+      expect(bookAVideoLinkClient.checkAvailability).toHaveBeenCalledWith(
+        {
+          bookingType: 'COURT',
+          courtOrProbationCode: 'AGENCY_CODE',
+          date: '2022-03-20',
+          prisonCode: 'MDI',
+          preAppointment: {
+            prisonLocKey: 'PRE_LOC',
+            interval: { start: '13:15', end: '13:30' },
+          },
+          mainAppointment: {
+            prisonLocKey: 'LOCATION_CODE',
+            interval: { start: '13:30', end: '14:30' },
+          },
+        },
+        user,
+      )
+    })
+
+    it('should correctly handle the case with post appointment only', async () => {
+      const journey = {
+        ...commonJourney,
+        postLocationCode: 'POST_LOC',
+        postHearingStartTime: '1970-01-01T14:30:00Z',
+        postHearingEndTime: '1970-01-01T14:45:00Z',
+      }
+
+      await videoLinkService.checkAvailability(journey, user)
+
+      expect(bookAVideoLinkClient.checkAvailability).toHaveBeenCalledWith(
+        {
+          bookingType: 'COURT',
+          courtOrProbationCode: 'AGENCY_CODE',
+          date: '2022-03-20',
+          prisonCode: 'MDI',
+          mainAppointment: {
+            prisonLocKey: 'LOCATION_CODE',
+            interval: { start: '13:30', end: '14:30' },
+          },
+          postAppointment: {
+            prisonLocKey: 'POST_LOC',
+            interval: { start: '14:30', end: '14:45' },
+          },
+        },
+        user,
+      )
+    })
+  })
+
   describe('createVideoLinkBooking', () => {
     it('Posts a request to create a probation meeting booking', async () => {
       bookAVideoLinkClient.createVideoLinkBooking.mockResolvedValue(1)

@@ -61,6 +61,7 @@ describe('Check Booking handler', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
     videoLinkService.getCourtHearingTypes.mockResolvedValue([{ code: 'KEY', description: 'description' }])
     videoLinkService.getProbationMeetingTypes.mockResolvedValue([{ code: 'KEY', description: 'description' }])
+    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true })
   })
 
   describe('GET', () => {
@@ -110,6 +111,15 @@ describe('Check Booking handler', () => {
           const $ = cheerio.load(res.text)
           expect(existsByDataQa($, 'discuss-before-proceeding')).toBe(expected)
         })
+    })
+
+    it('should redirect to select alternatives if the selected room is not available', () => {
+      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
+
+      return request(app)
+        .get(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/check-booking`)
+        .expect(302)
+        .expect('location', 'not-available')
     })
   })
 

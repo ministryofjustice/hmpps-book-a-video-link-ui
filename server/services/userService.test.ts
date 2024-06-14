@@ -34,7 +34,7 @@ describe('User service', () => {
     })
 
     it('isCourtUser and isProbationUser are set correctly if user is part of VIDEO_LINK_PROBATION_USER only', async () => {
-      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith', authSource: 'auth' } as User)
       manageUsersApiClient.getUserGroups.mockResolvedValue([{ groupCode: 'VIDEO_LINK_PROBATION_USER' }] as UserGroup[])
 
       const result = await userService.getUser(createUser([]))
@@ -44,7 +44,7 @@ describe('User service', () => {
     })
 
     it('isCourtUser and isProbationUser are set correctly if user is part of VIDEO_LINK_COURT_USER only', async () => {
-      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith', authSource: 'auth' } as User)
       manageUsersApiClient.getUserGroups.mockResolvedValue([{ groupCode: 'VIDEO_LINK_COURT_USER' }] as UserGroup[])
 
       const result = await userService.getUser(createUser([]))
@@ -54,7 +54,7 @@ describe('User service', () => {
     })
 
     it('isCourtUser and isProbationUser are set correctly if user is part of VIDEO_LINK_COURT_USER and VIDEO_LINK_PROBATION_USER', async () => {
-      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith', authSource: 'auth' } as User)
       manageUsersApiClient.getUserGroups.mockResolvedValue([
         { groupCode: 'VIDEO_LINK_COURT_USER' },
         { groupCode: 'VIDEO_LINK_PROBATION_USER' },

@@ -15,10 +15,11 @@ export default class UserService {
 
   public async getUser(user: Express.User): Promise<UserDetails> {
     const serviceUser = await this.manageUsersApiClient.getUser(user)
-    const userGroups = await this.manageUsersApiClient.getUserGroups(serviceUser.userId, user)
+    const isAuthUser = serviceUser.authSource === 'auth'
 
-    const isProbationUser = userGroups.some(g => g.groupCode === 'VIDEO_LINK_PROBATION_USER')
-    const isCourtUser = userGroups.some(g => g.groupCode === 'VIDEO_LINK_COURT_USER')
+    const userGroups = isAuthUser && (await this.manageUsersApiClient.getUserGroups(serviceUser.userId, user))
+    const isProbationUser = isAuthUser && userGroups.some(g => g.groupCode === 'VIDEO_LINK_PROBATION_USER')
+    const isCourtUser = isAuthUser && userGroups.some(g => g.groupCode === 'VIDEO_LINK_COURT_USER')
 
     return {
       ...serviceUser,

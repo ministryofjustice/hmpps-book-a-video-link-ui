@@ -50,6 +50,12 @@ beforeEach(() => {
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
   ])
+
+  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+    prisonId: 'MDI',
+    firstName: 'Joe',
+    lastName: 'Smith',
+  })
 })
 
 afterEach(() => {
@@ -57,12 +63,6 @@ afterEach(() => {
 })
 
 describe('New Booking handler', () => {
-  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-    prisonId: 'MDI',
-    firstName: 'Joe',
-    lastName: 'Smith',
-  })
-
   describe('GET', () => {
     it.each([
       ['Probation', 'probation'],

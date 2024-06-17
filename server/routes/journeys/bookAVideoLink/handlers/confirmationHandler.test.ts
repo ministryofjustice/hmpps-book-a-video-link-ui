@@ -73,23 +73,30 @@ describe('GET', () => {
 
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
 
-        expect(existsByKey($, 'Court')).toBe(journey === 'court')
-        expect(existsByKey($, 'Hearing type')).toBe(journey === 'court')
-        expect(existsByKey($, 'Prison room for court hearing')).toBe(journey === 'court')
-        expect(existsByKey($, 'Hearing start time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Hearing end time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Prison room for pre-court hearing')).toBe(journey === 'court')
-        expect(existsByKey($, 'Pre-hearing start time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Pre-hearing end time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Prison room for post-court hearing')).toBe(journey === 'court')
-        expect(existsByKey($, 'Post-hearing start time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Post-hearing end time')).toBe(journey === 'court')
+        const courtFields = [
+          'Court',
+          'Hearing type',
+          'Prison room for court hearing',
+          'Hearing start time',
+          'Hearing end time',
+          'Prison room for pre-court hearing',
+          'Pre-hearing start time',
+          'Pre-hearing end time',
+          'Prison room for post-court hearing',
+          'Post-hearing start time',
+          'Post-hearing end time',
+        ]
 
-        expect(existsByKey($, 'Probation team')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Meeting type')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Prison room for probation meeting')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Meeting start time')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Meeting end time')).toBe(journey === 'probation')
+        const probationFields = [
+          'Probation team',
+          'Meeting type',
+          'Prison room for probation meeting',
+          'Meeting start time',
+          'Meeting end time',
+        ]
+
+        courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
+        probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
       })
   })
 
@@ -126,7 +133,7 @@ describe('GET', () => {
   })
 })
 
-const getCourtBooking = prisonerNumber => ({
+const getCourtBooking = (prisonerNumber: string) => ({
   bookingType: 'COURT',
   prisonAppointments: [
     {
@@ -159,7 +166,7 @@ const getCourtBooking = prisonerNumber => ({
   videoLinkUrl: 'https://video.here.com',
 })
 
-const getProbationBooking = prisonerNumber => ({
+const getProbationBooking = (prisonerNumber: string) => ({
   bookingType: 'PROBATION',
   prisonAppointments: [
     {

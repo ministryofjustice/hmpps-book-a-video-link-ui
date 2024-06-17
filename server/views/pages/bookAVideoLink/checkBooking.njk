@@ -5,6 +5,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
+{% set mode = session.req.params.mode %}
 {% set pageTitle = "Check and confirm your booking" %}
 
 {% block content %}
@@ -172,7 +173,7 @@
                 }) }}
 
                 {{ govukButton({
-                    text: "Book video link",
+                    text: "Book video link" if mode == 'create' else 'Update video link',
                     type: 'submit'
                 }) }}
             </form>

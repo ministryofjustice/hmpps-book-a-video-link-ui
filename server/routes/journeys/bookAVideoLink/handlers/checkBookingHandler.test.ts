@@ -160,5 +160,28 @@ describe('Check Booking handler', () => {
         user,
       )
     })
+
+    it('should redirect to select alternatives if the selected room is not available', () => {
+      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
+
+      return request(app)
+        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/check-booking`)
+        .send({ comments: 'comment' })
+        .expect(302)
+        .expect('location', 'not-available')
+    })
+
+    it('should amend the posted fields', async () => {
+      appSetup({ bookAVideoLink: { bookingId: 1, type: 'COURT' } })
+
+      await request(app)
+        .post(`/booking/court/edit/1/${journeyId()}/add-video-link-booking/check-booking`)
+        .send({ comments: 'comment' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+
+      // TODO: Assert that the endpoint to amend the booking is called
+    })
   })
 })

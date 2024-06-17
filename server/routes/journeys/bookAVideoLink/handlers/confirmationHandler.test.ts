@@ -20,11 +20,16 @@ const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 
 let app: Express
 
-beforeEach(() => {
+const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, videoLinkService, prisonerService, prisonService },
     userSupplier: () => user,
+    journeySessionSupplier: () => journeySession,
   })
+}
+
+beforeEach(() => {
+  appSetup()
 })
 
 afterEach(() => {
@@ -85,6 +90,38 @@ describe('GET', () => {
         expect(existsByKey($, 'Prison room for probation meeting')).toBe(journey === 'probation')
         expect(existsByKey($, 'Meeting start time')).toBe(journey === 'probation')
         expect(existsByKey($, 'Meeting end time')).toBe(journey === 'probation')
+      })
+  })
+
+  it('should render the correct page in edit mode', () => {
+    appSetup({ bookAVideoLink: { bookingId: 1 } })
+
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
+    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+      firstName: 'Joe',
+      lastName: 'Bloggs',
+      prisonId: 'MDI',
+      prisonerNumber: 'AA1234A',
+    })
+    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
+
+    return request(app)
+      .get(`/booking/court/edit/1/${journeyId()}/add-video-link-booking/confirmation`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
+        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+
+        expect(heading).toEqual('The video link booking has been updated')
       })
   })
 })

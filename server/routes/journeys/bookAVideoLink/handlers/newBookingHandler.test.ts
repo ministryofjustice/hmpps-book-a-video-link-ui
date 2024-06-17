@@ -109,7 +109,14 @@ describe('New Booking handler', () => {
       videoLinkService.getVideoLinkBookingById.mockResolvedValue({
         bookingType: 'COURT',
         prisonAppointments: [
-          { appointmentType: 'VLB_COURT_MAIN', startTime: '08:00', endTime: '09:00', prisonLocKey: 'LOCATION_CODE' },
+          {
+            prisonerNumber: 'ABC123',
+            appointmentType: 'VLB_COURT_MAIN',
+            appointmentDate: '2024-02-01',
+            startTime: '08:00',
+            endTime: '09:00',
+            prisonLocKey: 'LOCATION_CODE',
+          },
         ],
         courtCode: 'COURT_CODE',
         courtHearingType: 'APPEAL',
@@ -135,6 +142,7 @@ describe('New Booking handler', () => {
             type: 'COURT',
             agencyCode: 'COURT_CODE',
             bookingId: 1,
+            date: '2024-02-01T00:00:00.000Z',
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
             hearingTypeCode: 'APPEAL',
@@ -147,6 +155,9 @@ describe('New Booking handler', () => {
             comments: 'test',
           }),
         )
+
+      expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+      expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('ABC123', user)
     })
   })
 

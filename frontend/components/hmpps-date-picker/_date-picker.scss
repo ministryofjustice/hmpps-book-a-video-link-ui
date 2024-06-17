@@ -267,6 +267,7 @@
   border-bottom: 4px solid govuk-colour('black');
   outline: none;
   cursor: pointer;
+  margin-bottom: 0 !important;
 
   &:hover {
     background-color: govuk-colour('mid-grey');

@@ -3,6 +3,7 @@ import home from './journeys/home'
 import manageCourts from './journeys/manageCourts'
 import manageProbationTeams from './journeys/manageProbationTeams'
 import bookAVideoLink from './journeys/bookAVideoLink'
+import viewBooking from './journeys/viewBooking'
 import { Services } from '../services'
 
 export default function routes(services: Services): Router {
@@ -24,6 +25,7 @@ export default function routes(services: Services): Router {
 
   router.use('/', home(services))
   router.use('/booking/:type(court|probation)', bookAVideoLink(services))
+  router.use('/:type(court|probation)/view-booking', viewBooking(services))
 
   return router
 }

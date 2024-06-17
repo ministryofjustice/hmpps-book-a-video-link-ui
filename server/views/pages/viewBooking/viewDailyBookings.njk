@@ -1,0 +1,68 @@
+{% extends "partials/layout.njk" %}
+
+{% from "components/hmppsDatePicker.njk" import hmppsDatePicker %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set type = session.req.params.type %}
+{% set pageTitle = "Video link bookings" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+            <p class='govuk-body'>You can view and change video link bookings for all the {{ 'courts' if type == 'court' else 'probation teams' }} you have selected.</p>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method='GET' class='horizontal-form govuk-!-margin-bottom-6'>
+
+                {{ hmppsDatePicker({
+                    id: 'date',
+                    name: 'date',
+                    label: { text: "Date" },
+                    classes: 'hmpps-datepicker--fixed-width'
+                }) }}
+
+                {{ govukSelect({
+                    name: "agencyCode",
+                    id: "agencyCode",
+                    label: { text: "Court" if type == 'court' else "Probation team" },
+                    items: items,
+                    errorMessage: validationErrors | findError("agencyCode")
+                }) }}
+
+                {{ govukButton({ text: "Update results", type: "submit" }) }}
+            </form>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+            {% if appointments.length %}
+                {% set rows = [] %}
+                {{ govukTable({
+                    attributes: {
+                        'data-module': 'moj-sortable-table'
+                    },
+                    head: [
+                        {
+                            text: "Time",
+                            attributes: {
+                            "aria-sort": "ascending"
+                        }
+                        },
+                        { text: "Name" },
+                        { text: "Prison location" },
+                        { text: "Hearing type" if type == 'court' else 'Meeting type' },
+                        { html: "<span class='govuk-visually-hidden'>View or edit</span>" }
+                    ],
+                    rows: rows
+                }) }}
+            {% else %}
+                <p class="govuk-body">There are no video link bookings for this date.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

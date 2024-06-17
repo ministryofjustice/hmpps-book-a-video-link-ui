@@ -26,6 +26,7 @@ export default class VideoLinkService {
     })
     return this.bookAVideoLinkApiClient.checkAvailability(
       {
+        vlbIdToExclude: journey.bookingId,
         bookingType: journey.type,
         courtOrProbationCode: journey.agencyCode,
         prisonCode: journey.prisoner.prisonId,

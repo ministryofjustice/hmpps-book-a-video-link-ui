@@ -1,4 +1,5 @@
 export type BookAVideoLinkJourney = {
+  bookingId?: number
   search?: {
     firstName: string
     lastName: string

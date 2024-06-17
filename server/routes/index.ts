@@ -23,7 +23,7 @@ export default function routes(services: Services): Router {
   })
 
   router.use('/', home(services))
-  router.use('/booking/:type(court|probation)/create', bookAVideoLink(services))
+  router.use('/booking/:type(court|probation)', bookAVideoLink(services))
 
   return router
 }

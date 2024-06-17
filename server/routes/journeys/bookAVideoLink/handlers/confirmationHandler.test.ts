@@ -20,11 +20,16 @@ const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 
 let app: Express
 
-beforeEach(() => {
+const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
     services: { auditService, videoLinkService, prisonerService, prisonService },
     userSupplier: () => user,
+    journeySessionSupplier: () => journeySession,
   })
+}
+
+beforeEach(() => {
+  appSetup()
 })
 
 afterEach(() => {
@@ -68,28 +73,67 @@ describe('GET', () => {
 
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
 
-        expect(existsByKey($, 'Court')).toBe(journey === 'court')
-        expect(existsByKey($, 'Hearing type')).toBe(journey === 'court')
-        expect(existsByKey($, 'Prison room for court hearing')).toBe(journey === 'court')
-        expect(existsByKey($, 'Hearing start time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Hearing end time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Prison room for pre-court hearing')).toBe(journey === 'court')
-        expect(existsByKey($, 'Pre-hearing start time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Pre-hearing end time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Prison room for post-court hearing')).toBe(journey === 'court')
-        expect(existsByKey($, 'Post-hearing start time')).toBe(journey === 'court')
-        expect(existsByKey($, 'Post-hearing end time')).toBe(journey === 'court')
+        const courtFields = [
+          'Court',
+          'Hearing type',
+          'Prison room for court hearing',
+          'Hearing start time',
+          'Hearing end time',
+          'Prison room for pre-court hearing',
+          'Pre-hearing start time',
+          'Pre-hearing end time',
+          'Prison room for post-court hearing',
+          'Post-hearing start time',
+          'Post-hearing end time',
+        ]
 
-        expect(existsByKey($, 'Probation team')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Meeting type')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Prison room for probation meeting')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Meeting start time')).toBe(journey === 'probation')
-        expect(existsByKey($, 'Meeting end time')).toBe(journey === 'probation')
+        const probationFields = [
+          'Probation team',
+          'Meeting type',
+          'Prison room for probation meeting',
+          'Meeting start time',
+          'Meeting end time',
+        ]
+
+        courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
+        probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
+      })
+  })
+
+  it('should render the correct page in edit mode', () => {
+    appSetup({ bookAVideoLink: { bookingId: 1 } })
+
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
+    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+      firstName: 'Joe',
+      lastName: 'Bloggs',
+      prisonId: 'MDI',
+      prisonerNumber: 'AA1234A',
+    })
+    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
+
+    return request(app)
+      .get(`/booking/court/edit/1/${journeyId()}/add-video-link-booking/confirmation`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
+        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+
+        expect(heading).toEqual('The video link booking has been updated')
       })
   })
 })
 
-const getCourtBooking = prisonerNumber => ({
+const getCourtBooking = (prisonerNumber: string) => ({
   bookingType: 'COURT',
   prisonAppointments: [
     {
@@ -122,7 +166,7 @@ const getCourtBooking = prisonerNumber => ({
   videoLinkUrl: 'https://video.here.com',
 })
 
-const getProbationBooking = prisonerNumber => ({
+const getProbationBooking = (prisonerNumber: string) => ({
   bookingType: 'PROBATION',
   prisonAppointments: [
     {

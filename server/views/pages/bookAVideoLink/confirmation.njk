@@ -4,12 +4,15 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = "The video link has been booked" %}
+{% set mode = session.req.params.mode %}
+{% set pageTitle = "The video link has been booked" if mode == 'create' else 'The video link booking has been updated' %}
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            {{ govukPanel({ titleText: pageTitle, classes: 'govuk-!-margin-bottom-9' }) }}
+            {{ govukPanel({ titleText: pageTitle, classes: 'govuk-!-margin-bottom-6' }) }}
+
+            <p class='govuk-body'>We have emailed you with the video link details. An email has also been sent to the prison.</p>
 
             <h2 class='govuk-heading-m'>Video link details</h2>
             {{ govukSummaryList({
@@ -185,14 +188,15 @@
                 ]
             }) }}
 
-            <a href='/booking/{{ session.req.params.type}}/create/prisoner-search' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='bookAnotherLink'>Book another video link</a>
-
-            <div class='govuk-!-margin-top-3'>
-                {{ govukButton({
-                    text: "Exit",
-                    href: '/'
-                }) }}
+            <div class="govuk-button-group">
+                {% if mode == 'create' %}
+                    {{ govukButton({ text: "Exit", href: '/' }) }}
+                    <a href='/booking/{{ session.req.params.type}}/create/prisoner-search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+                {% else %}
+                    <a href='#' class="govuk-link govuk-link--no-visited-state">Exit to all video link bookings</a>
+                {% endif %}
             </div>
+
         </div>
     </div>
 {% endblock %}

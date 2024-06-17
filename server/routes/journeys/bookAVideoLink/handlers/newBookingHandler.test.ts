@@ -13,6 +13,7 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import { VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -49,6 +50,12 @@ beforeEach(() => {
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
   ])
+
+  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+    prisonId: 'MDI',
+    firstName: 'Joe',
+    lastName: 'Smith',
+  })
 })
 
 afterEach(() => {
@@ -61,8 +68,6 @@ describe('New Booking handler', () => {
       ['Probation', 'probation'],
       ['Court', 'court'],
     ])('%s journey - should render the correct view page', (_: string, journey: string) => {
-      prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({ prisonId: 'MDI' })
-
       return request(app)
         .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking`)
         .expect('Content-Type', /html/)
@@ -98,6 +103,61 @@ describe('New Booking handler', () => {
             expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
           }
         })
+    })
+
+    it('should populate the session with an existing booking for amending', async () => {
+      videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+        bookingType: 'COURT',
+        prisonAppointments: [
+          {
+            prisonerNumber: 'ABC123',
+            appointmentType: 'VLB_COURT_MAIN',
+            appointmentDate: '2024-02-01',
+            startTime: '08:00',
+            endTime: '09:00',
+            prisonLocKey: 'LOCATION_CODE',
+          },
+        ],
+        courtCode: 'COURT_CODE',
+        courtHearingType: 'APPEAL',
+        videoLinkUrl: 'http://example.com',
+        comments: 'test',
+      } as VideoLinkBooking)
+
+      await request(app)
+        .get(`/booking/court/edit/1/${journeyId()}/add-video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Change video link booking')
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookAVideoLink', {
+            type: 'COURT',
+            agencyCode: 'COURT_CODE',
+            bookingId: 1,
+            date: '2024-02-01T00:00:00.000Z',
+            startTime: '1970-01-01T08:00:00.000Z',
+            endTime: '1970-01-01T09:00:00.000Z',
+            hearingTypeCode: 'APPEAL',
+            locationCode: 'LOCATION_CODE',
+            prisoner: {
+              name: 'Joe Smith',
+              prisonId: 'MDI',
+            },
+            videoLinkUrl: 'http://example.com',
+            comments: 'test',
+          }),
+        )
+
+      expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+      expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('ABC123', user)
     })
   })
 

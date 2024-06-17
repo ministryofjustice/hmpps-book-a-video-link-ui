@@ -65,15 +65,26 @@ export default class CheckBookingHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { body } = req
+    const { mode } = req.params
 
     req.session.journey.bookAVideoLink = {
       ...req.session.journey.bookAVideoLink,
       comments: body.comments,
     }
 
-    const id = await this.videoLinkService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
-    req.session.journey.bookAVideoLink = null
+    const { availabilityOk } = await this.videoLinkService.checkAvailability(req.session.journey.bookAVideoLink, user)
+    if (!availabilityOk) {
+      return res.redirect('not-available')
+    }
 
-    res.redirect(`confirmation/${id}`)
+    if (mode === 'create') {
+      const id = await this.videoLinkService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      req.session.journey.bookAVideoLink = null
+      return res.redirect(`confirmation/${id}`)
+    }
+
+    // TODO: POST amend request
+    req.session.journey.bookAVideoLink = null
+    return res.redirect(`confirmation`)
   }
 }

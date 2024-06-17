@@ -9,7 +9,8 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set pageTitle = "Search for a video link booking" %}
+{% set mode = session.req.params.mode %}
+{% set pageTitle = "Search for a video link booking" if mode == 'create' else 'Change video link booking' %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -285,7 +286,11 @@
                 }) }}
             </form>
 
-            <a href="../prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+            {% if mode == 'create' %}
+                <a href="../prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+            {% else %}
+                <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

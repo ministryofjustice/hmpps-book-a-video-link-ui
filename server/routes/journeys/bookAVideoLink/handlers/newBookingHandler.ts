@@ -104,7 +104,8 @@ export default class NewBookingHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type, prisonerNumber } = req.params
+    const { type } = req.params
+    const prisonerNumber = req.params.prisonerNumber || req.session.journey.bookAVideoLink.prisoner.prisonerNumber
 
     const agencies =
       type === BavlJourneyType.COURT
@@ -132,7 +133,6 @@ export default class NewBookingHandler implements PageHandler {
   }
 
   public POST = async (req: Request, res: Response) => {
-    const { prisonerNumber } = req.params
     const { user } = res.locals
     const {
       agencyCode,
@@ -148,6 +148,7 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     } = req.body
 
+    const prisonerNumber = req.params.prisonerNumber || req.session.journey.bookAVideoLink.prisoner.prisonerNumber
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
     req.session.journey.bookAVideoLink = {

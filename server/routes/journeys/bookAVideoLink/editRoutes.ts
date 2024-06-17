@@ -23,6 +23,8 @@ export default function EditRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  // TODO: Restrict access to edit journey for bookings which should not be editable (e.g. already in the past)
+
   route(
     '/add-video-link-booking',
     new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),

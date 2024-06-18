@@ -198,4 +198,18 @@ describe('manageUsersApiClient', () => {
       expect(output).toEqual(response)
     })
   })
+
+  describe('getVideoLinkSchedule', () => {
+    it('should return data from api', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .get('/schedule/court/ABERCV?date=2024-07-12')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getVideoLinkSchedule('court', 'ABERCV', new Date(2024, 6, 12), user)
+      expect(output).toEqual(response)
+    })
+  })
 })

@@ -19,6 +19,7 @@ export default function Index({
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+  route('/:bookingId', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
 
   return router
 }

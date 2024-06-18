@@ -24,15 +24,24 @@
                     id: 'date',
                     name: 'date',
                     label: { text: "Date" },
-                    classes: 'hmpps-datepicker--fixed-width'
+                    classes: 'hmpps-datepicker--fixed-width',
+                    errorMessage: {} if validationErrors | findError('date'),
+                    value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
                 }) }}
 
+                {% set items = [] %}
+                {% for agency in agencies %}
+                    {% set items = (items.push({
+                        value: agency.code,
+                        text: agency.description,
+                        selected: session.req.query.agencyCode == agency.code
+                    }), items) %}
+                {% endfor %}
                 {{ govukSelect({
                     name: "agencyCode",
                     id: "agencyCode",
                     label: { text: "Court" if type == 'court' else "Probation team" },
-                    items: items,
-                    errorMessage: validationErrors | findError("agencyCode")
+                    items: items
                 }) }}
 
                 {{ govukButton({ text: "Update results", type: "submit" }) }}
@@ -47,12 +56,7 @@
                         'data-module': 'moj-sortable-table'
                     },
                     head: [
-                        {
-                            text: "Time",
-                            attributes: {
-                            "aria-sort": "ascending"
-                        }
-                        },
+                        { text: "Time", attributes: { "aria-sort": "ascending" } },
                         { text: "Name" },
                         { text: "Prison location" },
                         { text: "Hearing type" if type == 'court' else 'Meeting type' },

@@ -17,21 +17,17 @@
                     "data-qa": "create-booking-card-court"
                 }) }}
             </div>
-        {% endif %}
 
-        {% if user.isProbationUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
-                    "href": "/booking/probation/create/prisoner-search",
+                    "href": "/court/view-booking",
                     "clickable": "true",
-                    "heading": "Book a new video link",
-                    "description": "Create a new video link booking between a probation team and a prison.",
-                    "data-qa": "create-booking-card-probation"
+                    "heading": "View and change video links",
+                    "description": "You can view and change existing video link bookings for your courts.",
+                    "data-qa": "view-bookings-card-court"
                 }) }}
             </div>
-        {% endif %}
 
-        {% if user.isCourtUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
                     "href": "/manage-courts",
@@ -44,6 +40,26 @@
         {% endif %}
 
         {% if user.isProbationUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/booking/probation/create/prisoner-search",
+                    "clickable": "true",
+                    "heading": "Book a new video link",
+                    "description": "Create a new video link booking between a probation team and a prison.",
+                    "data-qa": "create-booking-card-probation"
+                }) }}
+            </div>
+
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/probation/view-booking",
+                    "clickable": "true",
+                    "heading": "View and change video links",
+                    "description": "You can view and change existing video link bookings for your probation teams.",
+                    "data-qa": "view-bookings-card-probation"
+                }) }}
+            </div>
+
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
                     "href": "/manage-probation-teams",

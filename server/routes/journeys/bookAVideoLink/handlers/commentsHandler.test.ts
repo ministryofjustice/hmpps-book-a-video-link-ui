@@ -3,9 +3,7 @@ import request from 'supertest'
 import cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/cheerio'
-import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
-import expectJourneySession from '../../../testutils/testUtilRoute'
+import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 
 jest.mock('../../../../services/auditService')
 

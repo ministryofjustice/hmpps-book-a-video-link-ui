@@ -6,7 +6,6 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 import ViewBookingHandler from './handlers/viewBookingHandler'
-import prisonerSearchApi from '../../../../integration_tests/mockApis/prisonerSearchApi'
 
 export default function Index({
   auditService,

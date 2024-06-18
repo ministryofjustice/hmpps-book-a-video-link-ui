@@ -32,7 +32,7 @@ export default class ViewBookingHandler implements PageHandler {
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
-    res.render('pages/viewBooking/viewBooking', {
+    return res.render('pages/viewBooking/viewBooking', {
       prisoner,
       booking,
       rooms,

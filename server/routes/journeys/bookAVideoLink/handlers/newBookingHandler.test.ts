@@ -27,7 +27,7 @@ const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
-const videoLinkService = new VideoLinkService(null) as jest.Mocked<VideoLinkService>
+const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 

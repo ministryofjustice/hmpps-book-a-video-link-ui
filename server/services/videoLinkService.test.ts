@@ -2,18 +2,22 @@ import sinon from 'sinon'
 import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import VideoLinkService from './videoLinkService'
+import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
 
 jest.mock('../data/bookAVideoLinkApiClient')
+jest.mock('../data/prisonerOffenderSearchApiClient')
 
 describe('Video link service', () => {
   let bookAVideoLinkClient: jest.Mocked<BookAVideoLinkApiClient>
+  let prisonerOffenderSearchClient: jest.Mocked<PrisonerOffenderSearchApiClient>
   let videoLinkService: VideoLinkService
 
   const user = createUser([])
 
   beforeEach(() => {
     bookAVideoLinkClient = new BookAVideoLinkApiClient() as jest.Mocked<BookAVideoLinkApiClient>
-    videoLinkService = new VideoLinkService(bookAVideoLinkClient)
+    prisonerOffenderSearchClient = new PrisonerOffenderSearchApiClient() as jest.Mocked<PrisonerOffenderSearchApiClient>
+    videoLinkService = new VideoLinkService(bookAVideoLinkClient, prisonerOffenderSearchClient)
   })
 
   afterEach(() => {
@@ -398,6 +402,107 @@ describe('Video link service', () => {
       const dateOfBooking2 = new Date('2024-06-11')
       const timeOfBooking2 = new Date('2024-06-11T00:00:00Z')
       expect(videoLinkService.prisonShouldBeWarnedOfBooking(dateOfBooking2, timeOfBooking2)).toBe(false)
+    })
+  })
+
+  describe('getVideoLinkSchedule', () => {
+    const date = new Date('2022-03-20T00:00:00Z')
+    const agencyCode = 'AGENCY_CODE'
+
+    it('Retrieves and maps video link schedule for court agency', async () => {
+      const appointments = [
+        {
+          bookingId: 1,
+          prisonCode: 'MDI',
+          prisonerNumber: 'ABC123',
+          prisonLocKey: 'LOCATION1',
+          startTime: '1970-01-01T13:30:00Z',
+          endTime: '1970-01-01T14:30:00Z',
+        },
+        {
+          bookingId: 2,
+          prisonCode: 'MDI',
+          prisonerNumber: 'DEF456',
+          prisonLocKey: 'LOCATION2',
+          startTime: '1970-01-01T14:30:00Z',
+          endTime: '1970-01-01T15:30:00Z',
+        },
+      ]
+
+      const locations = [
+        { key: 'LOCATION1', description: 'Location 1 Description' },
+        { key: 'LOCATION2', description: 'Location 2 Description' },
+      ]
+
+      const prisoners = [
+        { prisonerNumber: 'ABC123', firstName: 'John', lastName: 'Doe' },
+        { prisonerNumber: 'DEF456', firstName: 'Jane', lastName: 'Smith' },
+      ]
+
+      bookAVideoLinkClient.getVideoLinkSchedule.mockResolvedValue(appointments)
+      bookAVideoLinkClient.getAppointmentLocations.mockResolvedValue(locations)
+      prisonerOffenderSearchClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
+
+      const result = await videoLinkService.getVideoLinkSchedule('court', agencyCode, date, user)
+
+      expect(bookAVideoLinkClient.getVideoLinkSchedule).toHaveBeenCalledWith('court', agencyCode, date, user)
+      expect(bookAVideoLinkClient.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+      expect(prisonerOffenderSearchClient.getByPrisonerNumbers).toHaveBeenCalledWith(['ABC123', 'DEF456'], user)
+      expect(result).toEqual([
+        {
+          ...appointments[0],
+          prisonerName: 'John Doe',
+          prisonLocationDescription: 'Location 1 Description',
+        },
+        {
+          ...appointments[1],
+          prisonerName: 'Jane Smith',
+          prisonLocationDescription: 'Location 2 Description',
+        },
+      ])
+    })
+
+    it('Retrieves and maps video link schedule for probation agency', async () => {
+      const appointments = [
+        {
+          bookingId: 1,
+          prisonCode: 'MDI',
+          prisonerNumber: 'ABC123',
+          prisonLocKey: 'LOCATION1',
+          startTime: '1970-01-01T13:30:00Z',
+          endTime: '1970-01-01T14:30:00Z',
+        },
+      ]
+
+      const locations = [{ key: 'LOCATION1', description: 'Location 1 Description' }]
+
+      const prisoners = [{ prisonerNumber: 'ABC123', firstName: 'John', lastName: 'Doe' }]
+
+      bookAVideoLinkClient.getVideoLinkSchedule.mockResolvedValue(appointments)
+      bookAVideoLinkClient.getAppointmentLocations.mockResolvedValue(locations)
+      prisonerOffenderSearchClient.getByPrisonerNumbers.mockResolvedValue(prisoners)
+
+      const result = await videoLinkService.getVideoLinkSchedule('probation', agencyCode, date, user)
+
+      expect(bookAVideoLinkClient.getVideoLinkSchedule).toHaveBeenCalledWith('probation', agencyCode, date, user)
+      expect(bookAVideoLinkClient.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+      expect(prisonerOffenderSearchClient.getByPrisonerNumbers).toHaveBeenCalledWith(['ABC123'], user)
+      expect(result).toEqual([
+        {
+          ...appointments[0],
+          prisonerName: 'John Doe',
+          prisonLocationDescription: 'Location 1 Description',
+        },
+      ])
+    })
+
+    it('Handles empty schedule gracefully', async () => {
+      bookAVideoLinkClient.getVideoLinkSchedule.mockResolvedValue([])
+
+      const result = await videoLinkService.getVideoLinkSchedule('court', agencyCode, date, user)
+
+      expect(result).toEqual([])
+      expect(bookAVideoLinkClient.getVideoLinkSchedule).toHaveBeenCalledWith('court', agencyCode, date, user)
     })
   })
 })

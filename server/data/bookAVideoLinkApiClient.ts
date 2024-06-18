@@ -10,7 +10,9 @@ import {
   VideoLinkBooking,
   AvailabilityRequest,
   AvailabilityResponse,
+  ScheduleItem,
 } from '../@types/bookAVideoLinkApi/types'
+import { formatDate } from '../utils/utils'
 
 export default class BookAVideoLinkApiClient extends RestClient {
   constructor() {
@@ -87,5 +89,17 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {
     return this.post({ path: '/video-link-booking', data: request }, user)
+  }
+
+  public getVideoLinkSchedule(
+    agencyType: 'court' | 'probation',
+    agencyCode: string,
+    date: Date,
+    user: Express.User,
+  ): Promise<ScheduleItem[]> {
+    return this.get(
+      { path: `/schedule/${agencyType}/${agencyCode}`, query: { date: formatDate(date, 'yyyy-MM-dd') } },
+      user,
+    )
   }
 }

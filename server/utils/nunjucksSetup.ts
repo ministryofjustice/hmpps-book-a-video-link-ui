@@ -59,6 +59,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatDate', formatDate)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
+  njkEnv.addGlobal('now', () => new Date())
 
   // Enums
   njkEnv.addGlobal('BavlJourneyType', BavlJourneyType)

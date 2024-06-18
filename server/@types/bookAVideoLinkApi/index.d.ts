@@ -4,6 +4,15 @@
  */
 
 export interface paths {
+  '/queue-admin/retry-dlq/{dlqName}': {
+    put: operations['retryDlq']
+  }
+  '/queue-admin/retry-all-dlqs': {
+    put: operations['retryAllDlqs']
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    put: operations['purgeQueue']
+  }
   '/video-link-booking': {
     /** Endpoint to support the creation of video link bookings */
     post: operations['create']
@@ -24,9 +33,24 @@ export interface paths {
     /** Endpoint to return the details of a video link booking using its internal ID */
     get: operations['getVideoLinkBookingById']
   }
+  '/schedule/probation/{probationTeamCode}': {
+    /** Endpoint to retrieve a schedule of bookings for a probation team */
+    get: operations['getProbationSchedule']
+  }
+  '/schedule/prison/{prisonCode}': {
+    /** Endpoint to retrieve a schedule of bookings for a prison */
+    get: operations['getScheduleForPrison']
+  }
+  '/schedule/court/{courtCode}': {
+    /** Endpoint to retrieve a schedule of bookings for a court */
+    get: operations['getCourtSchedule']
+  }
   '/reference-codes/group/{groupCode}': {
     /** Endpoint to return reference data for a provided group key */
     get: operations['getReferenceDataByGroup']
+  }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    get: operations['getDlqMessages']
   }
   '/probation-teams/user-preferences': {
     /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
@@ -62,6 +86,21 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never>
+      }
+      messageId: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+    }
     /**
      * @description
      *       The appointment or appointments associated with the prisoner.
@@ -262,6 +301,11 @@ export interface components {
       preAppointment?: components['schemas']['LocationAndInterval']
       mainAppointment: components['schemas']['LocationAndInterval']
       postAppointment?: components['schemas']['LocationAndInterval']
+      /**
+       * Format: int64
+       * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
+       */
+      vlbIdToExclude?: number
     }
     /** @description A time interval between a start and end time */
     Interval: {
@@ -479,6 +523,182 @@ export interface components {
        */
       amendedAt?: string
     }
+    /** @description An item on a schedule i.e. prison appointments and their booking details */
+    ScheduleItem: {
+      /**
+       * Format: int64
+       * @description The internal ID for the video booking
+       * @example 123
+       */
+      videoBookingId: number
+      /**
+       * Format: int64
+       * @description The internal ID for an appointment related to a booking. It is unique in this list
+       * @example 123
+       */
+      prisonAppointmentId: number
+      /**
+       * @description The booking type
+       * @example COURT
+       * @enum {string}
+       */
+      bookingType: 'COURT' | 'PROBATION'
+      /**
+       * @description The booking status
+       * @example ACTIVE
+       * @enum {string}
+       */
+      statusCode: 'ACTIVE' | 'CANCELLED'
+      /**
+       * @description The video link URL to attend this event
+       * @example https://video.link.url
+       */
+      videoUrl?: string
+      /**
+       * @description The comments provided for the booking
+       * @example Free text comment
+       */
+      bookingComments?: string
+      /**
+       * @description True if the booking was made by a prison user
+       * @example false
+       * @enum {boolean}
+       */
+      createdByPrison: true | false
+      /**
+       * Format: int64
+       * @description The internal court ID, if this is a court booking
+       * @example 1234
+       */
+      courtId?: number
+      /**
+       * @description The court code, if this is a court booking
+       * @example DRBYMC
+       */
+      courtCode?: string
+      /**
+       * @description The court description, if this is a court booking
+       * @example Derby Magistrates
+       */
+      courtDescription?: string
+      /**
+       * @description The court hearing type code, if this is a court booking
+       * @example APPEAL
+       * @enum {string}
+       */
+      hearingType?:
+        | 'APPEAL'
+        | 'APPLICATION'
+        | 'BACKER'
+        | 'BAIL'
+        | 'CIVIL'
+        | 'CSE'
+        | 'CTA'
+        | 'IMMIGRATION_DEPORTATION'
+        | 'FAMILY'
+        | 'TRIAL'
+        | 'FCMH'
+        | 'FTR'
+        | 'GRH'
+        | 'MDA'
+        | 'MEF'
+        | 'NEWTON'
+        | 'PLE'
+        | 'PTPH'
+        | 'PTR'
+        | 'POCA'
+        | 'REMAND'
+        | 'SECTION_28'
+        | 'SEN'
+        | 'TRIBUNAL'
+        | 'OTHER'
+      /**
+       * @description The court hearing type description, if this is a court booking
+       * @example Appeal hearing
+       */
+      hearingTypeDescription?: string
+      /**
+       * Format: int64
+       * @description The internal probation team ID, if this is a probation booking
+       * @example 1234
+       */
+      probationTeamId?: number
+      /**
+       * @description The internal probation team code, if this is a probation booking
+       * @example BLCKPPP
+       */
+      probationTeamCode?: string
+      /**
+       * @description The probation team description, if this is a probation booking
+       * @example Blackpool PP
+       */
+      probationTeamDescription?: string
+      /**
+       * @description The probation meeting type code, if this is a probation booking
+       * @example PSR
+       * @enum {string}
+       */
+      probationMeetingType?: 'PSR' | 'RR'
+      /**
+       * @description The probation meeting type description, if this is a probation booking
+       * @example Pre-sentence report
+       */
+      probationMeetingTypeDescription?: string
+      /**
+       * @description The prison code
+       * @example MDI
+       */
+      prisonCode: string
+      /**
+       * @description The prison name
+       * @example HMP Moorland
+       */
+      prisonName: string
+      /**
+       * @description The prisoner number (NOMS ID)
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /**
+       * @description The appointment type
+       * @example 1234
+       * @enum {string}
+       */
+      appointmentType: 'VLB_PROBATION' | 'VLB_COURT_PRE' | 'VLB_COURT_MAIN' | 'VLB_COURT_POST'
+      /**
+       * @description The appointment type description
+       * @example Court - main hearing
+       */
+      appointmentTypeDescription?: string
+      /**
+       * @description The appointment comments
+       * @example This is a free text comment
+       */
+      appointmentComments?: string
+      /**
+       * @description The location key for the room where the appointment will take place in the prison.
+       * @example MDI-VCC-1
+       */
+      prisonLocKey: string
+      /**
+       * Format: date
+       * @description The date for this appointment ISO format (YYYY-MM-DD)
+       * @example 2024-10-03
+       */
+      appointmentDate: string
+      /**
+       * Format: partial-time
+       * @description The start time for the appointment ISO time format (HH:MI)
+       * @example 12:45
+       */
+      startTime: string
+      /**
+       * Format: partial-time
+       * @description The end time for the appointment ISO time format (HH:MI)
+       * @example 13:15
+       */
+      endTime: string
+    }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
       /**
@@ -502,6 +722,13 @@ export interface components {
        * @example Sentencing hearing
        */
       description?: string
+    }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
     /** @description Describes the details of a probation team */
     ProbationTeam: {
@@ -664,6 +891,46 @@ export type $defs = Record<string, never>
 export type external = Record<string, never>
 
 export interface operations {
+  retryDlq: {
+    parameters: {
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      path: {
+        queueName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
   /** Endpoint to support the creation of video link bookings */
   create: {
     requestBody: {
@@ -822,6 +1089,129 @@ export interface operations {
       }
     }
   }
+  /** Endpoint to retrieve a schedule of bookings for a probation team */
+  getProbationSchedule: {
+    parameters: {
+      query?: {
+        /** @description A date in ISO format (YYYY-MM-DD). Defaults to today if not supplied. */
+        date?: string
+        /** @description Include cancelled bookings (true or false), defaults to false. */
+        includeCancelled?: boolean
+      }
+      path: {
+        /** @description A probation team code */
+        probationTeamCode: string
+      }
+    }
+    responses: {
+      /** @description List of scheduled video link appointments and booking details for one probation team */
+      200: {
+        content: {
+          'application/json': components['schemas']['ScheduleItem'][]
+        }
+      }
+      /** @description Bad request. Message contains the detail. */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to retrieve a schedule of bookings for a prison */
+  getScheduleForPrison: {
+    parameters: {
+      query?: {
+        /** @description A date in ISO format (YYYY-MM-DD). Defaults to today if not supplied. */
+        date?: string
+        /** @description Include cancelled bookings (true or false), defaults to false. */
+        includeCancelled?: boolean
+      }
+      path: {
+        /** @description A prison code */
+        prisonCode: string
+      }
+    }
+    responses: {
+      /** @description List of scheduled video link appointments and booking details at the prison. */
+      200: {
+        content: {
+          'application/json': components['schemas']['ScheduleItem'][]
+        }
+      }
+      /** @description Bad request. Message contains the detail. */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  /** Endpoint to retrieve a schedule of bookings for a court */
+  getCourtSchedule: {
+    parameters: {
+      query?: {
+        /** @description A date in ISO format (YYYY-MM-DD). Defaults to today if not supplied. */
+        date?: string
+        /** @description Include cancelled bookings (true or false), defaults to false. */
+        includeCancelled?: boolean
+      }
+      path: {
+        /** @description A court code */
+        courtCode: string
+      }
+    }
+    responses: {
+      /** @description List of scheduled video link appointments and booking details for one court */
+      200: {
+        content: {
+          'application/json': components['schemas']['ScheduleItem'][]
+        }
+      }
+      /** @description Bad request. Message contains the detail. */
+      400: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   /** Endpoint to return reference data for a provided group key */
   getReferenceDataByGroup: {
     parameters: {
@@ -847,6 +1237,24 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      path: {
+        dlqName: string
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

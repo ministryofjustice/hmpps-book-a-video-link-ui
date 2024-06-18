@@ -22,7 +22,7 @@ export const services = () => {
   const probationTeamsService = new ProbationTeamsService(bookAVideoLinkApiClient)
   const prisonService = new PrisonService(bookAVideoLinkApiClient)
   const prisonerService = new PrisonerService(prisonerOffenderSearchApiClient)
-  const videoLinkService = new VideoLinkService(bookAVideoLinkApiClient)
+  const videoLinkService = new VideoLinkService(bookAVideoLinkApiClient, prisonerOffenderSearchApiClient)
 
   return {
     applicationInfo,

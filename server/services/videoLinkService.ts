@@ -1,11 +1,16 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
+import _ from 'lodash'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { AvailabilityRequest, CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
+import { AvailabilityRequest, CreateVideoBookingRequest, ScheduleItem } from '../@types/bookAVideoLinkApi/types'
 import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
 import { dateAtTime, formatDate } from '../utils/utils'
+import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
 
 export default class VideoLinkService {
-  constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}
+  constructor(
+    private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient,
+    private readonly prisonerOffenderSearchApiClient: PrisonerOffenderSearchApiClient,
+  ) {}
 
   public async getCourtHearingTypes(user: Express.User) {
     return this.bookAVideoLinkApiClient.getReferenceCodesForGroup('COURT_HEARING_TYPE', user)
@@ -120,5 +125,34 @@ export default class VideoLinkService {
     const twoDaysFromNow = addDays(startOfToday(), 2)
 
     return exactTimeOfBooking < startOfTomorrow() || (now > todayAt3PM && exactTimeOfBooking < twoDaysFromNow)
+  }
+
+  public async getVideoLinkSchedule(
+    agencyType: 'court' | 'probation',
+    agencyCode: string,
+    date: Date,
+    user: Express.User,
+  ): Promise<(ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]> {
+    const appointments = await this.bookAVideoLinkApiClient.getVideoLinkSchedule(agencyType, agencyCode, date, user)
+
+    // Get prison locations
+    const prisonCodes = _.uniq(appointments.map(a => a.prisonCode))
+    const prisonLocations = await Promise.all(
+      prisonCodes.map(p => this.bookAVideoLinkApiClient.getAppointmentLocations(p, user)),
+    ).then(r => r.flat())
+
+    // Get prisoners
+    const prisonerNumbers = _.uniq(appointments.map(a => a.prisonerNumber))
+    const prisoners = await this.prisonerOffenderSearchApiClient.getByPrisonerNumbers(prisonerNumbers, user)
+
+    return appointments.map(a => {
+      const prisoner = prisoners.find(p => p.prisonerNumber === a.prisonerNumber)
+
+      return {
+        ...a,
+        prisonerName: `${prisoner.firstName} ${prisoner.lastName}`,
+        prisonLocationDescription: prisonLocations.find(l => l.key === a.prisonLocKey).description,
+      }
+    })
   }
 }

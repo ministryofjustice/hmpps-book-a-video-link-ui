@@ -4,7 +4,6 @@
 {% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
-{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -289,7 +288,7 @@
             {% if mode == 'create' %}
                 <a href="../prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
-                <a href="#" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

@@ -38,6 +38,26 @@ describe('prisonerOffenderSearchApiClient', () => {
     })
   })
 
+  describe('getByPrisonerNumber', () => {
+    it('should return data from api', async () => {
+      const response = [{ data: 'data' }]
+
+      fakePrisonerOffenderSearchApiClient
+        .post('/prisoner-search/prisoner-numbers', { prisonerNumbers: ['ABC123'] } as RequestBodyMatcher)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await prisonerOffenderSearchApiClient.getByPrisonerNumbers(['ABC123'], user)
+      expect(output).toEqual(response)
+    })
+
+    it('should return empty list by default', async () => {
+      const response = []
+      const output = await prisonerOffenderSearchApiClient.getByPrisonerNumbers([], user)
+      expect(output).toEqual(response)
+    })
+  })
+
   describe('getByAttributes', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }

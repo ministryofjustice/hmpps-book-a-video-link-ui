@@ -1,0 +1,35 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Add comments on this booking" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method="POST" action='check-booking'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukCharacterCount({
+                    name: "comments",
+                    id: "comments",
+                    maxlength: 400,
+                    label: { text: "Comments (optional)" },
+                    hint: { text: "This can include the hearing number, type of hearing and any other additional details" },
+                    value: session.journey.bookAVideoLink.comments
+                }) }}
+
+                {{ govukButton({ text: "Continue", type: "submit" }) }}
+            </form>
+
+            <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+        </div>
+    </div>
+{% endblock %}

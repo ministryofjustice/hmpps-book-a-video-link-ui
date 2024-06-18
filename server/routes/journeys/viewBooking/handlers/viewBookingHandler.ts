@@ -1,39 +1,41 @@
-import { Request, Response } from 'express'
-import { isValid } from 'date-fns'
+import { NextFunction, Request, Response } from 'express'
+import createError from 'http-errors'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import BavlJourneyType from '../../../enumerator/bavlJourneyType'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
-import { parseDatePickerDate } from '../../../../utils/utils'
 import VideoLinkService from '../../../../services/videoLinkService'
+import PrisonerService from '../../../../services/prisonerService'
+import PrisonService from '../../../../services/prisonService'
 
 export default class ViewBookingHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_BOOKING_PAGE
 
   constructor(
-    private readonly courtsService: CourtsService,
-    private readonly probationTeamsService: ProbationTeamsService,
     private readonly videoLinkService: VideoLinkService,
+    private readonly prisonerService: PrisonerService,
+    private readonly prisonService: PrisonService,
   ) {}
 
-  GET = async (req: Request, res: Response) => {
-    const type = req.params.type as BavlJourneyType
-    const { user, validationErrors } = res.locals
-    const date = parseDatePickerDate(req.query.date as string)
-    const agencyCode = req.query.agencyCode as string
+  GET = async (req: Request, res: Response, next: NextFunction) => {
+    const { type } = req.params
+    const bookingId = Number(req.params.bookingId)
+    const { user } = res.locals
 
-    if (date && !isValid(date) && !validationErrors) {
-      return res.validationFailed(`An invalid date was entered: ${req.query.date}`, 'date')
+    const booking = await this.videoLinkService.getVideoLinkBookingById(bookingId, user)
+
+    if (type.toUpperCase() !== booking.bookingType) {
+      return next(createError(404, 'Not found'))
     }
 
-    const agencies =
-      type === BavlJourneyType.COURT
-        ? await this.courtsService.getUserPreferences(user)
-        : await this.probationTeamsService.getUserPreferences(user)
+    // TODO: This currently assumes that there is only 1 prisoner associated with a booking.
+    //  It does not cater for co-defendants at different prisons.
+    const { prisonerNumber } = booking.prisonAppointments[0]
+    const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
+    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
-    const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
-
-    return res.render('pages/viewBooking/viewDailyBookings', { agencies, appointments })
+    res.render('pages/viewBooking/viewBooking', {
+      prisoner,
+      booking,
+      rooms,
+    })
   }
 }

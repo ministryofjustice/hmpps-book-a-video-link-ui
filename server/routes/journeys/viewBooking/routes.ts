@@ -6,14 +6,19 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 
-export default function Index({ auditService, courtsService, probationTeamsService }: Services): Router {
+export default function Index({
+  auditService,
+  courtsService,
+  probationTeamsService,
+  videoLinkService,
+}: Services): Router {
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService))
+  route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
 
   return router
 }

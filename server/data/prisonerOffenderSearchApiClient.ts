@@ -16,6 +16,12 @@ export default class PrisonerOffenderSearchApiClient extends RestClient {
     return this.get({ path: `/prisoner/${prisonerNumber}` }, user)
   }
 
+  async getByPrisonerNumbers(prisonerNumbers: string[], user: Express.User): Promise<Prisoner[]> {
+    return prisonerNumbers.length
+      ? this.post({ path: `/prisoner-search/prisoner-numbers`, data: { prisonerNumbers } }, user)
+      : []
+  }
+
   async getByAttributes(
     attributeSearchRequest: AttributeSearchRequest,
     user: Express.User,

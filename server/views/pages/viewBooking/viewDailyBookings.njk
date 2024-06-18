@@ -50,7 +50,20 @@
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
             {% if appointments.length %}
+
+                <p class="govuk-body-l"><span class='govuk-!-font-weight-bold'>Total:</span> {{ appointments.length }}</p>
+
                 {% set rows = [] %}
+                {% for item in appointments %}
+                    {% set rows = (rows.push([
+                            { text: item.startTime + ' to ' + item.endTime },
+                            { text: item.prisonerName | convertToTitleCase },
+                            { html: '<div>'+ item.prisonLocationDescription +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' },
+                            { text: item.hearingTypeDescription or item.probationMeetingTypeDescription },
+                            { html: '<a class="govuk-link" href="view-booking/' + item.videoBookingId + '">View or edit</a>' if item.appointmentType == 'VLB_COURT_MAIN' or item.appointmentType == 'VLB_PROBATION' else ''}
+                        ]
+                    ), rows) %}
+                {% endfor %}
                 {{ govukTable({
                     attributes: {
                         'data-module': 'moj-sortable-table'

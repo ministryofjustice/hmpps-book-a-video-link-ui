@@ -32,7 +32,12 @@ export default class ViewDailyBookingsHandler implements PageHandler {
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
+    const appointments = await this.videoLinkService.getVideoLinkSchedule(
+      type,
+      agencyCode || agencies[0].code,
+      date,
+      user,
+    )
 
     return res.render('pages/viewBooking/viewDailyBookings', { agencies, appointments })
   }

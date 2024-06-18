@@ -1,9 +1,9 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
+import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { existsByKey, getByDataQa, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
+import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
@@ -53,10 +53,10 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking/confirmation/1`)
+      .get(`/${journey}/view-booking/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_BOOKING_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })
@@ -66,74 +66,36 @@ describe('GET', () => {
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
-        const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
+        const bookAnotherLink = getByDataQa($, 'change-link').attr('href')
 
-        expect(heading).toEqual('The video link has been booked')
-        expect(bookAnotherLink).toEqual(`/booking/${journey}/create/prisoner-search`)
-
-        expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
-
-        const courtFields = [
-          'Court',
-          'Hearing type',
-          'Prison room for court hearing',
-          'Hearing start time',
-          'Hearing end time',
-          'Prison room for pre-court hearing',
-          'Pre-hearing start time',
-          'Pre-hearing end time',
-          'Prison room for post-court hearing',
-          'Post-hearing start time',
-          'Post-hearing end time',
-        ]
-
-        const probationFields = [
-          'Probation team',
-          'Meeting type',
-          'Prison room for probation meeting',
-          'Meeting start time',
-          'Meeting end time',
-        ]
-
-        courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
-        probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
+        expect(heading).toEqual('Joe Bloggs’s video link details')
+        expect(bookAnotherLink).toEqual(`/booking/${journey}/edit/1001/add-video-link-booking`)
       })
   })
 
-  it('should render the correct page in edit mode', () => {
-    appSetup({ bookAVideoLink: { bookingId: 1 } })
-
-    videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
-    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      prisonId: 'MDI',
-      prisonerNumber: 'AA1234A',
-    })
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
+  it.each([
+    ['Probation', 'probation'],
+    ['Court', 'court'],
+  ])('%s journey - should throw 404 if requested booking does not match journey type', (_: string, journey: string) => {
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue(
+      journey === 'court' ? getProbationBooking('AA1234A') : getCourtBooking('AA1234A'),
+    )
 
     return request(app)
-      .get(`/booking/court/edit/1/${journeyId()}/add-video-link-booking/confirmation`)
+      .get(`/${journey}/view-booking/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
-        })
-
-        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
-        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
-        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+        expect(res.status).toEqual(404)
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
-
-        expect(heading).toEqual('The video link booking has been updated')
+        expect(heading).toEqual('Page not found')
       })
   })
 })
 
 const getCourtBooking = (prisonerNumber: string) => ({
+  videoLinkBookingId: 1001,
   bookingType: 'COURT',
   prisonAppointments: [
     {
@@ -167,6 +129,7 @@ const getCourtBooking = (prisonerNumber: string) => ({
 })
 
 const getProbationBooking = (prisonerNumber: string) => ({
+  videoLinkBookingId: 1001,
   bookingType: 'PROBATION',
   prisonAppointments: [
     {

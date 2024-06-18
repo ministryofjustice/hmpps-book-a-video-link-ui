@@ -12,7 +12,7 @@ jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const videoLinkService = new VideoLinkService(null) as jest.Mocked<VideoLinkService>
+const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 

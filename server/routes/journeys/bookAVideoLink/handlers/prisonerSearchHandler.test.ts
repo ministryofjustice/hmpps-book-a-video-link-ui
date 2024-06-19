@@ -36,7 +36,7 @@ describe('Prisoner search handler', () => {
   describe('GET', () => {
     it('should render the correct view page', () => {
       return request(app)
-        .get(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .get(`/court/booking/create/${journeyId()}/prisoner-search`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -63,7 +63,7 @@ describe('Prisoner search handler', () => {
 
     it('should validate an empty form', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ dateOfBirth: {} })
         .expect(() =>
           expectErrorMessages([
@@ -78,7 +78,7 @@ describe('Prisoner search handler', () => {
 
     it('should validate that the date of birth is valid', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ ...validForm, dateOfBirth: { day: '31', month: '02', year: '1970' } })
         .expect(() =>
           expectErrorMessages([
@@ -93,7 +93,7 @@ describe('Prisoner search handler', () => {
 
     it('should validate that the date of birth is in the past', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ ...validForm, dateOfBirth: { day: '02', month: '06', year: '2300' } })
         .expect(() =>
           expectErrorMessages([
@@ -108,7 +108,7 @@ describe('Prisoner search handler', () => {
 
     it('should validate that the prisoner number is in the correct format', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ ...validForm, prisonerNumber: 'ABC123' })
         .expect(() =>
           expectErrorMessages([
@@ -123,7 +123,7 @@ describe('Prisoner search handler', () => {
 
     it('should validate that the PNC number is in the correct format', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ ...validForm, pncNumber: '011/3456A' })
         .expect(() =>
           expectErrorMessages([
@@ -138,35 +138,35 @@ describe('Prisoner search handler', () => {
 
     it('should accept firstName on its own as the search criteria', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ dateOfBirth: {}, firstName: 'John' })
         .expect(() => expectNoErrorMessages())
     })
 
     it('should accept lastName on its own as the search criteria', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ dateOfBirth: {}, lastName: 'Smith' })
         .expect(() => expectNoErrorMessages())
     })
 
     it('should accept prisonerNumber on its own as the search criteria', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ dateOfBirth: {}, prisonerNumber: 'A1234AA' })
         .expect(() => expectNoErrorMessages())
     })
 
     it('should accept PNC number on its own as the search criteria', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send({ dateOfBirth: {}, pncNumber: '2001/23456A' })
         .expect(() => expectNoErrorMessages())
     })
 
     it('should hold the posted fields in session', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/prisoner-search`)
+        .post(`/court/booking/create/${journeyId()}/prisoner-search`)
         .send(validForm)
         .expect(302)
         .expect('location', 'prisoner-search/results')

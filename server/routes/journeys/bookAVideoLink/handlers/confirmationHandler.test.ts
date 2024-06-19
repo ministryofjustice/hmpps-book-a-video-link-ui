@@ -53,7 +53,7 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking/confirmation/1`)
+      .get(`/${journey}/booking/create/${journeyId()}/ABC123/add-video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
@@ -69,7 +69,7 @@ describe('GET', () => {
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
         expect(heading).toEqual('The video link has been booked')
-        expect(bookAnotherLink).toEqual(`/booking/${journey}/create/prisoner-search`)
+        expect(bookAnotherLink).toEqual(`/${journey}/booking/create/prisoner-search`)
 
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
 
@@ -113,7 +113,7 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/booking/court/edit/1/${journeyId()}/add-video-link-booking/confirmation`)
+      .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {

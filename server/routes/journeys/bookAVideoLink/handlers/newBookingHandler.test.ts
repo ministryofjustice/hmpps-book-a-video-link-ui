@@ -69,7 +69,7 @@ describe('New Booking handler', () => {
       ['Court', 'court'],
     ])('%s journey - should render the correct view page', (_: string, journey: string) => {
       return request(app)
-        .get(`/booking/${journey}/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .get(`/${journey}/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -125,7 +125,7 @@ describe('New Booking handler', () => {
       } as VideoLinkBooking)
 
       await request(app)
-        .get(`/booking/court/edit/1/${journeyId()}/add-video-link-booking`)
+        .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -178,7 +178,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -230,7 +230,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'PROBATION' } })
 
       return request(app)
-        .post(`/booking/probation/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/probation/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -272,7 +272,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           preRequired: 'yes',
@@ -298,7 +298,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           date: '31/02/2022',
@@ -336,7 +336,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           date: formatDate(startOfYesterday(), 'dd/MM/yyyy'),
@@ -356,7 +356,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           date: formatDate(startOfToday(), 'dd/MM/yyyy'),
@@ -377,7 +377,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           startTime: { hour: 17, minute: 30 },
@@ -406,7 +406,7 @@ describe('New Booking handler', () => {
       })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
         .send({
           ...validForm,
           preRequired: 'yes',

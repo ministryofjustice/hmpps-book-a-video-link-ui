@@ -39,7 +39,7 @@ describe('Comments handler', () => {
       ['Court', 'court'],
     ])('%s journey - should render the correct view page', (_: string, journey: string) => {
       return request(app)
-        .get(`/booking/${journey}/edit/1001/${journeyId()}/add-video-link-booking/comments`)
+        .get(`/${journey}/booking/edit/1001/${journeyId()}/add-video-link-booking/comments`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)

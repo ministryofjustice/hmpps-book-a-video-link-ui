@@ -45,7 +45,7 @@ describe('Check Booking handler', () => {
   describe('GET', () => {
     it('should render the correct view page', () => {
       return request(app)
-        .get(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
+        .get(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -63,7 +63,7 @@ describe('Check Booking handler', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true })
 
       return request(app)
-        .get(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
+        .get(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
         .expect(302)
         .expect('location', 'check-booking')
     })
@@ -81,7 +81,7 @@ describe('Check Booking handler', () => {
 
     it('should validate no fields posted', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -121,7 +121,7 @@ describe('Check Booking handler', () => {
 
     it('should validate invalid fields posted', () => {
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
         .send({
           startTime: 'invalid',
           endTime: 'invalid',
@@ -170,7 +170,7 @@ describe('Check Booking handler', () => {
       appSetup({ bookAVideoLink: {} })
 
       return request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
         .send({ ...validForm, preStart: undefined, preEnd: undefined, postStart: undefined, postEnd: undefined })
         .expect(() => expectNoErrorMessages())
     })
@@ -179,7 +179,7 @@ describe('Check Booking handler', () => {
       videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
 
       await request(app)
-        .post(`/booking/court/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
+        .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/not-available`)
         .send(validForm)
         .expect(302)
         .expect('location', 'check-booking')

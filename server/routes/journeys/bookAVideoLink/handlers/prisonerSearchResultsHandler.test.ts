@@ -37,7 +37,7 @@ describe('Prisoner search results handler', () => {
   describe('GET', () => {
     it('should search for prisoners matching the criteria and render the correct view page', async () => {
       await request(app)
-        .get(`/booking/court/create/${journeyId()}/prisoner-search/results`)
+        .get(`/court/booking/create/${journeyId()}/prisoner-search/results`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -60,7 +60,7 @@ describe('Prisoner search results handler', () => {
 
     it('should search using the correct pagination', async () => {
       await request(app)
-        .get(`/booking/court/create/${journeyId()}/prisoner-search/results?page=5`)
+        .get(`/court/booking/create/${journeyId()}/prisoner-search/results?page=5`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)

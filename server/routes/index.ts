@@ -24,7 +24,7 @@ export default function routes(services: Services): Router {
   })
 
   router.use('/', home(services))
-  router.use('/booking/:type(court|probation)', bookAVideoLink(services))
+  router.use('/:type(court|probation)/booking', bookAVideoLink(services))
   router.use('/:type(court|probation)/view-booking', viewBooking(services))
 
   return router

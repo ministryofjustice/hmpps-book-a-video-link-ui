@@ -69,7 +69,7 @@ describe('GET', () => {
         const bookAnotherLink = getByDataQa($, 'change-link').attr('href')
 
         expect(heading).toEqual('Joe Bloggs’s video link details')
-        expect(bookAnotherLink).toEqual(`/booking/${journey}/edit/1001/add-video-link-booking`)
+        expect(bookAnotherLink).toEqual(`/${journey}/booking/edit/1001/add-video-link-booking`)
       })
   })
 

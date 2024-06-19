@@ -56,7 +56,7 @@ describe('GET', () => {
       }),
     })
 
-    return request(app).get('/').expect(302).expect('location', '/manage-courts')
+    return request(app).get('/').expect(302).expect('location', '/court/user-preferences')
   })
 
   it('probation user should be redirected to select court preferences if they have not selected any', () => {
@@ -71,6 +71,6 @@ describe('GET', () => {
       }),
     })
 
-    return request(app).get('/').expect(302).expect('location', '/manage-probation-teams')
+    return request(app).get('/').expect(302).expect('location', '/probation/user-preferences')
   })
 })

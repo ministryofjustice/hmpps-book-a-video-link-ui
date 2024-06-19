@@ -3,7 +3,8 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = "Your court list has been updated" %}
+{% set type = session.req.params.type %}
+{% set pageTitle = "Your " + ("court" if type == BavlJourneyType.COURT else "probation team") + " list has been updated" %}
 
 {% block content %}
     <div class="govuk-grid-row govuk-body">
@@ -13,10 +14,10 @@
                 classes: "govuk-!-margin-bottom-6"
             }) }}
 
-            <p class = "govuk-!-margin-top-8">You can now create video link bookings and view existing bookings for the following courts:</p>
+            <p class = "govuk-!-margin-top-8">You can now create video link bookings and view existing bookings for the following {{ ("courts" if type == BavlJourneyType.COURT else "probation teams") }}:</p>
             <ul class="govuk-list govuk-list--bullet">
-                {% for item in courts %}
-                    <li data-qa="court">{{item.description}}</li>
+                {% for item in selectedPreferences %}
+                    <li data-qa="probation-team">{{item.description}}</li>
                 {% endfor %}
             </ul>
         </div>

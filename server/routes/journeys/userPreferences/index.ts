@@ -1,14 +1,19 @@
 import { Router } from 'express'
 import createError from 'http-errors'
 import type { Services } from '../../../services'
+import BavlJourneyType from '../../enumerator/bavlJourneyType'
 import routes from './routes'
 
 export default function Index(services: Services): Router {
   const router = Router({ mergeParams: true })
 
-  // The following routes are only accessible to probation users
   router.use((req, res, next) => {
-    return res.locals.user.isProbationUser ? next() : next(createError(404, 'Not found'))
+    const { type } = req.params
+
+    return (res.locals.user.isCourtUser && type === BavlJourneyType.COURT) ||
+      (res.locals.user.isProbationUser && type === BavlJourneyType.PROBATION)
+      ? next()
+      : next(createError(404, 'Not found'))
   })
 
   router.use('/', routes(services))

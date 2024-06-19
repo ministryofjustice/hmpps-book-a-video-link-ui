@@ -1,5 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
+import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import VideoLinkService from '../../../../services/videoLinkService'
@@ -15,16 +14,11 @@ export default class ViewBookingHandler implements PageHandler {
     private readonly prisonService: PrisonService,
   ) {}
 
-  GET = async (req: Request, res: Response, next: NextFunction) => {
-    const { type } = req.params
+  GET = async (req: Request, res: Response) => {
     const bookingId = Number(req.params.bookingId)
     const { user } = res.locals
 
     const booking = await this.videoLinkService.getVideoLinkBookingById(bookingId, user)
-
-    if (type.toUpperCase() !== booking.bookingType) {
-      return next(createError(404, 'Not found'))
-    }
 
     // TODO: This currently assumes that there is only 1 prisoner associated with a booking.
     //  It does not cater for co-defendants at different prisons.

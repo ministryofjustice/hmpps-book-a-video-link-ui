@@ -45,8 +45,8 @@ export default function validationMiddleware(type: new () => object): RequestHan
       forbidUnknownValues: false,
     })
 
+    req.body = requestObject
     if (errors.length === 0) {
-      req.body = requestObject
       return next()
     }
 

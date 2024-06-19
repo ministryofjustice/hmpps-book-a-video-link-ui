@@ -72,26 +72,6 @@ describe('GET', () => {
         expect(bookAnotherLink).toEqual(`/${journey}/booking/edit/1001/add-video-link-booking`)
       })
   })
-
-  it.each([
-    ['Probation', 'probation'],
-    ['Court', 'court'],
-  ])('%s journey - should throw 404 if requested booking does not match journey type', (_: string, journey: string) => {
-    videoLinkService.getVideoLinkBookingById.mockResolvedValue(
-      journey === 'court' ? getProbationBooking('AA1234A') : getCourtBooking('AA1234A'),
-    )
-
-    return request(app)
-      .get(`/${journey}/view-booking/1`)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(res.status).toEqual(404)
-
-        const $ = cheerio.load(res.text)
-        const heading = getPageHeader($)
-        expect(heading).toEqual('Page not found')
-      })
-  })
 })
 
 const getCourtBooking = (prisonerNumber: string) => ({

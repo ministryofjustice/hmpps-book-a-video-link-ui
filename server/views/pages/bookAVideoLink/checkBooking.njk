@@ -169,7 +169,7 @@
                         text: "This can include the hearing number, type of hearing and any other additional details"
                     },
                     errorMessage: validationErrors | findError('comments'),
-                    value: formResponses.comments
+                    value: formResponses.comments or session.journey.bookAVideoLink.comments
                 }) }}
 
                 {{ govukButton({

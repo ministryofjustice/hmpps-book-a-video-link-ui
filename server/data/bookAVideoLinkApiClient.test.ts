@@ -3,7 +3,11 @@ import nock from 'nock'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
-import { AvailabilityRequest, CreateVideoBookingRequest } from '../@types/bookAVideoLinkApi/types'
+import {
+  AmendVideoBookingRequest,
+  AvailabilityRequest,
+  CreateVideoBookingRequest,
+} from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
 
@@ -193,6 +197,24 @@ describe('manageUsersApiClient', () => {
 
       const output = await bookAVideoLinkApiClient.createVideoLinkBooking(
         { bookingType: 'COURT' } as CreateVideoBookingRequest,
+        user,
+      )
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('amendVideoLinkBooking', () => {
+    it('should put the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .put(`/video-link-booking/id/1`, { bookingType: 'COURT' })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.amendVideoLinkBooking(
+        1,
+        { bookingType: 'COURT' } as AmendVideoBookingRequest,
         user,
       )
       expect(output).toEqual(response)

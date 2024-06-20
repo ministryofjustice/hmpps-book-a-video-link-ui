@@ -4,14 +4,11 @@
  */
 
 export interface paths {
-  '/queue-admin/retry-dlq/{dlqName}': {
-    put: operations['retryDlq']
-  }
-  '/queue-admin/retry-all-dlqs': {
-    put: operations['retryAllDlqs']
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    put: operations['purgeQueue']
+  '/video-link-booking/id/{videoBookingId}': {
+    /** Endpoint to return the details of a video link booking using its internal ID */
+    get: operations['getVideoLinkBookingById']
+    /** Endpoint to support the amendment of video link bookings */
+    put: operations['amend']
   }
   '/video-link-booking': {
     /** Endpoint to support the creation of video link bookings */
@@ -29,10 +26,6 @@ export interface paths {
     /** Endpoint to assess booking availability and to suggest alternatives */
     post: operations['checkAvailability']
   }
-  '/video-link-booking/id/{videoBookingId}': {
-    /** Endpoint to return the details of a video link booking using its internal ID */
-    get: operations['getVideoLinkBookingById']
-  }
   '/schedule/probation/{probationTeamCode}': {
     /** Endpoint to retrieve a schedule of bookings for a probation team */
     get: operations['getProbationSchedule']
@@ -48,9 +41,6 @@ export interface paths {
   '/reference-codes/group/{groupCode}': {
     /** Endpoint to return reference data for a provided group key */
     get: operations['getReferenceDataByGroup']
-  }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    get: operations['getDlqMessages']
   }
   '/probation-teams/user-preferences': {
     /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
@@ -86,20 +76,73 @@ export type webhooks = Record<string, never>
 
 export interface components {
   schemas: {
-    DlqMessage: {
-      body: {
-        [key: string]: Record<string, never>
-      }
-      messageId: string
-    }
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
+    /** @description The request with the amended video link booking details */
+    AmendVideoBookingRequest: {
+      /**
+       * @description The booking type
+       * @example COURT
+       * @enum {string}
+       */
+      bookingType: 'COURT' | 'PROBATION'
+      /** @description The prisoner or prisoners associated with the video link booking */
+      prisoners: components['schemas']['PrisonerDetails'][]
+      /**
+       * @description The court code is needed if booking type is COURT, otherwise null
+       * @example DRBYMC
+       */
+      courtCode?: string
+      /**
+       * @description The court hearing type is needed if booking type is COURT, otherwise null
+       * @example APPEAL
+       * @enum {string}
+       */
+      courtHearingType?:
+        | 'APPEAL'
+        | 'APPLICATION'
+        | 'BACKER'
+        | 'BAIL'
+        | 'CIVIL'
+        | 'CSE'
+        | 'CTA'
+        | 'IMMIGRATION_DEPORTATION'
+        | 'FAMILY'
+        | 'TRIAL'
+        | 'FCMH'
+        | 'FTR'
+        | 'GRH'
+        | 'MDA'
+        | 'MEF'
+        | 'NEWTON'
+        | 'PLE'
+        | 'PTPH'
+        | 'PTR'
+        | 'POCA'
+        | 'REMAND'
+        | 'SECTION_28'
+        | 'SEN'
+        | 'TRIBUNAL'
+        | 'OTHER'
+      /**
+       * @description The probation team code is needed if booking type is PROBATION, otherwise null
+       * @example BLKPPP
+       */
+      probationTeamCode?: string
+      /**
+       * @description The probation meeting type is needed if booking type is PROBATION, otherwise null
+       * @example PSR
+       * @enum {string}
+       */
+      probationMeetingType?: 'PSR' | 'RR'
+      /**
+       * @description Free text comments for the video link booking
+       * @example Waiting to hear on legal representation
+       */
+      comments?: string
+      /**
+       * @description The video link for the appointment. Must be a valid URL
+       * @example https://video.here.com
+       */
+      videoLinkUrl?: string
     }
     /**
      * @description
@@ -141,6 +184,39 @@ export interface components {
        * @example 11:45
        */
       endTime: string
+    }
+    /** @description The prisoner or prisoners associated with the video link booking */
+    PrisonerDetails: {
+      /**
+       * @description The prison code for the prisoner
+       * @example PVI
+       */
+      prisonCode: string
+      /**
+       * @description The prisoner number (NOMIS ID)
+       * @example A1234AA
+       */
+      prisonerNumber: string
+      /**
+       * @description
+       *       The appointment or appointments associated with the prisoner.
+       *
+       *       There should only ever be one appointment for a probation meeting.
+       *
+       *       Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
+       *
+       *       Appointment dates and times must not overlap.
+       */
+      appointments: components['schemas']['Appointment'][]
+    }
+    ErrorResponse: {
+      /** Format: int32 */
+      status: number
+      /** Format: int32 */
+      errorCode?: number
+      userMessage?: string
+      developerMessage?: string
+      moreInfo?: string
     }
     /** @description The request with the new video link booking details */
     CreateVideoBookingRequest: {
@@ -214,39 +290,6 @@ export interface components {
        * @example false
        */
       createdByPrison?: boolean
-    }
-    /** @description The prisoner or prisoners associated with the video link booking */
-    PrisonerDetails: {
-      /**
-       * @description The prison code for the prisoner
-       * @example PVI
-       */
-      prisonCode: string
-      /**
-       * @description The prisoner number (NOMIS ID)
-       * @example A1234AA
-       */
-      prisonerNumber: string
-      /**
-       * @description
-       *       The appointment or appointments associated with the prisoner.
-       *
-       *       There should only ever be one appointment for a probation meeting.
-       *
-       *       Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
-       *
-       *       Appointment dates and times must not overlap.
-       */
-      appointments: components['schemas']['Appointment'][]
-    }
-    ErrorResponse: {
-      /** Format: int32 */
-      status: number
-      /** Format: int32 */
-      errorCode?: number
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
     }
     /** @description The request body containing the user probation team preferences */
     SetProbationTeamPreferencesRequest: {
@@ -723,13 +766,6 @@ export interface components {
        */
       description?: string
     }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
-    }
     /** @description Describes the details of a probation team */
     ProbationTeam: {
       /**
@@ -891,42 +927,75 @@ export type $defs = Record<string, never>
 export type external = Record<string, never>
 
 export interface operations {
-  retryDlq: {
+  /** Endpoint to return the details of a video link booking using its internal ID */
+  getVideoLinkBookingById: {
     parameters: {
       path: {
-        dlqName: string
+        videoBookingId: number
       }
     }
     responses: {
-      /** @description OK */
+      /** @description Video link booking details */
       200: {
         content: {
-          '*/*': components['schemas']['RetryDlqResult']
+          'application/json': components['schemas']['VideoLinkBooking']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The video booking ID was not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  retryAllDlqs: {
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
+  /** Endpoint to support the amendment of video link bookings */
+  amend: {
     parameters: {
       path: {
-        queueName: string
+        videoBookingId: number
+      }
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AmendVideoBookingRequest']
       }
     }
     responses: {
-      /** @description OK */
+      /** @description The unique identifier of the video booking */
       200: {
         content: {
-          '*/*': components['schemas']['PurgeQueueResult']
+          'application/json': number
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The video booking ID was not found. */
+      404: {
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -1049,40 +1118,6 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  /** Endpoint to return the details of a video link booking using its internal ID */
-  getVideoLinkBookingById: {
-    parameters: {
-      path: {
-        videoBookingId: number
-      }
-    }
-    responses: {
-      /** @description Video link booking details */
-      200: {
-        content: {
-          'application/json': components['schemas']['VideoLinkBooking']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description The video booking ID was not found. */
-      404: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
@@ -1237,24 +1272,6 @@ export interface operations {
       403: {
         content: {
           'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getDlqMessages: {
-    parameters: {
-      query?: {
-        maxMessages?: number
-      }
-      path: {
-        dlqName: string
-      }
-    }
-    responses: {
-      /** @description OK */
-      200: {
-        content: {
-          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

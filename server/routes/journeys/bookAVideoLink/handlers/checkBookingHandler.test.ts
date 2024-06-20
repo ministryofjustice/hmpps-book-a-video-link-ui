@@ -21,7 +21,7 @@ const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
-const videoLinkService = new VideoLinkService(null) as jest.Mocked<VideoLinkService>
+const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 
@@ -181,7 +181,14 @@ describe('Check Booking handler', () => {
         .expect('location', 'confirmation')
         .then(() => expectJourneySession(app, 'bookAVideoLink', null))
 
-      // TODO: Assert that the endpoint to amend the booking is called
+      expect(videoLinkService.amendVideoLinkBooking).toHaveBeenCalledWith(
+        {
+          bookingId: 1,
+          comments: 'comment',
+          type: 'COURT',
+        },
+        user,
+      )
     })
   })
 })

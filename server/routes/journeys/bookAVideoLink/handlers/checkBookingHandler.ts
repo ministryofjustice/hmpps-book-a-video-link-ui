@@ -83,7 +83,7 @@ export default class CheckBookingHandler implements PageHandler {
       return res.redirect(`confirmation/${id}`)
     }
 
-    // TODO: POST amend request
+    await this.videoLinkService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
     req.session.journey.bookAVideoLink = null
     return res.redirect(`confirmation`)
   }

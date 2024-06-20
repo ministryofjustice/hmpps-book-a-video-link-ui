@@ -1,10 +1,19 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import _ from 'lodash'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { AvailabilityRequest, CreateVideoBookingRequest, ScheduleItem } from '../@types/bookAVideoLinkApi/types'
+import {
+  AmendVideoBookingRequest,
+  AvailabilityRequest,
+  CreateVideoBookingRequest,
+  Location,
+  ScheduleItem,
+} from '../@types/bookAVideoLinkApi/types'
 import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
 import { dateAtTime, formatDate } from '../utils/utils'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
+import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
+
+type VideoBookingRequest = CreateVideoBookingRequest | AmendVideoBookingRequest
 
 export default class VideoLinkService {
   constructor(
@@ -12,52 +21,129 @@ export default class VideoLinkService {
     private readonly prisonerOffenderSearchApiClient: PrisonerOffenderSearchApiClient,
   ) {}
 
-  public async getCourtHearingTypes(user: Express.User) {
+  public getCourtHearingTypes(user: Express.User) {
     return this.bookAVideoLinkApiClient.getReferenceCodesForGroup('COURT_HEARING_TYPE', user)
   }
 
-  public async getProbationMeetingTypes(user: Express.User) {
+  public getProbationMeetingTypes(user: Express.User) {
     return this.bookAVideoLinkApiClient.getReferenceCodesForGroup('PROBATION_MEETING_TYPE', user)
   }
 
-  public async getVideoLinkBookingById(id: number, user: Express.User) {
+  public getVideoLinkBookingById(id: number, user: Express.User) {
     return this.bookAVideoLinkApiClient.getVideoLinkBookingById(id, user)
   }
 
-  public async checkAvailability(journey: BookAVideoLinkJourney, user: Express.User) {
+  public checkAvailability(journey: BookAVideoLinkJourney, user: Express.User) {
+    const availabilityRequest = this.buildAvailabilityRequest(journey)
+    return this.bookAVideoLinkApiClient.checkAvailability(availabilityRequest, user)
+  }
+
+  public createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+    const request = this.buildBookingRequest<CreateVideoBookingRequest>(journey)
+    return this.bookAVideoLinkApiClient.createVideoLinkBooking(request, user)
+  }
+
+  public amendVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+    const request = this.buildBookingRequest<AmendVideoBookingRequest>(journey)
+    return this.bookAVideoLinkApiClient.amendVideoLinkBooking(journey.bookingId, request, user)
+  }
+
+  public prisonShouldBeWarnedOfBooking(dateOfBooking: Date, timeOfBooking: Date): boolean {
+    const now = new Date()
+    const exactTimeOfBooking = dateAtTime(dateOfBooking, timeOfBooking)
+    const todayAt3PM = set(startOfToday(), { hours: 15 })
+    const twoDaysFromNow = addDays(startOfToday(), 2)
+
+    return exactTimeOfBooking < startOfTomorrow() || (now > todayAt3PM && exactTimeOfBooking < twoDaysFromNow)
+  }
+
+  public async getVideoLinkSchedule(
+    agencyType: 'court' | 'probation',
+    agencyCode: string,
+    date: Date,
+    user: Express.User,
+  ): Promise<(ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]> {
+    const appointments = await this.bookAVideoLinkApiClient.getVideoLinkSchedule(agencyType, agencyCode, date, user)
+
+    const prisonCodes = _.uniq(appointments.map(a => a.prisonCode))
+    const prisonLocations = await this.fetchPrisonLocations(prisonCodes, user)
+
+    const prisonerNumbers = _.uniq(appointments.map(a => a.prisonerNumber))
+    const prisoners = await this.prisonerOffenderSearchApiClient.getByPrisonerNumbers(prisonerNumbers, user)
+
+    return appointments.map(a => ({
+      ...a,
+      prisonerName: this.findPrisonerName(prisoners, a.prisonerNumber),
+      prisonLocationDescription: this.findPrisonLocationDescription(prisonLocations, a.prisonLocKey),
+    }))
+  }
+
+  private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {
     const formatInterval = (start: string, end: string) => ({
       start: formatDate(start, 'HH:mm'),
       end: formatDate(end, 'HH:mm'),
     })
-    return this.bookAVideoLinkApiClient.checkAvailability(
-      {
-        vlbIdToExclude: journey.bookingId,
-        bookingType: journey.type,
-        courtOrProbationCode: journey.agencyCode,
-        prisonCode: journey.prisoner.prisonId,
-        date: formatDate(journey.date, 'yyyy-MM-dd'),
-        preAppointment: journey.preLocationCode
-          ? {
-              prisonLocKey: journey.preLocationCode,
-              interval: formatInterval(journey.preHearingStartTime, journey.preHearingEndTime),
-            }
-          : undefined,
-        mainAppointment: {
-          prisonLocKey: journey.locationCode,
-          interval: formatInterval(journey.startTime, journey.endTime),
+
+    return {
+      vlbIdToExclude: journey.bookingId,
+      bookingType: journey.type,
+      courtOrProbationCode: journey.agencyCode,
+      prisonCode: journey.prisoner.prisonId,
+      date: formatDate(journey.date, 'yyyy-MM-dd'),
+      preAppointment: journey.preLocationCode
+        ? {
+            prisonLocKey: journey.preLocationCode,
+            interval: formatInterval(journey.preHearingStartTime, journey.preHearingEndTime),
+          }
+        : undefined,
+      mainAppointment: {
+        prisonLocKey: journey.locationCode,
+        interval: formatInterval(journey.startTime, journey.endTime),
+      },
+      postAppointment: journey.postLocationCode
+        ? {
+            prisonLocKey: journey.postLocationCode,
+            interval: formatInterval(journey.postHearingStartTime, journey.postHearingEndTime),
+          }
+        : undefined,
+    } as AvailabilityRequest
+  }
+
+  private buildBookingRequest<T extends VideoBookingRequest>(journey: BookAVideoLinkJourney): T {
+    return {
+      bookingType: journey.type,
+      prisoners: [
+        {
+          prisonCode: journey.prisoner.prisonId,
+          prisonerNumber: journey.prisoner.prisonerNumber,
+          appointments: this.mapSessionToAppointments(journey),
         },
-        postAppointment: journey.postLocationCode
-          ? {
-              prisonLocKey: journey.postLocationCode,
-              interval: formatInterval(journey.postHearingStartTime, journey.postHearingEndTime),
-            }
-          : undefined,
-      } as AvailabilityRequest,
-      user,
+      ],
+      courtCode: journey.type === 'COURT' ? journey.agencyCode : undefined,
+      courtHearingType: journey.type === 'COURT' ? journey.hearingTypeCode : undefined,
+      probationTeamCode: journey.type === 'PROBATION' ? journey.agencyCode : undefined,
+      probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
+      comments: journey.comments,
+      videoLinkUrl: journey.videoLinkUrl,
+    } as T
+  }
+
+  private async fetchPrisonLocations(prisonCodes: string[], user: Express.User) {
+    return Promise.all(prisonCodes.map(code => this.bookAVideoLinkApiClient.getAppointmentLocations(code, user))).then(
+      responses => responses.flat(),
     )
   }
 
-  public async createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+  private findPrisonerName(prisoners: Prisoner[], prisonerNumber: string) {
+    const prisoner = prisoners.find(p => p.prisonerNumber === prisonerNumber)
+    return prisoner ? `${prisoner.firstName} ${prisoner.lastName}` : ''
+  }
+
+  private findPrisonLocationDescription(prisonLocations: Location[], prisonLocKey: string) {
+    return prisonLocations.find(loc => loc.key === prisonLocKey)?.description ?? ''
+  }
+
+  private mapSessionToAppointments(journey: BookAVideoLinkJourney) {
     const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
       locationCode
         ? {
@@ -69,7 +155,7 @@ export default class VideoLinkService {
           }
         : undefined
 
-    const appointments = [
+    return [
       journey.type === 'COURT'
         ? createAppointment(
             'VLB_COURT_PRE',
@@ -95,64 +181,5 @@ export default class VideoLinkService {
         ? createAppointment('VLB_PROBATION', journey.locationCode, journey.date, journey.startTime, journey.endTime)
         : undefined,
     ].filter(Boolean)
-
-    const request = {
-      bookingType: journey.type,
-      prisoners: [
-        {
-          // TODO: The journey object currently assumes that there is only 1 prisoner associated with a booking.
-          //  It does not cater for co-defendants at different prisons
-          prisonCode: journey.prisoner.prisonId,
-          prisonerNumber: journey.prisoner.prisonerNumber,
-          appointments,
-        },
-      ],
-      courtCode: journey.type === 'COURT' ? journey.agencyCode : undefined,
-      courtHearingType: journey.type === 'COURT' ? journey.hearingTypeCode : undefined,
-      probationTeamCode: journey.type === 'PROBATION' ? journey.agencyCode : undefined,
-      probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
-      comments: journey.comments,
-      videoLinkUrl: journey.videoLinkUrl,
-    } as CreateVideoBookingRequest
-
-    return this.bookAVideoLinkApiClient.createVideoLinkBooking(request, user)
-  }
-
-  public prisonShouldBeWarnedOfBooking(dateOfBooking: Date, timeOfBooking: Date): boolean {
-    const now = new Date()
-    const exactTimeOfBooking = dateAtTime(dateOfBooking, timeOfBooking)
-    const todayAt3PM = set(startOfToday(), { hours: 15 })
-    const twoDaysFromNow = addDays(startOfToday(), 2)
-
-    return exactTimeOfBooking < startOfTomorrow() || (now > todayAt3PM && exactTimeOfBooking < twoDaysFromNow)
-  }
-
-  public async getVideoLinkSchedule(
-    agencyType: 'court' | 'probation',
-    agencyCode: string,
-    date: Date,
-    user: Express.User,
-  ): Promise<(ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]> {
-    const appointments = await this.bookAVideoLinkApiClient.getVideoLinkSchedule(agencyType, agencyCode, date, user)
-
-    // Get prison locations
-    const prisonCodes = _.uniq(appointments.map(a => a.prisonCode))
-    const prisonLocations = await Promise.all(
-      prisonCodes.map(p => this.bookAVideoLinkApiClient.getAppointmentLocations(p, user)),
-    ).then(r => r.flat())
-
-    // Get prisoners
-    const prisonerNumbers = _.uniq(appointments.map(a => a.prisonerNumber))
-    const prisoners = await this.prisonerOffenderSearchApiClient.getByPrisonerNumbers(prisonerNumbers, user)
-
-    return appointments.map(a => {
-      const prisoner = prisoners.find(p => p.prisonerNumber === a.prisonerNumber)
-
-      return {
-        ...a,
-        prisonerName: `${prisoner.firstName} ${prisoner.lastName}`,
-        prisonLocationDescription: prisonLocations.find(l => l.key === a.prisonLocKey).description,
-      }
-    })
   }
 }

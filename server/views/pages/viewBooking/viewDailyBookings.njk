@@ -56,7 +56,7 @@
                 {% set rows = [] %}
                 {% for item in appointments %}
                     {% set rows = (rows.push([
-                            { text: item.startTime + ' to ' + item.endTime },
+                            { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
                             { text: item.prisonerName | convertToTitleCase },
                             { html: '<div>'+ item.prisonLocationDescription +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' },
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +

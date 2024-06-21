@@ -4,7 +4,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import { map } from 'lodash'
 import { addYears } from 'date-fns'
-import { convertToTitleCase, formatDate, initialiseName } from './utils'
+import { convertToTitleCase, formatDate, initialiseName, parseDate } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
@@ -56,6 +56,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('find', (l: object[], iteratee: string, eq: unknown) => l.find(o => o[iteratee] === eq))
   njkEnv.addFilter('filter', (l: object[], iteratee: string, eq: unknown) => l.filter(o => o[iteratee] === eq))
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))
+  njkEnv.addFilter('parseDate', parseDate)
   njkEnv.addFilter('formatDate', formatDate)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)

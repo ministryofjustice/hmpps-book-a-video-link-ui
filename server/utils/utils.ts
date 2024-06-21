@@ -25,6 +25,11 @@ export const initialiseName = (fullName?: string): string | null => {
   return `${array[0][0]}. ${array.reverse()[0]}`
 }
 
+export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
+  if (!date) return null
+  return parse(date, fromFormat, new Date())
+}
+
 export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   if (!date) return null
   const richDate = typeof date === 'string' ? parseISO(date) : date

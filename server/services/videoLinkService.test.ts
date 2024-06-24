@@ -520,6 +520,13 @@ describe('Video link service', () => {
     })
   })
 
+  describe('cancelVideoLinkBooking', () => {
+    it('calls the cancel booking endpoint', async () => {
+      await videoLinkService.cancelVideoLinkBooking(1, user)
+      expect(bookAVideoLinkClient.cancelVideoLinkBooking).toHaveBeenCalledWith(1, user)
+    })
+  })
+
   describe('prisonShouldBeWarnedOfBooking', () => {
     let clock: sinon.SinonFakeTimers
 

@@ -14,7 +14,7 @@ export default function RemoveRoutes({ auditService, prisonerService, videoLinkS
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  // TODO: Restrict access to edit journey for bookings which should not be cancellable (e.g. already in the past)
+  // TODO: Restrict access to remove journey for bookings which should not be cancellable (e.g. already in the past)
 
   route('/confirm', new ConfirmCancelHandler(videoLinkService))
   route('/confirmation', new BookingCancelledHandler(videoLinkService, prisonerService))

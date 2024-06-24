@@ -3,10 +3,11 @@ import createError from 'http-errors'
 import type { Services } from '../../../services'
 import createRoutes from './createRoutes'
 import editRoutes from './editRoutes'
+import removeRoutes from './removeRoutes'
 import insertJourneyIdentifier from '../../../middleware/insertJourneyIdentifier'
 import journeyDataMiddleware from '../../../middleware/journeyDataMiddleware'
 import BavlJourneyType from '../../enumerator/bavlJourneyType'
-import initialiseEditJourney from './middleware/initialiseEditJourney'
+import initialiseJourney from './middleware/initialiseJourney'
 
 export default function Index(services: Services): Router {
   const router = Router({ mergeParams: true })
@@ -22,12 +23,21 @@ export default function Index(services: Services): Router {
 
   router.use('/:mode(create)/', insertJourneyIdentifier())
   router.use('/:mode(create)/:journeyId', journeyDataMiddleware('bookAVideoLink'), createRoutes(services))
+
   router.use('/:mode(edit)/:bookingId', insertJourneyIdentifier())
   router.use(
     '/:mode(edit)/:bookingId/:journeyId',
     journeyDataMiddleware('bookAVideoLink'),
-    initialiseEditJourney(services),
+    initialiseJourney(services),
     editRoutes(services),
+  )
+
+  router.use('/:mode(remove)/:bookingId', insertJourneyIdentifier())
+  router.use(
+    '/:mode(remove)/:bookingId/:journeyId',
+    journeyDataMiddleware('bookAVideoLink'),
+    initialiseJourney(services),
+    removeRoutes(services),
   )
 
   return router

@@ -221,6 +221,17 @@ describe('manageUsersApiClient', () => {
     })
   })
 
+  describe('cancelVideoLinkBooking', () => {
+    it('call the cancel booking endpoint', async () => {
+      fakeBookAVideoLinkApiClient
+        .delete(`/video-link-booking/id/1`)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200)
+
+      await bookAVideoLinkApiClient.cancelVideoLinkBooking(1, user)
+    })
+  })
+
   describe('getVideoLinkSchedule', () => {
     it('should return data from api', async () => {
       const response = { data: 'data' }

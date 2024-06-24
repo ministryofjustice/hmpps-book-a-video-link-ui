@@ -100,6 +100,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.put({ path: `/video-link-booking/id/${videoBookingId}`, data: request }, user)
   }
 
+  public cancelVideoLinkBooking(videoBookingId: number, user: Express.User): Promise<void> {
+    return this.delete({ path: `/video-link-booking/id/${videoBookingId}` }, user)
+  }
+
   public getVideoLinkSchedule(
     agencyType: 'court' | 'probation',
     agencyCode: string,

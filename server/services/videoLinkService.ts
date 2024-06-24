@@ -48,6 +48,10 @@ export default class VideoLinkService {
     return this.bookAVideoLinkApiClient.amendVideoLinkBooking(journey.bookingId, request, user)
   }
 
+  public cancelVideoLinkBooking(videoLinkBookingId: number, user: Express.User) {
+    return this.bookAVideoLinkApiClient.cancelVideoLinkBooking(videoLinkBookingId, user)
+  }
+
   public prisonShouldBeWarnedOfBooking(dateOfBooking: Date, timeOfBooking: Date): boolean {
     const now = new Date()
     const exactTimeOfBooking = dateAtTime(dateOfBooking, timeOfBooking)

@@ -41,7 +41,7 @@
                                 {
                                     value: agency.code,
                                     text: agency.description,
-                                    checked: (agency.code in formResponses.selectedAgencies) if formResponses else (agency.code in selectedPreferences | map('code'))
+                                    checked: false if validationErrors else (agency.code in selectedPreferences | map('code'))
                                 }
                             ), items) %}
                         {% endfor %}

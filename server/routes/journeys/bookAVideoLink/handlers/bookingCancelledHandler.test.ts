@@ -70,7 +70,7 @@ describe('GET', () => {
         const heading = getPageHeader($)
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
-        expect(heading).toEqual('This video link booking has been deleted')
+        expect(heading).toEqual('This video link booking has been cancelled')
         expect(bookAnotherLink).toEqual(`/court/booking/create/ABC123/add-video-link-booking`)
       })
   })

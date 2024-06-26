@@ -61,6 +61,12 @@ export default class VideoLinkService {
     return exactTimeOfBooking < startOfTomorrow() || (now > todayAt3PM && exactTimeOfBooking < twoDaysFromNow)
   }
 
+  public bookingIsAmendable(dateOfBooking: Date, timeOfBooking: Date, bookingStatus: string): boolean {
+    const now = new Date()
+    const exactTimeOfBooking = dateAtTime(dateOfBooking, timeOfBooking)
+    return bookingStatus !== 'CANCELLED' && exactTimeOfBooking > now
+  }
+
   public async getVideoLinkSchedule(
     agencyType: 'court' | 'probation',
     agencyCode: string,

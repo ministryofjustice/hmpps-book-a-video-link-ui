@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { parse, parseISO } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import VideoLinkService from '../../../../services/videoLinkService'
@@ -15,10 +16,10 @@ export default class ViewBookingHandler implements PageHandler {
   ) {}
 
   GET = async (req: Request, res: Response) => {
-    const bookingId = Number(req.params.bookingId)
+    const { bookingId } = req.params
     const { user } = res.locals
 
-    const booking = await this.videoLinkService.getVideoLinkBookingById(bookingId, user)
+    const booking = await this.videoLinkService.getVideoLinkBookingById(+bookingId, user)
 
     // TODO: This currently assumes that there is only 1 prisoner associated with a booking.
     //  It does not cater for co-defendants at different prisons.
@@ -26,10 +27,17 @@ export default class ViewBookingHandler implements PageHandler {
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
+    const earliestAppointment = booking.prisonAppointments.sort((a, b) => a.startTime.localeCompare(b.startTime))[0]
+    const date = parseISO(earliestAppointment.appointmentDate)
+    const time = parse(earliestAppointment.startTime, 'HH:mm', new Date(0))
+    const isAmendable = this.videoLinkService.bookingIsAmendable(date, time, booking.statusCode)
+
     return res.render('pages/viewBooking/viewBooking', {
       prisoner,
       booking,
       rooms,
+      isAmendable,
+      isCancelled: booking.statusCode === 'CANCELLED',
     })
   }
 }

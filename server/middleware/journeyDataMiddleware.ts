@@ -16,12 +16,16 @@ export default function journeyDataMiddleware(journeyName: keyof Journey): Reque
     Object.defineProperty(req.session.journey, journeyName, {
       get() {
         const { journeyId } = req.params
-        return req.session.journeyData[journeyId]?.[journeyName] ?? null
+        return req.session.journeyData[journeyId]?.[journeyName]
       },
       set(value) {
         const { journeyId } = req.params
         req.session.journeyData[journeyId] ??= { instanceUnixEpoch: Date.now() }
         req.session.journeyData[journeyId][journeyName] = value
+
+        if (value === null || value === undefined) {
+          delete req.session.journeyData[journeyId]
+        }
 
         // To prevent data leak, a MAX_CONCURRENT_JOURNEYS is defined. Once this number is reached, the oldest journey data is replaced
         if (Object.keys(req.session.journeyData).length > MAX_CONCURRENT_JOURNEYS) {

@@ -26,6 +26,8 @@ export default class ConfirmationHandler implements PageHandler {
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
+    req.session.journey.bookAVideoLink = null
+
     res.render('pages/bookAVideoLink/confirmation', {
       prisoner,
       booking,

@@ -9,7 +9,6 @@ import ProbationTeamsService from '../../../../services/probationTeamsService'
 import PrisonService from '../../../../services/prisonService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
-import expectJourneySession from '../../../testutils/testUtilRoute'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -61,6 +60,7 @@ describe('Check Booking handler', () => {
     videoLinkService.getCourtHearingTypes.mockResolvedValue([{ code: 'KEY', description: 'description' }])
     videoLinkService.getProbationMeetingTypes.mockResolvedValue([{ code: 'KEY', description: 'description' }])
     videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true })
+    videoLinkService.bookingIsAmendable.mockResolvedValue(true)
   })
 
   describe('GET', () => {
@@ -140,25 +140,25 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should save the posted fields', async () => {
+    it('should save the posted fields', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
 
-      await request(app)
+      return request(app)
         .post(`/court/booking/create/${journeyId()}/ABC123/add-video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation/1')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
-
-      expect(videoLinkService.createVideoLinkBooking).toHaveBeenCalledWith(
-        {
-          comments: 'comment',
-          type: 'COURT',
-        },
-        user,
-      )
+        .expect(() => {
+          expect(videoLinkService.createVideoLinkBooking).toHaveBeenCalledWith(
+            {
+              comments: 'comment',
+              type: 'COURT',
+            },
+            user,
+          )
+        })
     })
 
     it('should redirect to select alternatives if the selected room is not available', () => {
@@ -171,24 +171,28 @@ describe('Check Booking handler', () => {
         .expect('location', 'not-available')
     })
 
-    it('should amend the posted fields', async () => {
-      appSetup({ bookAVideoLink: { bookingId: 1, type: 'COURT' } })
+    it('should amend the posted fields', () => {
+      const bookAVideoLink = {
+        bookingId: 1,
+        date: '2024-06-27',
+        startTime: '15:00',
+      }
 
-      await request(app)
+      appSetup({
+        bookAVideoLink,
+      })
+
+      return request(app)
         .post(`/court/booking/edit/1/${journeyId()}/add-video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
-
-      expect(videoLinkService.amendVideoLinkBooking).toHaveBeenCalledWith(
-        {
-          bookingId: 1,
-          comments: 'comment',
-          type: 'COURT',
-        },
-        user,
-      )
+        .expect(() => {
+          expect(videoLinkService.amendVideoLinkBooking).toHaveBeenCalledWith(
+            { ...bookAVideoLink, comments: 'comment' },
+            user,
+          )
+        })
     })
   })
 })

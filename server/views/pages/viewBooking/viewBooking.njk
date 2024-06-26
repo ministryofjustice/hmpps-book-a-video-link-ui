@@ -1,6 +1,6 @@
 {% extends "partials/layout.njk" %}
 
-{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
@@ -9,6 +9,15 @@
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
+            {% if isCancelled %}
+                {% set html %}
+                    <p class="govuk-notification-banner__heading">This booking has been cancelled</p>
+                    <p class="govuk-body">You cannot make any changes to this booking since it has been cancelled.</p>
+                {% endset %}
+
+                {{ govukNotificationBanner({ html: html, attributes: {"data-qa": 'cancelled-banner'} }) }}
+            {% endif %}
+
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
         </div>
     </div>
@@ -192,7 +201,7 @@
                                     classes: "govuk-link--no-visited-state"
                                 }
                             ]
-                        }
+                        } if isAmendable
                     },
                     {
                         key: {
@@ -205,11 +214,12 @@
                 ]
             }) }}
 
-            <div class="govuk-button-group">
-                {{ govukButton({ text: "Change booking details", href: '/' + booking.bookingType | lower + '/booking/edit/' + booking.videoLinkBookingId + '/add-video-link-booking', attributes: { 'data-qa': 'change-link'} }) }}
-                {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/remove/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary" }) }}
-            </div>
-
+            {% if isAmendable %}
+                <div class="govuk-button-group">
+                    {{ govukButton({ text: "Change booking details", href: '/' + booking.bookingType | lower + '/booking/edit/' + booking.videoLinkBookingId + '/add-video-link-booking', attributes: { 'data-qa': 'change-link'} }) }}
+                    {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/remove/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary" }) }}
+                </div>
+            {% endif %}
             <a href='/{{ booking.bookingType | lower }}/view-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to all video link bookings</a>
         </div>
     </div>

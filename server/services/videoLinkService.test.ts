@@ -578,6 +578,46 @@ describe('Video link service', () => {
     })
   })
 
+  describe('bookingIsAmendable', () => {
+    let clock: sinon.SinonFakeTimers
+
+    afterEach(() => {
+      if (clock) {
+        clock.restore()
+      }
+    })
+
+    it('returns false if booking status is "CANCELLED"', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-25T12:00:00Z').getTime())
+
+      const dateOfBooking = new Date('2024-06-26')
+      const timeOfBooking = new Date('2024-06-26T14:00:00Z')
+      const bookingStatus = 'CANCELLED'
+
+      expect(videoLinkService.bookingIsAmendable(dateOfBooking, timeOfBooking, bookingStatus)).toBe(false)
+    })
+
+    it('returns false if booking is in the past', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-26T15:00:00Z').getTime())
+
+      const dateOfBooking = new Date('2024-06-26')
+      const timeOfBooking = new Date('2024-06-26T14:00:00Z')
+      const bookingStatus = 'ACTIVE'
+
+      expect(videoLinkService.bookingIsAmendable(dateOfBooking, timeOfBooking, bookingStatus)).toBe(false)
+    })
+
+    it('returns true if booking is in the future', () => {
+      clock = sinon.useFakeTimers(new Date('2024-06-26T13:00:00Z').getTime())
+
+      const dateOfBooking = new Date('2024-06-26')
+      const timeOfBooking = new Date('2024-06-26T14:00:00Z')
+      const bookingStatus = 'ACTIVE'
+
+      expect(videoLinkService.bookingIsAmendable(dateOfBooking, timeOfBooking, bookingStatus)).toBe(true)
+    })
+  })
+
   describe('getVideoLinkSchedule', () => {
     const date = new Date('2022-03-20T00:00:00Z')
     const agencyCode = 'AGENCY_CODE'

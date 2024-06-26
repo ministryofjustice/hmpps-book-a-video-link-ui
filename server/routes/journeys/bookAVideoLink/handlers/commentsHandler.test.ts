@@ -4,16 +4,19 @@ import cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
+import VideoLinkService from '../../../../services/videoLinkService'
 
 jest.mock('../../../../services/auditService')
+jest.mock('../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService },
+    services: { auditService, videoLinkService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -23,9 +26,13 @@ beforeEach(() => {
   appSetup({
     bookAVideoLink: {
       bookingId: 1001,
+      date: '2024-06-12',
+      startTime: '1970-01-01T16:00',
       comments: 'Test comment',
     },
   })
+
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {

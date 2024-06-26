@@ -3,7 +3,7 @@ import request from 'supertest'
 import cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
+import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
@@ -30,6 +30,15 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup()
+
+  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+    firstName: 'Joe',
+    lastName: 'Bloggs',
+    prisonId: 'MDI',
+    prisonerNumber: 'AA1234A',
+  })
+  prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -44,13 +53,6 @@ describe('GET', () => {
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(
       journey === 'court' ? getCourtBooking('AA1234A') : getProbationBooking('AA1234A'),
     )
-    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      prisonId: 'MDI',
-      prisonerNumber: 'AA1234A',
-    })
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
       .get(`/${journey}/view-booking/1`)
@@ -66,10 +68,32 @@ describe('GET', () => {
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
-        const bookAnotherLink = getByDataQa($, 'change-link').attr('href')
+        const changeLink = getByDataQa($, 'change-link').attr('href')
 
         expect(heading).toEqual('Joe Bloggs’s video link details')
-        expect(bookAnotherLink).toEqual(`/${journey}/booking/edit/1001/add-video-link-booking`)
+        expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
+        expect(changeLink).toEqual(`/${journey}/booking/edit/1001/add-video-link-booking`)
+      })
+  })
+
+  it("Options to change the booking are not available when it's cancelled", () => {
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+      ...getCourtBooking('AA1234A'),
+      statusCode: 'CANCELLED',
+    })
+    videoLinkService.bookingIsAmendable.mockReturnValue(false)
+
+    return request(app)
+      .get(`/court/view-booking/1`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        const changeLink = getByDataQa($, 'change-link').attr('href')
+
+        expect(heading).toEqual('Joe Bloggs’s video link details')
+        expect(changeLink).toBeUndefined()
+        expect(existsByDataQa($, 'cancelled-banner')).toBe(true)
       })
   })
 })

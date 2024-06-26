@@ -32,6 +32,8 @@ beforeEach(() => {
       startTime: '1970-01-01T16:00',
     },
   })
+
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -55,20 +57,28 @@ describe('Confirm Cancel handler', () => {
           })
         })
     })
+
+    it('should redirect to view the booking if the booking is not cancellable', () => {
+      videoLinkService.bookingIsAmendable.mockReturnValue(false)
+
+      return request(app)
+        .get(`/court/booking/remove/1/${journeyId()}/confirm`)
+        .expect(302)
+        .expect('location', '/court/view-booking/1')
+        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+    })
   })
 
   describe('POST', () => {
-    it('should cancel the booking', async () => {
-      appSetup({ bookAVideoLink: { bookingId: 1, type: 'COURT' } })
-
-      await request(app)
+    it('should cancel the booking', () => {
+      return request(app)
         .post(`/court/booking/remove/1/${journeyId()}/confirm`)
         .send({})
         .expect(302)
         .expect('location', 'confirmation')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
-
-      expect(videoLinkService.cancelVideoLinkBooking).toHaveBeenCalledWith(1, user)
+        .expect(() => {
+          expect(videoLinkService.cancelVideoLinkBooking).toHaveBeenCalledWith(1, user)
+        })
     })
   })
 })

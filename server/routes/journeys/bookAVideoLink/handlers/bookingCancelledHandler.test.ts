@@ -6,6 +6,7 @@ import AuditService, { Page } from '../../../../services/auditService'
 import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
+import expectJourneySession from '../../../testutils/testUtilRoute'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -26,7 +27,35 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup()
+  appSetup({
+    bookAVideoLink: {
+      prisoner: { prisonId: 'MDI' },
+      date: '2024-06-12',
+      startTime: '1970-01-01T16:00',
+    },
+  })
+
+  videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+    prisonAppointments: [
+      {
+        prisonerNumber: 'ABC123',
+        appointmentType: 'VLB_PROBATION',
+        prisonLocKey: 'VCC-ROOM-1',
+        appointmentDate: '2024-04-05',
+        startTime: '11:30',
+        endTime: '12:30',
+      },
+    ],
+  })
+
+  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+    firstName: 'Joe',
+    lastName: 'Bloggs',
+    prisonId: 'MDI',
+    prisonerNumber: 'ABC123',
+  })
+
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -35,26 +64,6 @@ afterEach(() => {
 
 describe('GET', () => {
   it('should render the correct view page', () => {
-    videoLinkService.getVideoLinkBookingById.mockResolvedValue({
-      prisonAppointments: [
-        {
-          prisonerNumber: 'ABC123',
-          appointmentType: 'VLB_PROBATION',
-          prisonLocKey: 'VCC-ROOM-1',
-          appointmentDate: '2024-04-05',
-          startTime: '11:30',
-          endTime: '12:30',
-        },
-      ],
-    })
-
-    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      prisonId: 'MDI',
-      prisonerNumber: 'ABC123',
-    })
-
     return request(app)
       .get(`/court/booking/remove/1/${journeyId()}/confirmation`)
       .expect('Content-Type', /html/)
@@ -73,5 +82,6 @@ describe('GET', () => {
         expect(heading).toEqual('This video link booking has been cancelled')
         expect(bookAnotherLink).toEqual(`/court/booking/create/ABC123/add-video-link-booking`)
       })
+      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })
 })

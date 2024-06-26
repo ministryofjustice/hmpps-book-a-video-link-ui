@@ -12,7 +12,6 @@ export default class ConfirmCancelHandler implements PageHandler {
 
   public POST = async (req: Request, res: Response) => {
     await this.videoLinkService.cancelVideoLinkBooking(+req.params.bookingId, res.locals.user)
-    req.session.journey.bookAVideoLink = null
     return res.redirect(`confirmation`)
   }
 }

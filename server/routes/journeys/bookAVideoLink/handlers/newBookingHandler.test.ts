@@ -40,7 +40,13 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup()
+  const bookAVideoLink = {
+    search: {
+      prisonerNumber: 'ABC123',
+    },
+  }
+
+  appSetup({ bookAVideoLink })
 
   courtsService.getUserPreferences.mockResolvedValue([
     { code: 'C1', description: 'Court 1' },
@@ -56,6 +62,25 @@ beforeEach(() => {
     firstName: 'Joe',
     lastName: 'Smith',
   })
+
+  videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+    bookingType: 'COURT',
+    prisonAppointments: [
+      {
+        prisonerNumber: 'ABC123',
+        appointmentType: 'VLB_COURT_MAIN',
+        appointmentDate: '2024-02-01',
+        startTime: '08:00',
+        endTime: '09:00',
+        prisonLocKey: 'LOCATION_CODE',
+      },
+    ],
+    courtCode: 'COURT_CODE',
+    courtHearingType: 'APPEAL',
+    videoLinkUrl: 'http://example.com',
+    comments: 'test',
+  } as VideoLinkBooking)
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -105,24 +130,20 @@ describe('New Booking handler', () => {
         })
     })
 
+    it.each([
+      ['Probation', 'probation'],
+      ['Court', 'court'],
+    ])('%s journey - should return home if there is no journey in session', (_: string, journey: string) => {
+      appSetup()
+
+      return request(app)
+        .get(`/${journey}/booking/create/${journeyId()}/ABC123/add-video-link-booking`)
+        .expect(302)
+        .expect('location', '/')
+    })
+
     it('should populate the session with an existing booking for amending', async () => {
-      videoLinkService.getVideoLinkBookingById.mockResolvedValue({
-        bookingType: 'COURT',
-        prisonAppointments: [
-          {
-            prisonerNumber: 'ABC123',
-            appointmentType: 'VLB_COURT_MAIN',
-            appointmentDate: '2024-02-01',
-            startTime: '08:00',
-            endTime: '09:00',
-            prisonLocKey: 'LOCATION_CODE',
-          },
-        ],
-        courtCode: 'COURT_CODE',
-        courtHearingType: 'APPEAL',
-        videoLinkUrl: 'http://example.com',
-        comments: 'test',
-      } as VideoLinkBooking)
+      appSetup()
 
       await request(app)
         .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking`)
@@ -158,6 +179,18 @@ describe('New Booking handler', () => {
 
       expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
       expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('ABC123', user)
+    })
+
+    it('should redirect to to view the booking if the booking is not amendable', async () => {
+      appSetup()
+
+      videoLinkService.bookingIsAmendable.mockReturnValue(false)
+
+      return request(app)
+        .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking`)
+        .expect(302)
+        .expect('location', '/court/view-booking/1')
+        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
     })
   })
 

@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import { parseISO } from 'date-fns'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
@@ -24,7 +25,17 @@ export default function EditRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  // TODO: Restrict access to edit journey for bookings which should not be editable (e.g. already in the past)
+  router.use((req, res, next) => {
+    const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookAVideoLink
+    const bookingDate = parseISO(date)
+    const bookingTime = parseISO(preHearingStartTime || startTime)
+
+    if (!videoLinkService.bookingIsAmendable(bookingDate, bookingTime, bookingStatus)) {
+      req.session.journey.bookAVideoLink = null
+      return res.redirect(`/${req.params.type}/view-booking/${bookingId}`)
+    }
+    return next()
+  })
 
   route(
     '/add-video-link-booking',

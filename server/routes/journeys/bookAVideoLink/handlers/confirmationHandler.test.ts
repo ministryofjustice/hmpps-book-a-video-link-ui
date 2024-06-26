@@ -7,6 +7,7 @@ import { existsByKey, getByDataQa, getPageHeader, getValueByKey } from '../../..
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
+import expectJourneySession from '../../../testutils/testUtilRoute'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -29,7 +30,13 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup()
+  appSetup({
+    bookAVideoLink: {
+      prisoner: { prisonId: 'MDI' },
+      date: '2024-06-12',
+      startTime: '1970-01-01T16:00',
+    },
+  })
 })
 
 afterEach(() => {
@@ -98,11 +105,12 @@ describe('GET', () => {
         courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
         probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
       })
+      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })
 
   it('should render the correct page in edit mode', () => {
-    appSetup({ bookAVideoLink: { bookingId: 1 } })
-
+    appSetup({ bookAVideoLink: { bookingId: 1, date: '2024-06-27', startTime: '15:00' } })
+    videoLinkService.bookingIsAmendable.mockReturnValue(true)
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
     prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
       firstName: 'Joe',
@@ -130,6 +138,7 @@ describe('GET', () => {
 
         expect(heading).toEqual('The video link booking has been updated')
       })
+      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })
 })
 

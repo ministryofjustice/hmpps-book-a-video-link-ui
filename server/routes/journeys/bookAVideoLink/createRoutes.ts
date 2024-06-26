@@ -26,6 +26,13 @@ export default function CreateRoutes({
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
+
+  // Book a video link journey is required in session for the following routes
+  router.use((req, res, next) => {
+    if (!req.session.journey.bookAVideoLink) return res.redirect('/')
+    return next()
+  })
+
   route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
     '/:prisonerNumber/add-video-link-booking',

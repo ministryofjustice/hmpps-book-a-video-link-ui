@@ -25,6 +25,7 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
 
     req.session.journey.bookAVideoLink = {
       bookingId: Number(bookingId),
+      bookingStatus: booking.statusCode,
       type: booking.bookingType,
       prisoner: {
         name: convertToTitleCase(`${prisoner?.firstName} ${prisoner?.lastName}`),

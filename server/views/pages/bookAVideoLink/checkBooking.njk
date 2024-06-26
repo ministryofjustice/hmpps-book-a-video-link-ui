@@ -155,7 +155,7 @@
                 ]
             }) }}
 
-            <form method="POST" class="govuk-!-margin-top-6">
+            <form method="POST" class="govuk-!-margin-top-6" data-module="form-spinner" data-loading-text="{{ "Booking video link" if mode == 'create' else "Updating booking" }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukCharacterCount({
@@ -173,7 +173,8 @@
                 }) }}
 
                 {{ govukButton({
-                    text: "Book video link" if mode == 'create' else 'Update video link',
+                    text: "Book video link" if mode == 'create' else 'Update booking',
+                    preventDoubleClick: true,
                     type: 'submit'
                 }) }}
             </form>

@@ -17,13 +17,14 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <form method='POST'>
+            <form method='POST' data-module="form-spinner" data-loading-text="Cancelling booking">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 <div class="govuk-button-group">
                     {{ govukButton({
                         text: "Yes, cancel the booking",
                         classes: "govuk-button--warning",
+                        preventDoubleClick: true,
                         type: "submit"
                     }) }}
 

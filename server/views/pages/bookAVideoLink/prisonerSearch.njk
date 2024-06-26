@@ -22,7 +22,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <form method='POST'>
+            <form method='POST' data-module="form-spinner" data-loading-text="Searching prisoners">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukInput({
@@ -133,6 +133,7 @@
 
                 {{ govukButton({
                     html: "Search<span class='govuk-visually-hidden'> and display the results below</span>",
+                    preventDoubleClick: true,
                     isStartButton: true,
                     type: "submit"
                 }) }}

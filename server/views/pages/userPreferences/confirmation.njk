@@ -17,7 +17,7 @@
             <p class = "govuk-!-margin-top-8">You can now create video link bookings and view existing bookings for the following {{ ("courts" if type == BavlJourneyType.COURT else "probation teams") }}:</p>
             <ul class="govuk-list govuk-list--bullet">
                 {% for item in selectedPreferences %}
-                    <li data-qa="probation-team">{{item.description}}</li>
+                    <li>{{item.description}}</li>
                 {% endfor %}
             </ul>
         </div>

@@ -1,0 +1,14 @@
+[
+  {
+    "referenceCodeId": 26,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "PSR",
+    "description": "Pre-sentence report"
+  },
+  {
+    "referenceCodeId": 27,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "RR",
+    "description": "Recall report"
+  }
+]

@@ -1,73 +1,72 @@
-import { stubFor } from './wiremock'
+import { stubGet, stubPost } from './wiremock'
 
-const ping = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/book-a-video-link-api/health/ping',
-    },
-    response: {
-      status: 200,
-    },
-  })
+import enabledCourts from './fixtures/bookAVideoLinkApi/enabledCourts.json'
+import enabledProbationTeams from './fixtures/bookAVideoLinkApi/enabledProbationTeams.json'
+import enabledPrisons from './fixtures/bookAVideoLinkApi/enabledPrisons.json'
+import allPrisons from './fixtures/bookAVideoLinkApi/allPrisons.json'
+import courtHearingTypes from './fixtures/bookAVideoLinkApi/courtHearingTypes.json'
+import probationMeetingTypes from './fixtures/bookAVideoLinkApi/probationMeetingTypes.json'
 
-const stubUserCourtPreferences = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/book-a-video-link-api/courts/user-preferences',
+const stubGetUserCourtPreferences = (
+  jsonBody = [
+    {
+      courtId: 304,
+      code: 'ABERCV',
+      description: 'Aberystwyth Civil',
+      enabled: true,
+      notes: null,
     },
-    response: {
-      status: 200,
-      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      jsonBody: [
-        {
-          courtId: 304,
-          code: 'ABERCV',
-          description: 'Aberystwyth Civil',
-          enabled: true,
-          notes: null,
-        },
-        {
-          courtId: 305,
-          code: 'ABERFC',
-          description: 'Aberystwyth Family',
-          enabled: true,
-          notes: null,
-        },
-      ],
+    {
+      courtId: 305,
+      code: 'ABERFC',
+      description: 'Aberystwyth Family',
+      enabled: true,
+      notes: null,
     },
-  })
+  ],
+) => stubGet('/book-a-video-link-api/courts/user-preferences', jsonBody)
 
-const stubUserProbationTeamPreferences = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/book-a-video-link-api/probation-teams/user-preferences',
+const stubGetUserProbationTeamPreferences = (
+  jsonBody = [
+    {
+      probationTeamId: 1,
+      code: 'BLKPPP',
+      description: 'Blackpool MC (PPOC)',
+      enabled: true,
+      notes: null,
     },
-    response: {
-      status: 200,
-      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
-      jsonBody: [
-        {
-          probationTeamId: 1,
-          code: 'BLKPPP',
-          description: 'Blackpool MC (PPOC)',
-          enabled: true,
-          notes: null,
-        },
-        {
-          probationTeamId: 8,
-          code: 'BURNPM',
-          description: 'Burnley MC (PPOC)',
-          enabled: true,
-          notes: null,
-        },
-      ],
+    {
+      probationTeamId: 8,
+      code: 'BURNPM',
+      description: 'Burnley MC (PPOC)',
+      enabled: true,
+      notes: null,
     },
-  })
+  ],
+) => stubGet('/book-a-video-link-api/probation-teams/user-preferences', jsonBody)
 
 export default {
-  stubBookAVideoLinkPing: ping,
-  stubUserPreferences: () => Promise.all([stubUserCourtPreferences(), stubUserProbationTeamPreferences()]),
+  stubBookAVideoLinkPing: () => stubGet('/book-a-video-link-api/health/ping'),
+  stubGetEnabledCourts: () => stubGet('/book-a-video-link-api/courts/enabled', enabledCourts),
+  stubGetUserCourtPreferences,
+  stubSetUserCourtPreferences: () => stubPost('/book-a-video-link-api/courts/user-preferences/set'),
+  stubGetEnabledProbationTeams: () => stubGet('/book-a-video-link-api/probation-teams/enabled', enabledProbationTeams),
+  stubGetUserProbationTeamPreferences,
+  stubSetUserProbationTeamPreferences: () => stubPost('/book-a-video-link-api/probation-teams/user-preferences/set'),
+  stubAllPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=false', allPrisons),
+  stubEnabledPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=true', enabledPrisons),
+  stubPrisonLocations: response => stubGet('/book-a-video-link-api/prisons/(.){3}/locations', response),
+
+  stubCourtHearingTypes: () =>
+    stubGet('/book-a-video-link-api/reference-codes/group/COURT_HEARING_TYPE', courtHearingTypes),
+
+  stubProbationMeetingTypes: () =>
+    stubGet('/book-a-video-link-api/reference-codes/group/PROBATION_MEETING_TYPE', probationMeetingTypes),
+
+  stubAvailabilityCheck: (response = { availabilityOk: true }) =>
+    stubPost('/book-a-video-link-api/availability', response),
+
+  stubCreateBooking: () => stubPost('/book-a-video-link-api/video-link-booking'),
+  stubGetBooking: response => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),
+  stubUserPreferences: () => Promise.all([stubGetUserCourtPreferences(), stubGetUserProbationTeamPreferences()]),
 }

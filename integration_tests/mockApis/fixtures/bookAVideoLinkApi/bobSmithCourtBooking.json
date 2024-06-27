@@ -1,0 +1,55 @@
+{
+  "videoLinkBookingId": 1,
+  "statusCode": "ACTIVE",
+  "bookingType": "COURT",
+  "prisonAppointments": [
+    {
+      "prisonAppointmentId": 60,
+      "prisonCode": "NMI",
+      "prisonerNumber": "A0171DZ",
+      "appointmentType": "VLB_COURT_PRE",
+      "comments": null,
+      "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "appointmentDate": "2024-07-04",
+      "startTime": "14:45",
+      "endTime": "15:00"
+    },
+    {
+      "prisonAppointmentId": 61,
+      "prisonCode": "NMI",
+      "prisonerNumber": "A0171DZ",
+      "appointmentType": "VLB_COURT_MAIN",
+      "comments": null,
+      "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "appointmentDate": "2024-07-04",
+      "startTime": "15:00",
+      "endTime": "16:00"
+    },
+    {
+      "prisonAppointmentId": 62,
+      "prisonCode": "NMI",
+      "prisonerNumber": "A0171DZ",
+      "appointmentType": "VLB_COURT_POST",
+      "comments": null,
+      "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "appointmentDate": "2024-07-04",
+      "startTime": "16:00",
+      "endTime": "16:15"
+    }
+  ],
+  "courtCode": "ABERFC",
+  "courtDescription": "Aberystwyth Family",
+  "courtHearingType": "CIVIL",
+  "courtHearingTypeDescription": "Civil",
+  "probationTeamCode": null,
+  "probationTeamDescription": null,
+  "probationMeetingType": null,
+  "probationMeetingTypeDescription": null,
+  "comments": null,
+  "videoLinkUrl": null,
+  "createdByPrison": false,
+  "createdBy": "testuser@justice.gov.uk",
+  "createdAt": "2024-06-27T20:15:16.08034",
+  "amendedBy": null,
+  "amendedAt": null
+}

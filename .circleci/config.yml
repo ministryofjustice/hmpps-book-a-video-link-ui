@@ -52,7 +52,7 @@ jobs:
             - node_modules
             - build
             - dist
-            - assets/stylesheets
+            - assets
 
   unit_test:
     executor:

@@ -1,0 +1,38 @@
+{
+  "availabilityOk": false,
+  "alternatives": [
+    {
+      "pre": null,
+      "main": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "13:00",
+          "end": "14:00"
+        }
+      },
+      "post": null
+    },
+    {
+      "pre": null,
+      "main": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "15:00",
+          "end": "16:00"
+        }
+      },
+      "post": null
+    },
+    {
+      "pre": null,
+      "main": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "17:00",
+          "end": ":18:00"
+        }
+      },
+      "post": null
+    }
+  ]
+}

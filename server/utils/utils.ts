@@ -31,9 +31,9 @@ export const parseDate = (date: string, fromFormat = 'yyyy-MM-dd') => {
 }
 
 export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
-  if (!date) return null
+  if (!date) return undefined
   const richDate = typeof date === 'string' ? parseISO(date) : date
-  if (!isValid(richDate)) return null
+  if (!isValid(richDate)) return undefined
   return format(richDate, fmt)
 }
 

@@ -10,7 +10,7 @@
       "appointmentType": "VLB_COURT_PRE",
       "comments": null,
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
-      "appointmentDate": "2024-07-04",
+      "appointmentDate": "2050-01-01",
       "startTime": "14:45",
       "endTime": "15:00"
     },
@@ -21,7 +21,7 @@
       "appointmentType": "VLB_COURT_MAIN",
       "comments": null,
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
-      "appointmentDate": "2024-07-04",
+      "appointmentDate": "2050-01-01",
       "startTime": "15:00",
       "endTime": "16:00"
     },
@@ -32,7 +32,7 @@
       "appointmentType": "VLB_COURT_POST",
       "comments": null,
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
-      "appointmentDate": "2024-07-04",
+      "appointmentDate": "2050-01-01",
       "startTime": "16:00",
       "endTime": "16:15"
     }

@@ -1,0 +1,31 @@
+[
+  {
+    "videoBookingId": 1,
+    "prisonAppointmentId": 63,
+    "bookingType": "PROBATION",
+    "statusCode": "ACTIVE",
+    "videoUrl": null,
+    "bookingComments": null,
+    "createdByPrison": false,
+    "courtId": null,
+    "courtCode": null,
+    "courtDescription": null,
+    "hearingType": null,
+    "hearingTypeDescription": null,
+    "probationTeamId": 1,
+    "probationTeamCode": "BLKPPP",
+    "probationTeamDescription": "Blackpool MC (PPOC)",
+    "probationMeetingType": "RR",
+    "probationMeetingTypeDescription": "Recall report",
+    "prisonCode": "NMI",
+    "prisonName": "Nottingham (HMP & YOI)",
+    "prisonerNumber": "A0171DZ",
+    "appointmentType": "VLB_PROBATION",
+    "appointmentTypeDescription": "Video link booking - probation",
+    "appointmentComments": null,
+    "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+    "appointmentDate": "2050-01-01",
+    "startTime": "13:15",
+    "endTime": "14:15"
+  }
+]

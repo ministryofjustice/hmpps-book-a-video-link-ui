@@ -1,4 +1,4 @@
-import { stubGet, stubPost } from './wiremock'
+import { stubGet, stubPost, stubPut } from './wiremock'
 
 import enabledCourts from './fixtures/bookAVideoLinkApi/enabledCourts.json'
 import enabledProbationTeams from './fixtures/bookAVideoLinkApi/enabledProbationTeams.json'
@@ -6,6 +6,7 @@ import enabledPrisons from './fixtures/bookAVideoLinkApi/enabledPrisons.json'
 import allPrisons from './fixtures/bookAVideoLinkApi/allPrisons.json'
 import courtHearingTypes from './fixtures/bookAVideoLinkApi/courtHearingTypes.json'
 import probationMeetingTypes from './fixtures/bookAVideoLinkApi/probationMeetingTypes.json'
+import { formatDate } from '../../server/utils/utils'
 
 const stubGetUserCourtPreferences = (
   jsonBody = [
@@ -67,6 +68,19 @@ export default {
     stubPost('/book-a-video-link-api/availability', response),
 
   stubCreateBooking: () => stubPost('/book-a-video-link-api/video-link-booking'),
+  stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),
   stubGetBooking: response => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),
   stubUserPreferences: () => Promise.all([stubGetUserCourtPreferences(), stubGetUserProbationTeamPreferences()]),
+  stubGetCourtSchedule: ({ courtCode, date, response } = { courtCode: '(.)*', date: undefined, response: [] }) =>
+    stubGet(
+      `/book-a-video-link-api/schedule/court/${courtCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
+      response,
+    ),
+  stubGetProbationTeamSchedule: (
+    { probationTeamCode, date, response } = { probationTeamCode: '(.)*', date: undefined, response: [] },
+  ) =>
+    stubGet(
+      `/book-a-video-link-api/schedule/probation/${probationTeamCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
+      response,
+    ),
 }

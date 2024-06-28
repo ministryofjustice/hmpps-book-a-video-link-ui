@@ -1,0 +1,198 @@
+[
+  {
+    "probationTeamId": 1,
+    "code": "BLKPPP",
+    "description": "Blackpool MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 2,
+    "code": "BARSPP",
+    "description": "RWF - Barkingside MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 3,
+    "code": "PPOCFD",
+    "description": "RWF - Redbridge (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 4,
+    "code": "HGHBPP",
+    "description": "CAI - Highbury Corner MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 5,
+    "code": "PRESPC",
+    "description": "Preston CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 6,
+    "code": "PRESPM",
+    "description": "Preston MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 7,
+    "code": "BURNPC",
+    "description": "Burnley CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 8,
+    "code": "BURNPM",
+    "description": "Burnley MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 9,
+    "code": "BLKBPP",
+    "description": "Blackburn MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 10,
+    "code": "REMPSR",
+    "description": "Remote PSR Team (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 11,
+    "code": "CROYCC",
+    "description": "CRO - Croydon CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 12,
+    "code": "CROYMC",
+    "description": "CRO - Croydon MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 13,
+    "code": "ILONCC",
+    "description": "SOU - Inner London CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 14,
+    "code": "SWRKCC",
+    "description": "SOU - Southwark CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 15,
+    "code": "PPOCCT",
+    "description": "RWF - Snaresbrook CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 16,
+    "code": "WESTMC",
+    "description": "HFKCW - Westminster MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 17,
+    "code": "WIMBMC",
+    "description": "WAN - Wimbledon MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 18,
+    "code": "HARNGY",
+    "description": "EAH - Haringey (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 19,
+    "code": "BARNET",
+    "description": "BAR - Barnet (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 20,
+    "code": "HARROW",
+    "description": "HRW - Harrow (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 21,
+    "code": "WALFOR",
+    "description": "RWF - Waltham Forest (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 22,
+    "code": "THMSPP",
+    "description": "TWR - Thames&Stratford MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 23,
+    "code": "WDGNPP",
+    "description": "HAR - Wood Green CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 24,
+    "code": "KENSCC",
+    "description": "KAR - Kingston CC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 25,
+    "code": "LANCPM",
+    "description": "Lancaster MC (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 26,
+    "code": "LANCNW",
+    "description": "NW Lancashire (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 27,
+    "code": "LANCEA",
+    "description": "East Lancashire (PPOC)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "probationTeamId": 28,
+    "code": "LANCCE",
+    "description": "Central Lancashire (PPOC)",
+    "enabled": true,
+    "notes": null
+  }
+]

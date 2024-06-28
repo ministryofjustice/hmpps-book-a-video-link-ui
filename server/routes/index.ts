@@ -13,8 +13,8 @@ export default function routes(services: Services): Router {
   // The rest of the routes cannot be accessed unless the user has selected some court or probation team preferences
   router.use(async (req, res, next) => {
     const { user } = res.locals
-    const courtPreferences = await services.courtsService.getUserPreferences(user)
-    const probationPreferences = await services.probationTeamsService.getUserPreferences(user)
+    const courtPreferences = user.isCourtUser && (await services.courtsService.getUserPreferences(user))
+    const probationPreferences = user.isProbationUser && (await services.probationTeamsService.getUserPreferences(user))
 
     if (user.isCourtUser && courtPreferences.length === 0) return res.redirect('/court/user-preferences')
     if (user.isProbationUser && probationPreferences.length === 0) return res.redirect('/probation/user-preferences')

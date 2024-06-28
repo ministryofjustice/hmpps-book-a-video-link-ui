@@ -1,0 +1,52 @@
+[
+  {
+    "key": "NMI-VIDEOLINK-CVC_5_CC",
+    "description": "Closed Visits Cubicle 5 - Crown Ct",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-CVC_6_CC",
+    "description": "Closed Visits Cubicle 6 - Crown Ct",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-CVC_7_MC",
+    "description": "Closed Visits Cubicle 7 - Mags Court",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-LVR_3_CCON",
+    "description": "Legal Visits Room  3 - Crown Conf",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-LVR_4_MAGCON",
+    "description": "Legal Visits Room  4 - Magistrates Conf",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-LVR_1_MAGCON",
+    "description": "Legal Visits Room 1 - Magistrates Conf",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-LVR_2_CCON",
+    "description": "Legal Visits Room 2 - Crown Conf",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK-LVR_5_MAGCON",
+    "description": "Legal Visits Room 5 - Magistrates Conf",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VIDEOLINK",
+    "description": "Video Link",
+    "enabled": true
+  },
+  {
+    "key": "NMI-VISITS-VLNK",
+    "description": "Video Link",
+    "enabled": true
+  }
+]

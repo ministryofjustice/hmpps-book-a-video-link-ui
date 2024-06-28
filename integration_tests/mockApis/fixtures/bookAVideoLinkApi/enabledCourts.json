@@ -1,0 +1,2284 @@
+[
+  {
+    "courtId": 1,
+    "code": "DRBYMC",
+    "description": "Derby Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 2,
+    "code": "NWPIAC",
+    "description": "IAC Newport",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 3,
+    "code": "CRNRCT",
+    "description": "Caernarfon County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 4,
+    "code": "CRNRCC",
+    "description": "Caernarfon Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 5,
+    "code": "CRNHMC",
+    "description": "Caernarfon Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 6,
+    "code": "CHSTMC",
+    "description": "Chesterfield Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 7,
+    "code": "CVNTCC",
+    "description": "Coventry Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 8,
+    "code": "CVNTMC",
+    "description": "Coventry Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 9,
+    "code": "CRT034",
+    "description": "Westminster Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 10,
+    "code": "CRYDMC",
+    "description": "Croydon Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 11,
+    "code": "DRBYCC",
+    "description": "Derby Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 12,
+    "code": "HERFMC",
+    "description": "Hereford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 13,
+    "code": "MNSFMC",
+    "description": "Mansfield Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 14,
+    "code": "MOLDCT",
+    "description": "Mold County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 15,
+    "code": "MOLDCC",
+    "description": "Mold Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 16,
+    "code": "MOLDMC",
+    "description": "Mold Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 17,
+    "code": "NOTTCC",
+    "description": "Nottingham Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 18,
+    "code": "NOTTMC",
+    "description": "Nottingham Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 19,
+    "code": "PRSTMC",
+    "description": "Prestatyn County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 20,
+    "code": "SHRWCC",
+    "description": "Shrewsbury Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 21,
+    "code": "SEVNMC",
+    "description": "Sevenoaks Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 22,
+    "code": "OXFDCC",
+    "description": "Oxford Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 23,
+    "code": "OXFRMC",
+    "description": "Oxfordshire Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 24,
+    "code": "READCC",
+    "description": "Reading Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 25,
+    "code": "READMC",
+    "description": "Reading Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 26,
+    "code": "SLOUMC",
+    "description": "Slough Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 27,
+    "code": "SWINCC",
+    "description": "Swindon Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 28,
+    "code": "SWINMC",
+    "description": "Swindon Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 29,
+    "code": "AMERCC",
+    "description": "Amersham Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 30,
+    "code": "AYLSCC",
+    "description": "Aylesbury Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 31,
+    "code": "WYCBMC",
+    "description": "High Wycombe Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 32,
+    "code": "MLTKMC",
+    "description": "Milton Keynes Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 33,
+    "code": "CAMBCT",
+    "description": "Cambridge Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 34,
+    "code": "CAMBMC",
+    "description": "Cambridge Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 35,
+    "code": "HUNTMC",
+    "description": "Huntingdon Law Courts",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 36,
+    "code": "PBORCC",
+    "description": "Peterborough Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 37,
+    "code": "NRTHCC",
+    "description": "Northampton Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 38,
+    "code": "NRTHMC",
+    "description": "Northampton Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 39,
+    "code": "WELBMC",
+    "description": "Wellingborough Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 40,
+    "code": "BRMNCC",
+    "description": "Birmingham Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 41,
+    "code": "BRMCMC",
+    "description": "Birmingham Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 42,
+    "code": "BROMMC",
+    "description": "Bromley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 43,
+    "code": "CHELMC",
+    "description": "Cheltenham Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 44,
+    "code": "CITYMC",
+    "description": "City of London Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 45,
+    "code": "DUDLMC",
+    "description": "Dudley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 46,
+    "code": "INNRCC",
+    "description": "Inner London Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 47,
+    "code": "KIDDMC",
+    "description": "Kidderminster Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 48,
+    "code": "KNGTCC",
+    "description": "Kingston upon Thames Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 49,
+    "code": "LEAMMC",
+    "description": "Leamington Spa Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 50,
+    "code": "RDDTMC",
+    "description": "Redditch Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 51,
+    "code": "TELFMC",
+    "description": "Telford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 52,
+    "code": "WRWKCC",
+    "description": "Warwick Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 53,
+    "code": "WMBLMC",
+    "description": "Wimbledon Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 54,
+    "code": "STHWCC",
+    "description": "Southwark Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 55,
+    "code": "THMSMC",
+    "description": "Thames Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 56,
+    "code": "WDGRCC",
+    "description": "Wood Green Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 57,
+    "code": "WOOLCC",
+    "description": "Woolwich Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 58,
+    "code": "LLDUMC",
+    "description": "Llandudno Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 59,
+    "code": "BRNSMC",
+    "description": "Barnsley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 60,
+    "code": "BDLNMC",
+    "description": "Bedlington Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 61,
+    "code": "BEVRMC",
+    "description": "Beverley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 62,
+    "code": "BRADCT",
+    "description": "Bradford County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 63,
+    "code": "BRADCC",
+    "description": "Bradford Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 64,
+    "code": "BRADMC",
+    "description": "Bradford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 65,
+    "code": "PBORMC",
+    "description": "Peterborough Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 66,
+    "code": "NORWMC",
+    "description": "Norwich Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 67,
+    "code": "HERFCC",
+    "description": "Hereford Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 68,
+    "code": "IPSWCC",
+    "description": "Ipswich Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 69,
+    "code": "IPSWMC",
+    "description": "Ipswich Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 70,
+    "code": "NORWCC",
+    "description": "Norwich Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 71,
+    "code": "KNGSMC",
+    "description": "Kings Lynn Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 72,
+    "code": "GRTYMC",
+    "description": "Great Yarmouth Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 73,
+    "code": "NORWCT",
+    "description": "Norwich County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 74,
+    "code": "LEICMC",
+    "description": "Leicester Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 75,
+    "code": "LEICCC",
+    "description": "Leicester Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 76,
+    "code": "GLOCCC",
+    "description": "Gloucester Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 77,
+    "code": "CANNMC",
+    "description": "Cannock Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 78,
+    "code": "NWCLMC",
+    "description": "North Staffs Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 79,
+    "code": "LLNWMC",
+    "description": "Llandrindod Wells Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 80,
+    "code": "LGHBMC",
+    "description": "Loughborough Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 81,
+    "code": "LGHBCC",
+    "description": "Loughborough Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 82,
+    "code": "CRYDCC",
+    "description": "Croydon Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 83,
+    "code": "STAFCC",
+    "description": "Stafford Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 84,
+    "code": "WLSSMC",
+    "description": "Walsall Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 85,
+    "code": "STOKCC",
+    "description": "Stoke on Trent Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 86,
+    "code": "GLAIAC",
+    "description": "IAC Glasgow",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 87,
+    "code": "BRAIAC",
+    "description": "IAC Bradford",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 88,
+    "code": "MNCIAC",
+    "description": "IAC Manchester",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 89,
+    "code": "BDFIAC",
+    "description": "IAC Yarls Wood",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 90,
+    "code": "TAYIAC",
+    "description": "IAC Taylor House",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 91,
+    "code": "HATIAC",
+    "description": "IAC Hatton Cross",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 92,
+    "code": "BIRAIT",
+    "description": "IAC Birmingham",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 93,
+    "code": "CLRKCT",
+    "description": "Clerkenwell and Shoreditch County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 94,
+    "code": "HRRWCC",
+    "description": "Harrow Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 95,
+    "code": "HSTNMC",
+    "description": "Hastings Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 96,
+    "code": "HERTCT",
+    "description": "Hertford County and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 97,
+    "code": "HGHBMC",
+    "description": "Highbury Corner Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 98,
+    "code": "LEWSCT",
+    "description": "Lewes Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 99,
+    "code": "LUTNMC",
+    "description": "Luton and South Bedfordshire Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 100,
+    "code": "PBORCT",
+    "description": "Peterborough County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 101,
+    "code": "READCT",
+    "description": "Reading County Court and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 102,
+    "code": "STHSCC",
+    "description": "Southend Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 103,
+    "code": "STALMC",
+    "description": "St Albans Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 104,
+    "code": "STEVMC",
+    "description": "Stevenage Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 105,
+    "code": "STRAMC",
+    "description": "Stratford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 106,
+    "code": "THANCT",
+    "description": "Thanet County Court and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 107,
+    "code": "UXBRMC",
+    "description": "Uxbridge Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 108,
+    "code": "WATFCT",
+    "description": "Watford County and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 109,
+    "code": "CRT026",
+    "description": "Willesden Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 110,
+    "code": "WORTCT",
+    "description": "Worthing County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 111,
+    "code": "WORTMC",
+    "description": "Worthing Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 112,
+    "code": "KNGSCC",
+    "description": "Kings Lynn Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 113,
+    "code": "MDSTCT",
+    "description": "Maidstone County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 114,
+    "code": "MDWYCT",
+    "description": "Medway County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 115,
+    "code": "CANTCT",
+    "description": "Canterbury County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 116,
+    "code": "BRIGFC",
+    "description": "Brighton Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 117,
+    "code": "BROCFC",
+    "description": "Bromley Civil and Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 118,
+    "code": "CHELJC",
+    "description": "Chelmsford Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 119,
+    "code": "CRDCFC",
+    "description": "Croydon Civil and Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 120,
+    "code": "ELONFC",
+    "description": "East London Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 121,
+    "code": "ELTARB",
+    "description": "East London Tribunals - Asylum Support",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 122,
+    "code": "EDMTFC",
+    "description": "Edmonton Civil and Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 123,
+    "code": "GUCTFC",
+    "description": "Guildford County Court and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 124,
+    "code": "WNDCFC",
+    "description": "Wandsworth Civil and Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 125,
+    "code": "HORSFC",
+    "description": "Horsham Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 126,
+    "code": "IACHRM",
+    "description": "IAC Harmondsworth",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 127,
+    "code": "KNGTCT",
+    "description": "Kingston upon Thames County Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 128,
+    "code": "LTONJC",
+    "description": "Luton Justice Centre",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 129,
+    "code": "RCJCNM",
+    "description": "RCJ - Chancery Masters",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 130,
+    "code": "RCJLCT",
+    "description": "RCJ - County Court at Central London",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 131,
+    "code": "RCJCAC",
+    "description": "RCJ - Court of Appeal Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 132,
+    "code": "RCJCCC",
+    "description": "RCJ – Court of Appeal Criminal",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 133,
+    "code": "RCJHAC",
+    "description": "RCJ - High Court Administrative Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 134,
+    "code": "RCJHFC",
+    "description": "RCJ - High Court Family Division",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 135,
+    "code": "RCJKBJ",
+    "description": "RCJ - High Court Kings Bench (Judges)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 136,
+    "code": "RCJKBM",
+    "description": "RCJ - High Court Kings Bench (Masters)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 137,
+    "code": "RCJIAC",
+    "description": "RCJ - Insolvency and Companies",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 138,
+    "code": "RCJMAC",
+    "description": "RCJ - Mayors and City",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 139,
+    "code": "SSSCST",
+    "description": "Sutton Social Security and Child Support Tribunal",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 140,
+    "code": "UTIACH",
+    "description": "UTIAC Field House",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 141,
+    "code": "UXCAFC",
+    "description": "Uxbridge Civil and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 142,
+    "code": "WLSHCT",
+    "description": "Welshpool County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 143,
+    "code": "WLSHMC",
+    "description": "Welshpool Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 144,
+    "code": "WLVRCC",
+    "description": "Wolverhampton Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 145,
+    "code": "WLVRMC",
+    "description": "Wolverhampton Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 146,
+    "code": "WRCSCC",
+    "description": "Worcester Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 147,
+    "code": "WRCSMC",
+    "description": "Worcester Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 148,
+    "code": "WREXCT",
+    "description": "Wrexham County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 149,
+    "code": "WREXMC",
+    "description": "Wrexham Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 150,
+    "code": "CANTCC",
+    "description": "Canterbury Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 151,
+    "code": "CANTMC",
+    "description": "Canterbury Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 152,
+    "code": "FLKSMC",
+    "description": "Folkestone Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 153,
+    "code": "MDSTCC",
+    "description": "Maidstone Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 154,
+    "code": "WLONFC",
+    "description": "West London Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 155,
+    "code": "MDSTMC",
+    "description": "Maidstone Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 156,
+    "code": "MRGTMC",
+    "description": "Margate Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 157,
+    "code": "CHTHMC",
+    "description": "Medway Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 158,
+    "code": "WDECFC",
+    "description": "Willesden Civil and Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 159,
+    "code": "WORGFC",
+    "description": "Worthing Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 160,
+    "code": "HASTFC",
+    "description": "Hastings Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 161,
+    "code": "CBODMC",
+    "description": "Bodmin Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 162,
+    "code": "PLYMMC",
+    "description": "Plymouth Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 163,
+    "code": "CARLCT",
+    "description": "Carlisle County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 164,
+    "code": "CARLCC",
+    "description": "Carlisle Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 165,
+    "code": "CARLMC",
+    "description": "Carlisle Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 166,
+    "code": "DONCCT",
+    "description": "Doncaster County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 167,
+    "code": "DONCCC",
+    "description": "Doncaster Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 168,
+    "code": "DONCMC",
+    "description": "Doncaster Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 169,
+    "code": "DURHCT",
+    "description": "Durham County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 170,
+    "code": "DURHCC",
+    "description": "Durham Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 171,
+    "code": "GTSHMC",
+    "description": "Gateshead Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 172,
+    "code": "GRIMCT",
+    "description": "Grimsby County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 173,
+    "code": "GRIMCC",
+    "description": "Grimsby Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 174,
+    "code": "GRIMMC",
+    "description": "Grimsby Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 175,
+    "code": "HRRGMC",
+    "description": "Harrogate Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 176,
+    "code": "KNGHCT",
+    "description": "Hull County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 177,
+    "code": "KINGCC",
+    "description": "Hull Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 178,
+    "code": "KNGHMC",
+    "description": "Hull Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 179,
+    "code": "HUDRMC",
+    "description": "Kirklees Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 180,
+    "code": "LEEDCC",
+    "description": "Leeds County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 181,
+    "code": "LEEDCT",
+    "description": "Leeds Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 182,
+    "code": "LEEDMC",
+    "description": "Leeds Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 183,
+    "code": "NWCSCT",
+    "description": "Newcastle-Upon-Tyne County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 184,
+    "code": "NWCSCC",
+    "description": "Newcastle-Upon-Tyne Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 185,
+    "code": "NWCSMC",
+    "description": "Newcastle-Upon-Tyne Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 186,
+    "code": "NWAYMC",
+    "description": "Newton Aycliffe Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 187,
+    "code": "NRTSMC",
+    "description": "North Tyneside Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 188,
+    "code": "PTRLMC",
+    "description": "Peterlee Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 189,
+    "code": "SCBNMC",
+    "description": "Scarborough Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 190,
+    "code": "SHEFCT",
+    "description": "Sheffield County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 191,
+    "code": "SHEFCC",
+    "description": "Sheffield Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 192,
+    "code": "SHEFMC",
+    "description": "Sheffield Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 193,
+    "code": "STHMMC",
+    "description": "South Tyneside Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 194,
+    "code": "SUNDMC",
+    "description": "Sunderland Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 195,
+    "code": "TEESCT",
+    "description": "Teesside County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 196,
+    "code": "MDDLMC",
+    "description": "Teesside Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 197,
+    "code": "TEESCC",
+    "description": "Teesside Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 198,
+    "code": "WORNMC",
+    "description": "Workington Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 199,
+    "code": "YORKCT",
+    "description": "York County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 200,
+    "code": "YORKCC",
+    "description": "York Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 201,
+    "code": "YORKMC",
+    "description": "York Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 202,
+    "code": "GLDFCC",
+    "description": "Guildford Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 203,
+    "code": "GLDFMC",
+    "description": "Guildford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 204,
+    "code": "STAIMC",
+    "description": "Staines Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 205,
+    "code": "ISLWCC",
+    "description": "Isleworth Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 206,
+    "code": "SNARCC",
+    "description": "Snaresbrook Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 207,
+    "code": "BRRWMC",
+    "description": "Barrow Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 208,
+    "code": "LANCMC",
+    "description": "Lancaster Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 209,
+    "code": "BURNMC",
+    "description": "Burnley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 210,
+    "code": "BURNCC",
+    "description": "Burnley Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 211,
+    "code": "BLKBMC",
+    "description": "Blackburn Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 212,
+    "code": "PRESCC",
+    "description": "Preston Crown Ringway",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 213,
+    "code": "PRESCT",
+    "description": "Preston Crown Sessions House",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 214,
+    "code": "PRESMC",
+    "description": "Preston Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 215,
+    "code": "BLKPMC",
+    "description": "Blackpool Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 216,
+    "code": "CRT027",
+    "description": "Barkingside Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 217,
+    "code": "BRNTCT",
+    "description": "Barnet Civil and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 218,
+    "code": "BSLDCT",
+    "description": "Basildon County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 219,
+    "code": "BSLDCC",
+    "description": "Basildon Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 220,
+    "code": "BSLDMC",
+    "description": "Basildon Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 221,
+    "code": "BEXLMC",
+    "description": "Bexley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 222,
+    "code": "BRTFCT",
+    "description": "Brentford Civil and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 223,
+    "code": "BRGHCT",
+    "description": "Brighton County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 224,
+    "code": "BRGEMC",
+    "description": "Brighton Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 225,
+    "code": "CNTRCC",
+    "description": "Central Criminal Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 226,
+    "code": "CHLMCC",
+    "description": "Chelmsford Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 227,
+    "code": "CHLMMC",
+    "description": "Chelmsford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 228,
+    "code": "COLTMC",
+    "description": "Colchester Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 229,
+    "code": "CRAWMC",
+    "description": "Crawley Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 230,
+    "code": "DRTFCT",
+    "description": "Dartford County Court and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 231,
+    "code": "EALNMC",
+    "description": "Ealing Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 232,
+    "code": "HATFMC",
+    "description": "Hatfield Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 233,
+    "code": "HNDNMC",
+    "description": "Hendon Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 234,
+    "code": "HWYCCT",
+    "description": "High Wycombe County Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 235,
+    "code": "HRSHCT",
+    "description": "Horsham County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 236,
+    "code": "HRSHMC",
+    "description": "Horsham Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 237,
+    "code": "LUTNCC",
+    "description": "Luton Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 238,
+    "code": "MLTKCT",
+    "description": "Milton Keynes County Court and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 239,
+    "code": "OXFDCT",
+    "description": "Oxford County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 240,
+    "code": "RMFRCT",
+    "description": "Romford County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 241,
+    "code": "RMFRMC",
+    "description": "Romford Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 242,
+    "code": "SLOUCT",
+    "description": "Slough County Court and Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 243,
+    "code": "STHSMC",
+    "description": "Southend Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 244,
+    "code": "STALCC",
+    "description": "St Albans Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 245,
+    "code": "HSTNCT",
+    "description": "Hastings County",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 246,
+    "code": "TRURCC",
+    "description": "Truro Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 247,
+    "code": "TRURMC",
+    "description": "Truro Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 248,
+    "code": "PLYMCC",
+    "description": "Plymouth Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 249,
+    "code": "NWTAMC",
+    "description": "Newton Abbot Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 250,
+    "code": "EXETCC",
+    "description": "Exeter Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 251,
+    "code": "EXETMC",
+    "description": "Exeter Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 252,
+    "code": "BNSTMC",
+    "description": "Barnstaple Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 253,
+    "code": "WEYMMC",
+    "description": "Weymouth Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 254,
+    "code": "BRNMCC",
+    "description": "Bournemouth Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 255,
+    "code": "POOLMC",
+    "description": "Poole Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 256,
+    "code": "TAUNCC",
+    "description": "Taunton Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 257,
+    "code": "TAUNMC",
+    "description": "Taunton Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 258,
+    "code": "YEOVMC",
+    "description": "Yeovil Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 259,
+    "code": "BATHMC",
+    "description": "Bath Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 260,
+    "code": "WSPMMC",
+    "description": "Weston-Super-Mare Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 261,
+    "code": "BRSTCC",
+    "description": "Bristol Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 262,
+    "code": "BRSTMC",
+    "description": "Bristol Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 263,
+    "code": "SALSCC",
+    "description": "Salisbury Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 264,
+    "code": "SALSMC",
+    "description": "Salisbury Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 265,
+    "code": "SOUTCC",
+    "description": "Southampton Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 266,
+    "code": "SOUTMC",
+    "description": "Southampton Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 267,
+    "code": "WNCHCC",
+    "description": "Winchester Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 268,
+    "code": "BSNGMC",
+    "description": "Basingstoke Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 269,
+    "code": "ALDRMC",
+    "description": "Aldershot Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 270,
+    "code": "PRTSMC",
+    "description": "Portsmouth Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 271,
+    "code": "PRTSCC",
+    "description": "Portsmouth Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 272,
+    "code": "IOWICC",
+    "description": "Isle of Wight Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 273,
+    "code": "IOWIMC",
+    "description": "Isle of Wight Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 274,
+    "code": "LINCMC",
+    "description": "Lincoln Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 275,
+    "code": "BOSTMC",
+    "description": "Boston Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 276,
+    "code": "RCULON",
+    "description": "RCU - London",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 277,
+    "code": "RCUMID",
+    "description": "RCU - Midlands",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 278,
+    "code": "RCUNOR",
+    "description": "RCU - North",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 279,
+    "code": "RCUSET",
+    "description": "RCU - South East",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 280,
+    "code": "RCUWSW",
+    "description": "RCU - Wales and South West",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 281,
+    "code": "LINCCC",
+    "description": "Lincoln Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 282,
+    "code": "CENTFC",
+    "description": "Central Family Court",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 283,
+    "code": "CHESCC",
+    "description": "Chester Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 284,
+    "code": "CHESMC",
+    "description": "Chester Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 285,
+    "code": "CREWMC",
+    "description": "Crewe Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 286,
+    "code": "LPOLCC",
+    "description": "Liverpool Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 287,
+    "code": "LPOLMC",
+    "description": "Liverpool Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 288,
+    "code": "SEFTMC",
+    "description": "Sefton Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 289,
+    "code": "WRRNMC",
+    "description": "Warrington Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 290,
+    "code": "WIRLMC",
+    "description": "Wirral Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 291,
+    "code": "ENFLON",
+    "description": "ENF - London",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 292,
+    "code": "CARDCC",
+    "description": "Cardiff Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 293,
+    "code": "CARDMC",
+    "description": "Cardiff Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 294,
+    "code": "CWMBMC",
+    "description": "Cwmbran Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 295,
+    "code": "HAVEMC",
+    "description": "Haverfordwest Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 296,
+    "code": "HAVECC",
+    "description": "Haverfordwest Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 297,
+    "code": "LLANMC",
+    "description": "Llanelli Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 298,
+    "code": "MERTCC",
+    "description": "Merthyr Tydfil Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 299,
+    "code": "MERTMC",
+    "description": "Merthyr Tydfil Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 300,
+    "code": "NEWPCC",
+    "description": "Newport Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 301,
+    "code": "NEWPMC",
+    "description": "Newport Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 302,
+    "code": "SWANCC",
+    "description": "Swansea Crown",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 303,
+    "code": "SWANMC",
+    "description": "Swansea Magistrates",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 304,
+    "code": "ABERCV",
+    "description": "Aberystwyth Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 305,
+    "code": "ABERFC",
+    "description": "Aberystwyth Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 306,
+    "code": "BLACCV",
+    "description": "Blackwood Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 307,
+    "code": "BLACFC",
+    "description": "Blackwood Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 308,
+    "code": "CARDCV",
+    "description": "Cardiff Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 309,
+    "code": "CARDFC",
+    "description": "Cardiff Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 310,
+    "code": "CARMCV",
+    "description": "Carmarthen Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 311,
+    "code": "CARMFC",
+    "description": "Carmarthen Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 312,
+    "code": "HAVECV",
+    "description": "Haverfordwest Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 313,
+    "code": "HAVEFC",
+    "description": "Haverfordwest Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 314,
+    "code": "LLANCV",
+    "description": "Llanelli Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 315,
+    "code": "LLANFC",
+    "description": "Llanelli Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 316,
+    "code": "MERTCV",
+    "description": "Merthyr Tydfil Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 317,
+    "code": "MERTFC",
+    "description": "Merthyr Tydfil Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 318,
+    "code": "NEWPCV",
+    "description": "Newport Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 319,
+    "code": "NEWPFC",
+    "description": "Newport Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 320,
+    "code": "PONTCV",
+    "description": "Pontypridd Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 321,
+    "code": "PONTFC",
+    "description": "Pontypridd Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 322,
+    "code": "PORTCV",
+    "description": "Port Talbot Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 323,
+    "code": "PORTFC",
+    "description": "Port Talbot Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 324,
+    "code": "SWANCV",
+    "description": "Swansea Civil",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 325,
+    "code": "SWANFC",
+    "description": "Swansea Family",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "courtId": 326,
+    "code": "ABERMC",
+    "description": "Aberystwyth Magistrates",
+    "enabled": true,
+    "notes": null
+  }
+]

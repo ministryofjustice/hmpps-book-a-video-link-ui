@@ -1,0 +1,74 @@
+{
+  "availabilityOk": false,
+  "alternatives": [
+    {
+      "pre": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "12:45",
+          "end": "13:00"
+        }
+      },
+      "main": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "13:00",
+          "end": "14:00"
+        }
+      },
+      "post": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "14:00",
+          "end": "14:15"
+        }
+      }
+    },
+    {
+      "pre": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "14:45",
+          "end": "15:00"
+        }
+      },
+      "main": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "15:00",
+          "end": "16:00"
+        }
+      },
+      "post": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "16:00",
+          "end": "16:15"
+        }
+      }
+    },
+    {
+      "pre": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "16:45",
+          "end": "17:00"
+        }
+      },
+      "main": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "17:00",
+          "end": "18:00"
+        }
+      },
+      "post": {
+        "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
+        "interval": {
+          "start": "18:00",
+          "end": "18:15"
+        }
+      }
+    }
+  ]
+}

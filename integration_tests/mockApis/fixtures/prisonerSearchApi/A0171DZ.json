@@ -1,0 +1,41 @@
+{
+  "prisonerNumber": "A0171DZ",
+  "bookingId": "1203867",
+  "bookNumber": "40875A",
+  "firstName": "BOB",
+  "lastName": "SMITH",
+  "dateOfBirth": "1980-03-31",
+  "gender": "Male",
+  "youthOffender": false,
+  "status": "ACTIVE IN",
+  "lastMovementTypeCode": "ADM",
+  "lastMovementReasonCode": "I",
+  "inOutStatus": "IN",
+  "prisonId": "NMI",
+  "lastPrisonId": "NMI",
+  "prisonName": "Nottingham (HMP)",
+  "cellLocation": "C-4-011",
+  "aliases": [],
+  "alerts": [],
+  "legalStatus": "SENTENCED",
+  "imprisonmentStatus": "RECEP_DET",
+  "imprisonmentStatusDescription": "Determinate sentence (reception)",
+  "recall": false,
+  "indeterminateSentence": false,
+  "receptionDate": "2022-12-15",
+  "locationDescription": "Nottingham (HMP)",
+  "restrictedPatient": false,
+  "currentIncentive": {
+    "level": {
+      "code": "STD",
+      "description": "Standard"
+    },
+    "dateTime": "2022-12-15T10:47:05",
+    "nextReviewDate": "2023-03-15"
+  },
+  "addresses": [],
+  "emailAddresses": [],
+  "phoneNumbers": [],
+  "identifiers": [],
+  "allConvictedOffences": []
+}

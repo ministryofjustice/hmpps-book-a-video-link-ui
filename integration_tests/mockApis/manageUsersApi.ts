@@ -1,61 +1,39 @@
-import { stubFor } from './wiremock'
+import { stubGet } from './wiremock'
+
+enum UserType {
+  COURT = 'COURT',
+  PROBATION = 'PROBATION',
+}
 
 const stubUser = (name: string = 'john smith') =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/users/me',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: {
-        username: 'USER1',
-        active: true,
-        userId: '123456',
-        name,
-      },
-    },
+  stubGet('/manage-users-api/users/me', {
+    username: 'USER1',
+    active: true,
+    userId: '123456',
+    authSource: 'auth',
+    name,
   })
 
-const stubUserGroups = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/externalusers/123456/groups',
-    },
-    response: {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      jsonBody: [
-        {
-          groupCode: 'VIDEO_LINK_PROBATION_USER',
-          groupName: 'Video Link Probation User',
-        },
-        {
-          groupCode: 'VIDEO_LINK_COURT_USER',
-          groupName: 'Video Link Court User',
-        },
-      ],
-    },
-  })
-
-const ping = () =>
-  stubFor({
-    request: {
-      method: 'GET',
-      urlPattern: '/manage-users-api/health/ping',
-    },
-    response: {
-      status: 200,
-    },
-  })
+const stubUserGroups = userType =>
+  stubGet(
+    '/manage-users-api/externalusers/123456/groups',
+    userType === UserType.COURT
+      ? [
+          {
+            groupCode: 'VIDEO_LINK_COURT_USER',
+            groupName: 'Video Link Court User',
+          },
+        ]
+      : [
+          {
+            groupCode: 'VIDEO_LINK_PROBATION_USER',
+            groupName: 'Video Link Probation User',
+          },
+        ],
+  )
 
 export default {
-  stubManageUser: (name = 'john smith') => Promise.all([stubUser(name), stubUserGroups()]),
-  stubManageUsersPing: ping,
+  stubCourtUser: (name = 'john smith') => Promise.all([stubUser(name), stubUserGroups(UserType.COURT)]),
+  stubProbationUser: (name = 'john smith') => Promise.all([stubUser(name), stubUserGroups(UserType.PROBATION)]),
+  stubManageUsersPing: () => stubGet('/manage-users-api/health/ping'),
 }

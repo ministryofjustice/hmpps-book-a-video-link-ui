@@ -1,0 +1,107 @@
+[
+  {
+    "prisonId": 83,
+    "code": "BWI",
+    "name": "Berwyn (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 33,
+    "code": "BMI",
+    "name": "Birmingham (HMP)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 112,
+    "code": "BZI",
+    "name": "Bronzefield (HMP)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 86,
+    "code": "BNI",
+    "name": "Bullingdon (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 98,
+    "code": "EYI",
+    "name": "Elmley (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 100,
+    "code": "EXI",
+    "name": "Exeter (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 50,
+    "code": "HEI",
+    "name": "Hewell (HMP)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 16,
+    "code": "NWI",
+    "name": "Norwich (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 106,
+    "code": "NMI",
+    "name": "Nottingham (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 17,
+    "code": "PVI",
+    "name": "Pentonville (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 111,
+    "code": "PBI",
+    "name": "Peterborough (HMP)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 107,
+    "code": "PNI",
+    "name": "Preston (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 67,
+    "code": "RSI",
+    "name": "Risley (HMP)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 110,
+    "code": "TSI",
+    "name": "Thameside (HMP)",
+    "enabled": true,
+    "notes": null
+  },
+  {
+    "prisonId": 27,
+    "code": "WWI",
+    "name": "Wandsworth (HMP & YOI)",
+    "enabled": true,
+    "notes": null
+  }
+]

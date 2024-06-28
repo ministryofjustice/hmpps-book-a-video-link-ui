@@ -1,0 +1,152 @@
+[
+  {
+    "referenceCodeId": 1,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "APPEAL",
+    "description": "Appeal"
+  },
+  {
+    "referenceCodeId": 2,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "APPLICATION",
+    "description": "Application"
+  },
+  {
+    "referenceCodeId": 3,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "BACKER",
+    "description": "Backer trial"
+  },
+  {
+    "referenceCodeId": 4,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "BAIL",
+    "description": "Bail"
+  },
+  {
+    "referenceCodeId": 5,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "CIVIL",
+    "description": "Civil"
+  },
+  {
+    "referenceCodeId": 6,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "CSE",
+    "description": "Committal for sentence (CSE)"
+  },
+  {
+    "referenceCodeId": 7,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "CTA",
+    "description": "Custody time limit application (CTA)"
+  },
+  {
+    "referenceCodeId": 9,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "FAMILY",
+    "description": "Family"
+  },
+  {
+    "referenceCodeId": 11,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "FCMH",
+    "description": "Further case management hearing (FCMH)"
+  },
+  {
+    "referenceCodeId": 12,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "FTR",
+    "description": "Future trial review hearing (FTR)"
+  },
+  {
+    "referenceCodeId": 13,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "GRH",
+    "description": "Ground rules hearing (GRH)"
+  },
+  {
+    "referenceCodeId": 8,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "IMMIGRATION_DEPORTATION",
+    "description": "Immigration/deportation"
+  },
+  {
+    "referenceCodeId": 14,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "MDA",
+    "description": "Mention hearing (MDA)"
+  },
+  {
+    "referenceCodeId": 15,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "MEF",
+    "description": "Mention to fix (MEF)"
+  },
+  {
+    "referenceCodeId": 16,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "NEWTON",
+    "description": "Newton hearing"
+  },
+  {
+    "referenceCodeId": 25,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "OTHER",
+    "description": "Other"
+  },
+  {
+    "referenceCodeId": 17,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "PLE",
+    "description": "Plea hearing (PLE)"
+  },
+  {
+    "referenceCodeId": 20,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "POCA",
+    "description": "Proceeds of crime application (POCA)"
+  },
+  {
+    "referenceCodeId": 18,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "PTPH",
+    "description": "Plea trial and preparation hearing (PTPH)"
+  },
+  {
+    "referenceCodeId": 19,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "PTR",
+    "description": "Pre-trial review (PTR)"
+  },
+  {
+    "referenceCodeId": 21,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "REMAND",
+    "description": "Remand hearing"
+  },
+  {
+    "referenceCodeId": 22,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "SECTION_28",
+    "description": "Section 28"
+  },
+  {
+    "referenceCodeId": 23,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "SEN",
+    "description": "Sentence (SEN)"
+  },
+  {
+    "referenceCodeId": 10,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "TRIAL",
+    "description": "Trial"
+  },
+  {
+    "referenceCodeId": 24,
+    "groupCode": "COURT_HEARING_TYPE",
+    "code": "TRIBUNAL",
+    "description": "Tribunal"
+  }
+]

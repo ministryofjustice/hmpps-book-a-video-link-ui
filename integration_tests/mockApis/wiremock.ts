@@ -10,4 +10,25 @@ const getMatchingRequests = (body: object) => superagent.post(`${url}/requests/f
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-export { stubFor, getMatchingRequests, resetStubs }
+const stubGet = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'GET', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody,
+    },
+  })
+
+const stubPost = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'POST', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: jsonBody || undefined,
+      body: !jsonBody ? 1 : undefined,
+    },
+  })
+
+export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost }

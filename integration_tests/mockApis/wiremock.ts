@@ -42,4 +42,14 @@ const stubPut = (urlPattern, jsonBody?) =>
     },
   })
 
-export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut }
+const stubDelete = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'DELETE', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody,
+    },
+  })
+
+export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut, stubDelete }

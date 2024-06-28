@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { defineConfig } from 'cypress'
 import { resetStubs } from './integration_tests/mockApis/wiremock'
 import auth from './integration_tests/mockApis/auth'
@@ -20,6 +21,8 @@ export default defineConfig({
     setupNodeEvents(on) {
       on('task', {
         reset: resetStubs,
+        log: message => console.log(message) || null,
+        table: message => console.table(message) || null,
         ...auth,
         ...manageUsersApi,
         ...bookAVideoLinkApi,

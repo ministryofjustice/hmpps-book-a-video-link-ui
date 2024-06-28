@@ -1,3 +1,4 @@
+import * as axe from 'axe-core'
 import { getDate, getMonth, getYear, parse } from 'date-fns'
 
 export type PageElement = Cypress.Chainable
@@ -7,8 +8,25 @@ export default abstract class Page {
     return new constructor()
   }
 
-  constructor(private readonly title: string) {
+  constructor(
+    private readonly title: string,
+    private readonly pauseAxeOnThisPage = false,
+  ) {
     this.checkOnPage()
+    this.terminalLog = this.terminalLog.bind(this)
+
+    if (!pauseAxeOnThisPage) {
+      cy.injectAxe()
+      cy.configureAxe({
+        // These disabled rules suppress only common upstream GOVUK Design System behaviours:
+        rules: [
+          // // aria-allowed-attr is disabled because radio buttons can have aria-expanded which isn't
+          // // currently allowed by the spec, but that might change: https://github.com/w3c/aria/issues/1404
+          { id: 'aria-allowed-attr', enabled: false },
+        ],
+      })
+      cy.checkA11y(null, null, this.terminalLog)
+    }
   }
 
   checkOnPage(): void {
@@ -89,4 +107,32 @@ export default abstract class Page {
 
   protected getButton = (text: string): PageElement => cy.get('button, a').contains(text)
   protected getLink = (text: string): PageElement => cy.get('a').contains(text)
+
+  private terminalLog(violations: axe.Result[]) {
+    const violationData = violations.map(({ id, impact, help, helpUrl, nodes }) => ({
+      id,
+      impact,
+      help,
+      helpUrl,
+      nodes: nodes.length,
+    }))
+
+    if (violationData.length > 0) {
+      cy.task('log', `Violation summary for: ${this.title}`)
+      cy.task('table', violationData)
+
+      cy.task('log', 'Violation detail')
+      cy.task('log', '----------------')
+
+      violations.forEach(v => {
+        v.nodes.forEach(node => {
+          cy.task('log', node.failureSummary)
+          cy.task('log', `Impact: ${node.impact}`)
+          cy.task('log', `Target: ${node.target}`)
+          cy.task('log', `HTML: ${node.html}`)
+          cy.task('log', '----------------')
+        })
+      })
+    }
+  }
 }

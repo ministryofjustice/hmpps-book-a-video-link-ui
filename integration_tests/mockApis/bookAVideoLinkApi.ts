@@ -1,4 +1,4 @@
-import { stubGet, stubPost, stubPut } from './wiremock'
+import { stubDelete, stubGet, stubPost, stubPut } from './wiremock'
 
 import enabledCourts from './fixtures/bookAVideoLinkApi/enabledCourts.json'
 import enabledProbationTeams from './fixtures/bookAVideoLinkApi/enabledProbationTeams.json'
@@ -69,6 +69,7 @@ export default {
 
   stubCreateBooking: () => stubPost('/book-a-video-link-api/video-link-booking'),
   stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),
+  stubCancelBooking: () => stubDelete('/book-a-video-link-api/video-link-booking/(.)*'),
   stubGetBooking: response => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),
   stubUserPreferences: () => Promise.all([stubGetUserCourtPreferences(), stubGetUserProbationTeamPreferences()]),
   stubGetCourtSchedule: ({ courtCode, date, response } = { courtCode: '(.)*', date: undefined, response: [] }) =>

@@ -9,6 +9,7 @@ export default class HomePage extends Page {
   headerPhaseBanner = (): PageElement => cy.get('[data-qa=header-phase-banner]')
 
   bookVideoLink = (): PageElement => this.getLink('Book a new video link')
+  viewAndChangeVideoLinks = (): PageElement => this.getLink('View and change video links')
   manageCourts = (): PageElement => this.getLink('Manage your list of courts')
   manageProbationTeams = (): PageElement => this.getLink('Manage your list of probation teams')
 }

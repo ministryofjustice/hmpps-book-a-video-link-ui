@@ -4,6 +4,7 @@ import Agent, { HttpsAgent } from 'agentkeepalive'
 import superagent from 'superagent'
 
 import { URLSearchParams } from 'url'
+import _ from 'lodash'
 import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
 import type { ApiConfig } from '../config'
@@ -100,7 +101,9 @@ export default abstract class RestClient {
     user: Express.User,
     client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
-    logger.info(`${this.name} GET: ${path}`)
+    logger.info(
+      `${this.name} GET: ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
+    )
 
     const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
@@ -132,7 +135,9 @@ export default abstract class RestClient {
     user: Express.User,
     client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
-    logger.info(`${this.name} ${method.toUpperCase()}: ${path}`)
+    logger.info(
+      `${this.name} ${method.toUpperCase()}: ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
+    )
 
     const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
@@ -190,7 +195,9 @@ export default abstract class RestClient {
     user: Express.User,
     client = TokenType.SYSTEM_TOKEN,
   ): Promise<Response> {
-    logger.info(`${this.name} DELETE: ${path}`)
+    logger.info(
+      `${this.name} DELETE: ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
+    )
 
     const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 

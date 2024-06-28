@@ -1,4 +1,3 @@
-import { addWeeks } from 'date-fns'
 import Page from '../pages/page'
 import HomePage from '../pages/home'
 import SearchPrisonerPage from '../pages/bookAVideoLink/searchPrisoner'
@@ -12,7 +11,7 @@ import probationBookingNotAvailable from '../mockApis/fixtures/bookAVideoLinkApi
 import courtBookingNotAvailable from '../mockApis/fixtures/bookAVideoLinkApi/courtBookingNotAvailable.json'
 import NewBookingPage from '../pages/bookAVideoLink/newBooking'
 import CheckBookingPage from '../pages/bookAVideoLink/checkBooking'
-import ConfirmationPage from '../pages/bookAVideoLink/confirmationPage'
+import ConfirmationPage from '../pages/bookAVideoLink/confirmation'
 import BookingNotAvailablePage from '../pages/bookAVideoLink/bookingNotAvailable'
 
 context('Create a booking', () => {
@@ -51,7 +50,7 @@ context('Create a booking', () => {
       const newBookingPage = Page.verifyOnPage(NewBookingPage)
       newBookingPage.selectCourt('Aberystwyth Family')
       newBookingPage.selectHearingType('Civil')
-      newBookingPage.selectDate(addWeeks(new Date(), 1))
+      newBookingPage.selectDate(new Date(2050, 0, 1))
       newBookingPage.selectStartTime(15, 0)
       newBookingPage.selectEndTime(16, 0)
       newBookingPage.selectRoomForMainHearing('Closed Visits Cubicle 6 - Crown Ct')
@@ -83,7 +82,7 @@ context('Create a booking', () => {
       const newBookingPage = Page.verifyOnPage(NewBookingPage)
       newBookingPage.selectCourt('Aberystwyth Family')
       newBookingPage.selectHearingType('Civil')
-      newBookingPage.selectDate(addWeeks(new Date(), 1))
+      newBookingPage.selectDate(new Date(2050, 0, 1))
       newBookingPage.selectStartTime(15, 0)
       newBookingPage.selectEndTime(16, 0)
       newBookingPage.selectRoomForMainHearing('Closed Visits Cubicle 6 - Crown Ct')
@@ -127,7 +126,7 @@ context('Create a booking', () => {
       const newBookingPage = Page.verifyOnPage(NewBookingPage)
       newBookingPage.selectProbationTeam('Blackpool MC (PPOC)')
       newBookingPage.selectMeetingType('Recall report')
-      newBookingPage.selectDate(addWeeks(new Date(), 1))
+      newBookingPage.selectDate(new Date(2050, 0, 1))
       newBookingPage.selectStartTime(15, 0)
       newBookingPage.selectEndTime(16, 0)
       newBookingPage.selectRoomForMeeting('Closed Visits Cubicle 6 - Crown Ct')
@@ -155,7 +154,7 @@ context('Create a booking', () => {
       const newBookingPage = Page.verifyOnPage(NewBookingPage)
       newBookingPage.selectProbationTeam('Blackpool MC (PPOC)')
       newBookingPage.selectMeetingType('Recall report')
-      newBookingPage.selectDate(addWeeks(new Date(), 1))
+      newBookingPage.selectDate(new Date(2050, 0, 1))
       newBookingPage.selectStartTime(14, 0)
       newBookingPage.selectEndTime(15, 0)
       newBookingPage.selectRoomForMeeting('Closed Visits Cubicle 6 - Crown Ct')

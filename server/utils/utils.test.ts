@@ -50,9 +50,9 @@ describe('parseDate', () => {
 
 describe('formatDate', () => {
   it.each([
-    [null, null, 'd MMMM yyyy', null],
-    ['empty string', '', 'd MMMM yyyy', null],
-    ['Poor format string', '20-03-2022', 'd MMMM yyyy', null],
+    [null, null, 'd MMMM yyyy', undefined],
+    ['empty string', '', 'd MMMM yyyy', undefined],
+    ['Poor format string', '20-03-2022', 'd MMMM yyyy', undefined],
     ['ISO Date String', '2022-03-20', 'd MMMM yyyy', '20 March 2022'],
     ['Date Object', new Date(2022, 2, 20), 'd MMMM yyyy', '20 March 2022'],
   ])('%s formatDate(%s, %s)', (_: string, a: string | Date, fmt: string, expected: string) => {

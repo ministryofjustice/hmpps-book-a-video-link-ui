@@ -31,4 +31,15 @@ const stubPost = (urlPattern, jsonBody?) =>
     },
   })
 
-export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost }
+const stubPut = (urlPattern, jsonBody?) =>
+  stubFor({
+    request: { method: 'PUT', urlPattern },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: jsonBody || undefined,
+      body: !jsonBody ? 1 : undefined,
+    },
+  })
+
+export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut }

@@ -60,7 +60,7 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/${journey}/booking/create/${journeyId()}/ABC123/add-video-link-booking/confirmation/1`)
+      .get(`/${journey}/booking/create/${journeyId()}/A1234AA/add-video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {

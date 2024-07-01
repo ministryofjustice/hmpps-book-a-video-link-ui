@@ -38,7 +38,7 @@ beforeEach(() => {
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
     prisonAppointments: [
       {
-        prisonerNumber: 'ABC123',
+        prisonerNumber: 'A1234AA',
         appointmentType: 'VLB_PROBATION',
         prisonLocKey: 'VCC-ROOM-1',
         appointmentDate: '2024-04-05',
@@ -52,7 +52,7 @@ beforeEach(() => {
     firstName: 'Joe',
     lastName: 'Bloggs',
     prisonId: 'MDI',
-    prisonerNumber: 'ABC123',
+    prisonerNumber: 'A1234AA',
   })
 
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
@@ -73,14 +73,14 @@ describe('GET', () => {
           correlationId: expect.any(String),
         })
         expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
-        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('ABC123', user)
+        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
         expect(heading).toEqual('This video link booking has been cancelled')
-        expect(bookAnotherLink).toEqual(`/court/booking/create/ABC123/add-video-link-booking`)
+        expect(bookAnotherLink).toEqual(`/court/booking/create/A1234AA/add-video-link-booking`)
       })
       .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })

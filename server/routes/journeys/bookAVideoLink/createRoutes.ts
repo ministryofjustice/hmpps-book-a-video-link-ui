@@ -19,6 +19,7 @@ export default function CreateRoutes({
   prisonerService,
   videoLinkService,
 }: Services): Router {
+  const basePath = '/:prisonerNumber([a-zA-Z][0-9]{4}[a-zA-Z]{2})'
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
@@ -35,16 +36,16 @@ export default function CreateRoutes({
 
   route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
-    '/:prisonerNumber/add-video-link-booking',
+    `${basePath}/add-video-link-booking`,
     new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route(
-    '/:prisonerNumber/add-video-link-booking/check-booking',
+    `${basePath}/add-video-link-booking/check-booking`,
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
-  route('/:prisonerNumber/add-video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
+  route(`${basePath}/add-video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
   route(
-    '/:prisonerNumber/add-video-link-booking/confirmation/:bookingId',
+    `${basePath}/add-video-link-booking/confirmation/:bookingId`,
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
   )
 

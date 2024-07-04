@@ -146,7 +146,7 @@ describe('New Booking handler', () => {
       appSetup()
 
       await request(app)
-        .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking`)
+        .get(`/court/booking/amend/1/${journeyId()}/add-video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -187,7 +187,7 @@ describe('New Booking handler', () => {
       videoLinkService.bookingIsAmendable.mockReturnValue(false)
 
       return request(app)
-        .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking`)
+        .get(`/court/booking/amend/1/${journeyId()}/add-video-link-booking`)
         .expect(302)
         .expect('location', '/court/view-booking/1')
         .then(() => expectJourneySession(app, 'bookAVideoLink', null))

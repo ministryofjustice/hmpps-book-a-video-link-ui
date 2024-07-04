@@ -65,7 +65,7 @@ afterEach(() => {
 describe('GET', () => {
   it('should render the correct view page', () => {
     return request(app)
-      .get(`/court/booking/remove/1/${journeyId()}/confirmation`)
+      .get(`/court/booking/cancel/1/${journeyId()}/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CANCELLED_PAGE, {

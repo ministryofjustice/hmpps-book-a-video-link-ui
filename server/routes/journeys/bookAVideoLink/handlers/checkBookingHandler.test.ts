@@ -183,7 +183,7 @@ describe('Check Booking handler', () => {
       })
 
       return request(app)
-        .post(`/court/booking/edit/1/${journeyId()}/add-video-link-booking/check-booking`)
+        .post(`/court/booking/amend/1/${journeyId()}/add-video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation')

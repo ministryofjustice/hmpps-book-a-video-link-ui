@@ -72,7 +72,7 @@ describe('GET', () => {
 
         expect(heading).toEqual('Joe Bloggs’s video link details')
         expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
-        expect(changeLink).toEqual(`/${journey}/booking/edit/1001/add-video-link-booking`)
+        expect(changeLink).toEqual(`/${journey}/booking/amend/1001/add-video-link-booking`)
       })
   })
 

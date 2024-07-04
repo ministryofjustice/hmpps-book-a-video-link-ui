@@ -108,7 +108,7 @@ describe('GET', () => {
       .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })
 
-  it('should render the correct page in edit mode', () => {
+  it('should render the correct page in amend mode', () => {
     appSetup({ bookAVideoLink: { bookingId: 1, date: '2024-06-27', startTime: '15:00' } })
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
@@ -121,7 +121,7 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/court/booking/edit/1/${journeyId()}/add-video-link-booking/confirmation`)
+      .get(`/court/booking/amend/1/${journeyId()}/add-video-link-booking/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {

@@ -68,6 +68,7 @@ export default {
     stubPost('/book-a-video-link-api/availability', response),
 
   stubCreateBooking: () => stubPost('/book-a-video-link-api/video-link-booking'),
+  stubRequestBooking: () => stubPost('/book-a-video-link-api/video-link-booking/request'),
   stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),
   stubCancelBooking: () => stubDelete('/book-a-video-link-api/video-link-booking/(.)*'),
   stubGetBooking: response => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),

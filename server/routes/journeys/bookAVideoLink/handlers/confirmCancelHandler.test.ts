@@ -44,7 +44,7 @@ describe('Confirm Cancel handler', () => {
   describe('GET', () => {
     it('should render the correct view page', () => {
       return request(app)
-        .get(`/court/booking/remove/1/${journeyId()}/confirm`)
+        .get(`/court/booking/cancel/1/${journeyId()}/confirm`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -62,7 +62,7 @@ describe('Confirm Cancel handler', () => {
       videoLinkService.bookingIsAmendable.mockReturnValue(false)
 
       return request(app)
-        .get(`/court/booking/remove/1/${journeyId()}/confirm`)
+        .get(`/court/booking/cancel/1/${journeyId()}/confirm`)
         .expect(302)
         .expect('location', '/court/view-booking/1')
         .then(() => expectJourneySession(app, 'bookAVideoLink', null))
@@ -72,7 +72,7 @@ describe('Confirm Cancel handler', () => {
   describe('POST', () => {
     it('should cancel the booking', () => {
       return request(app)
-        .post(`/court/booking/remove/1/${journeyId()}/confirm`)
+        .post(`/court/booking/cancel/1/${journeyId()}/confirm`)
         .send({})
         .expect(302)
         .expect('location', 'confirmation')

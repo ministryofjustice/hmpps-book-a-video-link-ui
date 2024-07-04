@@ -13,7 +13,7 @@
 
             <p class='govuk-body'>
                 We have emailed the prison to book the video link. The details have also been sent to you.
-                The prison will email your court when they have booked the video link.
+                The prison will email your {{ "court" if session.req.params.type == BavlJourneyType.COURT else "probation team"  }} when they have booked the video link.
             </p>
             
             <div class="govuk-button-group">

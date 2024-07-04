@@ -12,6 +12,7 @@ import {
   AvailabilityResponse,
   ScheduleItem,
   AmendVideoBookingRequest,
+  RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
 import { formatDate } from '../utils/utils'
 
@@ -90,6 +91,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {
     return this.post({ path: '/video-link-booking', data: request }, user)
+  }
+
+  public requestVideoLinkBooking(request: RequestVideoBookingRequest, user: Express.User): Promise<void> {
+    return this.post({ path: '/video-link-booking/request', data: request }, user)
   }
 
   public amendVideoLinkBooking(

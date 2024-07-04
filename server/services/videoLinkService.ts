@@ -6,6 +6,7 @@ import {
   AvailabilityRequest,
   CreateVideoBookingRequest,
   Location,
+  RequestVideoBookingRequest,
   ScheduleItem,
 } from '../@types/bookAVideoLinkApi/types'
 import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
@@ -13,7 +14,7 @@ import { dateAtTime, formatDate } from '../utils/utils'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
 import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
 
-type VideoBookingRequest = CreateVideoBookingRequest | AmendVideoBookingRequest
+type VideoBookingRequest = CreateVideoBookingRequest | AmendVideoBookingRequest | RequestVideoBookingRequest
 
 export default class VideoLinkService {
   constructor(
@@ -41,6 +42,11 @@ export default class VideoLinkService {
   public createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
     const request = this.buildBookingRequest<CreateVideoBookingRequest>(journey)
     return this.bookAVideoLinkApiClient.createVideoLinkBooking(request, user)
+  }
+
+  public requestVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+    const request = this.buildBookingRequest<RequestVideoBookingRequest>(journey)
+    return this.bookAVideoLinkApiClient.requestVideoLinkBooking(request, user)
   }
 
   public amendVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
@@ -124,6 +130,9 @@ export default class VideoLinkService {
       bookingType: journey.type,
       prisoners: [
         {
+          firstName: journey.prisoner.firstName,
+          lastName: journey.prisoner.lastName,
+          dateOfBirth: journey.prisoner.dateOfBirth,
           prisonCode: journey.prisoner.prisonId,
           prisonerNumber: journey.prisoner.prisonerNumber,
           appointments: this.mapSessionToAppointments(journey),

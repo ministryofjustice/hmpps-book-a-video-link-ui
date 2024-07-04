@@ -33,7 +33,7 @@ export default class BookingRequestedHandler implements PageHandler {
         ? await this.videoLinkService.getCourtHearingTypes(user)
         : await this.videoLinkService.getProbationMeetingTypes(user)
 
-    // req.session.journey.bookAVideoLink = null
+    req.session.journey.bookAVideoLink = null
 
     res.render('pages/bookAVideoLink/bookingRequested', {
       prisoner,

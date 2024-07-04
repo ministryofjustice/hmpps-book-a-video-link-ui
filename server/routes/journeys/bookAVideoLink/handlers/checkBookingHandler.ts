@@ -89,7 +89,7 @@ export default class CheckBookingHandler implements PageHandler {
     }
 
     if (mode === 'request') {
-      // await this.videoLinkService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.videoLinkService.requestVideoLinkBooking(req.session.journey.bookAVideoLink, user)
     }
 
     return res.redirect(`confirmation`)

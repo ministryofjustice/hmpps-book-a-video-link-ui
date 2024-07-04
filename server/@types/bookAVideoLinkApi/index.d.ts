@@ -5,75 +5,362 @@
 
 export interface paths {
   '/video-link-booking/id/{videoBookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return the details of a video link booking using its internal ID */
     get: operations['getVideoLinkBookingById']
     /** Endpoint to support the amendment of video link bookings */
     put: operations['amend']
+    post?: never
+    /** Endpoint to support cancellation of a video booking. */
+    delete: operations['cancelVideoBooking']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-dlq/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlq']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/retry-all-dlqs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryAllDlqs']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/purge-queue/{queueName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/video-link-booking': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Endpoint to support the creation of video link bookings */
     post: operations['create']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/video-link-booking/request': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /** Endpoint to support the request for a prison to create a video link booking for a prisoner due to arrive */
+    post: operations['requestBooking']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/probation-teams/user-preferences/set': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Endpoint to set the probation team preferences for a user (identified from the token content) */
     post: operations['setUserProbationTeamPreferences']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/user-preferences/set': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Endpoint to set the court preferences for a user (identified from the token content) */
     post: operations['setUserCourtPreferences']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/availability': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
     /** Endpoint to assess booking availability and to suggest alternatives */
     post: operations['checkAvailability']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/schedule/probation/{probationTeamCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to retrieve a schedule of bookings for a probation team */
     get: operations['getProbationSchedule']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/schedule/prison/{prisonCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to retrieve a schedule of bookings for a prison */
     get: operations['getScheduleForPrison']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/schedule/court/{courtCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to retrieve a schedule of bookings for a court */
     get: operations['getCourtSchedule']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/reference-codes/group/{groupCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return reference data for a provided group key */
     get: operations['getReferenceDataByGroup']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/get-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getDlqMessages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/probation-teams/user-preferences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
     get: operations['probationTeamsUserPreferences']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/probation-teams/enabled': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return a list of enabled probation teams for video link bookings */
     get: operations['enabledProbationTeams']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/prisons/{prisonCode}/locations': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return a list of suitable appointment locations sorted by description at a given prison */
     get: operations['getAppointmentLocationsAtPrison']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/prisons/list': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return the list of prisons sorted by name known to the service */
     get: operations['prisonsList']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/user-preferences': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return the list of enabled courts selected by a user (identified from the token content) */
     get: operations['getUserCourtPreferences']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/courts/enabled': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return a list of enabled courts for video link bookings */
     get: operations['enabledCourts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
   '/booking-contacts/id/{videoBookingId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     /** Endpoint to return a list of contacts associated with a booking */
     get: operations['getContactsForBooking']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     /** @description The request with the amended video link booking details */
@@ -144,16 +431,15 @@ export interface components {
        */
       videoLinkUrl?: string
     }
-    /**
-     * @description
-     *       The appointment or appointments associated with the prisoner.
+    /** @description
+     *           The appointment or appointments associated with the prisoner.
      *
-     *       There should only ever be one appointment for a probation meeting.
+     *           There should only ever be one appointment for a probation meeting.
      *
-     *       Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
+     *           Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
      *
-     *       Appointment dates and times must not overlap.
-     */
+     *           Appointment dates and times must not overlap.
+     *          */
     Appointment: {
       /**
        * @description The appointment type
@@ -197,16 +483,15 @@ export interface components {
        * @example A1234AA
        */
       prisonerNumber: string
-      /**
-       * @description
-       *       The appointment or appointments associated with the prisoner.
+      /** @description
+       *           The appointment or appointments associated with the prisoner.
        *
-       *       There should only ever be one appointment for a probation meeting.
+       *           There should only ever be one appointment for a probation meeting.
        *
-       *       Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
+       *           Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
        *
-       *       Appointment dates and times must not overlap.
-       */
+       *           Appointment dates and times must not overlap.
+       *          */
       appointments: components['schemas']['Appointment'][]
     }
     ErrorResponse: {
@@ -217,6 +502,21 @@ export interface components {
       userMessage?: string
       developerMessage?: string
       moreInfo?: string
+    }
+    DlqMessage: {
+      body: {
+        [key: string]: Record<string, never> | undefined
+      }
+      messageId: string
+    }
+    RetryDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
+    PurgeQueueResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
     }
     /** @description The request with the new video link booking details */
     CreateVideoBookingRequest: {
@@ -290,6 +590,108 @@ export interface components {
        * @example false
        */
       createdByPrison?: boolean
+    }
+    /** @description The request with the requested video link booking details */
+    RequestVideoBookingRequest: {
+      /**
+       * @description The booking type
+       * @example COURT
+       * @enum {string}
+       */
+      bookingType: 'COURT' | 'PROBATION'
+      /** @description The prisoner or prisoners associated with the video link booking */
+      prisoners: components['schemas']['UnknownPrisonerDetails'][]
+      /**
+       * @description The court code is needed if booking type is COURT, otherwise null
+       * @example DRBYMC
+       */
+      courtCode?: string
+      /**
+       * @description The court hearing type is needed if booking type is COURT, otherwise null
+       * @example APPEAL
+       * @enum {string}
+       */
+      courtHearingType?:
+        | 'APPEAL'
+        | 'APPLICATION'
+        | 'BACKER'
+        | 'BAIL'
+        | 'CIVIL'
+        | 'CSE'
+        | 'CTA'
+        | 'IMMIGRATION_DEPORTATION'
+        | 'FAMILY'
+        | 'TRIAL'
+        | 'FCMH'
+        | 'FTR'
+        | 'GRH'
+        | 'MDA'
+        | 'MEF'
+        | 'NEWTON'
+        | 'PLE'
+        | 'PTPH'
+        | 'PTR'
+        | 'POCA'
+        | 'REMAND'
+        | 'SECTION_28'
+        | 'SEN'
+        | 'TRIBUNAL'
+        | 'OTHER'
+      /**
+       * @description The probation team code is needed if booking type is PROBATION, otherwise null
+       * @example BLKPPP
+       */
+      probationTeamCode?: string
+      /**
+       * @description The probation meeting type is needed if booking type is PROBATION, otherwise null
+       * @example PSR
+       * @enum {string}
+       */
+      probationMeetingType?: 'PSR' | 'RR'
+      /**
+       * @description Free text comments for the video link booking
+       * @example Waiting to hear on legal representation
+       */
+      comments?: string
+      /**
+       * @description The video link for the appointment. Must be a valid URL
+       * @example https://video.here.com
+       */
+      videoLinkUrl?: string
+    }
+    /** @description The prisoner or prisoners associated with the video link booking */
+    UnknownPrisonerDetails: {
+      /**
+       * @description The prison code for the prison which the prisoner is due to arrive
+       * @example PVI
+       */
+      prisonCode: string
+      /**
+       * @description The prisoner's first name
+       * @example Joe
+       */
+      firstName: string
+      /**
+       * @description The prisoner's last name
+       * @example Bloggs
+       */
+      lastName: string
+      /**
+       * Format: date
+       * @description The prisoner's date of birth
+       * @example 1970-01-01
+       */
+      dateOfBirth: string
+      /** @description
+       *           The appointment or appointments associated with the prisoner.
+       *
+       *           There should only ever be one appointment for a probation meeting.
+       *
+       *           Court meetings can have up to 3 meetings, a pre, main hearing and post meeting. They must always have a main meeting.
+       *
+       *           Appointment dates and times must not overlap.
+       *          */
+      appointments: components['schemas']['Appointment'][]
     }
     /** @description The request body containing the user probation team preferences */
     SetProbationTeamPreferencesRequest: {
@@ -591,7 +993,7 @@ export interface components {
        * @example ACTIVE
        * @enum {string}
        */
-      statusCode: 'ACTIVE' | 'CANCELLED'
+      statusCode: 'ACTIVE' | 'CANCELLED' | 'ACTIVE' | 'CANCELLED'
       /**
        * @description The video link URL to attend this event
        * @example https://video.link.url
@@ -766,6 +1168,13 @@ export interface components {
        */
       description?: string
     }
+    GetDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
+    }
     /** @description Describes the details of a probation team */
     ProbationTeam: {
       /**
@@ -906,9 +1315,9 @@ export interface components {
       telephone?: string
       /**
        * @description
-       *     Describes the whether the contact is a primary contact or not, true if yes otherwise false.
+       *         Describes the whether the contact is a primary contact or not, true if yes otherwise false.
        *
-       *     There will only ever be one primary contact for each contact type e.g. a court will only have one primary contact.
+       *         There will only ever be one primary contact for each contact type e.g. a court will only have one primary contact.
        *
        * @example true
        */
@@ -921,52 +1330,65 @@ export interface components {
   headers: never
   pathItems: never
 }
-
 export type $defs = Record<string, never>
-
-export type external = Record<string, never>
-
 export interface operations {
-  /** Endpoint to return the details of a video link booking using its internal ID */
   getVideoLinkBookingById: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         videoBookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Video link booking details */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['VideoLinkBooking']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The video booking ID was not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to support the amendment of video link bookings */
   amend: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         videoBookingId: number
       }
+      cookie?: never
     }
     requestBody: {
       content: {
@@ -976,32 +1398,169 @@ export interface operations {
     responses: {
       /** @description The unique identifier of the video booking */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The video booking ID was not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to support the creation of video link bookings */
+  cancelVideoBooking: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        videoBookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Video booking was cancelled. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The video booking ID was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  retryDlq: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryAllDlqs: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqResult'][]
+        }
+      }
+    }
+  }
+  purgeQueue: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        queueName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
   create: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['CreateVideoBookingRequest']
@@ -1010,26 +1569,80 @@ export interface operations {
     responses: {
       /** @description The unique identifier of the created video booking */
       201: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': number
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to set the probation team preferences for a user (identified from the token content) */
+  requestBooking: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RequestVideoBookingRequest']
+      }
+    }
+    responses: {
+      /** @description The video link booking has been requested */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   setUserProbationTeamPreferences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['SetProbationTeamPreferencesRequest']
@@ -1038,32 +1651,49 @@ export interface operations {
     responses: {
       /** @description Count of the number of probation teams saved in this request */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SetProbationTeamPreferencesResponse']
         }
       }
       /** @description Invalid request provided */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to set the court preferences for a user (identified from the token content) */
   setUserCourtPreferences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['SetCourtPreferencesRequest']
@@ -1072,32 +1702,49 @@ export interface operations {
     responses: {
       /** @description Count of the number of courts saved in this request */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['SetCourtPreferencesResponse']
         }
       }
       /** @description Invalid request provided */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to assess booking availability and to suggest alternatives */
   checkAvailability: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
     requestBody: {
       content: {
         'application/json': components['schemas']['AvailabilityRequest']
@@ -1106,25 +1753,33 @@ export interface operations {
     responses: {
       /** @description Availability response, including any suggested alternative booking options */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['AvailabilityResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to retrieve a schedule of bookings for a probation team */
   getProbationSchedule: {
     parameters: {
       query?: {
@@ -1133,39 +1788,53 @@ export interface operations {
         /** @description Include cancelled bookings (true or false), defaults to false. */
         includeCancelled?: boolean
       }
+      header?: never
       path: {
         /** @description A probation team code */
         probationTeamCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description List of scheduled video link appointments and booking details for one probation team */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduleItem'][]
         }
       }
       /** @description Bad request. Message contains the detail. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to retrieve a schedule of bookings for a prison */
   getScheduleForPrison: {
     parameters: {
       query?: {
@@ -1174,39 +1843,53 @@ export interface operations {
         /** @description Include cancelled bookings (true or false), defaults to false. */
         includeCancelled?: boolean
       }
+      header?: never
       path: {
         /** @description A prison code */
         prisonCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description List of scheduled video link appointments and booking details at the prison. */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduleItem'][]
         }
       }
       /** @description Bad request. Message contains the detail. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to retrieve a schedule of bookings for a court */
   getCourtSchedule: {
     parameters: {
       query?: {
@@ -1215,114 +1898,194 @@ export interface operations {
         /** @description Include cancelled bookings (true or false), defaults to false. */
         includeCancelled?: boolean
       }
+      header?: never
       path: {
         /** @description A court code */
         courtCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description List of scheduled video link appointments and booking details for one court */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ScheduleItem'][]
         }
       }
       /** @description Bad request. Message contains the detail. */
       400: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return reference data for a provided group key */
   getReferenceDataByGroup: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         /** @description EnabledOnly true or false. Defaults to false if not supplied. */
         groupCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description List of reference data codes/values */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ReferenceCode'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return the list of enabled probation teams select by a user (identified from the token content) */
+  getDlqMessages: {
+    parameters: {
+      query?: {
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['GetDlqResult']
+        }
+      }
+    }
+  }
   probationTeamsUserPreferences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Probation teams select by this user */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ProbationTeam'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return a list of enabled probation teams for video link bookings */
   enabledProbationTeams: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Probation teams */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ProbationTeam'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return a list of suitable appointment locations sorted by description at a given prison */
   getAppointmentLocationsAtPrison: {
     parameters: {
       query?: {
@@ -1331,135 +2094,204 @@ export interface operations {
         /** @description Video link only, true or false. When true only returns video link suitable locations. Defaults to true if not supplied. */
         videoLinkOnly?: boolean
       }
+      header?: never
       path: {
         /** @description The prison code for which locations will be retrieved. */
         prisonCode: string
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Locations */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Location'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return the list of prisons sorted by name known to the service */
   prisonsList: {
     parameters: {
       query?: {
         /** @description EnabledOnly true or false. Defaults to false if not supplied. */
         enabledOnly?: boolean
       }
+      header?: never
+      path?: never
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description List of prisons */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Prison'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return the list of enabled courts selected by a user (identified from the token content) */
   getUserCourtPreferences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Courts selected by this user */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Court'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return a list of enabled courts for video link bookings */
   enabledCourts: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
     responses: {
       /** @description Courts */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['Court'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
   }
-  /** Endpoint to return a list of contacts associated with a booking */
   getContactsForBooking: {
     parameters: {
+      query?: never
+      header?: never
       path: {
         videoBookingId: number
       }
+      cookie?: never
     }
+    requestBody?: never
     responses: {
       /** @description Contacts for this booking */
       200: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['BookingContact'][]
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description The video booking ID was not found. */
       404: {
+        headers: {
+          [name: string]: unknown
+        }
         content: {
           'application/json': components['schemas']['ErrorResponse']
         }

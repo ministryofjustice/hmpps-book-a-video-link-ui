@@ -7,4 +7,6 @@ export default class SearchPrisonerResultsPage extends Page {
 
   bookVideoLinkForPrisoner = (prisonerNumber: string): PageElement =>
     cy.get('table.govuk-table').contains('td', prisonerNumber).siblings().last().find('a')
+
+  prisonerNotListed = (): PageElement => cy.get('a').contains('The prisoner is not listed')
 }

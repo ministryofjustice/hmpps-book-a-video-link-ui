@@ -67,22 +67,6 @@
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Date"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).appointmentDate | formatDate
-                        }
-                    } if booking.bookingType == 'COURT',
-                    {
-                        key: {
-                            text: "Date"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).appointmentDate | formatDate
-                        }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
                             text: "Prison room for court hearing"
                         },
                         value: {
@@ -95,6 +79,22 @@
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
+                        }
+                    } if booking.bookingType == 'PROBATION',
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).appointmentDate | formatDate
+                        }
+                    } if booking.bookingType == 'COURT',
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).appointmentDate | formatDate
                         }
                     } if booking.bookingType == 'PROBATION',
                     {

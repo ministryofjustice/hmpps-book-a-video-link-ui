@@ -93,18 +93,18 @@
                     },
                     {
                         key: {
-                            text: "Date"
-                        },
-                        value: {
-                            text: session.journey.bookAVideoLink.date | formatDate
-                        }
-                    },
-                    {
-                        key: {
                             text: "Prison room for court hearing" if session.req.params.type == BavlJourneyType.COURT else "Prison room for probation meeting"
                         },
                         value: {
                             text: (rooms | find('key', session.journey.bookAVideoLink.locationCode)).description
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: session.journey.bookAVideoLink.date | formatDate
                         }
                     },
                     {

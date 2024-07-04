@@ -132,7 +132,7 @@ export default class VideoLinkService {
         {
           firstName: journey.prisoner.firstName,
           lastName: journey.prisoner.lastName,
-          dateOfBirth: journey.prisoner.dateOfBirth,
+          dateOfBirth: formatDate(journey.prisoner.dateOfBirth, 'yyyy-MM-dd'),
           prisonCode: journey.prisoner.prisonId,
           prisonerNumber: journey.prisoner.prisonerNumber,
           appointments: this.mapSessionToAppointments(journey),
@@ -144,7 +144,7 @@ export default class VideoLinkService {
       probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
       comments: journey.comments,
       videoLinkUrl: journey.videoLinkUrl,
-    } as T
+    } as unknown as T
   }
 
   private async fetchPrisonLocations(prisonCodes: string[], user: Express.User) {

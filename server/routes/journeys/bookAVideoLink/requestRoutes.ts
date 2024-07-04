@@ -42,10 +42,7 @@ export default function RequestRoutes({
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
   route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
-  route(
-    `/prisoner/video-link-booking/confirmation`,
-    new BookingRequestedHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
-  )
+  route(`/prisoner/video-link-booking/confirmation`, new BookingRequestedHandler())
 
   return router
 }

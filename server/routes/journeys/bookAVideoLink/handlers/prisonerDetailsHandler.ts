@@ -52,7 +52,7 @@ export default class PrisonerDetailsHandler implements PageHandler {
       prisoner: {
         firstName,
         lastName,
-        dateOfBirth: dateOfBirth?.toISOString(),
+        dateOfBirth: dateOfBirth.toISOString(),
         prisonId: prison,
         prisonName: prisons.find(p => p.code === prison).name,
       },

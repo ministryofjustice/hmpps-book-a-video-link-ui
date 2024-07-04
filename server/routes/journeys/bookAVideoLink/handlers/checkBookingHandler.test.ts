@@ -112,6 +112,18 @@ describe('Check Booking handler', () => {
         })
     })
 
+    it('should not render the warning to consult a prison when requesting a booking', () => {
+      return request(app)
+        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(existsByDataQa($, 'discuss-before-proceeding')).toBe(false)
+
+          expect(videoLinkService.prisonShouldBeWarnedOfBooking).not.toHaveBeenCalled()
+        })
+    })
+
     it('should redirect to select alternatives if the selected room is not available', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
 

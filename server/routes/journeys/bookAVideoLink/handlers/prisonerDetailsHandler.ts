@@ -21,7 +21,7 @@ class Body {
   @Expose()
   @Transform(({ value }) => simpleDateToDate(value))
   @Validator(date => date < startOfToday(), { message: 'Enter a date in the past' })
-  @IsValidDate({ message: 'Enter a valid date' })
+  @IsValidDate({ message: 'Enter a valid date of birth' })
   @IsNotEmpty({ message: 'Enter a date of birth' })
   dateOfBirth: Date
 

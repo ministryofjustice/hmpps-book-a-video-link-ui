@@ -192,7 +192,6 @@ describe('Video link service', () => {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
           prisonName: 'Moorland',
-          name: 'Joe Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
         locationCode: 'LOCATION',
@@ -242,7 +241,6 @@ describe('Video link service', () => {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
           prisonName: 'Moorland',
-          name: 'Joe Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
         locationCode: 'LOCATION',
@@ -292,7 +290,6 @@ describe('Video link service', () => {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
           prisonName: 'Moorland',
-          name: 'Joe Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
         locationCode: 'LOCATION',
@@ -354,6 +351,178 @@ describe('Video link service', () => {
     })
   })
 
+  describe('requestVideoLinkBooking', () => {
+    it('Posts a request to create a probation meeting booking', async () => {
+      const journey = {
+        type: 'PROBATION',
+        prisoner: {
+          prisonId: 'MDI',
+          prisonName: 'Moorland',
+          firstName: 'Joe',
+          lastName: 'Bloggs',
+          dateOfBirth: '1970-01-01',
+        },
+        date: '2022-03-20T00:00:00Z',
+        locationCode: 'LOCATION',
+        startTime: '1970-01-01T13:30:00Z',
+        endTime: '1970-01-01T14:30:00Z',
+        agencyCode: 'PROBATION_TEAM',
+        hearingTypeCode: 'PSR',
+        comments: 'comments',
+        videoLinkUrl: 'videoLinkUrl',
+      }
+
+      const expectedBody = {
+        bookingType: 'PROBATION',
+        prisoners: [
+          {
+            prisonCode: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Bloggs',
+            dateOfBirth: '1970-01-01',
+            appointments: [
+              {
+                type: 'VLB_PROBATION',
+                locationKey: 'LOCATION',
+                date: '2022-03-20',
+                startTime: '13:30',
+                endTime: '14:30',
+              },
+            ],
+          },
+        ],
+        probationTeamCode: 'PROBATION_TEAM',
+        probationMeetingType: 'PSR',
+        comments: 'comments',
+        videoLinkUrl: 'videoLinkUrl',
+      }
+
+      await videoLinkService.requestVideoLinkBooking(journey, user)
+
+      expect(bookAVideoLinkClient.requestVideoLinkBooking).toHaveBeenCalledWith(expectedBody, user)
+    })
+
+    it('Posts a request to create a court hearing booking only', async () => {
+      const journey = {
+        type: 'COURT',
+        prisoner: {
+          prisonId: 'MDI',
+          prisonName: 'Moorland',
+          firstName: 'Joe',
+          lastName: 'Bloggs',
+          dateOfBirth: '1970-01-01',
+        },
+        date: '2022-03-20T00:00:00Z',
+        locationCode: 'LOCATION',
+        startTime: '1970-01-01T13:30:00Z',
+        endTime: '1970-01-01T14:30:00Z',
+        agencyCode: 'COURT_HOUSE',
+        hearingTypeCode: 'APPEAL',
+        comments: 'comments',
+        videoLinkUrl: 'videoLinkUrl',
+      }
+
+      const expectedBody = {
+        bookingType: 'COURT',
+        prisoners: [
+          {
+            prisonCode: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Bloggs',
+            dateOfBirth: '1970-01-01',
+            appointments: [
+              {
+                type: 'VLB_COURT_MAIN',
+                locationKey: 'LOCATION',
+                date: '2022-03-20',
+                startTime: '13:30',
+                endTime: '14:30',
+              },
+            ],
+          },
+        ],
+        courtCode: 'COURT_HOUSE',
+        courtHearingType: 'APPEAL',
+        comments: 'comments',
+        videoLinkUrl: 'videoLinkUrl',
+      }
+
+      await videoLinkService.requestVideoLinkBooking(journey, user)
+
+      expect(bookAVideoLinkClient.requestVideoLinkBooking).toHaveBeenCalledWith(expectedBody, user)
+    })
+
+    it('Posts a request to create a court hearing booking with a pre/post meeting', async () => {
+      const journey = {
+        type: 'COURT',
+        prisoner: {
+          prisonId: 'MDI',
+          prisonName: 'Moorland',
+          firstName: 'Joe',
+          lastName: 'Bloggs',
+          dateOfBirth: '1970-01-01',
+        },
+        date: '2022-03-20T00:00:00Z',
+        locationCode: 'LOCATION',
+        startTime: '1970-01-01T13:30:00Z',
+        endTime: '1970-01-01T14:30:00Z',
+        preLocationCode: 'PRE_LOCATION',
+        preHearingStartTime: '1970-01-01T13:15:00Z',
+        preHearingEndTime: '1970-01-01T13:30:00Z',
+        postLocationCode: 'POST_LOCATION',
+        postHearingStartTime: '1970-01-01T14:30:00Z',
+        postHearingEndTime: '1970-01-01T14:45:00Z',
+        agencyCode: 'COURT_HOUSE',
+        hearingTypeCode: 'APPEAL',
+        comments: 'comments',
+        videoLinkUrl: 'videoLinkUrl',
+      }
+
+      const expectedBody = {
+        bookingType: 'COURT',
+        prisoners: [
+          {
+            prisonCode: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Bloggs',
+            dateOfBirth: '1970-01-01',
+            appointments: [
+              {
+                type: 'VLB_COURT_PRE',
+                locationKey: 'PRE_LOCATION',
+                date: '2022-03-20',
+                startTime: '13:15',
+                endTime: '13:30',
+              },
+              {
+                type: 'VLB_COURT_MAIN',
+                locationKey: 'LOCATION',
+                date: '2022-03-20',
+                startTime: '13:30',
+                endTime: '14:30',
+              },
+              {
+                type: 'VLB_COURT_POST',
+                locationKey: 'POST_LOCATION',
+                date: '2022-03-20',
+                startTime: '14:30',
+                endTime: '14:45',
+              },
+            ],
+          },
+        ],
+        courtCode: 'COURT_HOUSE',
+        courtHearingType: 'APPEAL',
+        comments: 'comments',
+        videoLinkUrl: 'videoLinkUrl',
+      }
+
+      await videoLinkService.requestVideoLinkBooking(journey, user)
+
+      expect(bookAVideoLinkClient.requestVideoLinkBooking).toHaveBeenCalledWith(expectedBody, user)
+    })
+  })
+
   describe('amendVideoLinkBooking', () => {
     it('Posts a request to amend a probation meeting booking', async () => {
       const journey = {
@@ -363,7 +532,6 @@ describe('Video link service', () => {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
           prisonName: 'Moorland',
-          name: 'Joe Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
         locationCode: 'LOCATION',
@@ -411,7 +579,6 @@ describe('Video link service', () => {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
           prisonName: 'Moorland',
-          name: 'Joe Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
         locationCode: 'LOCATION',
@@ -459,7 +626,6 @@ describe('Video link service', () => {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
           prisonName: 'Moorland',
-          name: 'Joe Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
         locationCode: 'LOCATION',

@@ -9,15 +9,9 @@
 {% set pageTitle = "Check and confirm your request" if mode == 'request' else "Check and confirm your booking" %}
 
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
-        </div>
-    </div>
-
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
-            {% if warnPrison %}
+    {% if warnPrison %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
                 {% set html %}
                     <p class="govuk-notification-banner__heading">Contact the prison to discuss before proceeding</p>
                     <p class="govuk-body">
@@ -28,8 +22,33 @@
                 {% endset %}
 
                 {{ govukNotificationBanner({ html: html, attributes: {"data-qa": 'discuss-before-proceeding'} }) }}
-            {% endif %}
+            </div>
+        </div>
+    {% endif %}
 
+    {% if mode == 'request' %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                {% set html %}
+                    <p class="govuk-notification-banner__heading">Pending approval by {{ prisoner.prisonName }}</p>
+                    <p class="govuk-body">
+                        By confirming this request, you will be asking {{ prisoner.prisonName }} to complete the booking on your behalf. This is not a completed booking at this stage.
+                    </p>
+                {% endset %}
+
+                {{ govukNotificationBanner({ html: html, attributes: {"data-qa": 'pending-prison-approval'} }) }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
             {{ govukSummaryList({
                 rows: [
                     {

@@ -124,6 +124,26 @@ describe('Check Booking handler', () => {
         })
     })
 
+    it('should render the pending prison approval warning in request mode', () => {
+      return request(app)
+        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(existsByDataQa($, 'pending-prison-approval')).toBe(true)
+        })
+    })
+
+    it('should not render the pending prison approval warning in create mode', () => {
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(existsByDataQa($, 'pending-prison-approval')).toBe(false)
+        })
+    })
+
     it('should redirect to select alternatives if the selected room is not available', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
 

@@ -1,21 +1,21 @@
 import { Router } from 'express'
-import { parseISO } from 'date-fns'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import NewBookingHandler from './handlers/newBookingHandler'
 import validationMiddleware from '../../../middleware/validationMiddleware'
+import PrisonerNotListedHandler from './handlers/prisonerNotListedHandler'
+import PrisonerDetailsHandler from './handlers/prisonerDetailsHandler'
+import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
-import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
-import CommentsHandler from './handlers/commentsHandler'
+import BookingRequestedHandler from './handlers/bookingRequestedHandler'
 
-export default function AmendRoutes({
+export default function RequestRoutes({
   auditService,
+  prisonService,
   courtsService,
   probationTeamsService,
-  prisonService,
   prisonerService,
   videoLinkService,
 }: Services): Router {
@@ -25,29 +25,24 @@ export default function AmendRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  // Book a video link journey is required in session for the following routes
   router.use((req, res, next) => {
-    const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookAVideoLink
-    const bookingDate = parseISO(date)
-    const bookingTime = parseISO(preHearingStartTime || startTime)
-
-    if (!videoLinkService.bookingIsAmendable(bookingDate, bookingTime, bookingStatus)) {
-      req.session.journey.bookAVideoLink = null
-      return res.redirect(`/${req.params.type}/view-booking/${bookingId}`)
-    }
+    if (!req.session.journey.bookAVideoLink) return res.redirect('/')
     return next()
   })
 
+  route('/prisoner-search/prisoner-not-listed', new PrisonerNotListedHandler())
+  route('/prisoner/prisoner-details', new PrisonerDetailsHandler(prisonService))
   route(
-    '/video-link-booking',
+    '/prisoner/video-link-booking',
     new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
-  route('/video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
-  route('/video-link-booking/comments', new CommentsHandler())
   route(
-    '/video-link-booking/check-booking',
+    `/prisoner/video-link-booking/check-booking`,
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
-  route('/video-link-booking/confirmation', new ConfirmationHandler(videoLinkService, prisonerService, prisonService))
+  route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
+  route(`/prisoner/video-link-booking/confirmation`, new BookingRequestedHandler())
 
   return router
 }

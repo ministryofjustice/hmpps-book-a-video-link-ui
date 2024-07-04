@@ -1,0 +1,102 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Who is the video link for?" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukInput({
+                    id: "firstName",
+                    name: "firstName",
+                    label: { text: "First name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('firstName'),
+                    value: formResponses.firstName or session.journey.bookAVideoLink.prisoner.firstName
+                }) }}
+
+                {{ govukInput({
+                    id: "lastName",
+                    name: "lastName",
+                    label: { text: "Last name" },
+                    classes: 'govuk-!-width-one-third',
+                    errorMessage: validationErrors | findError('lastName'),
+                    value: formResponses.lastName or session.journey.bookAVideoLink.prisoner.lastName
+                }) }}
+
+                {{ govukDateInput({
+                    id: "dateOfBirth",
+                    fieldset: {
+                        legend: {
+                            text: "Date of birth"
+                        }
+                    },
+                    hint: {
+                        text: "For example, 31 3 1980"
+                    },
+                    errorMessage: validationErrors | findError('dateOfBirth'),
+                    items: [
+                        {
+                            id: "dateOfBirth-day",
+                            name: "dateOfBirth[day]",
+                            label: "Day",
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
+                            value: formResponses.dateOfBirth['day'] or session.journey.bookAVideoLink.prisoner.dateOfBirth | formatDate('dd')
+                        },
+                        {
+                            id: "dateOfBirth-month",
+                            name: "dateOfBirth[month]",
+                            label: "Month",
+                            classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
+                            value: formResponses.dateOfBirth['month'] or session.journey.bookAVideoLink.prisoner.dateOfBirth | formatDate('MM')
+                        },
+                        {
+                            id: "dateOfBirth-year",
+                            name: "dateOfBirth[year]",
+                            label: "Year",
+                            classes: "govuk-input--width-4" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
+                            value: formResponses.dateOfBirth['year'] or session.journey.bookAVideoLink.prisoner.dateOfBirth | formatDate('yyyy')
+                        }
+                    ]
+                }) }}
+
+                {% set items = [{ text: "Select prison", value: "" }] %}
+                {% for prison in prisons %}
+                    {% set items = (items.push({
+                        value: prison.code,
+                        text: prison.name,
+                        selected: formResponses.prison == prison.code or session.journey.bookAVideoLink.prisoner.prison == prison.code
+                    }), items) %}
+                {% endfor %}
+                {{ govukSelect({
+                    id: "prison",
+                    name: "prison",
+                    label: {
+                        text: "Prison"
+                    },
+                    errorMessage: validationErrors | findError('prison'),
+                    items: items
+                }) }}
+
+                {{ govukButton({
+                    html: "Continue",
+                    type: "submit",
+                    classes: 'govuk-!-margin-top-6'
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

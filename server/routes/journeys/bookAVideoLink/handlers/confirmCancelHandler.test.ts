@@ -27,7 +27,7 @@ beforeEach(() => {
   appSetup({
     bookAVideoLink: {
       bookingId: 1,
-      prisoner: { prisonId: 'MDI', name: 'John Smith' },
+      prisoner: { prisonId: 'MDI', firstName: 'John', lastName: 'Smith' },
       date: '2024-06-12',
       startTime: '1970-01-01T16:00',
     },

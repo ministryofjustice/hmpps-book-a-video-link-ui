@@ -1,7 +1,6 @@
 import { RequestHandler } from 'express'
 import { parse } from 'date-fns'
 import { Services } from '../../../../services'
-import { convertToTitleCase } from '../../../../utils/utils'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
   return async (req, res, next) => {
@@ -28,10 +27,12 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       bookingStatus: booking.statusCode,
       type: booking.bookingType,
       prisoner: {
-        name: convertToTitleCase(`${prisoner?.firstName} ${prisoner?.lastName}`),
-        prisonerNumber: prisoner?.prisonerNumber,
-        prisonId: prisoner?.prisonId,
-        prisonName: prisoner?.prisonName,
+        firstName: prisoner.firstName,
+        lastName: prisoner.lastName,
+        prisonerNumber: prisoner.prisonerNumber,
+        dateOfBirth: prisoner.dateOfBirth,
+        prisonId: prisoner.prisonId,
+        prisonName: prisoner.prisonName,
       },
       agencyCode: booking.courtCode || booking.probationTeamCode,
       hearingTypeCode: booking.courtHearingType || booking.probationMeetingType,

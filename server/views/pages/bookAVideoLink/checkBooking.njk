@@ -6,7 +6,7 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
 {% set mode = session.req.params.mode %}
-{% set pageTitle = "Check and confirm your booking" %}
+{% set pageTitle = "Check and confirm your request" if mode == 'request' else "Check and confirm your booking" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -37,9 +37,17 @@
                             text: "Name"
                         },
                         value: {
-                            text: prisoner.name + ' (' + prisoner.prisonerNumber + ')'
+                            text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
                         }
                     },
+                    {
+                        key: {
+                            text: "Date of birth"
+                        },
+                        value: {
+                            text: prisoner.dateOfBirth | formatDate
+                        }
+                    } if mode == 'request',
                     {
                         key: {
                             text: "Prison"
@@ -155,7 +163,16 @@
                 ]
             }) }}
 
-            <form method="POST" class="govuk-!-margin-top-6" data-module="form-spinner" data-loading-text="{{ "Booking video link" if mode == 'create' else "Updating booking" }}">
+            {% set spinnerText %}
+                {% if mode == 'create' %}
+                    Booking video link
+                {% elif mode == 'request' %}
+                    Requesting video link
+                {% else %}
+                    Updating booking
+                {% endif %}
+            {% endset %}
+            <form method="POST" class="govuk-!-margin-top-6" data-module="form-spinner" data-loading-text="{{ spinnerText }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukCharacterCount({
@@ -172,14 +189,32 @@
                     value: formResponses.comments or session.journey.bookAVideoLink.comments
                 }) }}
 
-                {{ govukButton({
-                    text: "Book video link" if mode == 'create' else 'Update booking',
-                    preventDoubleClick: true,
-                    type: 'submit'
-                }) }}
-            </form>
+                {% set callToActionText %}
+                    {% if mode == 'create' %}
+                        Book video link
+                    {% elif mode == 'request' %}
+                       Request video link
+                    {% else %}
+                        Update booking
+                    {% endif %}
+                {% endset %}
 
-            <a href='../add-video-link-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change booking</a>
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: callToActionText,
+                        preventDoubleClick: true,
+                        type: 'submit'
+                    }) }}
+
+                    <a href='../video-link-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">{{ 'Change request' if mode == 'request' else 'Change booking' }}</a>
+                </div>
+
+                {% if mode == 'create' or mode == 'request' %}
+                    <a href="../../../../create/prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+                {% else %}
+                    <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                {% endif %}
+            </form>
         </div>
     </div>
 {% endblock %}

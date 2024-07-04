@@ -4,7 +4,7 @@ import cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { existsByLabel, existsByName, getPageHeader } from '../../../testutils/cheerio'
+import { existsByLabel, existsByName, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import PrisonService from '../../../../services/prisonService'
@@ -61,6 +61,9 @@ beforeEach(() => {
     prisonId: 'MDI',
     firstName: 'Joe',
     lastName: 'Smith',
+    dateOfBirth: '1970-01-01',
+    prisonName: 'Moorland',
+    prisonerNumber: 'A1234AA',
   })
 
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
@@ -94,7 +97,7 @@ describe('New Booking handler', () => {
       ['Court', 'court'],
     ])('%s journey - should render the correct view page', (_: string, journey: string) => {
       return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -106,6 +109,7 @@ describe('New Booking handler', () => {
             correlationId: expect.any(String),
           })
 
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
           if (journey === 'court') {
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
             expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -130,6 +134,34 @@ describe('New Booking handler', () => {
         })
     })
 
+    it('should get the prisoner information from the session for the request journey', () => {
+      appSetup({
+        bookAVideoLink: {
+          prisoner: {
+            prisonId: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Smith',
+            dateOfBirth: '1970-01-01',
+            prisonName: 'Moorland',
+          },
+        },
+      })
+
+      return request(app)
+        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Search for a video link booking')
+
+          expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenCalled()
+          expect(getValueByKey($, 'Name')).toEqual('Joe Smith')
+          expect(getValueByKey($, 'Date of birth')).toEqual('1 January 1970')
+        })
+    })
+
     it.each([
       ['Probation', 'probation'],
       ['Court', 'court'],
@@ -137,7 +169,7 @@ describe('New Booking handler', () => {
       appSetup()
 
       return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect(302)
         .expect('location', '/')
     })
@@ -146,7 +178,7 @@ describe('New Booking handler', () => {
       appSetup()
 
       await request(app)
-        .get(`/court/booking/amend/1/${journeyId()}/add-video-link-booking`)
+        .get(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -169,7 +201,11 @@ describe('New Booking handler', () => {
             hearingTypeCode: 'APPEAL',
             locationCode: 'LOCATION_CODE',
             prisoner: {
-              name: 'Joe Smith',
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
               prisonId: 'MDI',
             },
             videoLinkUrl: 'http://example.com',
@@ -187,7 +223,7 @@ describe('New Booking handler', () => {
       videoLinkService.bookingIsAmendable.mockReturnValue(false)
 
       return request(app)
-        .get(`/court/booking/amend/1/${journeyId()}/add-video-link-booking`)
+        .get(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .expect(302)
         .expect('location', '/court/view-booking/1')
         .then(() => expectJourneySession(app, 'bookAVideoLink', null))
@@ -211,7 +247,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -263,7 +299,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'PROBATION' } })
 
       return request(app)
-        .post(`/probation/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -305,7 +341,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
           preRequired: 'yes',
@@ -331,7 +367,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
           date: '31/02/2022',
@@ -369,7 +405,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
           date: formatDate(startOfYesterday(), 'dd/MM/yyyy'),
@@ -389,7 +425,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
           date: formatDate(startOfToday(), 'dd/MM/yyyy'),
@@ -410,7 +446,7 @@ describe('New Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
           startTime: { hour: 17, minute: 30 },
@@ -436,10 +472,11 @@ describe('New Booking handler', () => {
         prisonerNumber: 'A1234AA',
         firstName: 'Joe',
         lastName: 'Bloggs',
+        dateOfBirth: '1970-01-01',
       })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
           preRequired: 'yes',
@@ -448,7 +485,10 @@ describe('New Booking handler', () => {
           postLocation: 'POST_LOCATION',
         })
         .expect(302)
-        .expect('location', 'add-video-link-booking/check-booking')
+        .expect('location', 'video-link-booking/check-booking')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
+        })
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {
             agencyCode: 'CODE',
@@ -463,10 +503,54 @@ describe('New Booking handler', () => {
             preHearingStartTime: '1970-01-01T15:15:00.000Z',
             preLocationCode: 'PRE_LOCATION',
             prisoner: {
-              name: 'Joe Bloggs',
+              firstName: 'Joe',
+              lastName: 'Bloggs',
+              dateOfBirth: '1970-01-01',
               prisonId: 'MDI',
               prisonName: 'Moorland',
               prisonerNumber: 'A1234AA',
+            },
+            startTime: '1970-01-01T15:30:00.000Z',
+            type: 'COURT',
+            videoLinkUrl: 'https://www.google.co.uk',
+          }),
+        )
+    })
+
+    it('should get the prisoner information from the session for the request journey', () => {
+      appSetup({
+        bookAVideoLink: {
+          prisoner: {
+            prisonId: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Bloggs',
+            dateOfBirth: '1970-01-01',
+            prisonName: 'Moorland',
+          },
+        },
+      })
+
+      return request(app)
+        .post(`/court/booking/request/${journeyId()}/prisoner/video-link-booking`)
+        .send({ ...validForm })
+        .expect(302)
+        .expect('location', 'video-link-booking/check-booking')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenCalledWith('A1234AA', user)
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookAVideoLink', {
+            agencyCode: 'CODE',
+            date: startOfTomorrow().toISOString(),
+            endTime: '1970-01-01T16:30:00.000Z',
+            hearingTypeCode: 'APPEAL',
+            locationCode: 'CODE',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Bloggs',
+              dateOfBirth: '1970-01-01',
+              prisonId: 'MDI',
+              prisonName: 'Moorland',
             },
             startTime: '1970-01-01T15:30:00.000Z',
             type: 'COURT',

@@ -7,6 +7,7 @@ import {
   AmendVideoBookingRequest,
   AvailabilityRequest,
   CreateVideoBookingRequest,
+  RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -197,6 +198,23 @@ describe('manageUsersApiClient', () => {
 
       const output = await bookAVideoLinkApiClient.createVideoLinkBooking(
         { bookingType: 'COURT' } as CreateVideoBookingRequest,
+        user,
+      )
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('requestVideoLinkBooking', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/video-link-booking/request', { bookingType: 'COURT' })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.requestVideoLinkBooking(
+        { bookingType: 'COURT' } as RequestVideoBookingRequest,
         user,
       )
       expect(output).toEqual(response)

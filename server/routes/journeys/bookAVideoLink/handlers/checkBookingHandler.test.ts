@@ -69,7 +69,7 @@ describe('Check Booking handler', () => {
       ['Court', 'court'],
     ])('%s journey - should render the correct view page', (_: string, journey: string) => {
       return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/add-video-link-booking/check-booking`)
+        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -104,7 +104,7 @@ describe('Check Booking handler', () => {
       videoLinkService.prisonShouldBeWarnedOfBooking.mockReturnValue(serviceResult)
 
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking/check-booking`)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -112,11 +112,23 @@ describe('Check Booking handler', () => {
         })
     })
 
+    it('should not render the warning to consult a prison when requesting a booking', () => {
+      return request(app)
+        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(existsByDataQa($, 'discuss-before-proceeding')).toBe(false)
+
+          expect(videoLinkService.prisonShouldBeWarnedOfBooking).not.toHaveBeenCalled()
+        })
+    })
+
     it('should redirect to select alternatives if the selected room is not available', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
 
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking/check-booking`)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect(302)
         .expect('location', 'not-available')
     })
@@ -127,7 +139,7 @@ describe('Check Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking/check-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .send({ comments: 'a'.repeat(401) })
         .expect(() => {
           expectErrorMessages([
@@ -146,7 +158,7 @@ describe('Check Booking handler', () => {
       videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking/check-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation/1')
@@ -165,7 +177,7 @@ describe('Check Booking handler', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/add-video-link-booking/check-booking`)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'not-available')
@@ -183,7 +195,7 @@ describe('Check Booking handler', () => {
       })
 
       return request(app)
-        .post(`/court/booking/amend/1/${journeyId()}/add-video-link-booking/check-booking`)
+        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation')

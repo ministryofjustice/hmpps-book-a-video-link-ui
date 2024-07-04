@@ -196,7 +196,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/add-video-link-booking/comments',
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/comments',
                                     text: "Change comments" if booking.comments else "Add comments",
                                     classes: "govuk-link--no-visited-state"
                                 }
@@ -216,7 +216,7 @@
 
             {% if isAmendable %}
                 <div class="govuk-button-group">
-                    {{ govukButton({ text: "Change booking details", href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/add-video-link-booking', attributes: { 'data-qa': 'change-link'} }) }}
+                    {{ govukButton({ text: "Change booking details", href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking', attributes: { 'data-qa': 'change-link'} }) }}
                     {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/cancel/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary" }) }}
                 </div>
             {% endif %}

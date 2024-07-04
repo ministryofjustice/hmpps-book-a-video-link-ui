@@ -28,7 +28,7 @@ export default class CheckBookingHandler implements PageHandler {
   ) {}
 
   public GET = async (req: Request, res: Response) => {
-    const { type } = req.params
+    const { type, mode } = req.params
     const { user } = res.locals
     const { bookAVideoLink } = req.session.journey
     const { prisoner, date, preHearingStartTime, startTime } = bookAVideoLink
@@ -51,10 +51,9 @@ export default class CheckBookingHandler implements PageHandler {
         ? await this.videoLinkService.getCourtHearingTypes(user)
         : await this.videoLinkService.getProbationMeetingTypes(user)
 
-    const warnPrison = this.videoLinkService.prisonShouldBeWarnedOfBooking(
-      parseISO(date),
-      parseISO(preHearingStartTime || startTime),
-    )
+    const warnPrison =
+      mode !== 'request' &&
+      this.videoLinkService.prisonShouldBeWarnedOfBooking(parseISO(date), parseISO(preHearingStartTime || startTime))
 
     return res.render('pages/bookAVideoLink/checkBooking', {
       warnPrison,
@@ -85,7 +84,14 @@ export default class CheckBookingHandler implements PageHandler {
       return res.redirect(`confirmation/${id}`)
     }
 
-    await this.videoLinkService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+    if (mode === 'amend') {
+      await this.videoLinkService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+    }
+
+    if (mode === 'request') {
+      // await this.videoLinkService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+    }
+
     return res.redirect(`confirmation`)
   }
 }

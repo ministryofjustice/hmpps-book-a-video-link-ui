@@ -1,0 +1,26 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "You can request a video link booking for a prisoner" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+            <p class="govuk-body">
+                You can complete a request for the video link to be booked. This will be sent to the prison who will complete the booking and confirm details with your court.
+            </p>
+
+            <div class="govuk-button-group">
+                {{ govukButton({ text: "Continue", href: "../prisoner/prisoner-details" }) }}
+                <a href='../../../create/{{ session.req.params.journeyId }}/prisoner-search' class='govuk-link govuk-link--no-visited-state'>Search again</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -36,16 +36,16 @@ export default function CreateRoutes({
 
   route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
-    `${basePath}/add-video-link-booking`,
+    `${basePath}/video-link-booking`,
     new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route(
-    `${basePath}/add-video-link-booking/check-booking`,
+    `${basePath}/video-link-booking/check-booking`,
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
-  route(`${basePath}/add-video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
+  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
   route(
-    `${basePath}/add-video-link-booking/confirmation/:bookingId`,
+    `${basePath}/video-link-booking/confirmation/:bookingId`,
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
   )
 

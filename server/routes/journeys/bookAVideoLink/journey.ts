@@ -11,8 +11,10 @@ export type BookAVideoLinkJourney = {
   }
   type?: string
   prisoner?: {
-    name: string
-    prisonerNumber: string
+    firstName: string
+    lastName: string
+    prisonerNumber?: string
+    dateOfBirth: string
     prisonId: string
     prisonName: string
   }

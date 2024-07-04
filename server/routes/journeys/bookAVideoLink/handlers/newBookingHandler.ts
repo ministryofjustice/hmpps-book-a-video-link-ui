@@ -6,7 +6,7 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
-import { convertToTitleCase, dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
+import { dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
 import YesNo from '../../../enumerator/yesNo'
 import IsValidDate from '../../../validators/isValidDate'
 import Validator from '../../../validators/validator'
@@ -104,7 +104,8 @@ export default class NewBookingHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type } = req.params
+    const { type, mode } = req.params
+    const offender = req.session.journey.bookAVideoLink.prisoner
     const prisonerNumber = req.params.prisonerNumber || req.session.journey.bookAVideoLink.prisoner.prisonerNumber
 
     const agencies =
@@ -112,7 +113,8 @@ export default class NewBookingHandler implements PageHandler {
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
+    const prisoner =
+      mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
 
     const hearingTypes =
@@ -122,7 +124,9 @@ export default class NewBookingHandler implements PageHandler {
 
     res.render('pages/bookAVideoLink/newBooking', {
       prisoner: {
-        name: convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
+        firstName: prisoner.firstName,
+        lastName: prisoner.lastName,
+        dateOfBirth: prisoner.dateOfBirth,
         prisonerNumber: prisoner.prisonerNumber,
         prisonName: prisoner.prisonName,
       },
@@ -134,6 +138,8 @@ export default class NewBookingHandler implements PageHandler {
 
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
+    const { mode } = req.params
+    const offender = req.session.journey.bookAVideoLink.prisoner
     const {
       agencyCode,
       hearingTypeCode,
@@ -148,13 +154,16 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     } = req.body
 
-    const prisonerNumber = req.params.prisonerNumber || req.session.journey.bookAVideoLink.prisoner.prisonerNumber
-    const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
+    const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
+    const prisoner =
+      mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
     req.session.journey.bookAVideoLink = {
       ...req.session.journey.bookAVideoLink,
       prisoner: {
-        name: convertToTitleCase(`${prisoner.firstName} ${prisoner.lastName}`),
+        firstName: prisoner.firstName,
+        lastName: prisoner.lastName,
+        dateOfBirth: prisoner.dateOfBirth,
         prisonerNumber: prisoner.prisonerNumber,
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
@@ -175,6 +184,6 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     }
 
-    res.redirect('add-video-link-booking/check-booking')
+    res.redirect('video-link-booking/check-booking')
   }
 }

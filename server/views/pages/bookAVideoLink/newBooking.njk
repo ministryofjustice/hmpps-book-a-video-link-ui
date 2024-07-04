@@ -9,7 +9,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set mode = session.req.params.mode %}
-{% set pageTitle = "Search for a video link booking" if mode == 'create' else 'Change video link booking' %}
+{% set pageTitle = "Change video link booking" if mode == 'amend' else 'Search for a video link booking' %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -31,9 +31,17 @@
                                 text: "Name"
                             },
                             value: {
-                                text: prisoner.name + ' (' + prisoner.prisonerNumber + ')'
+                                text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
                             }
                         },
+                        {
+                            key: {
+                                text: "Date of birth"
+                            },
+                            value: {
+                                text: prisoner.dateOfBirth | formatDate
+                            }
+                        } if mode == 'request',
                         {
                             key: {
                                 text: "Prison"
@@ -285,8 +293,8 @@
                 }) }}
             </form>
 
-            {% if mode == 'create' %}
-                <a href="../prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+            {% if mode == 'create' or mode == 'request' %}
+                <a href="../../../create/prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
                 <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}

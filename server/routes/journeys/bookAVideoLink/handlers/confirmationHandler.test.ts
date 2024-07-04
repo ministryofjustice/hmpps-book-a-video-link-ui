@@ -60,7 +60,7 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/${journey}/booking/create/${journeyId()}/A1234AA/add-video-link-booking/confirmation/1`)
+      .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
@@ -121,7 +121,7 @@ describe('GET', () => {
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
 
     return request(app)
-      .get(`/court/booking/amend/1/${journeyId()}/add-video-link-booking/confirmation`)
+      .get(`/court/booking/amend/1/${journeyId()}/video-link-booking/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {

@@ -9,7 +9,8 @@ interface Error {
 
 export default function validationMiddleware(type: new () => object): RequestHandler {
   // Recursively iterate into an object and trim any strings inside
-  const deepTrim = (object: object): object => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const deepTrim = (object: any): object => {
     const o = object
     if (o) {
       Object.keys(o).forEach(key => {
@@ -36,7 +37,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
       ...req.params,
       journey: {
         ...req.session.journey,
-        ...req.session.journeyData?.[req.params.journeyId],
+        ...req.session.journeyData?.get(req.params.journeyId),
       },
     })
 

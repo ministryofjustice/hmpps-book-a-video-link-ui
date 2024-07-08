@@ -62,7 +62,7 @@ function appSetup(
     req.user = userSupplier()
     req.session.journey = journeySessionSupplier()
     req.session.journeyData = new Map<string, JourneyData>()
-    req.session.journeyData[journeyId()] = { instanceUnixEpoch: Date.now(), ...journeySessionSupplier() }
+    req.session.journeyData.set(journeyId(), { instanceUnixEpoch: Date.now(), ...journeySessionSupplier() })
     req.flash = flashProvider
     res.locals = {
       user: { ...req.user },

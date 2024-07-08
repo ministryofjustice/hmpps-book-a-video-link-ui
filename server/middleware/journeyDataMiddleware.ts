@@ -4,7 +4,7 @@ import { Journey, JourneyData } from '../@types/express'
 const MAX_CONCURRENT_JOURNEYS = 20
 
 export default function journeyDataMiddleware(journeyName: keyof Journey): RequestHandler {
-  return async (req, res, next) => {
+  return (req, res, next) => {
     // This function redefines the existing session properties, intercepting their getter and setters and replacing the
     // implementation with the usage of the journey data map. In this way, we can have journey instance specific session data (i.e. multiple
     // different browser tabs open with the same journey) without having to change the handlers or views, which remain unaware of this change.
@@ -15,25 +15,36 @@ export default function journeyDataMiddleware(journeyName: keyof Journey): Reque
 
     Object.defineProperty(req.session.journey, journeyName, {
       get() {
-        const { journeyId } = req.params
-        return req.session.journeyData[journeyId]?.[journeyName]
+        const { journeyId } = req.params as { journeyId: string }
+        return req.session.journeyData.get(journeyId)?.[journeyName]
       },
       set(value) {
-        const { journeyId } = req.params
-        req.session.journeyData[journeyId] ??= { instanceUnixEpoch: Date.now() }
-        req.session.journeyData[journeyId][journeyName] = value
+        const { journeyId } = req.params as { journeyId: string }
+        let journeyData = req.session.journeyData.get(journeyId)
 
-        if (value === null || value === undefined) {
-          delete req.session.journeyData[journeyId]
+        if (!journeyData) {
+          journeyData = { instanceUnixEpoch: Date.now() } as JourneyData
+          req.session.journeyData.set(journeyId, journeyData)
         }
 
-        // To prevent data leak, a MAX_CONCURRENT_JOURNEYS is defined. Once this number is reached, the oldest journey data is replaced
-        if (Object.keys(req.session.journeyData).length > MAX_CONCURRENT_JOURNEYS) {
-          const oldestKey = Object.keys(req.session.journeyData).reduce((key, v) =>
-            req.session.journeyData[v].instanceUnixEpoch < req.session.journeyData[key].instanceUnixEpoch ? v : key,
-          )
+        journeyData[journeyName] = value
 
-          delete req.session.journeyData[oldestKey]
+        if (value == null) {
+          req.session.journeyData.delete(journeyId)
+        }
+
+        if (req.session.journeyData.size > MAX_CONCURRENT_JOURNEYS) {
+          const oldestKey = [...req.session.journeyData.entries()].reduce(
+            (oldest, [key, data]) =>
+              data.instanceUnixEpoch < oldest.instanceUnixEpoch
+                ? { key, instanceUnixEpoch: data.instanceUnixEpoch }
+                : oldest,
+            { key: '', instanceUnixEpoch: Infinity },
+          ).key
+
+          if (oldestKey) {
+            req.session.journeyData.delete(oldestKey)
+          }
         }
       },
     })

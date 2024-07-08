@@ -37,7 +37,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
       ...req.params,
       journey: {
         ...req.session.journey,
-        ...req.session.journeyData?.get(req.params.journeyId),
+        ...req.session.journeyData?.[req.params.journeyId],
       },
     })
 

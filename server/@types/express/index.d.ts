@@ -3,7 +3,7 @@ import { BookAVideoLinkJourney } from '../../routes/journeys/bookAVideoLink/jour
 
 export default {}
 
-export interface JourneyData {
+export interface JourneyData extends Journey {
   instanceUnixEpoch: number
 }
 
@@ -17,7 +17,7 @@ declare module 'express-session' {
     returnTo: string
     nowInMinutes: number
     journey: Journey
-    journeyData: Map<string, JourneyData>
+    journeyData: Record<string, JourneyData>
   }
 }
 

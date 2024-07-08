@@ -10,7 +10,7 @@ import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
 import AuditService from '../../services/auditService'
 import setUpWebSession from '../../middleware/setUpWebSession'
-import { Journey, JourneyData } from '../../@types/express'
+import { Journey } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
 import setUpFlash from '../../middleware/setUpFlash'
 import CourtsService from '../../services/courtsService'
@@ -61,7 +61,7 @@ function appSetup(
   app.use((req, res, next) => {
     req.user = userSupplier()
     req.session.journey = journeySessionSupplier()
-    req.session.journeyData = new Map<string, JourneyData>()
+    req.session.journeyData = {}
     req.session.journeyData[journeyId()] = { instanceUnixEpoch: Date.now(), ...journeySessionSupplier() }
     req.flash = flashProvider
     res.locals = {

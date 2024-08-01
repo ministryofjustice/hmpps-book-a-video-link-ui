@@ -47,14 +47,14 @@ export default abstract class Page {
       .invoke('attr', 'for')
       .then(id => {
         cy.get(`#${id}`)
-          .closest('.hmpps-datepicker-input__wrapper')
+          .closest('.moj-datepicker__wrapper')
           .within(() => {
-            cy.get('.hmpps-datepicker-button').click()
+            cy.get('.moj-datepicker__toggle').click()
 
             const month = getMonth(date)
             const year = getYear(date)
 
-            cy.get('.hmpps-datepicker__dialog__title').then($title => {
+            cy.get('.moj-datepicker__dialog-title').then($title => {
               const [currentMonthName, currentYearStr] = $title.text().trim().split(' ')
               const currentMonth = getMonth(parse(currentMonthName, 'MMMM', new Date()))
               const currentYear = +currentYearStr
@@ -62,7 +62,7 @@ export default abstract class Page {
               // Navigate years
               const yearDelta = year - currentYear
               if (yearDelta !== 0) {
-                const yearButtonSelector = `.js-datepicker-${yearDelta > 0 ? 'next' : 'prev'}-year`
+                const yearButtonSelector = `.moj-js-datepicker-${yearDelta > 0 ? 'next' : 'prev'}-year`
                 for (let i = 0; i < Math.abs(yearDelta); i += 1) {
                   cy.get(yearButtonSelector).click()
                 }
@@ -71,7 +71,7 @@ export default abstract class Page {
               // Navigate months
               const monthDelta = month - currentMonth
               if (monthDelta !== 0) {
-                const monthButtonSelector = `.js-datepicker-${monthDelta > 0 ? 'next' : 'prev'}-month`
+                const monthButtonSelector = `.moj-js-datepicker-${monthDelta > 0 ? 'next' : 'prev'}-month`
                 for (let i = 0; i < Math.abs(monthDelta); i += 1) {
                   cy.get(monthButtonSelector).click()
                 }
@@ -80,7 +80,7 @@ export default abstract class Page {
 
             // Select day
             const day = getDate(date)
-            cy.get('.hmpps-datepicker__dialog__table button:visible')
+            cy.get('.moj-js-datepicker-grid button:visible')
               .contains(new RegExp(`^${day}$`))
               .click()
           })

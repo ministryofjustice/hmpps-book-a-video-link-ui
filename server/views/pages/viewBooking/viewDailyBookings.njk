@@ -1,6 +1,6 @@
 {% extends "partials/layout.njk" %}
 
-{% from "components/hmppsDatePicker.njk" import hmppsDatePicker %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
@@ -20,11 +20,10 @@
         <div class="govuk-grid-column-full">
             <form method='GET' class='horizontal-form govuk-!-margin-bottom-6'>
 
-                {{ hmppsDatePicker({
+                {{ mojDatePicker({
                     id: 'date',
                     name: 'date',
                     label: { text: "Date" },
-                    classes: 'hmpps-datepicker--fixed-width',
                     errorMessage: {} if validationErrors | findError('date'),
                     value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
                 }) }}

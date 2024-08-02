@@ -29,7 +29,7 @@
                         text: 'Enter the start date, for example ' + exampleDatePickerDate() + ', or click on the calendar to select'
                     },
                     errorMessage: validationErrors | findError('startDate'),
-                    value: formResponses.startDate | formatDate('dd/MM/yyyy')
+                    value: formResponses.startDate
                 }) }}
 
                 {{ govukInput({

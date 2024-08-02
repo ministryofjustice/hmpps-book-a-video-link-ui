@@ -87,7 +87,8 @@ describe('User service', () => {
 
       const result = await userService.getUser(createUser([]))
 
-      expect(result.isAdminUser).toEqual(false)
+      // TODO: Temporary until ROLE_BVLS_ADMIN role exists and is assignable
+      expect(result.isAdminUser).toEqual(true)
     })
   })
 })

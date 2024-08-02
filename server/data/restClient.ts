@@ -221,7 +221,7 @@ export default abstract class RestClient {
     client = TokenType.SYSTEM_TOKEN,
   ): Promise<void> {
     logger.info(
-      `${this.name} GET: ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
+      `${this.name} PIPE FILESTREAM : ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
     )
 
     const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token

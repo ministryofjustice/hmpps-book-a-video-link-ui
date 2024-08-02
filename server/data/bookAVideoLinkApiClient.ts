@@ -132,7 +132,6 @@ export default class BookAVideoLinkApiClient extends RestClient {
       {
         path: `/download-csv/court-data-by-hearing-date`,
         query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days: days.toString() },
-        headers: { 'content-type': 'text/csv' },
       },
       response,
       user,
@@ -149,7 +148,6 @@ export default class BookAVideoLinkApiClient extends RestClient {
       {
         path: '/download-csv/court-data-by-booking-date',
         query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days: days.toString() },
-        headers: { 'content-type': 'text/csv' },
       },
       response,
       user,

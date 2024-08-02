@@ -5,7 +5,6 @@ import { IsInt, IsNotEmpty, Max, Min } from 'class-validator'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import VideoLinkService from '../../../../services/videoLinkService'
-import logger from '../../../../../logger'
 import { parseDatePickerDate } from '../../../../utils/utils'
 import Validator from '../../../validators/validator'
 import IsValidDate from '../../../validators/isValidDate'
@@ -20,9 +19,9 @@ class Body {
 
   @Expose()
   @Transform(({ value }) => +value)
-  @IsInt({ message: 'Enter a whole number between 1 and 365' })
   @Min(1)
   @Max(365)
+  @IsInt({ message: 'Enter a whole number between 1 and 365' })
   @IsNotEmpty({ message: 'Enter the number of days after the start date to extract data for' })
   numberOfDays: number
 }
@@ -38,7 +37,6 @@ export default class ExtractByHearingDateHandler implements PageHandler {
   POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { startDate, numberOfDays } = req.body
-    logger.info(`StartDate ${startDate}, days ${numberOfDays}`)
     return this.videoLinkService.downloadBookingDataByHearingDate(startDate, numberOfDays, res, user)
   }
 }

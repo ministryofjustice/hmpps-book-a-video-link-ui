@@ -1,3 +1,4 @@
+import express from 'express'
 import config from '../config'
 import RestClient from './restClient'
 import {
@@ -121,24 +122,36 @@ export default class BookAVideoLinkApiClient extends RestClient {
     )
   }
 
-  public extractDataByHearingDate(date: Date, days: number, user: Express.User): Promise<void> {
-    return this.get(
+  public downloadBookingDataByHearingDate(
+    date: Date,
+    days: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    return this.pipeFileStream(
       {
         path: `/download-csv/court-data-by-hearing-date`,
         query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days: days.toString() },
         headers: { 'content-type': 'text/csv' },
       },
+      response,
       user,
     )
   }
 
-  public extractDataByBookingDate(date: Date, days: number, user: Express.User): Promise<void> {
-    return this.get(
+  public downloadBookingDataByBookingDate(
+    date: Date,
+    days: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    return this.pipeFileStream(
       {
         path: '/download-csv/court-data-by-booking-date',
         query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days: days.toString() },
         headers: { 'content-type': 'text/csv' },
       },
+      response,
       user,
     )
   }

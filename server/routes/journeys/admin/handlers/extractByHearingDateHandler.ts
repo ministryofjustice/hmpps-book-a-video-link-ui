@@ -33,14 +33,12 @@ export default class ExtractByHearingDateHandler implements PageHandler {
 
   constructor(private readonly videoLinkService: VideoLinkService) {}
 
-  GET = async (req: Request, res: Response) => {
-    res.render('pages/admin/extractByHearingDate')
-  }
+  GET = async (req: Request, res: Response) => res.render('pages/admin/extractByHearingDate')
 
   POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { startDate, numberOfDays } = req.body
     logger.info(`StartDate ${startDate}, days ${numberOfDays}`)
-    return this.videoLinkService.streamDataByHearingDate(startDate, numberOfDays, user)
+    return this.videoLinkService.downloadBookingDataByHearingDate(startDate, numberOfDays, res, user)
   }
 }

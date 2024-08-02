@@ -9,7 +9,7 @@ export interface SanitisedError extends Error {
   message: string
 }
 
-export type UnsanitisedError = ResponseError
+type UnsanitisedError = ResponseError
 
 export default function sanitise(error: UnsanitisedError): SanitisedError {
   const e = new Error() as SanitisedError

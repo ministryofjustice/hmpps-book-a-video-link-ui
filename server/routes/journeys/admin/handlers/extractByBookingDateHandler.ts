@@ -33,14 +33,12 @@ export default class ExtractByBookingDateHandler implements PageHandler {
 
   constructor(private readonly videoLinkService: VideoLinkService) {}
 
-  GET = async (req: Request, res: Response) => {
-    res.render('pages/admin/extractByBookingDate')
-  }
+  GET = async (req: Request, res: Response) => res.render('pages/admin/extractByBookingDate')
 
   POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { startDate, numberOfDays } = req.body
     logger.info(`StartDate ${startDate}, days ${numberOfDays}`)
-    return this.videoLinkService.streamDataByBookingDate(startDate, numberOfDays, user)
+    return this.videoLinkService.downloadBookingDataByBookingDate(startDate, numberOfDays, res, user)
   }
 }

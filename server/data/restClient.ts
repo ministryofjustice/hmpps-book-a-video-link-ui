@@ -1,4 +1,4 @@
-import { Readable } from 'stream'
+import express from 'express'
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import superagent from 'superagent'
 import { URLSearchParams } from 'url'
@@ -6,7 +6,6 @@ import _ from 'lodash'
 import logger from '../../logger'
 import sanitiseError from '../sanitisedError'
 import type { ApiConfig } from '../config'
-import type { UnsanitisedError } from '../sanitisedError'
 import generateOauthClientToken from '../authentication/clientCredentials'
 import config from '../config'
 import TokenStore from './tokenStore/tokenStore'
@@ -31,23 +30,6 @@ interface RequestWithBody extends Request {
   data?: Record<string, unknown>
   retry?: boolean
 }
-
-interface StreamRequest {
-  path?: string
-  query?: string | Record<string, string>
-  headers?: Record<string, string>
-  errorLogger?: (e: UnsanitisedError) => void
-}
-
-/*
-interface PipeRequest {
-  path?: string
-  query?: string | Record<string, string>
-  headers?: Record<string, string>
-  errorLogger?: (e: UnsanitisedError) => void
-  passThroughHeaders?: Array<string>
-}
-*/
 
 function getSystemClientTokenFromHmppsAuth(username: string): Promise<superagent.Response> {
   const timeoutSpec = config.apis.hmppsAuth.timeout
@@ -232,68 +214,31 @@ export default abstract class RestClient {
     }
   }
 
-  async stream(
-    { path = null, query = {}, headers = {} }: StreamRequest,
+  async pipeFileStream(
+    { path, query = {}, headers = {}, responseType = '' }: Request,
+    response: express.Response,
     user: Express.User,
     client = TokenType.SYSTEM_TOKEN,
-  ): Promise<Readable> {
+  ): Promise<void> {
     logger.info(
-      `${this.name} STREAM : ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
+      `${this.name} GET: ${path}${_.isEmpty(query) ? '' : `?${new URLSearchParams(query as Record<string, string>).toString()}`}`,
     )
 
     const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
 
     return new Promise((resolve, reject) => {
-      superagent
+      const stream = superagent
         .get(`${this.apiUrl()}${path}`)
         .query(query)
         .agent(this.agent)
-        .auth(token, { type: 'bearer' })
         .retry(2, (err, res) => {
           if (err) logger.info(`Retry handler found ${this.name} API error with ${err.code} ${err.message}`)
           return undefined // retry handler only for logging retries, not to influence retry logic
         })
-        .timeout(this.timeoutConfig())
+        .auth(token, { type: 'bearer' })
         .set(headers)
-        .end((error, response) => {
-          if (error) {
-            logger.warn(sanitiseError(error), `Error calling ${this.name}`)
-            reject(error)
-          } else if (response) {
-            const s = new Readable()
-            // eslint-disable-next-line no-underscore-dangle,@typescript-eslint/no-empty-function
-            s._read = () => {}
-            s.push(JSON.stringify(response.body))
-            s.push(null)
-            resolve(s)
-          }
-        })
-    })
-  }
-
-  /*
-  async pipe(
-      { path = '', query = '', headers = {}, passThroughHeaders = [] }: PipeRequest,
-      user: Express.User,
-      response: Response,
-      client = TokenType.SYSTEM_TOKEN,
-  ): Promise<void> {
-    logger.info(`${this.name}: streaming ${path}`)
-
-    const token = client === TokenType.SYSTEM_TOKEN ? await this.getSystemClientToken(user.username) : user.token
-
-    return new Promise((resolve, reject) => {
-      const stream = superagent
-          .get(`${this.apiUrl()}${path}`)
-          .agent(this.agent)
-          .auth(token, { type: 'bearer' })
-          .retry(2, (err, res) => {
-            if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
-            return undefined // retry handler only for logging retries, not to influence retry logic
-          })
-          .query(query)
-          .timeout(this.timeoutConfig())
-          .set({ ...headers })
+        .responseType(responseType)
+        .timeout(this.timeoutConfig())
 
       stream.on('end', () => {
         resolve()
@@ -306,13 +251,10 @@ export default abstract class RestClient {
           reject(res.error)
         }
 
-        passThroughHeaders.forEach(header => {
-          response.headers.set(header, res.headers[header])
-        })
+        response.set('content-disposition', res.headers['content-disposition'])
       })
 
       stream.pipe(response)
     })
   }
-   */
 }

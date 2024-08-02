@@ -1,5 +1,6 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import _ from 'lodash'
+import express from 'express'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import {
   AmendVideoBookingRequest,
@@ -94,12 +95,22 @@ export default class VideoLinkService {
     }))
   }
 
-  public async streamDataByHearingDate(date: Date, daysToExtract: number, user: Express.User): Promise<void> {
-    return this.bookAVideoLinkApiClient.extractDataByHearingDate(date, daysToExtract, user)
+  public async downloadBookingDataByHearingDate(
+    date: Date,
+    daysToExtract: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    return this.bookAVideoLinkApiClient.downloadBookingDataByHearingDate(date, daysToExtract, response, user)
   }
 
-  public async streamDataByBookingDate(date: Date, daysToExtract: number, user: Express.User): Promise<void> {
-    return this.bookAVideoLinkApiClient.extractDataByBookingDate(date, daysToExtract, user)
+  public async downloadBookingDataByBookingDate(
+    date: Date,
+    daysToExtract: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    return this.bookAVideoLinkApiClient.downloadBookingDataByBookingDate(date, daysToExtract, response, user)
   }
 
   private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {

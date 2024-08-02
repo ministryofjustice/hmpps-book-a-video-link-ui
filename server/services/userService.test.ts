@@ -71,5 +71,23 @@ describe('User service', () => {
 
       await expect(userService.getUser(createUser([]))).rejects.toEqual(new Error('some error'))
     })
+
+    it('isAdminUser is set to true when user roles include ROLE_BVLS_ADMIN', async () => {
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith', authSource: 'auth' } as User)
+      manageUsersApiClient.getUserGroups.mockResolvedValue([{ groupCode: 'VIDEO_LINK_COURT_USER' }] as UserGroup[])
+
+      const result = await userService.getUser(createUser(['ROLE_BVLS_ADMIN']))
+
+      expect(result.isAdminUser).toEqual(true)
+    })
+
+    it('isAdminUser is set to false without role ROLE_BVLS_ADMIN', async () => {
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith', authSource: 'auth' } as User)
+      manageUsersApiClient.getUserGroups.mockResolvedValue([{ groupCode: 'VIDEO_LINK_COURT_USER' }] as UserGroup[])
+
+      const result = await userService.getUser(createUser([]))
+
+      expect(result.isAdminUser).toEqual(false)
+    })
   })
 })

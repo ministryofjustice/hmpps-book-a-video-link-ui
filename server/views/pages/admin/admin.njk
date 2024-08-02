@@ -1,0 +1,35 @@
+{% extends "partials/layout.njk" %}
+{% from "components/card.njk" import card %}
+
+{% set pageTitle = "Administration" %}
+
+{% block content %}
+    <h1 class="govuk-heading-l govuk-!-margin-top-7">{{ pageTitle }}</h1>
+    <div class="card-group govuk-grid-row">
+        {% if user.isAdminUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/admin/extract-by-hearing-date",
+                    "clickable": "true",
+                    "heading": "Extract data by hearing date",
+                    "description": "Download a CSV summary of bookings by the hearing or meeting date",
+                    "data-qa": "extract-by-hearing-date"
+                }) }}
+            </div>
+
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/admin/extract-by-booking-date",
+                    "clickable": "true",
+                    "heading": "Extract data by booking date",
+                    "description": "Download a CSV summary of bookings by the booking date",
+                    "data-qa": "extract-by-booking-date"
+                }) }}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block pageScripts %}
+    <script src="/js/card.js"></script>
+{% endblock %}

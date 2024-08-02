@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import home from './journeys/home'
+import admin from './journeys/admin'
 import userPreferences from './journeys/userPreferences'
 import bookAVideoLink from './journeys/bookAVideoLink'
 import viewBooking from './journeys/viewBooking'
@@ -22,6 +23,7 @@ export default function routes(services: Services): Router {
   })
 
   router.use('/', home(services))
+  router.use('/admin', admin(services))
   router.use('/:type(court|probation)/booking', bookAVideoLink(services))
   router.use('/:type(court|probation)/view-booking', viewBooking(services))
 

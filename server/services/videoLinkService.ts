@@ -94,6 +94,14 @@ export default class VideoLinkService {
     }))
   }
 
+  public async streamDataByHearingDate(date: Date, daysToExtract: number, user: Express.User): Promise<void> {
+    return this.bookAVideoLinkApiClient.extractDataByHearingDate(date, daysToExtract, user)
+  }
+
+  public async streamDataByBookingDate(date: Date, daysToExtract: number, user: Express.User): Promise<void> {
+    return this.bookAVideoLinkApiClient.extractDataByBookingDate(date, daysToExtract, user)
+  }
+
   private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {
     const formatInterval = (start: string, end: string) => ({
       start: formatDate(start, 'HH:mm'),

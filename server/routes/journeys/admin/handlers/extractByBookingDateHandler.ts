@@ -19,8 +19,8 @@ class Body {
 
   @Expose()
   @Transform(({ value }) => +value)
-  @Min(1, { message: 'Must be greater than or equal to 1'})
-  @Max(365, { message: 'Must be less than or equal to 365'})
+  @Min(1, { message: 'Must be greater than or equal to 1' })
+  @Max(365, { message: 'Must be less than or equal to 365' })
   @IsInt({ message: 'Enter a whole number between 1 and 365' })
   @IsNotEmpty({ message: 'Enter a number of days from the start date to extract data for' })
   numberOfDays: number

@@ -1,5 +1,6 @@
 {% extends "partials/layout.njk" %}
 
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -17,6 +18,31 @@
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukRadios({
+                    idPrefix: "type",
+                    name: "type",
+                    errorMessage: validationErrors | findError('type'),
+                    fieldset: {
+                        legend: {
+                            text: "Type",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    classes: "govuk-radios--inline",
+                    items: [
+                        {
+                            value: "court",
+                            text: "Court",
+                            checked: formResponses.type == 'court'
+                        },
+                        {
+                            value: "probation",
+                            text: "Probation",
+                            checked: formResponses.type == 'probation'
+                        }
+                    ]
+                }) }}
 
                 {{ mojDatePicker({
                     id: 'startDate',

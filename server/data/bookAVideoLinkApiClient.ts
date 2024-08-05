@@ -122,7 +122,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
     )
   }
 
-  public downloadBookingDataByHearingDate(
+  public downloadCourtDataByHearingDate(
     date: Date,
     days: number,
     response: express.Response,
@@ -131,14 +131,14 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.pipeFileStream(
       {
         path: `/download-csv/court-data-by-hearing-date`,
-        query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days: days.toString() },
+        query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days },
       },
       response,
       user,
     )
   }
 
-  public downloadBookingDataByBookingDate(
+  public downloadCourtDataByBookingDate(
     date: Date,
     days: number,
     response: express.Response,
@@ -147,7 +147,39 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.pipeFileStream(
       {
         path: '/download-csv/court-data-by-booking-date',
-        query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days: days.toString() },
+        query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days },
+      },
+      response,
+      user,
+    )
+  }
+
+  public downloadProbationDataByMeetingDate(
+    date: Date,
+    days: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    return this.pipeFileStream(
+      {
+        path: `/download-csv/probation-data-by-meeting-date`,
+        query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days },
+      },
+      response,
+      user,
+    )
+  }
+
+  public downloadProbationDataByBookingDate(
+    date: Date,
+    days: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    return this.pipeFileStream(
+      {
+        path: '/download-csv/probation-data-by-booking-date',
+        query: { 'start-date': formatDate(date, 'yyyy-MM-dd'), days },
       },
       response,
       user,

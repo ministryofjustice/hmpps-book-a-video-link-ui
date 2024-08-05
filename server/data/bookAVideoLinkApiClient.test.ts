@@ -1,5 +1,6 @@
 import nock from 'nock'
-
+import express from 'express'
+import { PassThrough } from 'stream'
 import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
@@ -14,7 +15,7 @@ jest.mock('./tokenStore/inMemoryTokenStore')
 
 const user = { token: 'userToken', username: 'jbloggs' } as Express.User
 
-describe('manageUsersApiClient', () => {
+describe('bookAVideoLinkApiClient', () => {
   let fakeBookAVideoLinkApiClient: nock.Scope
   let bookAVideoLinkApiClient: BookAVideoLinkApiClient
 
@@ -261,6 +262,86 @@ describe('manageUsersApiClient', () => {
 
       const output = await bookAVideoLinkApiClient.getVideoLinkSchedule('court', 'ABERCV', new Date(2024, 6, 12), user)
       expect(output).toEqual(response)
+    })
+  })
+
+  describe('downloadCourtDataByHearingDate', () => {
+    it('should return data from api', async () => {
+      fakeBookAVideoLinkApiClient
+        .get('/download-csv/court-data-by-hearing-date?start-date=2024-02-02&days=7')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, 'file content', { 'content-disposition': 'attachment; filename="file.txt"' })
+
+      const res = new PassThrough() as unknown as express.Response
+      res.set = jest.fn()
+
+      await bookAVideoLinkApiClient.downloadCourtDataByHearingDate(new Date(2024, 1, 2), 7, res, user)
+
+      res.on('data', chunk => {
+        expect(chunk.toString()).toBe('file content')
+      })
+
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('downloadCourtDataByBookingDate', () => {
+    it('should return data from api', async () => {
+      fakeBookAVideoLinkApiClient
+        .get('/download-csv/court-data-by-booking-date?start-date=2024-02-02&days=7')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, 'file content', { 'content-disposition': 'attachment; filename="file.txt"' })
+
+      const res = new PassThrough() as unknown as express.Response
+      res.set = jest.fn()
+
+      await bookAVideoLinkApiClient.downloadCourtDataByBookingDate(new Date(2024, 1, 2), 7, res, user)
+
+      res.on('data', chunk => {
+        expect(chunk.toString()).toBe('file content')
+      })
+
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('downloadProbationDataByMeetingDate', () => {
+    it('should return data from api', async () => {
+      fakeBookAVideoLinkApiClient
+        .get('/download-csv/probation-data-by-meeting-date?start-date=2024-02-02&days=7')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, 'file content', { 'content-disposition': 'attachment; filename="file.txt"' })
+
+      const res = new PassThrough() as unknown as express.Response
+      res.set = jest.fn()
+
+      await bookAVideoLinkApiClient.downloadProbationDataByMeetingDate(new Date(2024, 1, 2), 7, res, user)
+
+      res.on('data', chunk => {
+        expect(chunk.toString()).toBe('file content')
+      })
+
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('downloadProbationDataByBookingDate', () => {
+    it('should return data from api', async () => {
+      fakeBookAVideoLinkApiClient
+        .get('/download-csv/probation-data-by-booking-date?start-date=2024-02-02&days=7')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, 'file content', { 'content-disposition': 'attachment; filename="file.txt"' })
+
+      const res = new PassThrough() as unknown as express.Response
+      res.set = jest.fn()
+
+      await bookAVideoLinkApiClient.downloadProbationDataByBookingDate(new Date(2024, 1, 2), 7, res, user)
+
+      res.on('data', chunk => {
+        expect(chunk.toString()).toBe('file content')
+      })
+
+      expect(nock.isDone()).toBe(true)
     })
   })
 })

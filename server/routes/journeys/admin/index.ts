@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import createError from 'http-errors'
 import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import AdminHandler from './handlers/adminHandler'
@@ -14,6 +15,10 @@ export default function Index({ auditService, videoLinkService }: Services): Rou
   const route = (path: string | string[], handler: PageHandler) =>
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+
+  router.use((req, res, next) => {
+    return res.locals.user.isAdminUser ? next() : next(createError(404, 'Not found'))
+  })
 
   route('/', new AdminHandler())
   route('/extract-by-booking-date', new ExtractByBookingDateHandler(videoLinkService))

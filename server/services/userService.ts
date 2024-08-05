@@ -30,7 +30,7 @@ export default class UserService {
       displayName: convertToTitleCase(serviceUser.name),
       isProbationUser,
       isCourtUser,
-      isAdminUser: isAdminUser || true, // Steve - set this to true, to always see the admin tile
+      isAdminUser,
     }
   }
 

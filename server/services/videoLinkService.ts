@@ -96,21 +96,29 @@ export default class VideoLinkService {
   }
 
   public async downloadBookingDataByHearingDate(
+    agencyType: 'court' | 'probation',
     date: Date,
     daysToExtract: number,
     response: express.Response,
     user: Express.User,
   ): Promise<void> {
-    return this.bookAVideoLinkApiClient.downloadBookingDataByHearingDate(date, daysToExtract, response, user)
+    if (agencyType === 'court') {
+      return this.bookAVideoLinkApiClient.downloadCourtDataByHearingDate(date, daysToExtract, response, user)
+    }
+    return this.bookAVideoLinkApiClient.downloadProbationDataByMeetingDate(date, daysToExtract, response, user)
   }
 
   public async downloadBookingDataByBookingDate(
+    agencyType: 'court' | 'probation',
     date: Date,
     daysToExtract: number,
     response: express.Response,
     user: Express.User,
   ): Promise<void> {
-    return this.bookAVideoLinkApiClient.downloadBookingDataByBookingDate(date, daysToExtract, response, user)
+    if (agencyType === 'court') {
+      return this.bookAVideoLinkApiClient.downloadCourtDataByBookingDate(date, daysToExtract, response, user)
+    }
+    return this.bookAVideoLinkApiClient.downloadProbationDataByBookingDate(date, daysToExtract, response, user)
   }
 
   private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {

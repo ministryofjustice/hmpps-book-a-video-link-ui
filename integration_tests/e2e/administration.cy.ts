@@ -11,85 +11,83 @@ context('Administration', () => {
     cy.task('stubSignIn', ['BVLS_ADMIN'])
   })
 
-  describe('Court user', () => {
-    beforeEach(() => {
-      cy.task('stubAdminUser')
-    })
+  beforeEach(() => {
+    cy.task('stubAdminUser')
+  })
 
-    it('Admin user can download a CSV of court booking events by date of booking', () => {
-      cy.task('stubCourtDataExtractByBookingDate')
-      cy.signIn()
+  it('Admin user can download a CSV of court booking events by date of booking', () => {
+    cy.task('stubCourtDataExtractByBookingDate')
+    cy.signIn()
 
-      const homePage = Page.verifyOnPage(HomePage)
-      homePage.administrationArea().click()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
 
-      const administrationPage = Page.verifyOnPage(AdministrationPage)
-      administrationPage.extractDataByBookingDate().click()
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.extractDataByBookingDate().click()
 
-      const extractDataByBookingDatePage = Page.verifyOnPage(ExtractDataByBookingDatePage)
-      extractDataByBookingDatePage.selectCourt()
-      extractDataByBookingDatePage.selectDate(startOfToday())
-      extractDataByBookingDatePage.enterNumberOfDays(7)
-      extractDataByBookingDatePage.extractData().click()
+    const extractDataByBookingDatePage = Page.verifyOnPage(ExtractDataByBookingDatePage)
+    extractDataByBookingDatePage.selectCourt()
+    extractDataByBookingDatePage.selectDate(startOfToday())
+    extractDataByBookingDatePage.enterNumberOfDays(7)
+    extractDataByBookingDatePage.extractData().click()
 
-      cy.readFile('cypress/downloads/courtDataExtractByBookingDate.csv').should('exist')
-    })
+    cy.readFile('cypress/downloads/courtDataExtractByBookingDate.csv').should('exist')
+  })
 
-    it('Admin user can download a CSV of probation booking events by date of booking', () => {
-      cy.task('stubProbationDataExtractByBookingDate')
-      cy.signIn()
+  it('Admin user can download a CSV of probation booking events by date of booking', () => {
+    cy.task('stubProbationDataExtractByBookingDate')
+    cy.signIn()
 
-      const homePage = Page.verifyOnPage(HomePage)
-      homePage.administrationArea().click()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
 
-      const administrationPage = Page.verifyOnPage(AdministrationPage)
-      administrationPage.extractDataByBookingDate().click()
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.extractDataByBookingDate().click()
 
-      const extractDataByBookingDatePage = Page.verifyOnPage(ExtractDataByBookingDatePage)
-      extractDataByBookingDatePage.selectProbation()
-      extractDataByBookingDatePage.selectDate(startOfToday())
-      extractDataByBookingDatePage.enterNumberOfDays(7)
-      extractDataByBookingDatePage.extractData().click()
+    const extractDataByBookingDatePage = Page.verifyOnPage(ExtractDataByBookingDatePage)
+    extractDataByBookingDatePage.selectProbation()
+    extractDataByBookingDatePage.selectDate(startOfToday())
+    extractDataByBookingDatePage.enterNumberOfDays(7)
+    extractDataByBookingDatePage.extractData().click()
 
-      cy.readFile('cypress/downloads/probationDataExtractByBookingDate.csv').should('exist')
-    })
+    cy.readFile('cypress/downloads/probationDataExtractByBookingDate.csv').should('exist')
+  })
 
-    it('Admin user can download a CSV of court booking events by date of hearing', () => {
-      cy.task('stubCourtDataExtractByHearingDate')
-      cy.signIn()
+  it('Admin user can download a CSV of court booking events by date of hearing', () => {
+    cy.task('stubCourtDataExtractByHearingDate')
+    cy.signIn()
 
-      const homePage = Page.verifyOnPage(HomePage)
-      homePage.administrationArea().click()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
 
-      const administrationPage = Page.verifyOnPage(AdministrationPage)
-      administrationPage.extractDataByHearingDate().click()
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.extractDataByHearingDate().click()
 
-      const extractDataByHearingDatePage = Page.verifyOnPage(ExtractDataByHearingDatePage)
-      extractDataByHearingDatePage.selectCourt()
-      extractDataByHearingDatePage.selectDate(startOfToday())
-      extractDataByHearingDatePage.enterNumberOfDays(7)
-      extractDataByHearingDatePage.extractData().click()
+    const extractDataByHearingDatePage = Page.verifyOnPage(ExtractDataByHearingDatePage)
+    extractDataByHearingDatePage.selectCourt()
+    extractDataByHearingDatePage.selectDate(startOfToday())
+    extractDataByHearingDatePage.enterNumberOfDays(7)
+    extractDataByHearingDatePage.extractData().click()
 
-      cy.readFile('cypress/downloads/courtDataExtractByHearingDate.csv').should('exist')
-    })
+    cy.readFile('cypress/downloads/courtDataExtractByHearingDate.csv').should('exist')
+  })
 
-    it('Admin user can download a CSV of probation booking events by date of hearing', () => {
-      cy.task('stubProbationDataExtractByMeetingDate')
-      cy.signIn()
+  it('Admin user can download a CSV of probation booking events by date of hearing', () => {
+    cy.task('stubProbationDataExtractByMeetingDate')
+    cy.signIn()
 
-      const homePage = Page.verifyOnPage(HomePage)
-      homePage.administrationArea().click()
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
 
-      const administrationPage = Page.verifyOnPage(AdministrationPage)
-      administrationPage.extractDataByHearingDate().click()
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.extractDataByHearingDate().click()
 
-      const extractDataByHearingDatePage = Page.verifyOnPage(ExtractDataByHearingDatePage)
-      extractDataByHearingDatePage.selectProbation()
-      extractDataByHearingDatePage.selectDate(startOfToday())
-      extractDataByHearingDatePage.enterNumberOfDays(7)
-      extractDataByHearingDatePage.extractData().click()
+    const extractDataByHearingDatePage = Page.verifyOnPage(ExtractDataByHearingDatePage)
+    extractDataByHearingDatePage.selectProbation()
+    extractDataByHearingDatePage.selectDate(startOfToday())
+    extractDataByHearingDatePage.enterNumberOfDays(7)
+    extractDataByHearingDatePage.extractData().click()
 
-      cy.readFile('cypress/downloads/probationDataExtractByMeetingDate.csv').should('exist')
-    })
+    cy.readFile('cypress/downloads/probationDataExtractByMeetingDate.csv').should('exist')
   })
 })

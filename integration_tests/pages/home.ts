@@ -12,4 +12,5 @@ export default class HomePage extends Page {
   viewAndChangeVideoLinks = (): PageElement => this.getLink('View and change video links')
   manageCourts = (): PageElement => this.getLink('Manage your list of courts')
   manageProbationTeams = (): PageElement => this.getLink('Manage your list of probation teams')
+  administrationArea = (): PageElement => this.getLink('Administration area')
 }

@@ -1,4 +1,4 @@
-import { stubDelete, stubGet, stubPost, stubPut } from './wiremock'
+import { stubDelete, stubFileStream, stubGet, stubPost, stubPut } from './wiremock'
 
 import enabledCourts from './fixtures/bookAVideoLinkApi/enabledCourts.json'
 import enabledProbationTeams from './fixtures/bookAVideoLinkApi/enabledProbationTeams.json'
@@ -46,6 +46,30 @@ const stubGetUserProbationTeamPreferences = (
   ],
 ) => stubGet('/book-a-video-link-api/probation-teams/user-preferences', jsonBody)
 
+const stubCourtDataExtractByBookingDate = () =>
+  stubFileStream(
+    '/book-a-video-link-api/download-csv/court-data-by-booking-date\\?(.)*',
+    'courtDataExtractByBookingDate.csv',
+  )
+
+const stubCourtDataExtractByHearingDate = () =>
+  stubFileStream(
+    '/book-a-video-link-api/download-csv/court-data-by-hearing-date\\?(.)*',
+    'courtDataExtractByHearingDate.csv',
+  )
+
+const stubProbationDataExtractByBookingDate = () =>
+  stubFileStream(
+    '/book-a-video-link-api/download-csv/probation-data-by-booking-date\\?(.)*',
+    'probationDataExtractByBookingDate.csv',
+  )
+
+const stubProbationDataExtractByMeetingDate = () =>
+  stubFileStream(
+    '/book-a-video-link-api/download-csv/probation-data-by-meeting-date\\?(.)*',
+    'probationDataExtractByMeetingDate.csv',
+  )
+
 export default {
   stubBookAVideoLinkPing: () => stubGet('/book-a-video-link-api/health/ping'),
   stubGetEnabledCourts: () => stubGet('/book-a-video-link-api/courts/enabled', enabledCourts),
@@ -85,4 +109,8 @@ export default {
       `/book-a-video-link-api/schedule/probation/${probationTeamCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
       response,
     ),
+  stubCourtDataExtractByBookingDate,
+  stubCourtDataExtractByHearingDate,
+  stubProbationDataExtractByBookingDate,
+  stubProbationDataExtractByMeetingDate,
 }

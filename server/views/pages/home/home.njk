@@ -69,18 +69,18 @@
                     "data-qa": "choose-probation-teams-card"
                 }) }}
             </div>
+        {% endif %}
 
-            {% if user.isAdminUser %}
-                <div class="govuk-grid-column-one-third card-group__item">
-                    {{ card({
-                        "href": "/admin",
-                        "clickable": "true",
-                        "heading": "Administration area",
-                        "description": "Administrative actions and data downloads.",
-                        "data-qa": "admin-card"
-                      }) }}
-                </div>
-            {% endif %}
+        {% if user.isAdminUser %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/admin",
+                    "clickable": "true",
+                    "heading": "Administration area",
+                    "description": "Administrative actions and data downloads.",
+                    "data-qa": "admin-card"
+                }) }}
+            </div>
         {% endif %}
     </div>
 {% endblock %}

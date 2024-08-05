@@ -41,6 +41,7 @@ export const user: Express.User = {
   authSource: 'NOMIS',
   isCourtUser: true,
   isProbationUser: true,
+  isAdminUser: true,
 }
 
 export const flashProvider = jest.fn()

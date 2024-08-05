@@ -1,0 +1,80 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set pageTitle = "Extract summary data by hearing date" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukRadios({
+                    idPrefix: "type",
+                    name: "type",
+                    errorMessage: validationErrors | findError('type'),
+                    fieldset: {
+                        legend: {
+                            text: "Type",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    classes: "govuk-radios--inline",
+                    items: [
+                        {
+                            value: "court",
+                            text: "Court",
+                            checked: formResponses.type == 'court'
+                        },
+                        {
+                            value: "probation",
+                            text: "Probation",
+                            checked: formResponses.type == 'probation'
+                        }
+                    ]
+                }) }}
+
+                {{ mojDatePicker({
+                    id: 'startDate',
+                    name: 'startDate',
+                    label: {
+                        text: "Start date",
+                        classes: 'govuk-label--s'
+                    },
+                    hint: {
+                        text: 'Enter the start date, for example ' + exampleDatePickerDate() + ', or click on the calendar to select'
+                    },
+                    errorMessage: validationErrors | findError('startDate'),
+                    value: formResponses.startDate
+                }) }}
+
+                {{ govukInput({
+                    id: "numberOfDays",
+                    name: "numberOfDays",
+                    label: {
+                        text: "Enter a number of days from the start date",
+                        classes: 'govuk-label--s'
+                    },
+                    classes: 'govuk-!-width-one-quarter',
+                    errorMessage: validationErrors | findError('numberOfDays'),
+                    value: formResponses.numberOfDays
+                }) }}
+
+                {{ govukButton({
+                    text: "Extract data",
+                    type: "submit"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

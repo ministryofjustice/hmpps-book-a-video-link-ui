@@ -52,4 +52,17 @@ const stubDelete = (urlPattern, jsonBody?) =>
     },
   })
 
-export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut, stubDelete }
+const stubFileStream = (urlPattern, file) =>
+  stubFor({
+    request: { method: 'GET', urlPattern },
+    response: {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/csv',
+        'Content-Disposition': `attachment;filename="${file}"`,
+      },
+      bodyFileName: file,
+    },
+  })
+
+export { stubFor, getMatchingRequests, resetStubs, stubGet, stubPost, stubPut, stubDelete, stubFileStream }

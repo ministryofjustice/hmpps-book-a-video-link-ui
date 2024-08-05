@@ -1,5 +1,6 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import _ from 'lodash'
+import express from 'express'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import {
   AmendVideoBookingRequest,
@@ -92,6 +93,32 @@ export default class VideoLinkService {
       prisonerName: this.findPrisonerName(prisoners, a.prisonerNumber),
       prisonLocationDescription: this.findPrisonLocationDescription(prisonLocations, a.prisonLocKey),
     }))
+  }
+
+  public async downloadBookingDataByHearingDate(
+    agencyType: 'court' | 'probation',
+    date: Date,
+    daysToExtract: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    if (agencyType === 'court') {
+      return this.bookAVideoLinkApiClient.downloadCourtDataByHearingDate(date, daysToExtract, response, user)
+    }
+    return this.bookAVideoLinkApiClient.downloadProbationDataByMeetingDate(date, daysToExtract, response, user)
+  }
+
+  public async downloadBookingDataByBookingDate(
+    agencyType: 'court' | 'probation',
+    date: Date,
+    daysToExtract: number,
+    response: express.Response,
+    user: Express.User,
+  ): Promise<void> {
+    if (agencyType === 'court') {
+      return this.bookAVideoLinkApiClient.downloadCourtDataByBookingDate(date, daysToExtract, response, user)
+    }
+    return this.bookAVideoLinkApiClient.downloadProbationDataByBookingDate(date, daysToExtract, response, user)
   }
 
   private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {

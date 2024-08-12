@@ -72,10 +72,11 @@ const stubProbationDataExtractByMeetingDate = () =>
 
 export default {
   stubBookAVideoLinkPing: () => stubGet('/book-a-video-link-api/health/ping'),
-  stubGetEnabledCourts: () => stubGet('/book-a-video-link-api/courts/enabled', enabledCourts),
+  stubGetEnabledCourts: () => stubGet('/book-a-video-link-api/courts\\?enabledOnly=true', enabledCourts),
   stubGetUserCourtPreferences,
   stubSetUserCourtPreferences: () => stubPost('/book-a-video-link-api/courts/user-preferences/set'),
-  stubGetEnabledProbationTeams: () => stubGet('/book-a-video-link-api/probation-teams/enabled', enabledProbationTeams),
+  stubGetEnabledProbationTeams: () =>
+    stubGet('/book-a-video-link-api/probation-teams\\?enabledOnly=true', enabledProbationTeams),
   stubGetUserProbationTeamPreferences,
   stubSetUserProbationTeamPreferences: () => stubPost('/book-a-video-link-api/probation-teams/user-preferences/set'),
   stubAllPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=false', allPrisons),

@@ -35,7 +35,7 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/courts/enabled')
+        .get('/courts?enabledOnly=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
@@ -77,7 +77,7 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/probation-teams/enabled')
+        .get('/probation-teams?enabledOnly=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 

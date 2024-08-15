@@ -1,9 +1,10 @@
 import { RequestHandler } from 'express'
 import { parse } from 'date-fns'
 import { Services } from '../../../../services'
+import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
-  return async (req, res, next) => {
+  return asyncMiddleware(async (req, res, next) => {
     const { bookingId } = req.params
     const { user } = res.locals
 
@@ -51,5 +52,5 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
     }
 
     return next()
-  }
+  })
 }

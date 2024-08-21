@@ -4,6 +4,8 @@ import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import VideoLinkService from './videoLinkService'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
+import { ReferenceCode, VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
+import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
 
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerOffenderSearchApiClient')
@@ -27,7 +29,9 @@ describe('Video link service', () => {
 
   describe('getCourtHearingTypes', () => {
     it('Retrieves court hearing types', async () => {
-      bookAVideoLinkClient.getReferenceCodesForGroup.mockResolvedValue([{ code: 'code', description: 'description' }])
+      bookAVideoLinkClient.getReferenceCodesForGroup.mockResolvedValue([
+        { code: 'code', description: 'description' },
+      ] as ReferenceCode[])
       const result = await videoLinkService.getCourtHearingTypes(user)
       expect(bookAVideoLinkClient.getReferenceCodesForGroup).toHaveBeenCalledWith('COURT_HEARING_TYPE', user)
       expect(result).toEqual([{ code: 'code', description: 'description' }])
@@ -36,7 +40,9 @@ describe('Video link service', () => {
 
   describe('getProbationMeetingTypes', () => {
     it('Retrieves probation meeting types', async () => {
-      bookAVideoLinkClient.getReferenceCodesForGroup.mockResolvedValue([{ code: 'code', description: 'description' }])
+      bookAVideoLinkClient.getReferenceCodesForGroup.mockResolvedValue([
+        { code: 'code', description: 'description' },
+      ] as ReferenceCode[])
       const result = await videoLinkService.getProbationMeetingTypes(user)
       expect(bookAVideoLinkClient.getReferenceCodesForGroup).toHaveBeenCalledWith('PROBATION_MEETING_TYPE', user)
       expect(result).toEqual([{ code: 'code', description: 'description' }])
@@ -45,10 +51,10 @@ describe('Video link service', () => {
 
   describe('getVideoLinkBookingById', () => {
     it('Retrieves a video link booking by ID', async () => {
-      bookAVideoLinkClient.getVideoLinkBookingById.mockResolvedValue({ data: 'data' })
+      bookAVideoLinkClient.getVideoLinkBookingById.mockResolvedValue({ videoLinkBookingId: 1 } as VideoLinkBooking)
       const result = await videoLinkService.getVideoLinkBookingById(1, user)
       expect(bookAVideoLinkClient.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
-      expect(result).toEqual({ data: 'data' })
+      expect(result).toEqual({ videoLinkBookingId: 1 })
     })
   })
 
@@ -59,14 +65,15 @@ describe('Video link service', () => {
         prisonId: 'MDI',
         prisonerNumber: 'ABC123',
         prisonName: 'Moorland',
-        name: 'Joe Bloggs',
+        firstName: 'Joe',
+        lastName: 'Bloggs',
       },
       date: '2022-03-20T00:00:00Z',
       locationCode: 'LOCATION_CODE',
       startTime: '1970-01-01T13:30:00Z',
       endTime: '1970-01-01T14:30:00Z',
       agencyCode: 'AGENCY_CODE',
-    }
+    } as BookAVideoLinkJourney
 
     it('should correctly handle the case with only main appointment', async () => {
       const journey = { ...commonJourney }
@@ -202,7 +209,7 @@ describe('Video link service', () => {
         hearingTypeCode: 'PSR',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      }
+      } as BookAVideoLinkJourney
 
       const expectedBody = {
         bookingType: 'PROBATION',
@@ -251,7 +258,7 @@ describe('Video link service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      }
+      } as BookAVideoLinkJourney
 
       const expectedBody = {
         bookingType: 'COURT',
@@ -306,7 +313,7 @@ describe('Video link service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      }
+      } as BookAVideoLinkJourney
 
       const expectedBody = {
         bookingType: 'COURT',
@@ -542,7 +549,7 @@ describe('Video link service', () => {
         hearingTypeCode: 'PSR',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      }
+      } as BookAVideoLinkJourney
 
       const expectedBody = {
         bookingType: 'PROBATION',
@@ -589,7 +596,7 @@ describe('Video link service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      }
+      } as BookAVideoLinkJourney
 
       const expectedBody = {
         bookingType: 'COURT',
@@ -642,7 +649,7 @@ describe('Video link service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      }
+      } as BookAVideoLinkJourney
 
       const expectedBody = {
         bookingType: 'COURT',

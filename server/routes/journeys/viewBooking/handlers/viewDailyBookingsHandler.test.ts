@@ -8,6 +8,7 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import { parseDatePickerDate } from '../../../../utils/utils'
+import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -35,11 +36,11 @@ beforeEach(() => {
   courtsService.getUserPreferences.mockResolvedValue([
     { code: 'C1', description: 'Court 1' },
     { code: 'C2', description: 'Court 2' },
-  ])
+  ] as Court[])
   probationTeamsService.getUserPreferences.mockResolvedValue([
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
-  ])
+  ] as ProbationTeam[])
 })
 
 afterEach(() => {

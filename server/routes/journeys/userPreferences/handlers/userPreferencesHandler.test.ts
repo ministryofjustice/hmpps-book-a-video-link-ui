@@ -6,7 +6,7 @@ import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService, { CourtsByLetter } from '../../../../services/courtsService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
+import ProbationTeamsService, { ProbationTeamsByLetter } from '../../../../services/probationTeamsService'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')

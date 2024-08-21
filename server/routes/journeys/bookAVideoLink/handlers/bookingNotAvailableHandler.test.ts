@@ -7,6 +7,7 @@ import { getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import { AvailabilityResponse } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -39,7 +40,7 @@ afterEach(() => {
 
 describe('Check Booking handler', () => {
   beforeEach(() => {
-    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
+    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
   })
 
   describe('GET', () => {
@@ -60,7 +61,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should redirect to check booking page if availability is ok', () => {
-      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true })
+      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
 
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)

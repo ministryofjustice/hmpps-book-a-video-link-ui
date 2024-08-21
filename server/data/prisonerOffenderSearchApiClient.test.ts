@@ -52,7 +52,7 @@ describe('prisonerOffenderSearchApiClient', () => {
     })
 
     it('should return empty list by default', async () => {
-      const response = []
+      const response = <unknown>[]
       const output = await prisonerOffenderSearchApiClient.getByPrisonerNumbers([], user)
       expect(output).toEqual(response)
     })

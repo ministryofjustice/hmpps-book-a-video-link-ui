@@ -1,6 +1,7 @@
 import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import PrisonService from './prisonService'
+import { Location, Prison } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('../data/bookAVideoLinkApiClient')
 
@@ -21,7 +22,9 @@ describe('Prison service', () => {
 
   describe('getAppointmentLocations', () => {
     it('Retrieves all appointment locations', async () => {
-      bookAVideoLinkApiClient.getAppointmentLocations.mockResolvedValue([{ key: 'key', description: 'description' }])
+      bookAVideoLinkApiClient.getAppointmentLocations.mockResolvedValue([
+        { key: 'key', description: 'description' },
+      ] as Location[])
       const result = await prisonService.getAppointmentLocations('MDI', user)
       expect(bookAVideoLinkApiClient.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
       expect(result).toEqual([{ key: 'key', description: 'description' }])
@@ -30,10 +33,10 @@ describe('Prison service', () => {
 
   describe('getPrisons', () => {
     it('Retrieves all prisons with an enabledOnly flag', async () => {
-      bookAVideoLinkApiClient.getPrisons.mockResolvedValue([{ code: 'code', description: 'description' }])
+      bookAVideoLinkApiClient.getPrisons.mockResolvedValue([{ code: 'code', name: 'description' }] as Prison[])
       const result = await prisonService.getPrisons(true, user)
       expect(bookAVideoLinkApiClient.getPrisons).toHaveBeenCalledWith(true, user)
-      expect(result).toEqual([{ code: 'code', description: 'description' }])
+      expect(result).toEqual([{ code: 'code', name: 'description' }])
     })
   })
 })

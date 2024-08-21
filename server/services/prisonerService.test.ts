@@ -1,6 +1,7 @@
 import createUser from '../testutils/createUser'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
 import PrisonerService from './prisonerService'
+import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('../data/prisonerOffenderSearchApiClient')
 
@@ -22,7 +23,7 @@ describe('Prisoner service', () => {
 
   describe('getPrisonerByPrisonerNumber', () => {
     it('Retrieves prisoner by prisoner number', async () => {
-      prisonerOffenderSearchApiClient.getByPrisonerNumber.mockResolvedValue({ prisonerNumber: 'ABC123' })
+      prisonerOffenderSearchApiClient.getByPrisonerNumber.mockResolvedValue({ prisonerNumber: 'ABC123' } as Prisoner)
       const result = await prisonerService.getPrisonerByPrisonerNumber('ABC123', user)
       expect(prisonerOffenderSearchApiClient.getByPrisonerNumber).toHaveBeenCalledWith('ABC123', user)
       expect(result).toEqual({ prisonerNumber: 'ABC123' })

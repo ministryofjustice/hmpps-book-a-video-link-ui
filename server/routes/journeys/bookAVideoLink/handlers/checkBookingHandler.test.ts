@@ -9,6 +9,13 @@ import ProbationTeamsService from '../../../../services/probationTeamsService'
 import PrisonService from '../../../../services/prisonService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+import {
+  AvailabilityResponse,
+  Court,
+  Location,
+  ProbationTeam,
+  ReferenceCode,
+} from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -51,16 +58,20 @@ describe('Check Booking handler', () => {
     courtsService.getUserPreferences.mockResolvedValue([
       { code: 'C1', description: 'Court 1' },
       { code: 'C2', description: 'Court 2' },
-    ])
+    ] as Court[])
     probationTeamsService.getUserPreferences.mockResolvedValue([
       { code: 'P1', description: 'Probation 1' },
       { code: 'P2', description: 'Probation 2' },
-    ])
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
-    videoLinkService.getCourtHearingTypes.mockResolvedValue([{ code: 'KEY', description: 'description' }])
-    videoLinkService.getProbationMeetingTypes.mockResolvedValue([{ code: 'KEY', description: 'description' }])
-    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true })
-    videoLinkService.bookingIsAmendable.mockResolvedValue(true)
+    ] as ProbationTeam[])
+    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
+    videoLinkService.getCourtHearingTypes.mockResolvedValue([
+      { code: 'KEY', description: 'description' },
+    ] as ReferenceCode[])
+    videoLinkService.getProbationMeetingTypes.mockResolvedValue([
+      { code: 'KEY', description: 'description' },
+    ] as ReferenceCode[])
+    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
+    videoLinkService.bookingIsAmendable.mockReturnValue(true)
   })
 
   describe('GET', () => {
@@ -145,7 +156,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should redirect to select alternatives if the selected room is not available', () => {
-      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
+      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
@@ -194,7 +205,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should redirect to select alternatives if the selected room is not available', () => {
-      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false })
+      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)

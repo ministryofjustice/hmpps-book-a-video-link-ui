@@ -4,7 +4,7 @@ import cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService from '../../../../services/courtsService'
-import { Court } from '../../../../@types/bookAVideoLinkApi/types'
+import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 
 jest.mock('../../../../services/auditService')
@@ -27,13 +27,13 @@ beforeEach(() => {
       code: 'ABERCV',
       description: 'Aberystwyth Civil',
     },
-  ] as unknown as Court[])
+  ] as Court[])
   probationTeamsService.getUserPreferences.mockResolvedValue([
     {
       code: 'LANCCE',
       description: 'Central Lancashire',
     },
-  ] as unknown as ProbationTeam[])
+  ] as ProbationTeam[])
 })
 
 afterEach(() => {

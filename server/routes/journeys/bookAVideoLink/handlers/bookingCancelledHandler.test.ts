@@ -7,6 +7,8 @@ import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import { VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -46,14 +48,14 @@ beforeEach(() => {
         endTime: '12:30',
       },
     ],
-  })
+  } as VideoLinkBooking)
 
   prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
     firstName: 'Joe',
     lastName: 'Bloggs',
     prisonId: 'MDI',
     prisonerNumber: 'A1234AA',
-  })
+  } as Prisoner)
 
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })

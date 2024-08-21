@@ -8,6 +8,8 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
+import { Location, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -56,8 +58,8 @@ describe('GET', () => {
       lastName: 'Bloggs',
       prisonId: 'MDI',
       prisonerNumber: 'AA1234A',
-    })
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
+    } as Prisoner)
+    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
     return request(app)
       .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
@@ -117,8 +119,8 @@ describe('GET', () => {
       lastName: 'Bloggs',
       prisonId: 'MDI',
       prisonerNumber: 'AA1234A',
-    })
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }])
+    } as Prisoner)
+    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
     return request(app)
       .get(`/court/booking/amend/1/${journeyId()}/video-link-booking/confirmation`)
@@ -142,52 +144,54 @@ describe('GET', () => {
   })
 })
 
-const getCourtBooking = (prisonerNumber: string) => ({
-  bookingType: 'COURT',
-  prisonAppointments: [
-    {
-      prisonerNumber,
-      appointmentType: 'VLB_COURT_PRE',
-      prisonLocKey: 'VCC-ROOM-1',
-      appointmentDate: '2024-04-05',
-      startTime: '11:15',
-      endTime: '11:30',
-    },
-    {
-      prisonerNumber,
-      appointmentType: 'VLB_COURT_MAIN',
-      prisonLocKey: 'VCC-ROOM-1',
-      appointmentDate: '2024-04-05',
-      startTime: '11:30',
-      endTime: '12:30',
-    },
-    {
-      prisonerNumber,
-      appointmentType: 'VLB_COURT_POST',
-      prisonLocKey: 'VCC-ROOM-1',
-      appointmentDate: '2024-04-05',
-      startTime: '12:30',
-      endTime: '12:45',
-    },
-  ],
-  courtDescription: 'Derby Justice Centre',
-  courtHearingTypeDescription: 'Appeal hearing',
-  videoLinkUrl: 'https://video.here.com',
-})
+const getCourtBooking = (prisonerNumber: string) =>
+  ({
+    bookingType: 'COURT',
+    prisonAppointments: [
+      {
+        prisonerNumber,
+        appointmentType: 'VLB_COURT_PRE',
+        prisonLocKey: 'VCC-ROOM-1',
+        appointmentDate: '2024-04-05',
+        startTime: '11:15',
+        endTime: '11:30',
+      },
+      {
+        prisonerNumber,
+        appointmentType: 'VLB_COURT_MAIN',
+        prisonLocKey: 'VCC-ROOM-1',
+        appointmentDate: '2024-04-05',
+        startTime: '11:30',
+        endTime: '12:30',
+      },
+      {
+        prisonerNumber,
+        appointmentType: 'VLB_COURT_POST',
+        prisonLocKey: 'VCC-ROOM-1',
+        appointmentDate: '2024-04-05',
+        startTime: '12:30',
+        endTime: '12:45',
+      },
+    ],
+    courtDescription: 'Derby Justice Centre',
+    courtHearingTypeDescription: 'Appeal hearing',
+    videoLinkUrl: 'https://video.here.com',
+  }) as VideoLinkBooking
 
-const getProbationBooking = (prisonerNumber: string) => ({
-  bookingType: 'PROBATION',
-  prisonAppointments: [
-    {
-      prisonerNumber,
-      appointmentType: 'VLB_PROBATION',
-      prisonLocKey: 'VCC-ROOM-1',
-      appointmentDate: '2024-04-05',
-      startTime: '11:30',
-      endTime: '12:30',
-    },
-  ],
-  probationTeamDescription: 'Barnet PPOC',
-  probationMeetingTypeDescription: 'Pre-sentence report',
-  videoLinkUrl: 'https://video.here.com',
-})
+const getProbationBooking = (prisonerNumber: string) =>
+  ({
+    bookingType: 'PROBATION',
+    prisonAppointments: [
+      {
+        prisonerNumber,
+        appointmentType: 'VLB_PROBATION',
+        prisonLocKey: 'VCC-ROOM-1',
+        appointmentDate: '2024-04-05',
+        startTime: '11:30',
+        endTime: '12:30',
+      },
+    ],
+    probationTeamDescription: 'Barnet PPOC',
+    probationMeetingTypeDescription: 'Pre-sentence report',
+    videoLinkUrl: 'https://video.here.com',
+  }) as VideoLinkBooking

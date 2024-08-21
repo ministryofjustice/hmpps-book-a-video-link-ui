@@ -13,7 +13,8 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
 import expectJourneySession from '../../../testutils/testUtilRoute'
-import { VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { Court, ProbationTeam, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -51,11 +52,11 @@ beforeEach(() => {
   courtsService.getUserPreferences.mockResolvedValue([
     { code: 'C1', description: 'Court 1' },
     { code: 'C2', description: 'Court 2' },
-  ])
+  ] as Court[])
   probationTeamsService.getUserPreferences.mockResolvedValue([
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
-  ])
+  ] as ProbationTeam[])
 
   prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
     prisonId: 'MDI',
@@ -64,7 +65,7 @@ beforeEach(() => {
     dateOfBirth: '1970-01-01',
     prisonName: 'Moorland',
     prisonerNumber: 'A1234AA',
-  })
+  } as Prisoner)
 
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
     bookingType: 'COURT',
@@ -473,7 +474,7 @@ describe('New Booking handler', () => {
         firstName: 'Joe',
         lastName: 'Bloggs',
         dateOfBirth: '1970-01-01',
-      })
+      } as Prisoner)
 
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)

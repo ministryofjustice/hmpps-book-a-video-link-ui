@@ -7,6 +7,7 @@ import { getPageHeader } from '../../../testutils/cheerio'
 import PrisonService from '../../../../services/prisonService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../testutils/testUtilRoute'
+import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/prisonService')
@@ -26,7 +27,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({ bookAVideoLink: {} })
-  prisonService.getPrisons.mockResolvedValue([{ code: 'MDI', name: 'Moorland' }])
+  prisonService.getPrisons.mockResolvedValue([{ code: 'MDI', name: 'Moorland' }] as Prison[])
 })
 
 afterEach(() => {

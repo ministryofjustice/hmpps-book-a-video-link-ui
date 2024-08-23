@@ -296,7 +296,7 @@
                     id: "videoLinkUrl",
                     name: "videoLinkUrl",
                     label: {
-                        text: "Video link url (optional)",
+                        text: "Court hearing link (optional)" if session.req.params.type == BavlJourneyType.COURT else "Probation meeting link (optional)",
                         classes: 'govuk-label--s'
                     },
                     classes: 'govuk-!-width-three-quarters',

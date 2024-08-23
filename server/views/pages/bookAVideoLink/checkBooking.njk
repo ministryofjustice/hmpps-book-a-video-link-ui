@@ -173,7 +173,7 @@
                     } if session.journey.bookAVideoLink.postHearingEndTime,
                     {
                         key: {
-                            text: "Video Link URL"
+                            text: "Court hearing link" if session.req.params.type == BavlJourneyType.COURT else "Probation meeting link"
                         },
                         value: {
                             text: session.journey.bookAVideoLink.videoLinkUrl

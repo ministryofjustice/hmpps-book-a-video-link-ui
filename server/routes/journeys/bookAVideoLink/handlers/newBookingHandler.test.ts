@@ -186,6 +186,7 @@ describe('New Booking handler', () => {
           const heading = getPageHeader($)
 
           expect(heading).toEqual('Change video link booking')
+          expect(existsByLabel($, 'Which court is the hearing for?')).toBe(false)
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),

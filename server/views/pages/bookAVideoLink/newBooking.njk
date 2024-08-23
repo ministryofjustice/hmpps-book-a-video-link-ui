@@ -60,17 +60,35 @@
                         } if agencies.length == 1 and session.req.params.type == BavlJourneyType.COURT,
                         {
                             key: {
+                                text: "Court"
+                            },
+                            value: {
+                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                            }
+                        } if mode == 'amend' and agencies.length > 1 and session.req.params.type == BavlJourneyType.COURT,
+                        {
+                            key: {
                                 text: "Probation Team"
                             },
                             value: {
                                 text: agencies[0].description
                             }
-                        } if agencies.length == 1 and session.req.params.type == BavlJourneyType.PROBATION
+                        } if agencies.length == 1 and session.req.params.type == BavlJourneyType.PROBATION,
+                        {
+                            key: {
+                                text: "Probation Team"
+                            },
+                            value: {
+                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                            }
+                        } if mode == 'amend' and agencies.length > 1 and session.req.params.type == BavlJourneyType.PROBATION
                     ]
                 }) }}
 
                 {% if agencies.length === 1 %}
                     <input type="hidden" name="agencyCode" value="{{ agencies[0].code }}" />
+                {% elseif mode === 'amend' %}
+                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookAVideoLink.agencyCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select court" if session.req.params.type == BavlJourneyType.COURT else "Select probation team", value: "" }] %}

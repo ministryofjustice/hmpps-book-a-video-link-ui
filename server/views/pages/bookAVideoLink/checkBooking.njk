@@ -125,52 +125,20 @@
                     },
                     {
                         key: {
-                            text: "Prison room for pre-court hearing"
+                            text: "Pre-court hearing"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookAVideoLink.preLocationCode)).description
+                            text: (rooms | find('key', session.journey.bookAVideoLink.preLocationCode)).description + " - " +  session.journey.bookAVideoLink.preHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookAVideoLink.preHearingEndTime | formatDate('HH:mm')
                         }
                     } if session.journey.bookAVideoLink.preLocationCode,
                     {
                         key: {
-                            text: "Pre-hearing start time"
+                            text: "Post-court hearing"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.preHearingStartTime | formatDate('HH:mm')
-                        }
-                    } if session.journey.bookAVideoLink.preHearingStartTime,
-                    {
-                        key: {
-                            text: "Pre-hearing end time"
-                        },
-                        value: {
-                            text: session.journey.bookAVideoLink.preHearingEndTime | formatDate('HH:mm')
-                        }
-                    } if session.journey.bookAVideoLink.preHearingEndTime,
-                    {
-                        key: {
-                            text: "Prison room for post-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', session.journey.bookAVideoLink.postLocationCode)).description
+                            text: (rooms | find('key', session.journey.bookAVideoLink.postLocationCode)).description + " - " +  session.journey.bookAVideoLink.postHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookAVideoLink.postHearingEndTime | formatDate('HH:mm')
                         }
                     } if session.journey.bookAVideoLink.postLocationCode,
-                    {
-                        key: {
-                            text: "Post-hearing start time"
-                        },
-                        value: {
-                            text: session.journey.bookAVideoLink.postHearingStartTime | formatDate('HH:mm')
-                        }
-                    } if session.journey.bookAVideoLink.postHearingStartTime,
-                    {
-                        key: {
-                            text: "Post-hearing end time"
-                        },
-                        value: {
-                            text: session.journey.bookAVideoLink.postHearingEndTime | formatDate('HH:mm')
-                        }
-                    } if session.journey.bookAVideoLink.postHearingEndTime,
                     {
                         key: {
                             text: "Court hearing link" if session.req.params.type == BavlJourneyType.COURT else "Probation meeting link"

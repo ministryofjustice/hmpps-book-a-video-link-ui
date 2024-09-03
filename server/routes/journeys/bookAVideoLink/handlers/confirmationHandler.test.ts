@@ -88,12 +88,8 @@ describe('GET', () => {
           'Prison room for court hearing',
           'Hearing start time',
           'Hearing end time',
-          'Prison room for pre-court hearing',
-          'Pre-hearing start time',
-          'Pre-hearing end time',
-          'Prison room for post-court hearing',
-          'Post-hearing start time',
-          'Post-hearing end time',
+          'Pre-court hearing',
+          'Post-court hearing',
         ]
 
         const probationFields = [

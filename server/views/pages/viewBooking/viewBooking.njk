@@ -23,7 +23,7 @@
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-three-quarters">
             {{ govukSummaryList({
                 rows: [
                     {
@@ -140,50 +140,18 @@
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Prison room for pre-court hearing"
+                            text: "Pre-court hearing"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
                     {
                         key: {
-                            text: "Pre-hearing start time"
+                            text: "Post-court hearing"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
-                    {
-                        key: {
-                            text: "Pre-hearing end time"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
-                    {
-                        key: {
-                            text: "Prison room for post-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
-                    {
-                        key: {
-                            text: "Post-hearing start time"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
-                    {
-                        key: {
-                            text: "Post-hearing end time"
-                        },
-                        value: {
-                            text:  (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
                     {

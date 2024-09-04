@@ -7,11 +7,11 @@ orbs:
 parameters:
   alerts-slack-channel:
     type: string
-    default: book-a-video-link-dev
+    default: book-a-video-link-alerts
 
   releases-slack-channel:
     type: string
-    default: book-a-video-link-dev
+    default: book-a-video-link-alerts
 
   node-version:
     type: string

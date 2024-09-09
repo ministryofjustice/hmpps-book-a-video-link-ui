@@ -85,6 +85,7 @@ class Body {
   postLocation: string
 
   @Expose()
+  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsOptional()
   @Matches(/^https?:\/\/([^\s$.?#].\S*)?$/, { message: 'Enter a valid URL for the video link' })
   videoLinkUrl: string

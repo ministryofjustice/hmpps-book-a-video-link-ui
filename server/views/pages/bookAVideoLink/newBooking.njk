@@ -290,19 +290,19 @@
                             }
                         ]
                     }) }}
-                {% endif %}
 
-                {{ govukInput({
-                    id: "videoLinkUrl",
-                    name: "videoLinkUrl",
-                    label: {
-                        text: "Court hearing link (optional)" if session.req.params.type == BavlJourneyType.COURT else "Probation meeting link (optional)",
-                        classes: 'govuk-label--s'
-                    },
-                    classes: 'govuk-!-width-three-quarters',
-                    errorMessage: validationErrors | findError('videoLinkUrl'),
-                    value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
-                }) }}
+                    {{ govukInput({
+                        id: "videoLinkUrl",
+                        name: "videoLinkUrl",
+                        label: {
+                            text: "Court hearing link (optional)",
+                            classes: 'govuk-label--s'
+                        },
+                        classes: 'govuk-!-width-three-quarters',
+                        errorMessage: validationErrors | findError('videoLinkUrl'),
+                        value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
+                    }) }}
+                {% endif %}
 
                 {{ govukButton({
                     text: "Continue",

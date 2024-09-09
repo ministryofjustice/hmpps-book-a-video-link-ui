@@ -170,7 +170,7 @@ export default class VideoLinkService {
       probationTeamCode: journey.type === 'PROBATION' ? journey.agencyCode : undefined,
       probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
       comments: journey.comments,
-      videoLinkUrl: journey.videoLinkUrl,
+      videoLinkUrl: journey.type === 'COURT' ? journey.videoLinkUrl : undefined,
     } as unknown as T
   }
 

@@ -208,7 +208,6 @@ describe('Video link service', () => {
         agencyCode: 'PROBATION_TEAM',
         hearingTypeCode: 'PSR',
         comments: 'comments',
-        videoLinkUrl: 'videoLinkUrl',
       } as BookAVideoLinkJourney
 
       const expectedBody = {
@@ -231,7 +230,6 @@ describe('Video link service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
-        videoLinkUrl: 'videoLinkUrl',
       }
 
       const result = await videoLinkService.createVideoLinkBooking(journey, user)
@@ -377,7 +375,6 @@ describe('Video link service', () => {
         agencyCode: 'PROBATION_TEAM',
         hearingTypeCode: 'PSR',
         comments: 'comments',
-        videoLinkUrl: 'videoLinkUrl',
       }
 
       const expectedBody = {
@@ -402,7 +399,6 @@ describe('Video link service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
-        videoLinkUrl: 'videoLinkUrl',
       }
 
       await videoLinkService.requestVideoLinkBooking(journey, user)
@@ -548,7 +544,6 @@ describe('Video link service', () => {
         agencyCode: 'PROBATION_TEAM',
         hearingTypeCode: 'PSR',
         comments: 'comments',
-        videoLinkUrl: 'videoLinkUrl',
       } as BookAVideoLinkJourney
 
       const expectedBody = {
@@ -571,7 +566,6 @@ describe('Video link service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
-        videoLinkUrl: 'videoLinkUrl',
       }
 
       await videoLinkService.amendVideoLinkBooking(journey, user)

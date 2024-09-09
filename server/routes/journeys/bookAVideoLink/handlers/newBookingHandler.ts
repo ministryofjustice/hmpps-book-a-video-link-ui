@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsOptional, Matches, ValidateIf } from 'class-validator'
 import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
@@ -87,6 +87,7 @@ class Body {
   @Expose()
   @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsOptional()
+  @Matches(/^https?:\/\/([^\s$.?#].\S*)?$/, { message: 'Enter a valid URL for the video link' })
   videoLinkUrl: string
 }
 

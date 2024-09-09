@@ -375,6 +375,7 @@ describe('New Booking handler', () => {
           date: '31/02/2022',
           startTime: { hour: 25, minute: 30 },
           endTime: { hour: 25, minute: 30 },
+          videoLinkUrl: 'invalid url',
         })
         .expect(() => {
           expectErrorMessages([
@@ -392,6 +393,11 @@ describe('New Booking handler', () => {
               fieldId: 'endTime',
               href: '#endTime',
               text: 'Enter a valid end time',
+            },
+            {
+              fieldId: 'videoLinkUrl',
+              href: '#videoLinkUrl',
+              text: 'Enter a valid URL for the video link',
             },
           ])
         })

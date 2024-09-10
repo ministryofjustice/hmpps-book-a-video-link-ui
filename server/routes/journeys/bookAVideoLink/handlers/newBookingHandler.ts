@@ -86,8 +86,8 @@ class Body {
 
   @Expose()
   @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
   @IsOptional()
+  @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
   videoLinkUrl: string
 }
 

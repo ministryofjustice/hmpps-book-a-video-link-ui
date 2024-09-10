@@ -375,7 +375,7 @@ describe('New Booking handler', () => {
           date: '31/02/2022',
           startTime: { hour: 25, minute: 30 },
           endTime: { hour: 25, minute: 30 },
-          videoLinkUrl: 'invalid url',
+          videoLinkUrl: 'a'.repeat(121),
         })
         .expect(() => {
           expectErrorMessages([
@@ -397,7 +397,7 @@ describe('New Booking handler', () => {
             {
               fieldId: 'videoLinkUrl',
               href: '#videoLinkUrl',
-              text: 'Enter a valid URL for the video link',
+              text: 'Court hearing link must be 120 characters or less',
             },
           ])
         })

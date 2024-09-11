@@ -25,6 +25,8 @@ export default function AmendRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  route('/video-link-booking/confirmation', new ConfirmationHandler(videoLinkService, prisonerService, prisonService))
+
   router.use((req, res, next) => {
     const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookAVideoLink
     const bookingDate = parseISO(date)
@@ -47,7 +49,6 @@ export default function AmendRoutes({
     '/video-link-booking/check-booking',
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
-  route('/video-link-booking/confirmation', new ConfirmationHandler(videoLinkService, prisonerService, prisonService))
 
   return router
 }

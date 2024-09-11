@@ -29,13 +29,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup({
-    bookAVideoLink: {
-      prisoner: { prisonId: 'MDI' },
-      date: '2024-06-12',
-      startTime: '1970-01-01T16:00',
-    },
-  })
+  appSetup()
 
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
     prisonAppointments: [

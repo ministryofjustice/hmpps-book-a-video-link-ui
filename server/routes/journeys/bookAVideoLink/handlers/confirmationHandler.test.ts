@@ -31,15 +31,7 @@ const appSetup = (journeySession = {}) => {
   })
 }
 
-beforeEach(() => {
-  appSetup({
-    bookAVideoLink: {
-      prisoner: { prisonId: 'MDI' },
-      date: '2024-06-12',
-      startTime: '1970-01-01T16:00',
-    },
-  })
-})
+beforeEach(() => appSetup())
 
 afterEach(() => {
   jest.resetAllMocks()
@@ -107,7 +99,6 @@ describe('GET', () => {
   })
 
   it('should render the correct page in amend mode', () => {
-    appSetup({ bookAVideoLink: { bookingId: 1, date: '2024-06-27', startTime: '15:00' } })
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
     prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({

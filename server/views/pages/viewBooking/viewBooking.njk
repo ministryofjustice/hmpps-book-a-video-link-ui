@@ -156,6 +156,14 @@
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
                     {
                         key: {
+                            text: "Court hearing link"
+                        },
+                        value: {
+                            text: booking.videoLinkUrl or "Not entered"
+                        }
+                    } if booking.bookingType == 'COURT',
+                    {
+                        key: {
                             text: "Comments"
                         },
                         value: {
@@ -170,15 +178,7 @@
                                 }
                             ]
                         } if isAmendable
-                    },
-                    {
-                        key: {
-                            text: "Video Link URL"
-                        },
-                        value: {
-                            text: booking.videoLinkUrl
-                        }
-                    } if booking.videoLinkUrl
+                    }
                 ]
             }) }}
 

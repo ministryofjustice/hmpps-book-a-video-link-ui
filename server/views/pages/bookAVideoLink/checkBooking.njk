@@ -144,9 +144,9 @@
                             text: "Court hearing link"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.videoLinkUrl
+                            text: session.journey.bookAVideoLink.videoLinkUrl or "Not entered"
                         }
-                    } if session.journey.bookAVideoLink.videoLinkUrl
+                    } if session.req.params.type == BavlJourneyType.COURT
                 ]
             }) }}
 

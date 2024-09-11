@@ -27,6 +27,10 @@ export default function CreateRoutes({
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
+  route(
+    `${basePath}/video-link-booking/confirmation/:bookingId`,
+    new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
+  )
 
   // Book a video link journey is required in session for the following routes
   router.use((req, res, next) => {
@@ -44,10 +48,6 @@ export default function CreateRoutes({
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
   route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
-  route(
-    `${basePath}/video-link-booking/confirmation/:bookingId`,
-    new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
-  )
 
   return router
 }

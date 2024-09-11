@@ -25,6 +25,8 @@ export default function RequestRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  route(`/prisoner/video-link-booking/confirmation`, new BookingRequestedHandler())
+
   // Book a video link journey is required in session for the following routes
   router.use((req, res, next) => {
     if (!req.session.journey.bookAVideoLink) return res.redirect('/')
@@ -42,7 +44,6 @@ export default function RequestRoutes({
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
   )
   route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
-  route(`/prisoner/video-link-booking/confirmation`, new BookingRequestedHandler())
 
   return router
 }

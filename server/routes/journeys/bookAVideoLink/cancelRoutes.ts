@@ -15,6 +15,8 @@ export default function CancelRoutes({ auditService, prisonerService, videoLinkS
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  route('/confirmation', new BookingCancelledHandler(videoLinkService, prisonerService))
+
   router.use((req, res, next) => {
     const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookAVideoLink
     const bookingDate = parseISO(date)
@@ -28,7 +30,6 @@ export default function CancelRoutes({ auditService, prisonerService, videoLinkS
   })
 
   route('/confirm', new ConfirmCancelHandler(videoLinkService))
-  route('/confirmation', new BookingCancelledHandler(videoLinkService, prisonerService))
 
   return router
 }

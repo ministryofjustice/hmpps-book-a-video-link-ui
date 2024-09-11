@@ -150,9 +150,9 @@
                             text: "Court hearing link"
                         },
                         value: {
-                            text: booking.videoLinkUrl
+                            text: booking.videoLinkUrl or "Not entered"
                         }
-                    } if booking.videoLinkUrl
+                    } if booking.bookingType == 'COURT'
                 ]
             }) }}
 

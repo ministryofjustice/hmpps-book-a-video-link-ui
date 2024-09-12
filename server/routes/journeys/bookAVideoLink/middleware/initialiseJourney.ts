@@ -2,6 +2,7 @@ import { RequestHandler } from 'express'
 import { parse } from 'date-fns'
 import { Services } from '../../../../services'
 import asyncMiddleware from '../../../../middleware/asyncMiddleware'
+import { extractPrisonAppointmentsFromBooking } from '../../../../utils/utils'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
   return asyncMiddleware(async (req, res, next) => {
@@ -12,14 +13,11 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
 
     const booking = await videoLinkService.getVideoLinkBookingById(Number(bookingId), user)
 
-    const getAppointment = (type: string) => booking.prisonAppointments.find(a => a.appointmentType === type)
     const parseTimeToISOString = (time: string) => (time ? parse(time, 'HH:mm', new Date(0)).toISOString() : undefined)
     const parseDateToISOString = (date: string) =>
       date ? parse(date, 'yyyy-MM-dd', new Date()).toISOString() : undefined
 
-    const preAppointment = getAppointment('VLB_COURT_PRE')
-    const mainAppointment = getAppointment('VLB_COURT_MAIN') || getAppointment('VLB_PROBATION')
-    const postAppointment = getAppointment('VLB_COURT_POST')
+    const { preAppointment, mainAppointment, postAppointment } = extractPrisonAppointmentsFromBooking(booking)
 
     const prisoner = await prisonerService.getPrisonerByPrisonerNumber(mainAppointment?.prisonerNumber, user)
 

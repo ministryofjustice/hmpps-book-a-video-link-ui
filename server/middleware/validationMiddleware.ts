@@ -25,6 +25,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
   }
 
   return async (req, res, next) => {
+    req.rawBody = req.body
     req.body = deepTrim(req.body)
 
     if (!type) {

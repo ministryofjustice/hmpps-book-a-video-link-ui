@@ -171,7 +171,7 @@
                 }) }}
 
                 {% set items = [{ text: "Select prison room", value: "" }] %}
-                {% for room in rooms %}
+                {% for room in rooms | filter('allowedForMain', true) %}
                     {% set items = (items.push({
                         value: room.key,
                         text: room.description,
@@ -193,7 +193,7 @@
 
                 {% if session.req.params.type == BavlJourneyType.COURT %}
                     {% set items = [{ text: "Select prison room", value: "" }] %}
-                    {% for room in rooms %}
+                    {% for room in rooms | filter('allowedForPre', true) %}
                         {% set items = (items.push({
                             value: room.key,
                             text: room.description,
@@ -243,7 +243,7 @@
                     }) }}
 
                     {% set items = [{ text: "Select prison room", value: "" }] %}
-                    {% for room in rooms %}
+                    {% for room in rooms | filter('allowedForPost', true) %}
                         {% set items = (items.push({
                             value: room.key,
                             text: room.description,

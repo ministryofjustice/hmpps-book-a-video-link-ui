@@ -22,6 +22,10 @@ declare module 'express-session' {
 }
 
 declare module 'express-serve-static-core' {
+  interface Request {
+    rawBody: object
+  }
+
   interface Response {
     addSuccessMessage?(heading: string, message?: string): void
     addValidationError?(message: string, field?: string): void

@@ -25,8 +25,8 @@ describe('Prison service', () => {
       bookAVideoLinkApiClient.getAppointmentLocations.mockResolvedValue([
         { key: 'key', description: 'description' },
       ] as Location[])
-      const result = await prisonService.getAppointmentLocations('MDI', user)
-      expect(bookAVideoLinkApiClient.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+      const result = await prisonService.getAppointmentLocations('MDI', true, user)
+      expect(bookAVideoLinkApiClient.getAppointmentLocations).toHaveBeenCalledWith('MDI', true, user)
       expect(result).toEqual([{ key: 'key', description: 'description' }])
     })
   })

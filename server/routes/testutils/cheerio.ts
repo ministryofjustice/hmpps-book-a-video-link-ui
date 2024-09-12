@@ -29,3 +29,11 @@ export const existsByKey = ($: Root, key: string) => {
     ).length > 0
   )
 }
+
+export const dropdownOptions = ($: Root, name: string) => {
+  return getByName($, name)
+    .find('option')
+    .map((_, option) => $(option).attr('value'))
+    .get()
+    .filter(s => s.length > 1)
+}

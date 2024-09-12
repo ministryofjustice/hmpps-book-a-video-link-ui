@@ -66,7 +66,7 @@ describe('GET', () => {
         })
         expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
         expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
-        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', user)
+        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)

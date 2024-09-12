@@ -1,5 +1,6 @@
 import { format, isValid, parse, parseISO, set, startOfToday } from 'date-fns'
 import { enGB } from 'date-fns/locale'
+import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -67,3 +68,13 @@ export const simpleTimeToDate = (time: { hour: string; minute: string }): Date =
 
 export const dateAtTime = (date: Date, time: Date): Date =>
   set(date, { hours: time.getHours(), minutes: time.getMinutes() })
+
+export const extractPrisonAppointmentsFromBooking = (booking: VideoLinkBooking) => {
+  const getAppointment = (type: string) => booking.prisonAppointments.find(a => a.appointmentType === type)
+
+  return {
+    preAppointment: getAppointment('VLB_COURT_PRE'),
+    mainAppointment: getAppointment('VLB_COURT_MAIN') || getAppointment('VLB_PROBATION'),
+    postAppointment: getAppointment('VLB_COURT_POST'),
+  }
+}

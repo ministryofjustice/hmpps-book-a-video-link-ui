@@ -22,7 +22,7 @@ export default function setUpFlash(): Router {
 
       req.flash('validationErrors', JSON.stringify(validationErrors))
       req.flash('formResponses', JSON.stringify(req.body))
-      res.redirect('back')
+      res.redirect(req.get('Referrer') || '/')
     }
 
     res.addSuccessMessage = (heading: string, message?: string) => {

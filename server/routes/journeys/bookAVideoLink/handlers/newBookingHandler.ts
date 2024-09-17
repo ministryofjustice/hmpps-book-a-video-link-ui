@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'
+import { IsEnum, IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
 import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
@@ -93,8 +93,14 @@ class Body {
 
   @Expose()
   @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @IsOptional()
+  @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
+  cvpRequired: string
+
+  @Expose()
+  @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
+  @ValidateIf(o => o.cvpRequired === YesNo.YES)
   @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
+  @IsNotEmpty({ message: 'Enter the court hearing link' })
   videoLinkUrl: string
 }
 
@@ -143,6 +149,7 @@ export default class NewBookingHandler implements PageHandler {
       agencies,
       rooms,
       hearingTypes,
+      fromReview: req.get('Referrer')?.endsWith('check-booking'),
     })
   }
 

@@ -291,17 +291,47 @@
                         ]
                     }) }}
 
-                    {{ govukInput({
-                        id: "videoLinkUrl",
-                        name: "videoLinkUrl",
-                        label: {
-                            text: "Court hearing link (optional)",
-                            classes: 'govuk-label--s'
+                    {% set courtHearingLinkHtml %}
+                        {{ govukInput({
+                            id: "videoLinkUrl",
+                            name: "videoLinkUrl",
+                            label: {
+                                text: "Court hearing link",
+                                classes: 'govuk-label--s'
+                            },
+                            classes: 'govuk-!-width-three-quarters',
+                            errorMessage: validationErrors | findError('videoLinkUrl'),
+                            value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
+                        }) }}
+                    {% endset %}
+
+                    {{ govukRadios({
+                        idPrefix: "cvpRequired",
+                        name: "cvpRequired",
+                        errorMessage: validationErrors | findError('cvpRequired'),
+                        fieldset: {
+                            legend: {
+                                text: "Do you know the link for this video link hearing?",
+                                classes: "govuk-fieldset__legend--s"
+                            }
                         },
-                        classes: 'govuk-!-width-three-quarters',
-                        errorMessage: validationErrors | findError('videoLinkUrl'),
-                        value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
+                        items: [
+                            {
+                                value: 'yes',
+                                text: "Yes",
+                                checked: formResponses.cvpRequired == 'yes' or session.journey.bookAVideoLink.videoLinkUrl,
+                                conditional: {
+                                    html: courtHearingLinkHtml
+                                }
+                            },
+                            {
+                                value: 'no',
+                                text: "No",
+                                checked: formResponses.cvpRequired == 'no' or (not session.journey.bookAVideoLink.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
+                            }
+                        ]
                     }) }}
+
                 {% endif %}
 
                 {{ govukButton({

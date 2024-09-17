@@ -32,5 +32,11 @@ export default class NewBookingPage extends Page {
   selectRoomForPostHearing = (room: string) =>
     this.getByLabel('Prison room for post-court hearing briefing').select(room)
 
+  selectCvpKnown = (yesOrNo: string) =>
+    cy
+      .contains('legend', 'Do you know the link for this video link hearing?')
+      .parent()
+      .within(() => this.getByLabel(yesOrNo).click())
+
   continue = (): PageElement => this.getButton('Continue')
 }

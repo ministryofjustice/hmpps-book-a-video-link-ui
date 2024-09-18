@@ -257,6 +257,7 @@ describe('New Booking handler', () => {
       location: 'VIDE',
       preRequired: 'no',
       postRequired: 'no',
+      cvpRequired: 'yes',
       videoLinkUrl: 'https://www.google.co.uk',
     }
 
@@ -307,6 +308,11 @@ describe('New Booking handler', () => {
               fieldId: 'postRequired',
               href: '#postRequired',
               text: 'Select if a post-court hearing should be added',
+            },
+            {
+              fieldId: 'cvpRequired',
+              href: '#cvpRequired',
+              text: 'Select if you know the court hearing link',
             },
           ])
         })

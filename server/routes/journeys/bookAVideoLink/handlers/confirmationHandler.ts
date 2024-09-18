@@ -24,7 +24,7 @@ export default class ConfirmationHandler implements PageHandler {
     //  It does not cater for co-defendants at different prisons.
     const { prisonerNumber } = booking.prisonAppointments[0]
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
-    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
+    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
 
     req.session.journey.bookAVideoLink = null
 

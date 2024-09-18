@@ -4,13 +4,13 @@ import cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { existsByLabel, existsByName, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
+import { dropdownOptions, existsByLabel, existsByName, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import PrisonService from '../../../../services/prisonService'
 import PrisonerService from '../../../../services/prisonerService'
 import VideoLinkService from '../../../../services/videoLinkService'
-import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 import { Court, ProbationTeam, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
@@ -73,7 +73,7 @@ beforeEach(() => {
       {
         prisonerNumber: 'A1234AA',
         appointmentType: 'VLB_COURT_MAIN',
-        appointmentDate: '2024-02-01',
+        appointmentDate: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
         startTime: '08:00',
         endTime: '09:00',
         prisonLocKey: 'LOCATION_CODE',
@@ -85,6 +85,16 @@ beforeEach(() => {
     comments: 'test',
   } as VideoLinkBooking)
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
+
+  prisonService.getAppointmentLocations.mockImplementation((_, videoLinkOnly) => {
+    if (videoLinkOnly) {
+      return Promise.resolve([{ key: 'VIDE', description: 'Video location', enabled: true }])
+    }
+    return Promise.resolve([
+      { key: 'VIDE', description: 'Video location', enabled: true },
+      { key: 'LOCATION_CODE', description: 'Kitchen', enabled: true },
+    ])
+  })
 })
 
 afterEach(() => {
@@ -109,6 +119,8 @@ describe('New Booking handler', () => {
             who: user.username,
             correlationId: expect.any(String),
           })
+
+          expect(dropdownOptions($, 'location')).toEqual(['VIDE'])
 
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
           if (journey === 'court') {
@@ -185,6 +197,9 @@ describe('New Booking handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
+          // The dropdown contains the non-video location since it is on the booking being amended
+          expect(dropdownOptions($, 'location')).toEqual(['VIDE', 'LOCATION_CODE'])
+
           expect(heading).toEqual('Change video link booking')
           expect(existsByLabel($, 'Which court is the hearing for?')).toBe(false)
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
@@ -197,7 +212,7 @@ describe('New Booking handler', () => {
             type: 'COURT',
             agencyCode: 'COURT_CODE',
             bookingId: 1,
-            date: '2024-02-01T00:00:00.000Z',
+            date: startOfTomorrow().toISOString(),
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
             hearingTypeCode: 'APPEAL',
@@ -239,7 +254,7 @@ describe('New Booking handler', () => {
       date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
       startTime: { hour: 15, minute: 30 },
       endTime: { hour: 16, minute: 30 },
-      location: 'CODE',
+      location: 'VIDE',
       preRequired: 'no',
       postRequired: 'no',
       videoLinkUrl: 'https://www.google.co.uk',
@@ -465,6 +480,58 @@ describe('New Booking handler', () => {
         })
     })
 
+    it('should validate that booking schedule is not changed during amend if the selected room is a non-video room', () => {
+      appSetup()
+
+      return request(app)
+        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
+        .send({
+          ...validForm,
+          date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
+          startTime: { hour: 8, minute: 0 },
+          endTime: { hour: 10, minute: 0 },
+          location: 'LOCATION_CODE',
+          preRequired: 'yes',
+          preLocation: 'LOCATION_CODE',
+          postRequired: 'yes',
+          postLocation: 'LOCATION_CODE',
+        })
+        .expect(() =>
+          expectErrorMessages([
+            {
+              fieldId: 'preLocation',
+              href: '#preLocation',
+              text: "This room's schedule can't be changed; select another room or contact the prison.",
+            },
+            {
+              fieldId: 'location',
+              href: '#location',
+              text: "This room's schedule can't be changed; select another room or contact the prison.",
+            },
+            {
+              fieldId: 'postLocation',
+              href: '#postLocation',
+              text: "This room's schedule can't be changed; select another room or contact the prison.",
+            },
+          ]),
+        )
+    })
+
+    it('should validate that non-video room is allowed if schedule is unchanged during amend', () => {
+      appSetup()
+
+      return request(app)
+        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
+        .send({
+          ...validForm,
+          date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
+          startTime: { hour: 8, minute: 0 },
+          endTime: { hour: 9, minute: 0 },
+          location: 'LOCATION_CODE',
+        })
+        .expect(() => expectNoErrorMessages())
+    })
+
     it('should save the posted fields in session', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
@@ -497,7 +564,7 @@ describe('New Booking handler', () => {
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',
-            locationCode: 'CODE',
+            locationCode: 'VIDE',
             postHearingEndTime: '1970-01-01T16:45:00.000Z',
             postHearingStartTime: '1970-01-01T16:30:00.000Z',
             postLocationCode: 'POST_LOCATION',
@@ -546,7 +613,7 @@ describe('New Booking handler', () => {
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',
-            locationCode: 'CODE',
+            locationCode: 'VIDE',
             prisoner: {
               firstName: 'Joe',
               lastName: 'Bloggs',

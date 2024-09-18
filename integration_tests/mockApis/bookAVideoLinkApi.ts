@@ -81,7 +81,7 @@ export default {
   stubSetUserProbationTeamPreferences: () => stubPost('/book-a-video-link-api/probation-teams/user-preferences/set'),
   stubAllPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=false', allPrisons),
   stubEnabledPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=true', enabledPrisons),
-  stubPrisonLocations: response => stubGet('/book-a-video-link-api/prisons/(.){3}/locations', response),
+  stubPrisonLocations: response => stubGet('/book-a-video-link-api/prisons/(.){3}/locations?(.)*', response),
 
   stubCourtHearingTypes: () =>
     stubGet('/book-a-video-link-api/reference-codes/group/COURT_HEARING_TYPE', courtHearingTypes),

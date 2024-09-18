@@ -2,6 +2,7 @@ import { isValid, parse } from 'date-fns'
 import {
   convertToTitleCase,
   dateAtTime,
+  extractPrisonAppointmentsFromBooking,
   formatDate,
   initialiseName,
   parseDate,
@@ -9,6 +10,7 @@ import {
   simpleDateToDate,
   simpleTimeToDate,
 } from './utils'
+import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 
 describe('convert to title case', () => {
   it.each([
@@ -130,5 +132,65 @@ describe('dateAtTime', () => {
     const time = parse('13:35', 'HH:mm', new Date(0))
 
     expect(dateAtTime(date, time)).toEqual(parse('2022-03-20 13:35', 'yyyy-MM-dd HH:mm', new Date()))
+  })
+})
+
+describe('extractPrisonAppointmentsFromBooking', () => {
+  it('Should extract a probation meeting as the main appointment', async () => {
+    const probationAppointment = {
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_PROBATION',
+      prisonLocKey: 'VCC-ROOM-1',
+      appointmentDate: '2024-04-05',
+      startTime: '11:30',
+      endTime: '12:30',
+    }
+
+    const booking = {
+      prisonAppointments: [probationAppointment],
+    } as VideoLinkBooking
+
+    expect(extractPrisonAppointmentsFromBooking(booking)).toEqual({
+      mainAppointment: probationAppointment,
+    })
+  })
+
+  it('Should extract court hearings', async () => {
+    const preHearing = {
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_COURT_PRE',
+      prisonLocKey: 'PRE_LOCATION',
+      appointmentDate: '2022-03-20',
+      startTime: '13:15',
+      endTime: '13:30',
+    }
+
+    const mainHearing = {
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_COURT_MAIN',
+      prisonLocKey: 'LOCATION',
+      appointmentDate: '2022-03-20',
+      startTime: '13:30',
+      endTime: '14:30',
+    }
+
+    const postHearing = {
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_COURT_POST',
+      prisonLocKey: 'POST_LOCATION',
+      appointmentDate: '2022-03-20',
+      startTime: '14:30',
+      endTime: '14:45',
+    }
+
+    const booking = {
+      prisonAppointments: [preHearing, mainHearing, postHearing],
+    } as VideoLinkBooking
+
+    expect(extractPrisonAppointmentsFromBooking(booking)).toEqual({
+      preAppointment: preHearing,
+      mainAppointment: mainHearing,
+      postAppointment: postHearing,
+    })
   })
 })

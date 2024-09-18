@@ -21,7 +21,7 @@ export default function setUpFlash(): Router {
       }
 
       req.flash('validationErrors', JSON.stringify(validationErrors))
-      req.flash('formResponses', JSON.stringify(req.body))
+      req.flash('formResponses', JSON.stringify(req.rawBody))
       res.redirect(req.get('Referrer') || '/')
     }
 

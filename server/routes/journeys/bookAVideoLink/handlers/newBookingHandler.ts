@@ -6,7 +6,13 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
-import { dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../utils/utils'
+import {
+  dateAtTime,
+  extractPrisonAppointmentsFromBooking,
+  formatDate,
+  parseDatePickerDate,
+  simpleTimeToDate,
+} from '../../../../utils/utils'
 import YesNo from '../../../enumerator/yesNo'
 import IsValidDate from '../../../validators/isValidDate'
 import Validator from '../../../validators/validator'
@@ -14,6 +20,7 @@ import PrisonService from '../../../../services/prisonService'
 import PrisonerService from '../../../../services/prisonerService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
+import { PrisonAppointment } from '../../../../@types/bookAVideoLinkApi/types'
 
 class Body {
   @Expose()
@@ -106,8 +113,9 @@ export default class NewBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { type, mode } = req.params
+    const { bookingId } = req.session.journey.bookAVideoLink
     const offender = req.session.journey.bookAVideoLink.prisoner
-    const prisonerNumber = req.params.prisonerNumber || req.session.journey.bookAVideoLink.prisoner.prisonerNumber
+    const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
     const agencies =
       type === BavlJourneyType.COURT
@@ -116,7 +124,8 @@ export default class NewBookingHandler implements PageHandler {
 
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
-    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
+
+    const rooms = await this.getRooms(prisoner.prisonId, bookingId, user)
 
     const hearingTypes =
       type === BavlJourneyType.COURT
@@ -140,7 +149,9 @@ export default class NewBookingHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { mode } = req.params
+    const { bookingId } = req.session.journey.bookAVideoLink
     const offender = req.session.journey.bookAVideoLink.prisoner
+    const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const {
       agencyCode,
       hearingTypeCode,
@@ -155,9 +166,20 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     } = req.body
 
-    const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
+
+    const fieldsWithErrors = await this.validateSchedule(prisoner.prisonId, bookingId, req.body, user)
+    if (fieldsWithErrors.length > 0) {
+      fieldsWithErrors.forEach(field => {
+        res.addValidationError(
+          `This room's schedule can't be changed; select another room or contact the prison.`,
+          field,
+        )
+      })
+
+      return res.validationFailed()
+    }
 
     req.session.journey.bookAVideoLink = {
       ...req.session.journey.bookAVideoLink,
@@ -185,6 +207,64 @@ export default class NewBookingHandler implements PageHandler {
       videoLinkUrl,
     }
 
-    res.redirect('video-link-booking/check-booking')
+    return res.redirect('video-link-booking/check-booking')
+  }
+
+  private getRooms = async (prisonId: string, bookingId: number, user: Express.User) => {
+    // NOTE: The prison staff may create or amend a booking to place the pre, main or post appointment in a non-video enabled room
+    // In this case, the non-video enabled room should be selectable in the dropdown for the court user
+    const [videoRooms, appointmentRooms] = await Promise.all([
+      this.prisonService.getAppointmentLocations(prisonId, true, user),
+      this.prisonService.getAppointmentLocations(prisonId, false, user),
+    ])
+    const { preAppointment, mainAppointment, postAppointment } = bookingId
+      ? await this.videoLinkService
+          .getVideoLinkBookingById(bookingId, user)
+          .then(booking => extractPrisonAppointmentsFromBooking(booking))
+      : {}
+    const videoRoomKeys = videoRooms.map(r => r.key)
+
+    const isRoomAllowed = (roomKey: string, appointment: PrisonAppointment) =>
+      appointment?.prisonLocKey === roomKey || videoRoomKeys.includes(roomKey)
+
+    return appointmentRooms.map(room => ({
+      ...room,
+      allowedForPre: isRoomAllowed(room.key, preAppointment),
+      allowedForMain: isRoomAllowed(room.key, mainAppointment),
+      allowedForPost: isRoomAllowed(room.key, postAppointment),
+    }))
+  }
+
+  private validateSchedule = async (prisonId: string, bookingId: number, body: Body, user: Express.User) => {
+    // NOTE: The prison staff may create or amend a booking to place the pre, main or post appointment in a non-video enabled room
+    // In this case, the court user may not change the schedule of the appointments, without also selecting a video enabled room.
+    const { mainAppointment } = bookingId
+      ? await this.videoLinkService
+          .getVideoLinkBookingById(bookingId, user)
+          .then(booking => extractPrisonAppointmentsFromBooking(booking))
+      : {}
+
+    if (
+      !mainAppointment ||
+      (mainAppointment.appointmentDate === formatDate(body.date, 'yyyy-MM-dd') &&
+        mainAppointment.startTime === formatDate(body.startTime, 'HH:mm') &&
+        mainAppointment.endTime === formatDate(body.endTime, 'HH:mm'))
+    ) {
+      return []
+    }
+
+    const videoRoomsKeys = await this.prisonService
+      .getAppointmentLocations(prisonId, true, user)
+      .then(room => room.map(r => r.key))
+
+    const locations: Pick<Body, 'preLocation' | 'location' | 'postLocation'> = {
+      preLocation: body.preLocation,
+      location: body.location,
+      postLocation: body.postLocation,
+    }
+
+    return Object.entries(locations)
+      .filter(([_, value]) => value && !videoRoomsKeys.includes(value))
+      .map(([key]) => key)
   }
 }

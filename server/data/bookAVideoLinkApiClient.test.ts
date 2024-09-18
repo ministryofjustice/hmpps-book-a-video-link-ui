@@ -119,11 +119,11 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/prisons/MDI/locations')
+        .get('/prisons/MDI/locations?videoLinkOnly=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output = await bookAVideoLinkApiClient.getAppointmentLocations('MDI', user)
+      const output = await bookAVideoLinkApiClient.getAppointmentLocations('MDI', true, user)
       expect(output).toEqual(response)
     })
   })

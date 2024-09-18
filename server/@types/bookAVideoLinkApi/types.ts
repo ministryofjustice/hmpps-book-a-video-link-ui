@@ -11,4 +11,5 @@ export type RequestVideoBookingRequest = components['schemas']['RequestVideoBook
 export type AmendVideoBookingRequest = components['schemas']['AmendVideoBookingRequest']
 export type ReferenceCode = components['schemas']['ReferenceCode']
 export type VideoLinkBooking = components['schemas']['VideoLinkBooking']
+export type PrisonAppointment = components['schemas']['PrisonAppointment']
 export type ScheduleItem = components['schemas']['ScheduleItem']

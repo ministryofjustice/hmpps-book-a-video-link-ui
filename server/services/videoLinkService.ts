@@ -175,9 +175,9 @@ export default class VideoLinkService {
   }
 
   private async fetchPrisonLocations(prisonCodes: string[], user: Express.User) {
-    return Promise.all(prisonCodes.map(code => this.bookAVideoLinkApiClient.getAppointmentLocations(code, user))).then(
-      responses => responses.flat(),
-    )
+    return Promise.all(
+      prisonCodes.map(code => this.bookAVideoLinkApiClient.getAppointmentLocations(code, false, user)),
+    ).then(responses => responses.flat())
   }
 
   private findPrisonerName(prisoners: Prisoner[], prisonerNumber: string) {

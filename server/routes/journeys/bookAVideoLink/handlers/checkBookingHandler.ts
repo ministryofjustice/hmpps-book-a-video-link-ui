@@ -44,7 +44,7 @@ export default class CheckBookingHandler implements PageHandler {
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, user)
+    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
 
     const hearingTypes =
       type === 'court'

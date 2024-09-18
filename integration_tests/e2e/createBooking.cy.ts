@@ -58,6 +58,7 @@ context('Create a booking', () => {
       newBookingPage.selectRoomForPreHearing('Closed Visits Cubicle 6 - Crown Ct')
       newBookingPage.selectPostHearingRequired('Yes')
       newBookingPage.selectRoomForPostHearing('Closed Visits Cubicle 6 - Crown Ct')
+      newBookingPage.selectCvpKnown('No')
       newBookingPage.continue().click()
 
       const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
@@ -90,6 +91,7 @@ context('Create a booking', () => {
       newBookingPage.selectRoomForPreHearing('Closed Visits Cubicle 6 - Crown Ct')
       newBookingPage.selectPostHearingRequired('Yes')
       newBookingPage.selectRoomForPostHearing('Closed Visits Cubicle 6 - Crown Ct')
+      newBookingPage.selectCvpKnown('No')
       newBookingPage.continue().click()
 
       cy.task('stubAvailabilityCheck')

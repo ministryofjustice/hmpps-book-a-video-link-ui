@@ -18,4 +18,4 @@ generic-service:
     PRISONER_SEARCH_API_URL: "https://prisoner-search-preprod.prison.service.justice.gov.uk"
 
 generic-prometheus-alerts:
-  alertSeverity: dps_alerts_non_prod
+  alertSeverity: hmpps-book-a-video-link-preprod

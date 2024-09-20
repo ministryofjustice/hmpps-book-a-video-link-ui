@@ -144,7 +144,7 @@
                             text: "Court hearing link"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.videoLinkUrl or "Not entered"
+                            text: session.journey.bookAVideoLink.videoLinkUrl or "Not yet known"
                         }
                     } if session.req.params.type == BavlJourneyType.COURT
                 ]
@@ -170,7 +170,7 @@
                         text: "Comments (optional)"
                     },
                     hint: {
-                        text: "This can include the hearing number, type of hearing and any other additional details"
+                        text: "This can include the hearing number and any other additional details." if session.req.params.type == BavlJourneyType.COURT else "This can include the probation officer contact information and any other additional details."
                     },
                     errorMessage: validationErrors | findError('comments'),
                     value: formResponses.comments or session.journey.bookAVideoLink.comments

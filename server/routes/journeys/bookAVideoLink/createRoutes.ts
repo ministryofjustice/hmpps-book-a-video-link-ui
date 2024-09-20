@@ -26,6 +26,10 @@ export default function CreateRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  router.get(`${basePath}/start`, (req, res) => {
+    req.session.journey.bookAVideoLink = {}
+    res.redirect('video-link-booking')
+  })
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,

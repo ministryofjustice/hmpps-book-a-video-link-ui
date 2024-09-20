@@ -14,7 +14,7 @@
 
             <div class="govuk-button-group">
                 {{ govukButton({ text: "Return to all video link bookings", href: '/' + session.req.params.type + '/view-booking' }) }}
-                <a href='/{{ session.req.params.type }}/booking/create/{{ prisoner.prisonerNumber }}/video-link-booking' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
+                <a href='/{{ session.req.params.type }}/booking/create/{{ prisoner.prisonerNumber }}/start' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
             </div>
         </div>
     </div>

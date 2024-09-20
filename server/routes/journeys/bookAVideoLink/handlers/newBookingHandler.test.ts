@@ -175,6 +175,16 @@ describe('New Booking handler', () => {
         })
     })
 
+    it('should be able to start a booking for a prisoner without any session', () => {
+      appSetup()
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/start`)
+        .expect(302)
+        .expect('location', 'video-link-booking')
+        .then(() => expectJourneySession(app, 'bookAVideoLink', {}))
+    })
+
     it.each([
       ['Probation', 'probation'],
       ['Court', 'court'],

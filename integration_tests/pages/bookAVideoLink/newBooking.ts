@@ -2,7 +2,7 @@ import Page, { PageElement } from '../page'
 
 export default class NewBookingPage extends Page {
   constructor() {
-    super('Search for a video link booking')
+    super('Enter video link booking details')
   }
 
   selectCourt = (court: string) => this.getByLabel('Which court is the hearing for?').select(court)

@@ -12,7 +12,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
-            <p class='govuk-body'>You can view and change video link bookings for all the {{ 'courts' if type == 'court' else 'probation teams' }} you have selected.</p>
+            <p class='govuk-body'>You can view and change video link bookings for all the {{ 'courts' if type == 'court' else 'probation teams' }} you have selected in the "Manage your list of {{ 'courts' if type == 'court' else 'probation teams' }}" section.</p>
         </div>
     </div>
 
@@ -57,7 +57,8 @@
                     {% set rows = (rows.push([
                             { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
                             { text: item.prisonerName | convertToTitleCase },
-                            { html: '<div>'+ item.prisonLocationDescription +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' },
+                            { html: '<div>'+ item.prisonLocationDescription +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
+                                    ('<strong class="govuk-tag govuk-tag--red govuk-tag--small">Hearing link not yet known</strong>' if item.appointmentType == 'VLB_COURT_MAIN' and not item.videoUrl) },
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
                                     ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
                                     ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') },

@@ -9,7 +9,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set mode = session.req.params.mode %}
-{% set pageTitle = "Change video link booking" if mode == 'amend' else 'Search for a video link booking' %}
+{% set pageTitle = "Change video link booking" if mode == 'amend' else 'Enter video link booking details' %}
 
 {% block content %}
     <div class="govuk-grid-row">

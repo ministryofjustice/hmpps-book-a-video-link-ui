@@ -114,7 +114,7 @@ describe('New Booking handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Search for a video link booking')
+          expect(heading).toEqual('Enter video link booking details')
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -167,7 +167,7 @@ describe('New Booking handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Search for a video link booking')
+          expect(heading).toEqual('Enter video link booking details')
 
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenCalled()
           expect(getValueByKey($, 'Name')).toEqual('Joe Smith')

@@ -26,11 +26,11 @@ export default function CreateRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  router.get(`${basePath}/start`, (req, res) => {
-    req.session.journey.bookAVideoLink = {}
-    res.redirect('video-link-booking')
-  })
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
+  route(
+    `${basePath}/video-link-booking`,
+    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+  )
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
@@ -43,10 +43,6 @@ export default function CreateRoutes({
   })
 
   route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
-  route(
-    `${basePath}/video-link-booking`,
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
-  )
   route(
     `${basePath}/video-link-booking/check-booking`,
     new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),

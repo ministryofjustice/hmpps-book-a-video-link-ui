@@ -79,5 +79,17 @@ describe('Prisoner search results handler', () => {
         user,
       )
     })
+
+    it.each([
+      ['Probation', 'probation'],
+      ['Court', 'court'],
+    ])('%s journey - should return home if there is no journey in session', (_: string, journey: string) => {
+      appSetup()
+
+      return request(app)
+        .get(`/${journey}/booking/create/${journeyId()}/prisoner-search/results`)
+        .expect(302)
+        .expect('location', '/')
+    })
   })
 })

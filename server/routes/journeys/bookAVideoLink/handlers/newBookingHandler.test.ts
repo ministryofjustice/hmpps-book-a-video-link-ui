@@ -41,13 +41,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  const bookAVideoLink = {
-    search: {
-      prisonerNumber: 'A1234AA',
-    },
-  }
-
-  appSetup({ bookAVideoLink })
+  appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
     { code: 'C1', description: 'Court 1' },
@@ -173,18 +167,6 @@ describe('New Booking handler', () => {
           expect(getValueByKey($, 'Name')).toEqual('Joe Smith')
           expect(getValueByKey($, 'Date of birth')).toEqual('1 January 1970')
         })
-    })
-
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s journey - should return home if there is no journey in session', (_: string, journey: string) => {
-      appSetup()
-
-      return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking`)
-        .expect(302)
-        .expect('location', '/')
     })
 
     it('should populate the session with an existing booking for amending', async () => {

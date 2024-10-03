@@ -188,6 +188,7 @@
     "wiremock": "^3.9.1"
   },
   "overrides": {
-    "sinon": "^18.0.1"
+    "sinon": "^18.0.1",
+    "rollup": "^2.79.2"
   }
 }

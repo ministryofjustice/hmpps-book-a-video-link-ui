@@ -22,6 +22,7 @@ context('Amend a booking', () => {
     cy.task('stubSignIn', ['VIDEO_LINK_COURT_USER'])
     cy.task('stubPrisoner', A0171DZ)
     cy.task('stubPrisonerList', [A0171DZ])
+    cy.task('stubEnabledPrisons')
     cy.task('stubPrisonLocations', nottinghamLocations)
     cy.task('stubAvailabilityCheck')
     cy.task('stubUpdateBooking')

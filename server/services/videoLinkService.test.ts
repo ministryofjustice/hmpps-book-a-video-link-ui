@@ -1,11 +1,13 @@
 import sinon from 'sinon'
 import express from 'express'
+import { startOfToday } from 'date-fns'
 import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import VideoLinkService from './videoLinkService'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
-import { ReferenceCode, VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
+import { Location, Prison, ReferenceCode, ScheduleItem, VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
+import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('../data/bookAVideoLinkApiClient')
 jest.mock('../data/prisonerOffenderSearchApiClient')
@@ -783,6 +785,36 @@ describe('Video link service', () => {
       const bookingStatus = 'ACTIVE'
 
       expect(videoLinkService.bookingIsAmendable(dateOfBooking, timeOfBooking, bookingStatus)).toBe(true)
+    })
+  })
+
+  describe('getVideoLinkSchedule', () => {
+    it('should fetch the video link schedule for self service prisons only', async () => {
+      bookAVideoLinkClient.getPrisons.mockResolvedValue([{ code: 'BMI' }, { code: 'WWI' }] as Prison[])
+      bookAVideoLinkClient.getVideoLinkSchedule.mockResolvedValue([
+        { videoBookingId: 1, prisonCode: 'BMI', prisonerNumber: 'ABC123', prisonLocKey: 'LOC1' },
+        { videoBookingId: 2, prisonCode: 'MDI', prisonerNumber: 'ZYX321', prisonLocKey: 'LOC2' },
+      ] as ScheduleItem[])
+      bookAVideoLinkClient.getAppointmentLocations.mockResolvedValue([
+        { key: 'LOC1', description: 'Location 1' },
+      ] as Location[])
+      prisonerOffenderSearchClient.getByPrisonerNumbers.mockResolvedValue([
+        { prisonerNumber: 'ABC123', firstName: 'Joe', lastName: 'Bloggs' },
+      ] as Prisoner[])
+
+      const result = await videoLinkService.getVideoLinkSchedule('court', 'agency1', startOfToday(), user)
+
+      expect(result).toEqual([
+        {
+          videoBookingId: 1,
+          prisonCode: 'BMI',
+          prisonLocKey: 'LOC1',
+          prisonLocationDescription: 'Location 1',
+          prisonerName: 'Joe Bloggs',
+          prisonerNumber: 'ABC123',
+        },
+      ])
+      expect(bookAVideoLinkClient.getVideoLinkSchedule).toHaveBeenCalledWith('court', 'agency1', startOfToday(), user)
     })
   })
 

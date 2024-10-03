@@ -80,7 +80,12 @@ export default class VideoLinkService {
     date: Date,
     user: Express.User,
   ): Promise<(ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]> {
-    const appointments = await this.bookAVideoLinkApiClient.getVideoLinkSchedule(agencyType, agencyCode, date, user)
+    const selfServicePrisonCodes = await this.bookAVideoLinkApiClient
+      .getPrisons(true, user)
+      .then(prisons => prisons.map(p => p.code))
+    const appointments = await this.bookAVideoLinkApiClient
+      .getVideoLinkSchedule(agencyType, agencyCode, date, user)
+      .then(app => app.filter(a => selfServicePrisonCodes.includes(a.prisonCode)))
 
     const prisonCodes = _.uniq(appointments.map(a => a.prisonCode))
     const prisonLocations = await this.fetchPrisonLocations(prisonCodes, user)

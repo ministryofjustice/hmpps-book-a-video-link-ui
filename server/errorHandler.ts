@@ -21,6 +21,9 @@ export default function createErrorHandler(production: boolean) {
       case 401:
         logger.info('Logging user out')
         return res.redirect('/sign-out')
+      case 403:
+        res.status(403)
+        return res.render('pages/error/403')
       case 404:
         res.status(404)
         return res.render('pages/error/404')

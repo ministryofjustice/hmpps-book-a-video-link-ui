@@ -17,7 +17,7 @@ describe('Error handler', () => {
   })
 
   describe('GET 404', () => {
-    it('should render content with stack in dev mode', () => {
+    it('should render content for Not Found error', () => {
       return request(app)
         .get('/unknown')
         .expect(404)
@@ -64,7 +64,7 @@ describe('Error handler', () => {
       expect(res.redirect).toHaveBeenCalledWith('/sign-out')
     })
 
-    it('should display error if 403', () => {
+    it('should render the Forbidden content if 403', () => {
       const handler = createErrorHandler(false)
 
       error = {
@@ -75,11 +75,7 @@ describe('Error handler', () => {
       handler(error, req, res, jest.fn)
 
       expect(res.status).toHaveBeenCalledWith(403)
-      expect(res.render).toHaveBeenCalledWith('pages/error/error', {
-        message: 'forbidden',
-        stack: undefined,
-        status: 403,
-      })
+      expect(res.render).toHaveBeenCalledWith('pages/error/403')
     })
 
     it('should add 400 messages to flash validation messages and redirect back', () => {

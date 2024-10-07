@@ -2,10 +2,13 @@
 # Per environment values which override defaults in hmpps-book-a-video-link-ui/values.yaml
 
 generic-service:
-  replicaCount: 2
+  replicaCount: 0
 
   ingress:
     host: book-a-video-link-dev.prison.service.justice.gov.uk
+    annotations:
+      nginx.ingress.kubernetes.io/server-snippet: |
+        return 301 https://book-video-link-dev.prison.service.justice.gov.uk;
 
   env:
     INGRESS_URL: "https://book-a-video-link-dev.prison.service.justice.gov.uk"

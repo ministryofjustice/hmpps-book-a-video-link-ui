@@ -88,7 +88,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.650.0",
+    "@aws-sdk/client-sqs": "^3.666.0",
     "@ministryofjustice/frontend": "^2.2.0",
     "@types/express-serve-static-core": "^4.19.5",
     "agentkeepalive": "^4.5.0",
@@ -144,7 +144,7 @@
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
-    "aws-sdk-client-mock": "^4.0.1",
+    "aws-sdk-client-mock": "^4.0.2",
     "axe-core": "^4.10.0",
     "better-npm-audit": "^3.11.0",
     "cheerio": "1.0.0-rc.12",
@@ -188,7 +188,6 @@
     "wiremock": "^3.9.1"
   },
   "overrides": {
-    "sinon": "^18.0.1",
-    "rollup": "^2.79.2"
+    "cookie": "^0.7.2"
   }
 }

@@ -56,6 +56,8 @@ generic-service:
       AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
     maintenance:
       MAINTENANCE_MODE: "maintenance_mode"
+      MAINTENANCE_START_DATETIME: "maintenance_start_datetime"
+      MAINTENANCE_END_DATETIME: "maintenance_end_datetime"
 
   allowlist:
     groups:

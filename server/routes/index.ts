@@ -9,7 +9,9 @@ import config from '../config'
 
 export default function routes(services: Services): Router {
   const router = Router()
-  router.use((req, res, next) => (config.maintenanceMode ? res.render('pages/maintenanceMode') : next()))
+  router.use((req, res, next) =>
+    config.maintenance.enabled ? res.render('pages/maintenanceMode', { maintenance: config.maintenance }) : next(),
+  )
   router.use('/:type(court|probation)/user-preferences', userPreferences(services))
 
   // The rest of the routes cannot be accessed unless the user has selected some court or probation team preferences

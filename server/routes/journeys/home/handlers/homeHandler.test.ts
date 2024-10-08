@@ -23,7 +23,7 @@ beforeEach(() => {
     userSupplier: () => user,
   })
 
-  config.maintenanceMode = false
+  config.maintenance.enabled = false
 })
 
 afterEach(() => {
@@ -48,7 +48,7 @@ describe('GET', () => {
   })
 
   it('user should see a scheduled maintenance screen', () => {
-    config.maintenanceMode = true
+    config.maintenance.enabled = true
     return request(app)
       .get('/')
       .expect('Content-Type', /html/)
@@ -56,7 +56,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = $('h1').text().trim()
 
-        expect(heading).toContain('Sorry, the service is unavailable')
+        expect(heading).toContain('Sorry, scheduled maintenance affects this service')
       })
   })
 

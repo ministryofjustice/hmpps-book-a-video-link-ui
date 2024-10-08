@@ -5,10 +5,11 @@ import userPreferences from './journeys/userPreferences'
 import bookAVideoLink from './journeys/bookAVideoLink'
 import viewBooking from './journeys/viewBooking'
 import { Services } from '../services'
+import config from '../config'
 
 export default function routes(services: Services): Router {
   const router = Router()
-
+  router.use((req, res, next) => (config.maintenanceMode ? res.render('pages/maintenanceMode') : next()))
   router.use('/:type(court|probation)/user-preferences', userPreferences(services))
 
   // The rest of the routes cannot be accessed unless the user has selected some court or probation team preferences

@@ -48,6 +48,7 @@ generic-service:
       SYSTEM_CLIENT_ID: "SYSTEM_CLIENT_ID"
       SYSTEM_CLIENT_SECRET: "SYSTEM_CLIENT_SECRET"
       SESSION_SECRET: "SESSION_SECRET"
+      FEEDBACK_URL: "FEEDBACK_URL?"
     elasticache-redis:
       REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
@@ -55,9 +56,9 @@ generic-service:
       AUDIT_SQS_QUEUE_URL: "sqs_queue_url"
       AUDIT_SQS_QUEUE_NAME: "sqs_queue_name"
     maintenance:
-      MAINTENANCE_MODE: "maintenance_mode"
-      MAINTENANCE_START_DATETIME: "maintenance_start_datetime"
-      MAINTENANCE_END_DATETIME: "maintenance_end_datetime"
+      MAINTENANCE_MODE: "maintenance_mode?"
+      MAINTENANCE_START_DATETIME: "maintenance_start_datetime?"
+      MAINTENANCE_END_DATETIME: "maintenance_end_datetime?"
 
   allowlist:
     groups:

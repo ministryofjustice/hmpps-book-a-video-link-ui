@@ -120,7 +120,7 @@ export default {
   },
   domain: get('INGRESS_URL', 'http://localhost:3000', requiredInProduction),
   environmentName: get('ENVIRONMENT_NAME', ''),
-  feedbackUrl: get('FEEDBACK_URL', '#', requiredInProduction),
+  feedbackUrl: get('FEEDBACK_URL', '#'),
   maintenance: {
     enabled: get('MAINTENANCE_MODE', 'false') === 'true',
     startDateTime: get('MAINTENANCE_START_DATETIME', null),

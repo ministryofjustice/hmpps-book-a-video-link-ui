@@ -106,6 +106,7 @@ const getCourtBooking = (prisonerNumber: string) =>
     bookingType: 'COURT',
     prisonAppointments: [
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_COURT_PRE',
         prisonLocKey: 'VCC-ROOM-1',
@@ -114,6 +115,7 @@ const getCourtBooking = (prisonerNumber: string) =>
         endTime: '11:30',
       },
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_COURT_MAIN',
         prisonLocKey: 'VCC-ROOM-1',
@@ -122,6 +124,7 @@ const getCourtBooking = (prisonerNumber: string) =>
         endTime: '12:30',
       },
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_COURT_POST',
         prisonLocKey: 'VCC-ROOM-1',
@@ -141,6 +144,7 @@ const getProbationBooking = (prisonerNumber: string) =>
     bookingType: 'PROBATION',
     prisonAppointments: [
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_PROBATION',
         prisonLocKey: 'VCC-ROOM-1',

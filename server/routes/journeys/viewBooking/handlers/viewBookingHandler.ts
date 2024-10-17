@@ -23,9 +23,9 @@ export default class ViewBookingHandler implements PageHandler {
 
     // TODO: This currently assumes that there is only 1 prisoner associated with a booking.
     //  It does not cater for co-defendants at different prisons.
-    const { prisonerNumber } = booking.prisonAppointments[0]
+    const { prisonerNumber, prisonCode } = booking.prisonAppointments[0]
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
-    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
+    const rooms = await this.prisonService.getAppointmentLocations(prisonCode, false, user)
 
     const earliestAppointment = booking.prisonAppointments.sort((a, b) => a.startTime.localeCompare(b.startTime))[0]
     const date = parseISO(earliestAppointment.appointmentDate)

@@ -5,6 +5,7 @@ import createUser from '../testutils/createUser'
 import UserPreferencesApiClient from '../data/userPreferencesApiClient'
 
 jest.mock('../data/manageUsersApiClient')
+jest.mock('../data/userPreferencesApiClient')
 
 describe('User service', () => {
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
@@ -13,6 +14,7 @@ describe('User service', () => {
 
   beforeEach(() => {
     manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
+    userPreferencesApiClient = new UserPreferencesApiClient() as jest.Mocked<UserPreferencesApiClient>
     userService = new UserService(manageUsersApiClient, userPreferencesApiClient)
   })
 
@@ -90,6 +92,19 @@ describe('User service', () => {
       const result = await userService.getUser(createUser([]))
 
       expect(result.isAdminUser).toEqual(false)
+    })
+  })
+
+  describe('getUserPreferences', () => {
+    it('Retrieves user preferences from user preferences API', async () => {
+      const user = createUser([])
+      userPreferencesApiClient.getUserPreferences.mockResolvedValue({ items: [] })
+      const result = await userService.getUserPreferences(user)
+      expect(userPreferencesApiClient.getUserPreferences).toHaveBeenCalledWith(
+        'video_link_booking.preferred_courts',
+        user,
+      )
+      expect(result).toEqual({ items: [] })
     })
   })
 })

@@ -16,6 +16,7 @@ import setUpFlash from '../../middleware/setUpFlash'
 import CourtsService from '../../services/courtsService'
 import ProbationTeamsService from '../../services/probationTeamsService'
 import { Court, ProbationTeam } from '../../@types/bookAVideoLinkApi/types'
+import populateUserPreferencesMiddleware from '../../middleware/populateUserPreferencesMiddleware'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtsService')
@@ -78,6 +79,7 @@ function appSetup(
   app.use(express.urlencoded({ extended: true }))
   app.use(setUpFlash())
   nunjucksSetup(app, testAppInfo)
+  app.use(populateUserPreferencesMiddleware(services))
   app.use(routes(services))
   app.use(testUtilRoutes())
   app.use((req, res, next) => next(new NotFound()))

@@ -1,4 +1,4 @@
-import express, { Express } from 'express'
+import express, { Express, RequestHandler } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -16,7 +16,6 @@ import setUpFlash from '../../middleware/setUpFlash'
 import CourtsService from '../../services/courtsService'
 import ProbationTeamsService from '../../services/probationTeamsService'
 import { Court, ProbationTeam } from '../../@types/bookAVideoLinkApi/types'
-import populateUserPreferencesMiddleware from '../../middleware/populateUserPreferencesMiddleware'
 
 jest.mock('../../services/auditService')
 jest.mock('../../services/courtsService')
@@ -52,6 +51,7 @@ function appSetup(
   production: boolean,
   userSupplier: () => Express.User,
   journeySessionSupplier: () => Journey,
+  middlewares: RequestHandler[] = [],
 ): Express {
   const app = express()
 
@@ -79,7 +79,7 @@ function appSetup(
   app.use(express.urlencoded({ extended: true }))
   app.use(setUpFlash())
   nunjucksSetup(app, testAppInfo)
-  app.use(populateUserPreferencesMiddleware(services))
+  middlewares.forEach(mw => app.use(mw))
   app.use(routes(services))
   app.use(testUtilRoutes())
   app.use((req, res, next) => next(new NotFound()))
@@ -93,11 +93,13 @@ export function appWithAllRoutes({
   services = {},
   userSupplier = () => user,
   journeySessionSupplier = () => ({}),
+  middlewares = [],
 }: {
   production?: boolean
   services?: Partial<Services>
   userSupplier?: () => Express.User
   journeySessionSupplier?: () => Journey
+  middlewares?: RequestHandler[]
 }): Express {
   const auditService = new AuditService(null) as jest.Mocked<AuditService>
   const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
@@ -124,5 +126,6 @@ export function appWithAllRoutes({
     production,
     userSupplier,
     journeySessionSupplier,
+    middlewares,
   )
 }

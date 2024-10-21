@@ -8,6 +8,8 @@ import ProbationTeamsService from '../../../../services/probationTeamsService'
 import config from '../../../../config'
 import UserService from '../../../../services/userService'
 import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
+import populateUserPreferencesMiddleware from '../../../../middleware/populateUserPreferencesMiddleware'
+import { Services } from '../../../../services'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/userService')
@@ -78,6 +80,7 @@ describe('GET', () => {
     app = appWithAllRoutes({
       services: { courtsService, userService, auditService },
       userSupplier: () => testUser,
+      middlewares: [populateUserPreferencesMiddleware({ courtsService, userService } as unknown as Services)],
     })
 
     await request(app)
@@ -111,6 +114,7 @@ describe('GET', () => {
     app = appWithAllRoutes({
       services: { probationTeamsService, userService, auditService },
       userSupplier: () => testUser,
+      middlewares: [populateUserPreferencesMiddleware({ probationTeamsService, userService } as unknown as Services)],
     })
 
     await request(app)
@@ -132,10 +136,9 @@ describe('GET', () => {
 
   it('court user should be redirected to select court preferences if they have not selected any', () => {
     courtsService.getUserPreferences.mockResolvedValue([])
-    userService.getUserPreferences.mockResolvedValue({ items: [] })
 
     app = appWithAllRoutes({
-      services: { courtsService, userService },
+      services: { courtsService },
       userSupplier: () => ({
         ...user,
         isCourtUser: true,
@@ -148,10 +151,9 @@ describe('GET', () => {
 
   it('probation user should be redirected to select court preferences if they have not selected any', () => {
     probationTeamsService.getUserPreferences.mockResolvedValue([])
-    userService.getUserPreferences.mockResolvedValue({ items: [] })
 
     app = appWithAllRoutes({
-      services: { probationTeamsService, userService },
+      services: { probationTeamsService },
       userSupplier: () => ({
         ...user,
         isCourtUser: false,

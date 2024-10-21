@@ -9,6 +9,7 @@ context('Select User Preferences', () => {
   beforeEach(() => {
     cy.task('reset')
     cy.task('stubSignIn', ['VIDEO_LINK_COURT_USER'])
+    cy.task('stubGetUserPreferences')
   })
 
   describe('Court user', () => {

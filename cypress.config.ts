@@ -6,6 +6,7 @@ import manageUsersApi from './integration_tests/mockApis/manageUsersApi'
 import tokenVerification from './integration_tests/mockApis/tokenVerification'
 import bookAVideoLinkApi from './integration_tests/mockApis/bookAVideoLinkApi'
 import prisonerSearchApi from './integration_tests/mockApis/prisonerSearchApi'
+import userPreferencesApi from './integration_tests/mockApis/userPreferencesApi'
 
 export default defineConfig({
   chromeWebSecurity: false,
@@ -25,6 +26,7 @@ export default defineConfig({
         table: message => console.table(message) || null,
         ...auth,
         ...manageUsersApi,
+        ...userPreferencesApi,
         ...bookAVideoLinkApi,
         ...prisonerSearchApi,
         ...tokenVerification,

@@ -62,8 +62,8 @@ generic-service:
 
   allowlist:
     groups:
-      - internal
-      - prisons
+      - moj_cloud_platform
+      - digital_staff_and_mojo
 
 generic-prometheus-alerts:
   targetApplication: hmpps-book-a-video-link-ui

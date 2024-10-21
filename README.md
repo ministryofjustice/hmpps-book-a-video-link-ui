@@ -35,6 +35,7 @@ PRISONER_SEARCH_API_URL=https://prisoner-search-dev.prison.service.justice.gov.u
 MANAGE_USERS_API_URL=https://manage-users-api-dev.hmpps.service.justice.gov.uk
 BOOK_A_VIDEO_LINK_API_URL=https://book-a-video-link-api-dev.prison.service.justice.gov.uk
 TOKEN_VERIFICATION_API_URL=https://token-verification-api-dev.prison.service.justice.gov.uk
+USER_PREFERENCES_API_URL=https://hmpps-user-preferences-dev.hmpps.service.justice.gov.uk
 
 API_CLIENT_ID=<obtain these from team members>
 API_CLIENT_SECRET=<obtain these from team members>

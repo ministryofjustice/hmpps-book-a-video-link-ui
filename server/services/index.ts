@@ -11,12 +11,13 @@ export const services = () => {
   const {
     applicationInfo,
     manageUsersApiClient,
+    userPreferencesApiClient,
     hmppsAuditClient,
     bookAVideoLinkApiClient,
     prisonerOffenderSearchApiClient,
   } = dataAccess()
 
-  const userService = new UserService(manageUsersApiClient)
+  const userService = new UserService(manageUsersApiClient, userPreferencesApiClient)
   const auditService = new AuditService(hmppsAuditClient)
   const courtsService = new CourtsService(bookAVideoLinkApiClient)
   const probationTeamsService = new ProbationTeamsService(bookAVideoLinkApiClient)

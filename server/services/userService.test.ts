@@ -2,16 +2,18 @@ import UserService from './userService'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { User, UserGroup } from '../@types/manageUsersApi/types'
 import createUser from '../testutils/createUser'
+import UserPreferencesApiClient from '../data/userPreferencesApiClient'
 
 jest.mock('../data/manageUsersApiClient')
 
 describe('User service', () => {
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
+  let userPreferencesApiClient: jest.Mocked<UserPreferencesApiClient>
   let userService: UserService
 
   beforeEach(() => {
     manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
-    userService = new UserService(manageUsersApiClient)
+    userService = new UserService(manageUsersApiClient, userPreferencesApiClient)
   })
 
   describe('getUser', () => {

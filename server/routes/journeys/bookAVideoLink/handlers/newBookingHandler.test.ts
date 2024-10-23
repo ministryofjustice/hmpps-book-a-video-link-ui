@@ -316,7 +316,7 @@ describe('New Booking handler', () => {
             {
               fieldId: 'hearingTypeCode',
               href: '#hearingTypeCode',
-              text: 'Select a hearing type',
+              text: 'Select a meeting type',
             },
             {
               fieldId: 'date',

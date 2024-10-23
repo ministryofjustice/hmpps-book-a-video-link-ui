@@ -31,7 +31,10 @@ class Body {
   agencyCode: string
 
   @Expose()
-  @IsNotEmpty({ message: `Select a hearing type` })
+  @IsNotEmpty({
+    message: args =>
+      `Select a ${(args.object as { type: string }).type === BavlJourneyType.COURT ? 'hearing type' : 'meeting type'}`,
+  })
   hearingTypeCode: string
 
   @Expose()

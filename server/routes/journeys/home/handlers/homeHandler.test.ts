@@ -134,8 +134,9 @@ describe('GET', () => {
     expect(probationTeamsService.setUserPreferences).toBeCalledWith(['BARNET'], testUser)
   })
 
-  it('court user should be redirected to select court preferences if they have not selected any', () => {
+  it('court user should be redirected to select court preferences if they have not selected any', async () => {
     courtsService.getUserPreferences.mockResolvedValue([])
+    userService.getUserPreferences.mockResolvedValue({ items: [] })
 
     app = appWithAllRoutes({
       services: { courtsService },
@@ -144,23 +145,29 @@ describe('GET', () => {
         isCourtUser: true,
         isProbationUser: false,
       }),
+      middlewares: [populateUserPreferencesMiddleware({ courtsService, userService } as unknown as Services)],
     })
 
-    return request(app).get('/').expect(302).expect('location', '/court/user-preferences')
+    await request(app).get('/').expect(302).expect('location', '/court/user-preferences')
+    expect(courtsService.setUserPreferences).not.toHaveBeenCalled()
   })
 
-  it('probation user should be redirected to select court preferences if they have not selected any', () => {
+  it('probation user should be redirected to select court preferences if they have not selected any', async () => {
     probationTeamsService.getUserPreferences.mockResolvedValue([])
+    userService.getUserPreferences.mockResolvedValue({ items: [] })
 
     app = appWithAllRoutes({
-      services: { probationTeamsService },
+      services: { probationTeamsService, userService },
       userSupplier: () => ({
         ...user,
         isCourtUser: false,
         isProbationUser: true,
       }),
+
+      middlewares: [populateUserPreferencesMiddleware({ probationTeamsService, userService } as unknown as Services)],
     })
 
-    return request(app).get('/').expect(302).expect('location', '/probation/user-preferences')
+    await request(app).get('/').expect(302).expect('location', '/probation/user-preferences')
+    expect(probationTeamsService.setUserPreferences).not.toHaveBeenCalled()
   })
 })

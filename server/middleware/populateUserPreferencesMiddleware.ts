@@ -22,11 +22,15 @@ export default function populateUserPreferencesMiddleware({
     const courtPreferences = user.isCourtUser && (await courtsService.getUserPreferences(user))
     const probationPreferences = user.isProbationUser && (await probationTeamsService.getUserPreferences(user))
 
-    if (user.isCourtUser && courtPreferences.length === 0)
-      await courtsService.setUserPreferences(await getUserPreferences(user), user)
+    if (user.isCourtUser && courtPreferences.length === 0) {
+      const userPreferences = await getUserPreferences(user)
+      if (userPreferences.length > 0) await courtsService.setUserPreferences(userPreferences, user)
+    }
 
-    if (user.isProbationUser && probationPreferences.length === 0)
-      await probationTeamsService.setUserPreferences(await getUserPreferences(user), user)
+    if (user.isProbationUser && probationPreferences.length === 0) {
+      const userPreferences = await getUserPreferences(user)
+      if (userPreferences.length > 0) await probationTeamsService.setUserPreferences(userPreferences, user)
+    }
 
     return next()
   })

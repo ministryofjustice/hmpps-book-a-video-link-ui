@@ -5,8 +5,9 @@
         '00','01','02','03','04','05','06','07','08','09','10','11','12',
         '13','14','15','16','17','18','19','20','21','22','23'
     ] %}
+    {% set hours = (hours.push(params.formResponses['hour'] or params.formResponses | formatDate('HH')), hours) %}
     {% set hoursItems = [{ value: "", text: "-" }] %}
-    {% for hour in hours %}
+    {% for hour in hours | sort | unique %}
         {% set hoursItems = (hoursItems.push({
             value: hour,
             text: hour,
@@ -14,11 +15,10 @@
         }), hoursItems) %}
     {% endfor %}
 
-    {% set minutes = [
-        '00','05','10','15','20','25','30','35','40','45','50', '55'
-    ] %}
+    {% set minutes = ['00','15','30','45'] %}
+    {% set minutes = (minutes.push(params.formResponses['minute'] or params.formResponses | formatDate('mm')), minutes) %}
     {% set minutesItems = [{ value: "", text: "-" }] %}
-    {% for minute in minutes %}
+    {% for minute in minutes | sort | unique %}
         {% set minutesItems = (minutesItems.push({
             value: minute,
             text: minute,

@@ -160,7 +160,16 @@
                         },
                         value: {
                             text: booking.videoLinkUrl or "Not yet known"
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#cvpRequired',
+                                    text: "Change link" if booking.videoLinkUrl else "Add link",
+                                    classes: "govuk-link--no-visited-state"
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.bookingType == 'COURT',
                     {
                         key: {

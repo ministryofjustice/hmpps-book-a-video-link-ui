@@ -489,17 +489,17 @@ describe('New Booking handler', () => {
             {
               fieldId: 'preLocation',
               href: '#preLocation',
-              text: "This room's schedule can't be changed; select another room or contact the prison.",
+              text: 'You cannot change the time for this room. Select another room or contact the prison.',
             },
             {
               fieldId: 'location',
               href: '#location',
-              text: "This room's schedule can't be changed; select another room or contact the prison.",
+              text: 'You cannot change the time for this room. Select another room or contact the prison.',
             },
             {
               fieldId: 'postLocation',
               href: '#postLocation',
-              text: "This room's schedule can't be changed; select another room or contact the prison.",
+              text: 'You cannot change the time for this room. Select another room or contact the prison.',
             },
           ]),
         )

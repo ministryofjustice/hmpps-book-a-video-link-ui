@@ -183,7 +183,7 @@ export default class NewBookingHandler implements PageHandler {
     if (fieldsWithErrors.length > 0) {
       fieldsWithErrors.forEach(field => {
         res.addValidationError(
-          `This room's schedule can't be changed; select another room or contact the prison.`,
+          `You cannot change the time for this room. Select another room or contact the prison.`,
           field,
         )
       })

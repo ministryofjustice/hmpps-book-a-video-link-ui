@@ -89,7 +89,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.693.0",
-    "@ministryofjustice/frontend": "^2.2.5",
+    "@ministryofjustice/frontend": "^3.0.3",
     "@types/express-serve-static-core": "^4.19.6",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",
@@ -118,7 +118,7 @@
     "reflect-metadata": "^0.2.2",
     "superagent": "^9.0.2",
     "url-value-parser": "^2.2.0",
-    "uuid": "^10.0.0"
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^26.0.3",

@@ -1,6 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
-import cheerio from 'cheerio'
+import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'

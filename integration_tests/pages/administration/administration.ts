@@ -6,5 +6,6 @@ export default class AdministrationPage extends Page {
   }
 
   extractDataByHearingDate = (): PageElement => this.getLink('Extract data by hearing date')
+
   extractDataByBookingDate = (): PageElement => this.getLink('Extract data by booking date')
 }

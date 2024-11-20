@@ -6,5 +6,6 @@ export default class CheckBookingPage extends Page {
   }
 
   bookVideoLink = (): PageElement => this.getButton('Book video link')
+
   updateBooking = (): PageElement => this.getButton('Update booking')
 }

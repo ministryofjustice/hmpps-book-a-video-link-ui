@@ -30,8 +30,11 @@ export interface AuditClientConfig {
 
 export default class HmppsAuditClient {
   private sqsClient: SQSClient
+
   private queueUrl: string
+
   private serviceName: string
+
   private enabled: boolean
 
   constructor(config: AuditClientConfig) {

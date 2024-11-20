@@ -6,8 +6,12 @@ export default class SearchBookingsPage extends Page {
   }
 
   selectDate = (date: Date) => this.selectDatePickerDate('Date', date)
+
   selectCourt = (court: string) => this.getByLabel('Court').select(court)
+
   selectProbationTeam = (team: string) => this.getByLabel('Probation team').select(team)
+
   updateResults = (): PageElement => this.getButton('Update results')
+
   viewOrEdit = (): PageElement => this.getLink('View or edit')
 }

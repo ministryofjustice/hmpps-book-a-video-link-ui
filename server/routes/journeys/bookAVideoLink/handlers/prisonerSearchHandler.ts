@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { Matches, ValidateIf } from 'class-validator'
@@ -47,6 +48,7 @@ class Body {
 
 export default class PrisonerSearchHandler implements PageHandler {
   public PAGE_NAME = Page.PRISONER_SEARCH_PAGE
+
   public BODY = Body
 
   constructor(private readonly prisonService: PrisonService) {}

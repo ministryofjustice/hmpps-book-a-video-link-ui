@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { ArrayNotEmpty } from 'class-validator'
@@ -24,6 +25,7 @@ export default class UserPreferencesHandler implements PageHandler {
   ) {}
 
   public PAGE_NAME = Page.USER_PREFERENCES_PAGE
+
   public BODY = Body
 
   public GET = async (req: Request, res: Response) => {

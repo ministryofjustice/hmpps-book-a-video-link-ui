@@ -3,12 +3,12 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { existsByDataQa, getByDataQa, getPageHeader } from '../../../testutils/cheerio'
+import { existsByDataQa, existsByKey, getByDataQa, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
-import { Location, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -55,6 +55,14 @@ describe('GET', () => {
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(
       journey === 'court' ? getCourtBooking('AA1234A') : getProbationBooking('AA1234A'),
     )
+    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+      firstName: 'Joe',
+      lastName: 'Bloggs',
+      prisonId: 'MDI',
+      prisonerNumber: 'AA1234A',
+    } as Prisoner)
+    prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
+    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
     return request(app)
       .get(`/${journey}/view-booking/1`)
@@ -75,6 +83,24 @@ describe('GET', () => {
         expect(heading).toEqual('Joe Bloggs’s video link details')
         expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
         expect(changeLink).toEqual(`/${journey}/booking/amend/1001/video-link-booking`)
+
+        expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
+        expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
+
+        const courtFields = [
+          'Court',
+          'Hearing type',
+          'Hearing start time',
+          'Hearing end time',
+          'Pre-court hearing',
+          'Post-court hearing',
+          'Court hearing link',
+        ]
+
+        const probationFields = ['Probation team', 'Meeting type', 'Meeting start time', 'Meeting end time']
+
+        courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
+        probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
       })
   })
 

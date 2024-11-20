@@ -22,14 +22,18 @@ export default class ConfirmationHandler implements PageHandler {
 
     // TODO: This currently assumes that there is only 1 prisoner associated with a booking.
     //  It does not cater for co-defendants at different prisons.
-    const { prisonerNumber } = booking.prisonAppointments[0]
-    const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
-    const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
+    const { prisonerNumber, prisonCode } = booking.prisonAppointments[0]
+    const [prisoner, prison, rooms] = await Promise.all([
+      this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user),
+      this.prisonService.getPrisonByCode(prisonCode, user),
+      this.prisonService.getAppointmentLocations(prisonCode, false, user),
+    ])
 
     req.session.journey.bookAVideoLink = null
 
     res.render('pages/bookAVideoLink/confirmation', {
       prisoner,
+      prison,
       booking,
       rooms,
     })

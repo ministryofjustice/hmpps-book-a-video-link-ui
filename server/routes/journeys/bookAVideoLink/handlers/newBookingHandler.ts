@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsEnum, IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
@@ -109,6 +110,7 @@ class Body {
 
 export default class NewBookingHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_DETAILS_PAGE
+
   public BODY = Body
 
   constructor(

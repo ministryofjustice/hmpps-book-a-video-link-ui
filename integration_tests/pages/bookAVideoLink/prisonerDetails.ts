@@ -6,6 +6,7 @@ export default class PrisonerDetailsPage extends Page {
   }
 
   enterFirstName = (firstName: string) => this.getByLabel('First name').type(firstName)
+
   enterLastName = (lastName: string) => this.getByLabel('Last name').type(lastName)
 
   enterDateOfBirth = (day: string, month: string, year: string) =>

@@ -34,6 +34,7 @@ export default abstract class Page {
   }
 
   signOut = (): PageElement => cy.get('[data-qa=signOut]')
+
   manageDetails = (): PageElement => cy.get('[data-qa=manageDetails]')
 
   protected getByLabel: (label: string) => PageElement = (label: string) =>
@@ -106,6 +107,7 @@ export default abstract class Page {
   }
 
   protected getButton = (text: string): PageElement => cy.get('button, a').contains(text)
+
   protected getLink = (text: string): PageElement => cy.get('a').contains(text)
 
   private terminalLog(violations: axe.Result[]) {

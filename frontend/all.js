@@ -8,7 +8,7 @@ function initAll() {
     new Card($card)
   })
 
-  var $spinnerForms = document.querySelectorAll('[data-module="form-spinner"]')
+  const $spinnerForms = document.querySelectorAll('[data-module="form-spinner"]')
   nodeListForEach($spinnerForms, function ($spinnerForm) {
     new FormSpinner($spinnerForm)
   })

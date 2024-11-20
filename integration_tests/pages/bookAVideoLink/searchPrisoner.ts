@@ -6,5 +6,6 @@ export default class SearchPrisonerPage extends Page {
   }
 
   enterLastName = (lastName: string) => this.getByLabel('Last name').type(lastName)
+
   search = (): PageElement => this.getButton('Search')
 }

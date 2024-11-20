@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsIn, IsInt, IsNotEmpty, Max, Min } from 'class-validator'
@@ -31,6 +32,7 @@ class Body {
 
 export default class ExtractByBookingDateHandler implements PageHandler {
   public PAGE_NAME = Page.EXTRACT_BY_BOOKING_PAGE
+
   public BODY = Body
 
   constructor(private readonly videoLinkService: VideoLinkService) {}

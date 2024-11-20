@@ -6,5 +6,6 @@ export default class AddCommentsPage extends Page {
   }
 
   enterComments = (comment: string) => this.getByLabel('Comments (optional)').type(comment)
+
   continue = (): PageElement => this.getButton('Continue')
 }

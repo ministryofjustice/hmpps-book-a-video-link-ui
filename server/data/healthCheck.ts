@@ -7,6 +7,7 @@ export type ServiceCheck = () => Promise<string>
 
 export class ServiceTimeout {
   response = 1500
+
   deadline = 2000
 }
 

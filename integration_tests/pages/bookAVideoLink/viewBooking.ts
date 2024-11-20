@@ -6,6 +6,8 @@ export default class ViewBookingPage extends Page {
   }
 
   addComments = (): PageElement => this.getLink('Add comments')
+
   changeBookingDetails = (): PageElement => this.getButton('Change booking details')
+
   cancelVideoLink = (): PageElement => this.getButton('Cancel video link')
 }

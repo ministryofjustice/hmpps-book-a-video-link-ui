@@ -6,6 +6,7 @@ export default class ExtractDataByBookingDatePage extends Page {
   }
 
   selectCourt = () => this.getByLabel('Court').click()
+
   selectProbation = () => this.getByLabel('Probation').click()
 
   selectDate = (date: Date) => this.selectDatePickerDate('Start date', date)

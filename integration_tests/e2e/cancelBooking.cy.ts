@@ -18,6 +18,7 @@ context('Cancel a booking', () => {
     cy.task('stubPrisoner', A0171DZ)
     cy.task('stubPrisonerList', [A0171DZ])
     cy.task('stubEnabledPrisons')
+    cy.task('stubAllPrisons')
     cy.task('stubPrisonLocations', nottinghamLocations)
     cy.task('stubCancelBooking')
   })

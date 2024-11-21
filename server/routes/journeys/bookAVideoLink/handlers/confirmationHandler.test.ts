@@ -9,7 +9,7 @@ import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
 import expectJourneySession from '../../../testutils/testUtilRoute'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
-import { Location, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -51,6 +51,7 @@ describe('GET', () => {
       prisonId: 'MDI',
       prisonerNumber: 'AA1234A',
     } as Prisoner)
+    prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
     return request(app)
@@ -73,24 +74,19 @@ describe('GET', () => {
         expect(bookAnotherLink).toEqual(`/${journey}/booking/create/prisoner-search`)
 
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
+        expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
 
         const courtFields = [
           'Court',
           'Hearing type',
-          'Prison room for court hearing',
           'Hearing start time',
           'Hearing end time',
           'Pre-court hearing',
           'Post-court hearing',
+          'Court hearing link',
         ]
 
-        const probationFields = [
-          'Probation team',
-          'Meeting type',
-          'Prison room for probation meeting',
-          'Meeting start time',
-          'Meeting end time',
-        ]
+        const probationFields = ['Probation team', 'Meeting type', 'Meeting start time', 'Meeting end time']
 
         courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
         probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
@@ -136,6 +132,7 @@ const getCourtBooking = (prisonerNumber: string) =>
     bookingType: 'COURT',
     prisonAppointments: [
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_COURT_PRE',
         prisonLocKey: 'VCC-ROOM-1',
@@ -144,6 +141,7 @@ const getCourtBooking = (prisonerNumber: string) =>
         endTime: '11:30',
       },
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_COURT_MAIN',
         prisonLocKey: 'VCC-ROOM-1',
@@ -152,6 +150,7 @@ const getCourtBooking = (prisonerNumber: string) =>
         endTime: '12:30',
       },
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_COURT_POST',
         prisonLocKey: 'VCC-ROOM-1',
@@ -170,6 +169,7 @@ const getProbationBooking = (prisonerNumber: string) =>
     bookingType: 'PROBATION',
     prisonAppointments: [
       {
+        prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_PROBATION',
         prisonLocKey: 'VCC-ROOM-1',

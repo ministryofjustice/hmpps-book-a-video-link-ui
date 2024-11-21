@@ -30,7 +30,7 @@
                             text: "Prison"
                         },
                         value: {
-                            text: prisoner.prisonName
+                            text: prison.name
                         }
                     },
                     {
@@ -67,7 +67,7 @@
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Prison room for court hearing"
+                            text: "Prison room"
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
@@ -75,7 +75,7 @@
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
-                            text: "Prison room for probation meeting"
+                            text: "Prison room"
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description

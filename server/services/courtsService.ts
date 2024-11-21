@@ -1,9 +1,8 @@
 import { groupBy } from 'lodash'
-import { Dictionary } from 'express-serve-static-core'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { Court } from '../@types/bookAVideoLinkApi/types'
 
-export type CourtsByLetter = Dictionary<Court[]>
+export type CourtsByLetter = { [key: string]: Court[] }
 
 export default class CourtsService {
   constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}

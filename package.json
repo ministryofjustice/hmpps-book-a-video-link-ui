@@ -90,10 +90,8 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.696.0",
     "@ministryofjustice/frontend": "^3.0.3",
-    "@types/express-serve-static-core": "^4.19.6",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",
-    "body-parser": "^1.20.3",
     "bunyan": "^1.8.15",
     "bunyan-format": "^0.2.1",
     "class-transformer": "^0.5.1",
@@ -117,7 +115,6 @@
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "superagent": "^10.1.1",
-    "url-value-parser": "^2.2.0",
     "uuid": "^11.0.3"
   },
   "devDependencies": {
@@ -174,7 +171,6 @@
     "sinon": "^19.0.2",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
     "wiremock": "^3.9.2"
   },

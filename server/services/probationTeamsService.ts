@@ -1,5 +1,4 @@
-import { groupBy } from 'lodash'
-import { Dictionary } from 'express-serve-static-core'
+import { groupBy, Dictionary } from 'lodash'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { ProbationTeam } from '../@types/bookAVideoLinkApi/types'
 

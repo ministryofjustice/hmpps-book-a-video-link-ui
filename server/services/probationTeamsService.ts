@@ -1,8 +1,8 @@
-import { groupBy } from 'lodash'
+import { groupBy, Dictionary } from 'lodash'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import { ProbationTeam } from '../@types/bookAVideoLinkApi/types'
 
-export type ProbationTeamsByLetter = { [key: string]: ProbationTeam[] }
+export type ProbationTeamsByLetter = Dictionary<ProbationTeam[]>
 
 export default class ProbationTeamsService {
   constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}

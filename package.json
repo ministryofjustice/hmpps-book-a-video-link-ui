@@ -171,7 +171,7 @@
     "sinon": "^19.0.2",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "typescript": "^5.6.3",
+    "typescript": "^5.7.2",
     "wiremock": "^3.9.2"
   },
   "overrides": {

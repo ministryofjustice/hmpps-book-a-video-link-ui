@@ -6,7 +6,7 @@
   <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
 {% endblock %}
 
-{% block pageTitle %}{{pageTitle | default(applicationName)}}{% endblock %}
+{% block pageTitle %}{{ "Error: " if validationErrors.length > 0 else "" }}{{ (pageTitle + " | ") if pageTitle else ""}}{{ applicationName + " | MoJ" }}{% endblock %}
 
 {% block header %}
   {% include "./header.njk" %}

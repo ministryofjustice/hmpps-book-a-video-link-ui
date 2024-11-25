@@ -2,7 +2,7 @@ import Page, { PageElement } from '../page'
 
 export default class SearchPrisonerResultsPage extends Page {
   constructor() {
-    super('Search for a prisoner')
+    super('Search for a prisoner results')
   }
 
   bookVideoLinkForPrisoner = (prisonerNumber: string): PageElement =>

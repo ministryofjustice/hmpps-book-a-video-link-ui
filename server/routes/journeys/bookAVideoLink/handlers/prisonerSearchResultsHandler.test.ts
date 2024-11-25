@@ -43,7 +43,7 @@ describe('Prisoner search results handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Search for a prisoner')
+          expect(heading).toContain('Search for a prisoner results')
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -66,7 +66,7 @@ describe('Prisoner search results handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Search for a prisoner')
+          expect(heading).toContain('Search for a prisoner results')
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_SEARCH_RESULTS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),

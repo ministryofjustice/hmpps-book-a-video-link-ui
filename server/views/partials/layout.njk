@@ -1,4 +1,5 @@
 {% extends "govuk/template.njk" %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
 
 {% set mainClasses = 'govuk-main-wrapper--l' %}
 
@@ -17,6 +18,27 @@
 {% endblock %}
 
 {% block bodyStart %}
+{% endblock %}
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: [
+        {
+          href: feedbackUrl,
+          text: "Feedback"
+        },
+        {
+          href: reportAFaultUrl,
+          text: "Report a fault"
+        },
+        {
+          href: "/accessibility-statement",
+          text: "Accessibility statement"
+        }
+      ]
+    }
+  }) }}
 {% endblock %}
 
 {% block bodyEnd %}

@@ -18,9 +18,11 @@
 }) }}
 
 {% if not hideBackLink %}
-  {{ govukBackLink({
-    text: "Back"
-  }) }}
+  <nav>
+    {{ govukBackLink({
+      text: "Back"
+    }) }}
+  </nav>
 {% endif %}
 
 {% include './formErrorSummary.njk' %}

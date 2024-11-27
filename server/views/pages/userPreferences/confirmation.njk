@@ -5,6 +5,7 @@
 
 {% set type = session.req.params.type %}
 {% set pageTitle = "Your " + ("court" if type == BavlJourneyType.COURT else "probation team") + " list has been updated" %}
+{% set hideBackLink = true %}
 
 {% block content %}
     <div class="govuk-grid-row govuk-body">

@@ -6,6 +6,7 @@
 
 {% set mode = session.req.params.mode %}
 {% set pageTitle = "The video link has been booked" if mode == 'create' else 'The video link booking has been updated' %}
+{% set hideBackLink = true %}
 
 {% block content %}
     <div class="govuk-grid-row">

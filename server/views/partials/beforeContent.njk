@@ -17,5 +17,13 @@
         '
 }) }}
 
+{% if not hideBackLink %}
+  <nav>
+    {{ govukBackLink({
+      text: "Back"
+    }) }}
+  </nav>
+{% endif %}
+
 {% include './formErrorSummary.njk' %}
 {% include './successMessage.njk' %}

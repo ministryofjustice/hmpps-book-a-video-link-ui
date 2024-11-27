@@ -49,6 +49,12 @@
                         {{ govukCheckboxes({
                             name: "selectedAgencies",
                             idPrefix: letter + "-agencies",
+                            fieldset: {
+                                legend: {
+                                    text: "Agencies listed under the letter " + letter,
+                                    classes: "govuk-visually-hidden"
+                                }
+                            },
                             items: items
                         }) }}
                     {% endset %}

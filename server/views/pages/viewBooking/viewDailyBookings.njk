@@ -46,12 +46,9 @@
                 {{ govukButton({ text: "Update results", type: "submit" }) }}
             </form>
 
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" aria-hidden="true">
 
             {% if appointments.length %}
-
-                <p class="govuk-body-l"><span class='govuk-!-font-weight-bold'>Total:</span> {{ appointments.length }}</p>
-
                 {% set rows = [] %}
                 {% for item in appointments %}
                     {% set viewOrEditText = 'View or edit' if item.appointmentDate | parseDate | dateAtTime(item.startTime | parseDate('HH:mm')) > now() else 'View' %}
@@ -64,7 +61,7 @@
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
                                     ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
                                     ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') },
-                            { html: '<a class="govuk-link govuk-link--no-visited-state" href="view-booking/' + item.videoBookingId + '">' + viewOrEditText + '</a>' if item.appointmentType == 'VLB_COURT_MAIN' or item.appointmentType == 'VLB_PROBATION' else ''}
+                            { html: '<a class="govuk-link govuk-link--no-visited-state" href="view-booking/' + item.videoBookingId + '">' + viewOrEditText + '</a>' if item.appointmentType == 'VLB_COURT_MAIN' or item.appointmentType == 'VLB_PROBATION' else '<span class="govuk-visually-hidden">Not selectable</span>'}
                         ]
                     ), rows) %}
                 {% endfor %}
@@ -72,12 +69,14 @@
                     attributes: {
                         'data-module': 'moj-sortable-table'
                     },
+                    caption: "Total: " + appointments.length,
+                    captionClasses: "govuk-table__caption--m",
                     head: [
                         { text: "Time", attributes: { "aria-sort": "ascending" } },
                         { text: "Name" },
                         { text: "Prison location" },
                         { text: "Hearing type" if type == 'court' else 'Meeting type' },
-                        { html: "<span class='govuk-visually-hidden'>View or edit</span>" }
+                        { text: "Action" }
                     ],
                     rows: rows
                 }) }}

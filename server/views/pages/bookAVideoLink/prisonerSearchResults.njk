@@ -14,47 +14,46 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full-from-desktop">
-            {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
-            <p class="govuk-body">
-                Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}.
-                <a href="../prisoner-search" class="govuk-link govuk-!-font-size-19">Search again</a>
-            </p>
+            {% if results.content.length %}
+                {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
+                <p class="govuk-body">
+                    Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}.
+                    <a href="../prisoner-search" class="govuk-link govuk-!-font-size-19">Search again</a>
+                </p>
 
-            {% set rows = [] %}
-            {% for result in results.content %}
-                {% set bookLinkHtml %}
-                    <a href="../{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
-                {% endset %}
+                {% set rows = [] %}
+                {% for result in results.content %}
+                    {% set bookLinkHtml %}
+                        <a href="../{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
+                    {% endset %}
 
-                {% set rows = (rows.push([
-                    { text: (result.firstName + " " + result.lastName) | convertToTitleCase },
-                    { text: result.prisonerNumber },
-                    { text: result.dateOfBirth | formatDate },
-                    { text: result.prisonName },
-                    { text: result.pncNumber or '--' },
-                    { html: bookLinkHtml if result.prisonId in enabledPrisons | map('code') else '<span class="govuk-visually-hidden">Prison not enabled for book a video link</span>' }
-                ]), rows) %}
+                    {% set rows = (rows.push([
+                        { text: (result.firstName + " " + result.lastName) | convertToTitleCase },
+                        { text: result.prisonerNumber },
+                        { text: result.dateOfBirth | formatDate },
+                        { text: result.prisonName },
+                        { text: result.pncNumber or '--' },
+                        { html: bookLinkHtml if result.prisonId in enabledPrisons | map('code') else '<span class="govuk-visually-hidden">Prison not enabled for book a video link</span>' }
+                    ]), rows) %}
+                {% endfor %}
+
+                {{ govukTable({
+                    head: [
+                        { text: "Name" },
+                        { text: "Prison number" },
+                        { text: "Date of birth" },
+                        { text: "Prison name" },
+                        { text: "PNC" },
+                        { html: "Action" }
+                    ],
+                    rows: rows
+                }) }}
             {% else %}
-                {% set rows = (rows.push([
-                    {
-                        text: 'No results',
-                        attributes: { colspan:6 },
-                        classes: 'govuk-!-text-align-centre'
-                    }
-                ]), rows) %}
-            {% endfor %}
-
-            {{ govukTable({
-                head: [
-                    { text: "Name" },
-                    { text: "Prison number" },
-                    { text: "Date of birth" },
-                    { text: "Prison name" },
-                    { text: "PNC" },
-                    { html: "Action" }
-                ],
-                rows: rows
-            }) }}
+                <p class="govuk-body">
+                    There are no results for this search criteria.
+                    <a href="../prisoner-search" class="govuk-link govuk-!-font-size-19">Search again</a>
+                </p>
+            {% endif %}
 
             {% if results.totalPages > 1 %}
                 {% set paginationItems = [] %}

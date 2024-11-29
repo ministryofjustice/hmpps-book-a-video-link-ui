@@ -30,6 +30,7 @@
             <p class="govuk-body">We know some parts of this service are not fully accessible:</p>
             <ul class="govuk-list govuk-list govuk-list--bullet">
                 <li>Some text spills off the page at 400% zoom</li>
+                <li>Some elements do not have space in between them at 400% zoom</li>
                 <li>Some error text does not link the user to the correct part of the page</li>
             </ul>
         </div>
@@ -60,26 +61,28 @@
             <p class="govuk-body">This service is partially compliant with the <a class="govuk-link govuk-link--no-visited-state" href="https://www.w3.org/TR/WCAG22/" rel="noreferrer noopener">Web Content Accessibility Guidelines version 2.2</a> AA standard, due to the non-compliances listed below.</p>
 
             <h3 class="govuk-heading-s">Non-compliance with the accessibility regulations</h3>
-            <p class="govuk-body">The content listed below is non-accessible for the following reasons. We plan to address these issues as part of our ongoing work to improve the service:</p>
+            <p class="govuk-body">The content listed below is non-accessible for the following reasons. These were identified through accessibility testing by our internal Digital Accessibility Team. We plan to address these issues as part of our ongoing work to improve the service:</p>
             <ul class="govuk-list govuk-list govuk-list--bullet">
-                <li>Some error text does not link the user to the correct part of the page. This does not meet <a class="govuk-link govuk-link--no-visited-state" href="https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html">WCAG 3.3.1 Error Identification</a>. We plan to fix this by March 2025.</li>
-                <li>Some text spills off the page at 400% zoom. This does not meet <a class="govuk-link govuk-link--no-visited-state" href="https://www.w3.org/WAI/WCAG21/Understanding/reflow.html">Understanding Success Criterion 1.4.10: Reflow | WAI | W3C</a>. We have raised this issue with the MoJ design team and will continue to review.</li>
+                <li>Some error text does not link the user to the correct part of the page. This does not meet <a class="govuk-link govuk-link--no-visited-state" href="https://www.w3.org/WAI/WCAG21/Understanding/error-identification.html" rel="noopener noreferrer">WCAG 3.3.1 Error Identification</a>. We plan to fix this by March 2025.</li>
+                <li>Some text spills off the page at 400% zoom. This does not meet <a class="govuk-link govuk-link--no-visited-state" href="https://www.w3.org/WAI/WCAG21/Understanding/reflow.html" rel="noopener noreferrer">Understanding Success Criterion 1.4.10: Reflow | WAI | W3C</a>. We have raised this issue with the MoJ design team and will continue to review.</li>
+                <li>Some elements do not have space in between them at 400% zoom. This does not meet <a class="govuk-link govuk-link--no-visited-state" href="https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum" rel="noopener noreferrer">Understanding Success Criterion 2.4.11: Focus Not Obscured (Minimum) | WAI | W3C</a>. This is a component issue. We have raised this issue with the MoJ design team.</li>
             </ul>
         </div>
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-m">What we’re doing to improve accessibility</h2>
-            <p class="govuk-body">We will continue to do internal audits to check the accessibility of this service, as well as taking feedback from users.</p>
-            <p class="govuk-body">Any changes required will be planned into our ongoing work on this service.</p>
-            <p class="govuk-body">We have also planned an accessibility audit in March 2025.</p>
+            <p class="govuk-body">We will continue to do internal testing to check the accessibility of this service, as well as taking feedback from users.</p>
+            <p class="govuk-body">Any changes required will be planned into our ongoing work on this service, and this statement will be updated accordingly.</p>
+            <p class="govuk-body">We have also planned an external WCAG 2.2 compliance accessibility audit in March 2025.</p>
         </div>
     </div>
+    
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-m">Preparation of this accessibility statement</h2>
             <p class="govuk-body">This statement was prepared on 30 November 2024. It was last reviewed on 30 November 2024.</p>
-            <p class="govuk-body">This service was last reviewed on 25 November 2024 against the WCAG 2.2 AA standard. The test was carried out by the Ministry of Justice Digital Accessibility Team.</p>
+            <p class="govuk-body">This service was last reviewed on 25 November 2024 against the WCAG 2.2 AA standard. All pages of the service were tested by an accessibility specialist in the Ministry of Justice Digital Accessibility Team.</p>
         </div>
     </div>
 {% endblock %}

@@ -170,8 +170,6 @@ describe('New Booking handler', () => {
     })
 
     it('should populate the session with an existing booking for amending', async () => {
-      appSetup()
-
       await request(app)
         .get(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .expect('Content-Type', /html/)
@@ -217,8 +215,6 @@ describe('New Booking handler', () => {
     })
 
     it('should redirect to to view the booking if the booking is not amendable', async () => {
-      appSetup()
-
       videoLinkService.bookingIsAmendable.mockReturnValue(false)
 
       return request(app)
@@ -244,8 +240,6 @@ describe('New Booking handler', () => {
     }
 
     it('should validate an empty form on the court journey', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({})
@@ -301,8 +295,6 @@ describe('New Booking handler', () => {
     })
 
     it('should validate an empty form on the probation journey', () => {
-      appSetup({ bookAVideoLink: { type: 'PROBATION' } })
-
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({})
@@ -343,8 +335,6 @@ describe('New Booking handler', () => {
     })
 
     it('should validate that the pre and post location items are filled', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -369,8 +359,6 @@ describe('New Booking handler', () => {
     })
 
     it('should validate invalid fields', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -407,8 +395,6 @@ describe('New Booking handler', () => {
     })
 
     it('should validate that the date is on or after today', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -427,8 +413,6 @@ describe('New Booking handler', () => {
     })
 
     it('should validate that the start time is more than 15 minutes into the future', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -448,8 +432,6 @@ describe('New Booking handler', () => {
     })
 
     it('should validate that the start time is before the end time', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -468,10 +450,8 @@ describe('New Booking handler', () => {
         })
     })
 
-    it('should validate that booking schedule is not changed during amend if the selected room is a non-video room', () => {
-      appSetup()
-
-      return request(app)
+    it('should validate that booking schedule is not changed during amend if the selected room is a non-video room', async () => {
+      await request(app)
         .post(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .send({
           ...validForm,
@@ -503,11 +483,12 @@ describe('New Booking handler', () => {
             },
           ]),
         )
+
+      expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+      expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', true, user)
     })
 
     it('should validate that non-video room is allowed if schedule is unchanged during amend', () => {
-      appSetup()
-
       return request(app)
         .post(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .send({
@@ -521,8 +502,6 @@ describe('New Booking handler', () => {
     })
 
     it('should save the posted fields in session', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
-
       prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
         prisonId: 'MDI',
         prisonName: 'Moorland',

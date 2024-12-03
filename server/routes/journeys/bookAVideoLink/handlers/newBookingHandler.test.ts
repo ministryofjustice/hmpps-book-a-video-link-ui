@@ -116,7 +116,7 @@ describe('New Booking handler', () => {
 
           expect(dropdownOptions($, 'location')).toEqual(['VIDE'])
 
-          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
           if (journey === 'court') {
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
             expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -211,7 +211,7 @@ describe('New Booking handler', () => {
         )
 
       expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
-      expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
+      expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
     })
 
     it('should redirect to to view the booking if the booking is not amendable', async () => {
@@ -523,7 +523,7 @@ describe('New Booking handler', () => {
         .expect(302)
         .expect('location', 'video-link-booking/check-booking')
         .expect(() => {
-          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('A1234AA', user)
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {
@@ -572,7 +572,7 @@ describe('New Booking handler', () => {
         .expect(302)
         .expect('location', 'video-link-booking/check-booking')
         .expect(() => {
-          expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenCalledWith('A1234AA', user)
+          expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {

@@ -49,7 +49,7 @@ describe('Prisoner service', () => {
         expect.objectContaining({
           joinType: 'AND',
           queries: [
-            { matchers: [{ attribute: 'inOutStatus', condition: 'IS', searchTerm: 'IN', type: 'String' }] },
+            { matchers: [{ attribute: 'status', condition: 'CONTAINS', searchTerm: 'ACTIVE', type: 'String' }] },
             {
               joinType: 'OR',
               subQueries: [
@@ -95,7 +95,7 @@ describe('Prisoner service', () => {
         expect.objectContaining({
           joinType: 'AND',
           queries: [
-            { matchers: [{ attribute: 'inOutStatus', condition: 'IS', searchTerm: 'IN', type: 'String' }] },
+            { matchers: [{ attribute: 'status', condition: 'CONTAINS', searchTerm: 'ACTIVE', type: 'String' }] },
             {
               joinType: 'OR',
               subQueries: [

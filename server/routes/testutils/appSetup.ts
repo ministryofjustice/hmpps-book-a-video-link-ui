@@ -28,6 +28,7 @@ const testAppInfo: ApplicationInfo = {
   buildNumber: '1',
   gitRef: 'long ref',
   gitShortHash: 'short ref',
+  productId: '1',
   branchName: 'main',
 }
 

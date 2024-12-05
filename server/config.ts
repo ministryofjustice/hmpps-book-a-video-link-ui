@@ -70,6 +70,7 @@ export default {
   apis: {
     hmppsAuth: {
       url: get('HMPPS_AUTH_URL', 'http://localhost:9090/auth', requiredInProduction),
+      healthPath: '/health/ping',
       externalUrl: get('HMPPS_AUTH_EXTERNAL_URL', get('HMPPS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: Number(get('HMPPS_AUTH_TIMEOUT_RESPONSE', 10000)),
@@ -83,6 +84,7 @@ export default {
     },
     manageUsersApi: {
       url: get('MANAGE_USERS_API_URL', 'http://localhost:9091', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 10000)),
@@ -91,6 +93,7 @@ export default {
     },
     userPreferencesApi: {
       url: get('USER_PREFERENCES_API_URL', 'http://localhost:8085', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('USER_PREFERENCES_API_TIMEOUT_RESPONSE', 10000)),
         deadline: Number(get('USER_PREFERENCES_API_TIMEOUT_DEADLINE', 10000)),
@@ -99,6 +102,7 @@ export default {
     },
     tokenVerification: {
       url: get('TOKEN_VERIFICATION_API_URL', 'http://localhost:8100', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_RESPONSE', 5000)),
         deadline: Number(get('TOKEN_VERIFICATION_API_TIMEOUT_DEADLINE', 5000)),
@@ -108,6 +112,7 @@ export default {
     },
     bookAVideoLinkApi: {
       url: get('BOOK_A_VIDEO_LINK_API_URL', 'http://localhost:8089', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('BOOK_A_VIDEO_LINK_API_TIMEOUT_RESPONSE', 30000)),
         deadline: Number(get('BOOK_A_VIDEO_LINK_API_TIMEOUT_DEADLINE', 30000)),
@@ -116,6 +121,7 @@ export default {
     },
     prisonerSearchApi: {
       url: get('PRISONER_SEARCH_API_URL', 'http://localhost:8090', requiredInProduction),
+      healthPath: '/health/ping',
       timeout: {
         response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000)),
         deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 30000)),

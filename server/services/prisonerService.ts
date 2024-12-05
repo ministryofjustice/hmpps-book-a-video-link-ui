@@ -45,7 +45,11 @@ export default class PrisonerService {
       joinType: 'AND',
       queries: [
         {
-          matchers: [createStringMatcher('status', 'CONTAINS', 'ACTIVE')],
+          joinType: 'OR',
+          matchers: [
+            createStringMatcher('status', 'IS', 'ACTIVE IN'),
+            createStringMatcher('status', 'IS', 'ACTIVE OUT'),
+          ],
         },
         {
           joinType: 'OR',

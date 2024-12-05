@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "40 7 * * MON-FRI" # Every weekday at 07:40 UTC
 jobs:
-  security-kotlin-trivy-check:
+  security-trivy-check:
     name: Project security trivy dependency check
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/security_trivy.yml@v1 # WORKFLOW_VERSION
     with:

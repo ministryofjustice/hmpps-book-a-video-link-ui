@@ -27,20 +27,8 @@ export default class PrisonerService {
 
     const createPncMatcher = (pncNumber: string) => (criteria.pncNumber ? { type: 'PNC', pncNumber } : undefined)
 
-    const matchers = [
-      createStringMatcher('firstName', 'CONTAINS', criteria.firstName),
-      createStringMatcher('lastName', 'CONTAINS', criteria.lastName),
-      createDateMatcher('dateOfBirth', criteria.dateOfBirth),
-      createStringMatcher('prisonId', 'IS', criteria.prison),
-    ].filter(Boolean)
-
-    const secondaryMatchers = [
-      createStringMatcher('prisonerNumber', 'IS', criteria.prisonerNumber),
-      createPncMatcher(criteria.pncNumber),
-    ].filter(Boolean)
-
     // For example:
-    // (inOutStatus = IN) AND ((firstName CONTAINS :firstName AND lastName CONTAINS :lastName) OR (prisonerNumber = :prisonerNumber AND pncNumber = :pncNumber))
+    // (status = ACTIVE IN OR status = ACTIVE OUT) AND (firstName CONTAINS :firstName AND lastName CONTAINS :lastName AND prisonerNumber = :prisonerNumber AND pncNumber = :pncNumber)
     const searchQuery = {
       joinType: 'AND',
       queries: [
@@ -52,11 +40,15 @@ export default class PrisonerService {
           ],
         },
         {
-          joinType: 'OR',
-          subQueries: [
-            { joinType: 'AND', matchers },
-            { joinType: 'AND', matchers: secondaryMatchers },
-          ].filter(q => q.matchers.length > 0),
+          joinType: 'AND',
+          matchers: [
+            createStringMatcher('firstName', 'CONTAINS', criteria.firstName),
+            createStringMatcher('lastName', 'CONTAINS', criteria.lastName),
+            createDateMatcher('dateOfBirth', criteria.dateOfBirth),
+            createStringMatcher('prisonId', 'IS', criteria.prison),
+            createStringMatcher('prisonerNumber', 'IS', criteria.prisonerNumber),
+            createPncMatcher(criteria.pncNumber),
+          ].filter(Boolean),
         },
       ],
     }

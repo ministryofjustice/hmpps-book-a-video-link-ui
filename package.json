@@ -90,6 +90,7 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.696.0",
     "@ministryofjustice/frontend": "^3.0.3",
+    "@ministryofjustice/hmpps-monitoring": "^0.0.1-beta.2",
     "agentkeepalive": "^4.5.0",
     "applicationinsights": "^2.9.6",
     "bunyan": "^1.8.15",

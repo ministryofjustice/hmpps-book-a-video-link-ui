@@ -51,6 +51,17 @@ const ping = () =>
     },
   })
 
+const pingUserPreferences = () =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/user-preferences-api/health/ping',
+    },
+    response: {
+      status: 200,
+    },
+  })
+
 const redirect = () =>
   stubFor({
     request: {
@@ -121,7 +132,7 @@ const token = (roles: string[] = []) =>
   })
 export default {
   getSignInUrl,
-  stubAuthPing: ping,
+  stubAuthPing: () => Promise.all([ping(), pingUserPreferences()]),
   stubAuthManageDetails: manageDetails,
   stubSignIn: (roles: string[]): Promise<[Response, Response, Response, Response, Response]> =>
     Promise.all([favicon(), redirect(), signOut(), token(roles), tokenVerification.stubVerifyToken()]),

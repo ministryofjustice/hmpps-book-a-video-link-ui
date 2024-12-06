@@ -57,24 +57,14 @@ describe('Prisoner service', () => {
               ],
             },
             {
-              joinType: 'OR',
-              subQueries: [
-                {
-                  joinType: 'AND',
-                  matchers: [
-                    { attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'John', type: 'String' },
-                    { attribute: 'lastName', condition: 'CONTAINS', searchTerm: 'Doe', type: 'String' },
-                    { attribute: 'dateOfBirth', maxValue: '1990-01-01', minValue: '1990-01-01', type: 'Date' },
-                    { attribute: 'prisonId', condition: 'IS', searchTerm: 'XYZ', type: 'String' },
-                  ],
-                },
-                {
-                  joinType: 'AND',
-                  matchers: [
-                    { attribute: 'prisonerNumber', condition: 'IS', searchTerm: 'A12345', type: 'String' },
-                    { pncNumber: 'PNC123', type: 'PNC' },
-                  ],
-                },
+              joinType: 'AND',
+              matchers: [
+                { attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'John', type: 'String' },
+                { attribute: 'lastName', condition: 'CONTAINS', searchTerm: 'Doe', type: 'String' },
+                { attribute: 'dateOfBirth', maxValue: '1990-01-01', minValue: '1990-01-01', type: 'Date' },
+                { attribute: 'prisonId', condition: 'IS', searchTerm: 'XYZ', type: 'String' },
+                { attribute: 'prisonerNumber', condition: 'IS', searchTerm: 'A12345', type: 'String' },
+                { pncNumber: 'PNC123', type: 'PNC' },
               ],
             },
           ],
@@ -109,13 +99,8 @@ describe('Prisoner service', () => {
               ],
             },
             {
-              joinType: 'OR',
-              subQueries: [
-                {
-                  joinType: 'AND',
-                  matchers: [{ attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'Jane', type: 'String' }],
-                },
-              ],
+              joinType: 'AND',
+              matchers: [{ attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'Jane', type: 'String' }],
             },
           ],
         }),

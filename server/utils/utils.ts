@@ -78,3 +78,5 @@ export const extractPrisonAppointmentsFromBooking = (booking: VideoLinkBooking) 
     postAppointment: getAppointment('VLB_COURT_POST'),
   }
 }
+
+export const toDateString = (date: Date) => format(date, 'yyyy-MM-dd')

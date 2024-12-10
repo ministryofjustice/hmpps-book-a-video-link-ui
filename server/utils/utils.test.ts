@@ -9,6 +9,7 @@ import {
   parseDatePickerDate,
   simpleDateToDate,
   simpleTimeToDate,
+  toDateString,
 } from './utils'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 
@@ -192,5 +193,12 @@ describe('extractPrisonAppointmentsFromBooking', () => {
       mainAppointment: mainHearing,
       postAppointment: postHearing,
     })
+  })
+})
+
+describe('toDateString', () => {
+  it('converts a date to a string', () => {
+    expect(toDateString(new Date(2022, 2, 31))).toEqual('2022-03-31')
+    expect(toDateString(new Date(2022, 9, 20))).toEqual('2022-10-20')
   })
 })

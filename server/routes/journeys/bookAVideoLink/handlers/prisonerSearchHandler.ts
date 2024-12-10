@@ -6,7 +6,7 @@ import { startOfToday } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import Validator from '../../../validators/validator'
-import { simpleDateToDate } from '../../../../utils/utils'
+import { simpleDateToDate, toDateString } from '../../../../utils/utils'
 import IsValidDate from '../../../validators/isValidDate'
 import PrisonService from '../../../../services/prisonService'
 
@@ -65,7 +65,7 @@ export default class PrisonerSearchHandler implements PageHandler {
       search: {
         firstName: body.firstName,
         lastName: body.lastName,
-        dateOfBirth: body.dateOfBirth?.toISOString(),
+        dateOfBirth: body.dateOfBirth ? toDateString(body.dateOfBirth) : null,
         prison: body.prison,
         prisonerNumber: body.prisonerNumber,
         pncNumber: body.pncNumber,

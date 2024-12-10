@@ -173,7 +173,7 @@ describe('Prisoner search handler', () => {
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {
             search: {
-              dateOfBirth: '1990-06-02T00:00:00.000Z',
+              dateOfBirth: '1990-06-02',
               firstName: 'Bob',
               lastName: 'Smith',
               pncNumber: '2001/23456A',

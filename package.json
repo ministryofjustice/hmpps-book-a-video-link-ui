@@ -25,7 +25,7 @@
     "clean": "rm -rf dist assets build node_modules stylesheets"
   },
   "engines": {
-    "node": "^20",
+    "node": "^22",
     "npm": "^10"
   },
   "jest": {
@@ -100,9 +100,9 @@
     "compression": "^1.7.5",
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",
-    "csurf": "^1.11.0",
+    "csrf-sync": "^4.0.3",
     "date-fns": "^4.1.0",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.7.1",
     "helmet": "^8.0.0",
@@ -122,18 +122,18 @@
     "@ministryofjustice/eslint-config-hmpps": "^0.0.1-alpha.8",
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^15.3.0",
+    "@tsconfig/node22": "^22.0.0",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/cheerio": "^0.22.35",
     "@types/compression": "^1.7.5",
     "@types/connect-flash": "0.0.40",
-    "@types/csurf": "^1.11.5",
     "@types/express-session": "^1.18.0",
     "@types/http-errors": "^2.0.4",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash": "^4.17.13",
-    "@types/node": "^20.17.6",
+    "@types/node": "^22.8.2",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.4.17",
@@ -174,9 +174,5 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.3",
     "wiremock": "^3.9.2"
-  },
-  "overrides": {
-    "cookie": "^0.7.2",
-    "cross-spawn": "^7.0.6"
   }
 }

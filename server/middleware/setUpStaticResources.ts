@@ -11,9 +11,9 @@ export default function setUpStaticResources(): Router {
   router.use(compression())
 
   //  Static Resources Configuration
-  const cacheControl = { maxAge: config.staticResourceCacheDuration }
+  const staticResourcesConfig = { maxAge: config.staticResourceCacheDuration, redirect: false }
 
-  router.use('/assets', express.static(path.join(process.cwd(), '/assets'), cacheControl))
+  router.use('/assets', express.static(path.join(process.cwd(), '/assets'), staticResourcesConfig))
 
   // Don't cache dynamic resources
   router.use(noCache())

@@ -100,9 +100,9 @@
     "compression": "^1.7.5",
     "connect-flash": "^0.1.1",
     "connect-redis": "^7.1.1",
-    "csurf": "^1.11.0",
+    "csrf-sync": "^4.0.3",
     "date-fns": "^4.1.0",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "express-session": "^1.18.1",
     "govuk-frontend": "^5.7.1",
     "helmet": "^8.0.0",
@@ -127,7 +127,6 @@
     "@types/cheerio": "^0.22.35",
     "@types/compression": "^1.7.5",
     "@types/connect-flash": "0.0.40",
-    "@types/csurf": "^1.11.5",
     "@types/express-session": "^1.18.0",
     "@types/http-errors": "^2.0.4",
     "@types/jest": "^29.5.14",
@@ -174,9 +173,5 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.6.3",
     "wiremock": "^3.9.2"
-  },
-  "overrides": {
-    "cookie": "^0.7.2",
-    "cross-spawn": "^7.0.6"
   }
 }

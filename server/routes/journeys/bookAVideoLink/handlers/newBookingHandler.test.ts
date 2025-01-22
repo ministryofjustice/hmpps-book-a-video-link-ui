@@ -13,7 +13,7 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../utils/utils'
 import expectJourneySession from '../../../testutils/testUtilRoute'
-import { Court, ProbationTeam, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { Court, Location, ProbationTeam, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('../../../../services/auditService')
@@ -78,15 +78,16 @@ beforeEach(() => {
     videoLinkUrl: 'http://example.com',
     comments: 'test',
   } as VideoLinkBooking)
+
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
 
   prisonService.getAppointmentLocations.mockImplementation((_, videoLinkOnly) => {
     if (videoLinkOnly) {
-      return Promise.resolve([{ key: 'VIDE', description: 'Video location', enabled: true }])
+      return Promise.resolve([{ key: 'VIDE', description: 'Video location', enabled: true } as Location])
     }
     return Promise.resolve([
-      { key: 'VIDE', description: 'Video location', enabled: true },
-      { key: 'LOCATION_CODE', description: 'Kitchen', enabled: true },
+      { key: 'VIDE', description: 'Video location', enabled: true } as Location,
+      { key: 'LOCATION_CODE', description: 'Kitchen', enabled: true } as Location,
     ])
   })
 })

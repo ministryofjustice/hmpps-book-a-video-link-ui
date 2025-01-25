@@ -1,0 +1,82 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "components/locationUsageTag.njk" import locationUsageTag %}
+
+{% set pageTitle = "Video link locations at " + prison.name %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full-from-desktop">
+            {% if locationList.length %}
+               <p class="govuk-body">
+                   {% set rows = [] %}
+
+                   {% for result in locationList %}
+
+                       {% set chooseLocationHtml %}
+                         <a href="/admin/show-single-location?dpsLocationId={{ result.dpsLocationId }}"
+                            class="govuk-link govuk-link--no-visited-state">Choose
+                          </a>
+                       {% endset %}
+
+                       {% set locationUseHtml %}
+                         {% if result.extraAttributes.locationUsage %}
+                            {{ locationUsageTag(result.extraAttributes.locationUsage, "govuk-tag--blue") }}
+                         {% endif %}
+                       {% endset %}
+
+                       {% set extraAttributesHtml %}
+                         {% if result.extraAttributes %}
+                            {{ locationUsageTag("Yes", "govuk-tag--green") }}
+                         {% else %}
+                            No
+                         {% endif %}
+                       {% endset %}
+
+                       {% set statusHtml %}
+                         {% if result.extraAttributes %}
+                           {% if result.extraAttributes.locationStatus === 'ACTIVE' %}
+                             {{ locationUsageTag(result.extraAttributes.locationStatus, "govuk-tag--green") }}
+                           {% else %}
+                             {{ locationUsageTag(result.extraAttributes.locationStatus, "govuk-tag--red") }}
+                           {% endif %}
+                         {% endif %}
+                       {% endset %}
+
+                       {% set rows = (rows.push([
+                           { text: result.key },
+                           { text: result.description },
+                           { html: extraAttributesHtml },
+                           { html: statusHtml },
+                           { html: locationUseHtml },
+                           { html: chooseLocationHtml }
+                          ]), rows)
+                       %}
+
+                   {% endfor %}
+
+                   {{ govukTable({
+                       head: [
+                          { text: "Room Key" },
+                          { text: "Room Description" },
+                          { text: "Extra Attributes" },
+                          { text: "Status" },
+                          { text: "Location usage" },
+                          { text: "Action" }
+                      ],
+                      rows: rows
+                   }) }}
+            {% else %}
+              <p class="govuk-body">
+                There are no video link locations for this prison.
+              </p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

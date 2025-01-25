@@ -8,8 +8,10 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ExtractByHearingDateHandler from './handlers/extractByHearingDateHandler'
 import ExtractByBookingDateHandler from './handlers/extractByBookingDateHandler'
+import ViewPrisonsHandler from './handlers/viewPrisonsHandler'
+import ViewPrisonLocationsHandler from './handlers/viewPrisonLocationsHandler'
 
-export default function Index({ auditService, videoLinkService }: Services): Router {
+export default function Index({ auditService, videoLinkService, prisonService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
@@ -23,6 +25,8 @@ export default function Index({ auditService, videoLinkService }: Services): Rou
   route('/', new AdminHandler())
   route('/extract-by-booking-date', new ExtractByBookingDateHandler(videoLinkService))
   route('/extract-by-hearing-date', new ExtractByHearingDateHandler(videoLinkService))
+  route('/view-prison-list', new ViewPrisonsHandler(prisonService))
+  route('/view-prison-locations', new ViewPrisonLocationsHandler(prisonService))
 
   return router
 }

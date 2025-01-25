@@ -12,6 +12,20 @@ export default class PrisonService {
     return this.bookAVideoLinkApiClient.getAppointmentLocations(prisonCode, videoLinkOnly, user)
   }
 
+  public async getDecoratedAppointmentLocations(
+    prisonCode: string,
+    videoLinkOnly: boolean,
+    extendedAttributes: boolean,
+    user: Express.User,
+  ): Promise<Location[]> {
+    return this.bookAVideoLinkApiClient.getDecoratedAppointmentLocations(
+      prisonCode,
+      videoLinkOnly,
+      extendedAttributes,
+      user,
+    )
+  }
+
   public async getPrisons(enabledOnly: boolean, user: Express.User): Promise<Prison[]> {
     return this.bookAVideoLinkApiClient.getPrisons(enabledOnly, user)
   }

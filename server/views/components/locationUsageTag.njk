@@ -1,0 +1,8 @@
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% macro locationUsageTag(locationUsage, colour) %}
+   {{ govukTag({
+       text: locationUsage,
+       classes: colour,
+       attributes: { "data-qa": "location-usage-tag" }
+   }) }}
+{% endmacro %}

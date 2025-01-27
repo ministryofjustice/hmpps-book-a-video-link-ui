@@ -3,20 +3,27 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
 
-export default class ViewPrisonLocationsHandler implements PageHandler {
-  public PAGE_NAME = Page.PRISON_LOCATIONS_PAGE
+export default class ViewPrisonRoomHandler implements PageHandler {
+  public PAGE_NAME = Page.VIEW_PRISON_ROOM_PAGE
 
   constructor(private readonly prisonService: PrisonService) {}
 
   GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { prisonCode } = req.params
+    const { prisonCode, dpsLocationId } = req.params
 
     const [prison, locationList] = await Promise.all([
       this.prisonService.getPrisonByCode(prisonCode, user),
       this.prisonService.getDecoratedAppointmentLocations(prisonCode, true, true, user),
     ])
 
-    res.render('pages/admin/viewPrisonLocations', { prison, locationList })
+    const matchingRoom = locationList.filter(loc => loc.dpsLocationId === dpsLocationId)
+
+    if (matchingRoom && matchingRoom.length > 0) {
+      const room = matchingRoom[0]
+      res.render('pages/admin/viewPrisonRoom', { prison, room })
+    } else {
+      res.redirect(`/view-prison-locations/$prisonCode`)
+    }
   }
 }

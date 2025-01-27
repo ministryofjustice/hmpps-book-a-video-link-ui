@@ -23,6 +23,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.feedbackUrl = config.feedbackUrl
   app.locals.reportAFaultUrl = config.reportAFaultUrl
+  app.locals.adminLocationDecorationEnabled = config.adminLocationDecorationEnabled
 
   app.use((req, res, next) => {
     res.locals.session = req.session

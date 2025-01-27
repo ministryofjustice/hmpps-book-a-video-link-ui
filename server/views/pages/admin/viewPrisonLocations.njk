@@ -20,7 +20,7 @@
                    {% for result in locationList %}
 
                        {% set chooseLocationHtml %}
-                         <a href="/admin/show-single-location?dpsLocationId={{ result.dpsLocationId }}"
+                         <a href="/admin/view-prison-room/{{ prison.code }}/{{ result.dpsLocationId }}"
                             class="govuk-link govuk-link--no-visited-state">Choose
                           </a>
                        {% endset %}

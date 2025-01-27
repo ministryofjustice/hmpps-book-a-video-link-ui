@@ -26,14 +26,16 @@
             }) }}
         </div>
 
-        <div class="govuk-grid-column-one-third card-group__item">
-            {{ card({
-                "href": "/admin/view-prison-list",
-                "clickable": "true",
-                "heading": "Manage prison video rooms",
-                "description": "View and manage additional attributes and schedules for prison video rooms",
-                "data-qa": "manage-prison-video-rooms"
-             }) }}
-        </div>
+        {% if adminLocationDecorationEnabled %}
+            <div class="govuk-grid-column-one-third card-group__item">
+                {{ card({
+                    "href": "/admin/view-prison-list",
+                    "clickable": "true",
+                    "heading": "Manage prison video rooms",
+                    "description": "View and manage additional attributes and schedules for prison video rooms",
+                    "data-qa": "manage-prison-video-rooms"
+                 }) }}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

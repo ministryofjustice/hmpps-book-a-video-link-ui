@@ -1,7 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% set pageTitle = "Prisons enabled for video link bookings" %}
+{% set pageTitle = "Prisons enabled for video link booking" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -19,7 +19,7 @@
                    {% for result in prisonList %}
 
                        {% set choosePrisonHtml %}
-                         <a href="/admin/view-prison-locations?prisonCode={{ result.code }}"
+                         <a href="/admin/view-prison-locations/{{ result.code }}"
                             class="govuk-link govuk-link--no-visited-state">Choose
                           </a>
                        {% endset %}
@@ -46,11 +46,7 @@
                       rows: rows
                    }) }}
             {% else %}
-              <p class="govuk-body">
-                There are no prisons enabled for BVLS.
-                <a href="/admin" class="govuk-link govuk-!-font-size-19">Return to the admin menu</a>
-              </p>
-
+              <p class="govuk-body">There are no prisons enabled for BVLS</p>
             {% endif %}
         </div>
     </div>

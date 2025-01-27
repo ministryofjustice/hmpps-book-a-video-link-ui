@@ -1,0 +1,138 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/locationUsageTag.njk" import locationUsageTag %}
+
+{% set pageTitle = room.description %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <span class="govuk-heading-s">{{ prison.name }}<span>
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters-from-desktop">
+
+            <form method='POST'">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukInput({
+                    id: "locationStatus",
+                    name: "locationStatus",
+                    disabled: true,
+                    errorMessage: validationErrors | findError('locationStatus'),
+                    label: { text: "Location status" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.locationStatus or room.extraAttributes.locationStatus
+                }) }}
+
+                {{ govukInput({
+                    id: "locationUsage",
+                    name: "locationUsage",
+                    disabled: true,
+                    errorMessage: validationErrors | findError('locationUsage'),
+                    label: { text: "Location usage" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.locationUsage or room.extraAttributes.locationUsage
+                }) }}
+
+                {{ govukInput({
+                    id: "allowedParties",
+                    name: "allowedParties",
+                    disabled: true,
+                    errorMessage: validationErrors | findError('allowedParties'),
+                    label: { text: "Courts or probation teams allowed to book" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.allowedParties or room.extraAttributes.allowedParties
+                }) }}
+
+                {{ govukInput({
+                    id: "prisonVideoUrl",
+                    name: "prisonVideoUrl",
+                    disabled: true,
+                    errorMessage: validationErrors | findError('prisonVideoUrl'),
+                    label: { text: "The video URL for this room" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.prisonVideoUrl or room.extraAttributes.prisonVideoUrl
+                }) }}
+
+                {{ govukInput({
+                    id: "notes",
+                    name: "notes",
+                    disabled: true,
+                    errorMessage: validationErrors | findError('notes'),
+                    label: { text: "Any notes relating to this room" },
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.notes or room.extraAttributes.notes
+                }) }}
+
+                <h2>Room schedule</h2>
+
+                {% if room.extraAttributes.schedule.length %}
+                    <p class="govuk-body">
+
+                        {% set rows = [] %}
+
+                        {% for schedule in room.extraAttributes.schedule %}
+
+                            {% set editLinkHtml %}
+                                <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                                    class="govuk-link govuk-link--no-visited-state">Edit
+                                </a>
+                            {% endset %}
+
+                            {% set deleteLinkHtml %}
+                                <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                                   class="govuk-link govuk-link--no-visited-state">Delete
+                                </a>
+                            {% endset %}
+
+                            {% set usageHtml %}
+                                {{ locationUsageTag(schedule.locationUsage, "govuk-tag--blue") }}
+                            {% endset %}
+
+                            {% set rows = (rows.push([
+                                { text: schedule.startDayOfWeek },
+                                { text: schedule.endDayOfWeek },
+                                { text: schedule.startTime },
+                                { text: schedule.endTime },
+                                { html: usageHtml },
+                                { text: schedule.allowedParties }
+                              ]), rows)
+                            %}
+
+                        {% endfor %}
+
+                        {{ govukTable({
+                            head: [
+                                { text: "Start day" },
+                                { text: "End day" },
+                                { text: "Start time" },
+                                { text: "End time" },
+                                { text: "Usage" },
+                                { text: "Allowed parties" }
+                            ],
+                            rows: rows
+                        }) }}
+
+                    </p>
+                {% else %}
+                    <p class="govuk-body">
+                        There are no schedules for this location.
+                    </p>
+                {% endif %}
+
+                {{ govukButton({
+                    html: "Edit room",
+                    preventDoubleClick: true,
+                    type: "submit"
+                }) }}
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

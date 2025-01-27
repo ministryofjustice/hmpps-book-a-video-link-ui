@@ -136,6 +136,7 @@ export default {
   environmentName: get('ENVIRONMENT_NAME', ''),
   feedbackUrl: get('FEEDBACK_URL', '#'),
   reportAFaultUrl: get('REPORT_A_FAULT_URL', '#'),
+  adminLocationDecorationEnabled: get('FEATURE_ADMIN_LOCATION_DECORATION', 'false') === 'true',
   maintenance: {
     enabled: get('MAINTENANCE_MODE', 'false') === 'true',
     startDateTime: get('MAINTENANCE_START_DATETIME', null),

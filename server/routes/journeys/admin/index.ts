@@ -10,6 +10,7 @@ import ExtractByHearingDateHandler from './handlers/extractByHearingDateHandler'
 import ExtractByBookingDateHandler from './handlers/extractByBookingDateHandler'
 import ViewPrisonsHandler from './handlers/viewPrisonsHandler'
 import ViewPrisonLocationsHandler from './handlers/viewPrisonLocationsHandler'
+import ViewPrisonRoomHandler from './handlers/viewPrisonRoomHandler'
 
 export default function Index({ auditService, videoLinkService, prisonService }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -26,7 +27,8 @@ export default function Index({ auditService, videoLinkService, prisonService }:
   route('/extract-by-booking-date', new ExtractByBookingDateHandler(videoLinkService))
   route('/extract-by-hearing-date', new ExtractByHearingDateHandler(videoLinkService))
   route('/view-prison-list', new ViewPrisonsHandler(prisonService))
-  route('/view-prison-locations', new ViewPrisonLocationsHandler(prisonService))
+  route('/view-prison-locations/:prisonCode', new ViewPrisonLocationsHandler(prisonService))
+  route('/view-prison-room/:prisonCode/:dpsLocationId', new ViewPrisonRoomHandler(prisonService))
 
   return router
 }

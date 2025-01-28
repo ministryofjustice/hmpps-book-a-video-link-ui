@@ -1,0 +1,53 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set pageTitle = "Prisons enabled for video link booking" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full-from-desktop">
+            {% if prisonList.length %}
+               <p class="govuk-body">
+                   {% set rows = [] %}
+
+                   {% for result in prisonList %}
+
+                       {% set choosePrisonHtml %}
+                         <a href="/admin/view-prison-locations/{{ result.code }}"
+                            class="govuk-link govuk-link--no-visited-state">Choose
+                          </a>
+                       {% endset %}
+
+                       {% set rows = (rows.push([
+                           { text: result.code },
+                           { text: result.name },
+                           { text: result.enabled },
+                           { text: result.notes },
+                           { html: choosePrisonHtml }
+                          ]), rows)
+                       %}
+
+                   {% endfor %}
+
+                   {{ govukTable({
+                       head: [
+                          { text: "Code" },
+                          { text: "Name" },
+                          { text: "Enabled" },
+                          { text: "Notes" },
+                          { html: "Action" }
+                      ],
+                      rows: rows
+                   }) }}
+            {% else %}
+              <p class="govuk-body">There are no prisons enabled for BVLS</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

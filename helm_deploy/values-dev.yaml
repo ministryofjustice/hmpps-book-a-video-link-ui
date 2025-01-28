@@ -17,6 +17,7 @@ generic-service:
     AUDIT_ENABLED: "true"
     BOOK_A_VIDEO_LINK_API_URL: "https://book-a-video-link-api-dev.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
+    FEATURE_ADMIN_LOCATION_DECORATION: "true"
 
 generic-prometheus-alerts:
   businessHoursOnly: true

@@ -285,46 +285,6 @@ describe('New Booking handler', () => {
         })
     })
 
-    it('should validate an empty form on the probation journey', () => {
-      return request(app)
-        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
-        .send({})
-        .expect(() => {
-          expectErrorMessages([
-            {
-              fieldId: 'agencyCode',
-              href: '#agencyCode',
-              text: 'Select a probation team',
-            },
-            {
-              fieldId: 'hearingTypeCode',
-              href: '#hearingTypeCode',
-              text: 'Select a meeting type',
-            },
-            {
-              fieldId: 'date',
-              href: '#date',
-              text: 'Enter a date',
-            },
-            {
-              fieldId: 'startTime',
-              href: '#startTime',
-              text: 'Enter a start time',
-            },
-            {
-              fieldId: 'endTime',
-              href: '#endTime',
-              text: 'Enter an end time',
-            },
-            {
-              fieldId: 'location',
-              href: '#location',
-              text: 'Select a prison room for the court hearing',
-            },
-          ])
-        })
-    })
-
     it('should validate that the pre and post location items are filled', () => {
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)

@@ -280,7 +280,7 @@ describe('New Booking handler', () => {
             {
               fieldId: 'location',
               href: '#location',
-              text: 'Select a prison room for the court hearing',
+              text: 'Select a prison room for the probation meeting',
             },
           ])
         })
@@ -294,7 +294,6 @@ describe('New Booking handler', () => {
           date: '31/02/2022',
           startTime: { hour: 25, minute: 30 },
           endTime: { hour: 25, minute: 30 },
-          videoLinkUrl: 'a'.repeat(121),
         })
         .expect(() => {
           expectErrorMessages([
@@ -312,11 +311,6 @@ describe('New Booking handler', () => {
               fieldId: 'endTime',
               href: '#endTime',
               text: 'Enter a valid end time',
-            },
-            {
-              fieldId: 'videoLinkUrl',
-              href: '#videoLinkUrl',
-              text: 'Court hearing link must be 120 characters or less',
             },
           ])
         })
@@ -387,26 +381,12 @@ describe('New Booking handler', () => {
           startTime: { hour: 8, minute: 0 },
           endTime: { hour: 10, minute: 0 },
           location: 'LOCATION_CODE',
-          preRequired: 'yes',
-          preLocation: 'LOCATION_CODE',
-          postRequired: 'yes',
-          postLocation: 'LOCATION_CODE',
         })
         .expect(() =>
           expectErrorMessages([
             {
-              fieldId: 'preLocation',
-              href: '#preLocation',
-              text: 'You cannot change the time for this room. Select another room or contact the prison.',
-            },
-            {
               fieldId: 'location',
               href: '#location',
-              text: 'You cannot change the time for this room. Select another room or contact the prison.',
-            },
-            {
-              fieldId: 'postLocation',
-              href: '#postLocation',
               text: 'You cannot change the time for this room. Select another room or contact the prison.',
             },
           ]),
@@ -466,7 +446,6 @@ describe('New Booking handler', () => {
             },
             startTime: '1970-01-01T15:30:00.000Z',
             type: 'PROBATION',
-            videoLinkUrl: 'https://www.google.co.uk',
           }),
         )
     })

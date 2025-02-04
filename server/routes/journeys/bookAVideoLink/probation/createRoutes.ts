@@ -3,13 +3,13 @@ import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
-import NewBookingHandler from './newBookingHandler'
+import NewBookingHandler from './handlers/newBookingHandler'
 import PrisonerSearchHandler from '../handlers/prisonerSearchHandler'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
-import CheckBookingHandler from './checkBookingHandler'
+import CheckBookingHandler from './handlers/checkBookingHandler'
 import PrisonerSearchResultsHandler from '../handlers/prisonerSearchResultsHandler'
-import ConfirmationHandler from './confirmationHandler'
-import BookingNotAvailableHandler from './bookingNotAvailableHandler'
+import ConfirmationHandler from './handlers/confirmationHandler'
+import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function CreateRoutes({
   auditService,

@@ -2,26 +2,32 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { dropdownOptions, existsByLabel, existsByName, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
-import PrisonService from '../../../../services/prisonService'
-import PrisonerService from '../../../../services/prisonerService'
-import VideoLinkService from '../../../../services/videoLinkService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
-import { formatDate } from '../../../../utils/utils'
-import expectJourneySession from '../../../testutils/testUtilRoute'
-import { Court, Location, ProbationTeam, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
-import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import {
+  dropdownOptions,
+  existsByLabel,
+  existsByName,
+  getPageHeader,
+  getValueByKey,
+} from '../../../../testutils/cheerio'
+import CourtsService from '../../../../../services/courtsService'
+import ProbationTeamsService from '../../../../../services/probationTeamsService'
+import PrisonService from '../../../../../services/prisonService'
+import PrisonerService from '../../../../../services/prisonerService'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { formatDate } from '../../../../../utils/utils'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
+import { Court, Location, ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/courtsService')
-jest.mock('../../../../services/probationTeamsService')
-jest.mock('../../../../services/prisonService')
-jest.mock('../../../../services/prisonerService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/courtsService')
+jest.mock('../../../../../services/probationTeamsService')
+jest.mock('../../../../../services/prisonService')
+jest.mock('../../../../../services/prisonerService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>

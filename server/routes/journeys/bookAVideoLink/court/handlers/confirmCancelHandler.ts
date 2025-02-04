@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import VideoLinkService from '../../../../services/videoLinkService'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import VideoLinkService from '../../../../../services/videoLinkService'
 
 export default class ConfirmCancelHandler implements PageHandler {
   public PAGE_NAME = Page.CONFIRM_CANCEL_PAGE

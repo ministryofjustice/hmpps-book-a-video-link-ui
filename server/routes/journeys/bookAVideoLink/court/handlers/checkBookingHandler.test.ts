@@ -1,27 +1,27 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { existsByDataQa, getPageHeader } from '../../../testutils/cheerio'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
-import PrisonService from '../../../../services/prisonService'
-import VideoLinkService from '../../../../services/videoLinkService'
-import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import CourtsService from '../../../../../services/courtsService'
+import ProbationTeamsService from '../../../../../services/probationTeamsService'
+import PrisonService from '../../../../../services/prisonService'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import {
   AvailabilityResponse,
   Court,
   Location,
   ProbationTeam,
   ReferenceCode,
-} from '../../../../@types/bookAVideoLinkApi/types'
+} from '../../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/courtsService')
-jest.mock('../../../../services/probationTeamsService')
-jest.mock('../../../../services/prisonService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/courtsService')
+jest.mock('../../../../../services/probationTeamsService')
+jest.mock('../../../../../services/prisonService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>

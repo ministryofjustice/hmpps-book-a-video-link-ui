@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import VideoLinkService from '../../../../services/videoLinkService'
-import PrisonerService from '../../../../services/prisonerService'
-import PrisonService from '../../../../services/prisonService'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import PrisonerService from '../../../../../services/prisonerService'
+import PrisonService from '../../../../../services/prisonService'
 
 export default class ConfirmationHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_CONFIRMATION_PAGE

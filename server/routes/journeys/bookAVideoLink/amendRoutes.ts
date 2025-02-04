@@ -4,12 +4,12 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import NewBookingHandler from './court/newBookingHandler'
+import NewBookingHandler from './court/handlers/newBookingHandler'
 import validationMiddleware from '../../../middleware/validationMiddleware'
-import CheckBookingHandler from './court/checkBookingHandler'
-import ConfirmationHandler from './court/confirmationHandler'
-import BookingNotAvailableHandler from './court/bookingNotAvailableHandler'
-import CommentsHandler from './court/commentsHandler'
+import CheckBookingHandler from './court/handlers/checkBookingHandler'
+import ConfirmationHandler from './court/handlers/confirmationHandler'
+import BookingNotAvailableHandler from './court/handlers/bookingNotAvailableHandler'
+import CommentsHandler from './court/handlers/commentsHandler'
 
 export default function AmendRoutes({
   auditService,

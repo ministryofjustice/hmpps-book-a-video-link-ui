@@ -1,27 +1,27 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { existsByDataQa, getPageHeader } from '../../../testutils/cheerio'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
-import PrisonService from '../../../../services/prisonService'
-import VideoLinkService from '../../../../services/videoLinkService'
-import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import CourtsService from '../../../../../services/courtsService'
+import ProbationTeamsService from '../../../../../services/probationTeamsService'
+import PrisonService from '../../../../../services/prisonService'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import {
   AvailabilityResponse,
   Court,
   Location,
   ProbationTeam,
   ReferenceCode,
-} from '../../../../@types/bookAVideoLinkApi/types'
+} from '../../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/courtsService')
-jest.mock('../../../../services/probationTeamsService')
-jest.mock('../../../../services/prisonService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/courtsService')
+jest.mock('../../../../../services/probationTeamsService')
+jest.mock('../../../../../services/prisonService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
@@ -115,7 +115,7 @@ describe('Check Booking handler', () => {
       videoLinkService.prisonShouldBeWarnedOfBooking.mockReturnValue(serviceResult)
 
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -125,7 +125,7 @@ describe('Check Booking handler', () => {
 
     it('should not render the warning to consult a prison when requesting a booking', () => {
       return request(app)
-        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .get(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -137,7 +137,7 @@ describe('Check Booking handler', () => {
 
     it('should render the pending prison approval warning in request mode', () => {
       return request(app)
-        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .get(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -147,7 +147,7 @@ describe('Check Booking handler', () => {
 
     it('should not render the pending prison approval warning in create mode', () => {
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -159,7 +159,7 @@ describe('Check Booking handler', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect(302)
         .expect('location', 'not-available')
     })
@@ -170,7 +170,7 @@ describe('Check Booking handler', () => {
       appSetup({ bookAVideoLink: { type: 'COURT' } })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .send({ comments: 'a'.repeat(401) })
         .expect(() => {
           expectErrorMessages([
@@ -189,7 +189,7 @@ describe('Check Booking handler', () => {
       videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation/1')
@@ -208,7 +208,7 @@ describe('Check Booking handler', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'not-available')
@@ -226,7 +226,7 @@ describe('Check Booking handler', () => {
       })
 
       return request(app)
-        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
+        .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
         .send({ comments: 'comment' })
         .expect(302)
         .expect('location', 'confirmation')

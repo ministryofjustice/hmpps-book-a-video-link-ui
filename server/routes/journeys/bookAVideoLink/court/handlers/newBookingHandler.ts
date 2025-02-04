@@ -3,25 +3,25 @@ import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsEnum, IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
 import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import CourtsService from '../../../../../services/courtsService'
+import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import {
   dateAtTime,
   extractPrisonAppointmentsFromBooking,
   formatDate,
   parseDatePickerDate,
   simpleTimeToDate,
-} from '../../../../utils/utils'
-import YesNo from '../../../enumerator/yesNo'
-import IsValidDate from '../../../validators/isValidDate'
-import Validator from '../../../validators/validator'
-import PrisonService from '../../../../services/prisonService'
-import PrisonerService from '../../../../services/prisonerService'
-import VideoLinkService from '../../../../services/videoLinkService'
-import BavlJourneyType from '../../../enumerator/bavlJourneyType'
-import { PrisonAppointment } from '../../../../@types/bookAVideoLinkApi/types'
+} from '../../../../../utils/utils'
+import YesNo from '../../../../enumerator/yesNo'
+import IsValidDate from '../../../../validators/isValidDate'
+import Validator from '../../../../validators/validator'
+import PrisonService from '../../../../../services/prisonService'
+import PrisonerService from '../../../../../services/prisonerService'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import BavlJourneyType from '../../../../enumerator/bavlJourneyType'
+import { PrisonAppointment } from '../../../../../@types/bookAVideoLinkApi/types'
 
 class Body {
   @Expose()

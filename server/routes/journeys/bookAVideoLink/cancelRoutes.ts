@@ -5,7 +5,7 @@ import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
-import ConfirmCancelHandler from './court/confirmCancelHandler'
+import ConfirmCancelHandler from './court/handlers/confirmCancelHandler'
 import BookingCancelledHandler from './handlers/bookingCancelledHandler'
 
 export default function CancelRoutes({ auditService, prisonerService, videoLinkService }: Services): Router {

@@ -1,14 +1,14 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
-import VideoLinkService from '../../../../services/videoLinkService'
-import expectJourneySession from '../../../testutils/testUtilRoute'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getPageHeader } from '../../../../testutils/cheerio'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
@@ -44,7 +44,7 @@ describe('Confirm Cancel handler', () => {
   describe('GET', () => {
     it('should render the correct view page', () => {
       return request(app)
-        .get(`/court/booking/cancel/1/${journeyId()}/confirm`)
+        .get(`/probation/booking/cancel/1/${journeyId()}/confirm`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -62,9 +62,9 @@ describe('Confirm Cancel handler', () => {
       videoLinkService.bookingIsAmendable.mockReturnValue(false)
 
       return request(app)
-        .get(`/court/booking/cancel/1/${journeyId()}/confirm`)
+        .get(`/probation/booking/cancel/1/${journeyId()}/confirm`)
         .expect(302)
-        .expect('location', '/court/view-booking/1')
+        .expect('location', '/probation/view-booking/1')
         .then(() => expectJourneySession(app, 'bookAVideoLink', null))
     })
   })
@@ -72,7 +72,7 @@ describe('Confirm Cancel handler', () => {
   describe('POST', () => {
     it('should cancel the booking', () => {
       return request(app)
-        .post(`/court/booking/cancel/1/${journeyId()}/confirm`)
+        .post(`/probation/booking/cancel/1/${journeyId()}/confirm`)
         .send({})
         .expect(302)
         .expect('location', 'confirmation')

@@ -3,12 +3,12 @@ import { Request, Response } from 'express'
 import { Expose } from 'class-transformer'
 import { IsOptional, MaxLength } from 'class-validator'
 import { parseISO } from 'date-fns'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
-import PrisonService from '../../../../services/prisonService'
-import VideoLinkService from '../../../../services/videoLinkService'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import CourtsService from '../../../../../services/courtsService'
+import ProbationTeamsService from '../../../../../services/probationTeamsService'
+import PrisonService from '../../../../../services/prisonService'
+import VideoLinkService from '../../../../../services/videoLinkService'
 
 class Body {
   @Expose()

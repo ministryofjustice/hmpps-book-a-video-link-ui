@@ -1,13 +1,13 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
-import VideoLinkService from '../../../../services/videoLinkService'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import VideoLinkService from '../../../../../services/videoLinkService'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>

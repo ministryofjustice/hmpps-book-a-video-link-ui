@@ -6,9 +6,9 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import PrisonerNotListedHandler from './handlers/prisonerNotListedHandler'
 import PrisonerDetailsHandler from './handlers/prisonerDetailsHandler'
-import NewBookingHandler from './court/newBookingHandler'
-import CheckBookingHandler from './court/checkBookingHandler'
-import BookingNotAvailableHandler from './court/bookingNotAvailableHandler'
+import NewBookingHandler from './court/handlers/newBookingHandler'
+import CheckBookingHandler from './court/handlers/checkBookingHandler'
+import BookingNotAvailableHandler from './court/handlers/bookingNotAvailableHandler'
 import BookingRequestedHandler from './handlers/bookingRequestedHandler'
 
 export default function RequestRoutes({

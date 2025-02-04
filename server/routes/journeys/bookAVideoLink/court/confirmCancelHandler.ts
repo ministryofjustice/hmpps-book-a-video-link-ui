@@ -8,7 +8,7 @@ export default class ConfirmCancelHandler implements PageHandler {
 
   constructor(private readonly videoLinkService: VideoLinkService) {}
 
-  public GET = async (req: Request, res: Response) => res.render('pages/bookAVideoLink/confirmCancel')
+  public GET = async (req: Request, res: Response) => res.render('pages/bookAVideoLink/court/confirmCancel')
 
   public POST = async (req: Request, res: Response) => {
     await this.videoLinkService.cancelVideoLinkBooking(+req.params.bookingId, res.locals.user)

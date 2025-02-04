@@ -143,7 +143,7 @@ export default class NewBookingHandler implements PageHandler {
         ? await this.videoLinkService.getCourtHearingTypes(user)
         : await this.videoLinkService.getProbationMeetingTypes(user)
 
-    res.render('pages/bookAVideoLink/newBooking', {
+    res.render('pages/bookAVideoLink/court/newBooking', {
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,

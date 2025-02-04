@@ -69,7 +69,7 @@ export default class BookingNotAvailableHandler implements PageHandler {
       return res.redirect('check-booking')
     }
 
-    return res.render('pages/bookAVideoLink/notAvailable', { alternatives })
+    return res.render('pages/bookAVideoLink/court/notAvailable', { alternatives })
   }
 
   public POST = async (req: Request, res: Response) => {

@@ -31,7 +31,7 @@ export default class ConfirmationHandler implements PageHandler {
 
     req.session.journey.bookAVideoLink = null
 
-    res.render('pages/bookAVideoLink/confirmation', {
+    res.render('pages/bookAVideoLink/court/confirmation', {
       prisoner,
       prison,
       booking,

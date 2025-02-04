@@ -57,7 +57,7 @@ export default class CheckBookingHandler implements PageHandler {
       mode !== 'request' &&
       this.videoLinkService.prisonShouldBeWarnedOfBooking(parseISO(date), parseISO(preHearingStartTime || startTime))
 
-    return res.render('pages/bookAVideoLink/checkBooking', {
+    return res.render('pages/bookAVideoLink/court/checkBooking', {
       warnPrison,
       prisoner,
       agencies,

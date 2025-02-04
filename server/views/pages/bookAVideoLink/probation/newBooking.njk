@@ -1,0 +1,350 @@
+{% extends "partials/layout.njk" %}
+
+{% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set mode = session.req.params.mode %}
+{% set pageTitle = "Change video link booking" if mode == 'amend' else 'Enter video link booking details' %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                                text: "Name"
+                            },
+                            value: {
+                                text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Date of birth"
+                            },
+                            value: {
+                                text: prisoner.dateOfBirth | formatDate
+                            }
+                        } if mode == 'request',
+                        {
+                            key: {
+                                text: "Prison"
+                            },
+                            value: {
+                                text: prisoner.prisonName
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Court"
+                            },
+                            value: {
+                                text: agencies[0].description
+                            }
+                        } if agencies.length == 1 and session.req.params.type == BavlJourneyType.COURT,
+                        {
+                            key: {
+                                text: "Court"
+                            },
+                            value: {
+                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                            }
+                        } if mode == 'amend' and agencies.length > 1 and session.req.params.type == BavlJourneyType.COURT,
+                        {
+                            key: {
+                                text: "Probation Team"
+                            },
+                            value: {
+                                text: agencies[0].description
+                            }
+                        } if agencies.length == 1 and session.req.params.type == BavlJourneyType.PROBATION,
+                        {
+                            key: {
+                                text: "Probation Team"
+                            },
+                            value: {
+                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                            }
+                        } if mode == 'amend' and agencies.length > 1 and session.req.params.type == BavlJourneyType.PROBATION
+                    ]
+                }) }}
+
+                {% if agencies.length === 1 %}
+                    <input type="hidden" name="agencyCode" value="{{ agencies[0].code }}" />
+                {% elseif mode === 'amend' %}
+                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookAVideoLink.agencyCode }}" />
+                {% else %}
+                    
+                    {% set items = [{ text: "Select court" if session.req.params.type == BavlJourneyType.COURT else "Select probation team", value: "" }] %}
+                    {% for agency in agencies %}
+                        {% set items = (items.push({
+                            value: agency.code,
+                            text: agency.description,
+                            selected: formResponses.agencyCode == agency.code or session.journey.bookAVideoLink.agencyCode == agency.code
+                        }), items) %}
+                    {% endfor %}
+
+                    {{ govukSelect({
+                        name: "agencyCode",
+                        id: "agencyCode",
+                        label: {
+                            text: "Which court is the hearing for?" if session.req.params.type == BavlJourneyType.COURT else "Which probation team is the meeting for?",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("agencyCode"),
+                        classes: "govuk-!-width-one-third"
+                    }) }}
+                {% endif %}
+
+                {% set items = [{ text: "Select hearing type" if session.req.params.type == BavlJourneyType.COURT else "Select meeting type", value: "" }] %}
+                {% for hearingType in hearingTypes %}
+                    {% set items = (items.push({
+                        value: hearingType.code,
+                        text: hearingType.description,
+                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookAVideoLink.hearingTypeCode == hearingType.code
+                    }), items) %}
+                {% endfor %}
+                {{ govukSelect({
+                    name: "hearingTypeCode",
+                    id: "hearingTypeCode",
+                    label: {
+                        text: "Which type of hearing is this?" if session.req.params.type == BavlJourneyType.COURT else "Which type of meeting is this?",
+                        classes: 'govuk-label--s'
+                    },
+                    items: items,
+                    errorMessage: validationErrors | findError("hearingTypeCode"),
+                    classes: "govuk-!-width-one-third"
+                }) }}
+
+                {{ mojDatePicker({
+                    id: 'date',
+                    name: 'date',
+                    label: {
+                        text: "Date",
+                        classes: 'govuk-label--s'
+                    },
+                    hint: {
+                        text: 'Enter the date, for example ' + exampleDatePickerDate() + ', or select the calendar to pick a date'
+                    },
+                    errorMessage: validationErrors | findError('date'),
+                    value: formResponses.date or session.journey.bookAVideoLink.date | formatDate('dd/MM/yyyy')
+                }) }}
+
+                {{ hmppsTimePicker({
+                    id: 'startTime',
+                    name: 'startTime',
+                    label: {
+                        text: 'Start time',
+                        classes: 'govuk-fieldset__legend--s'
+                    },
+                    errorMessage: validationErrors | findError('startTime'),
+                    formResponses: formResponses.startTime or session.journey.bookAVideoLink.startTime
+                }) }}
+
+                {{ hmppsTimePicker({
+                    id: 'endTime',
+                    name: 'endTime',
+                    label: {
+                        text: 'End time',
+                        classes: 'govuk-fieldset__legend--s'
+                    },
+                    errorMessage: validationErrors | findError('endTime'),
+                    validationErrors: validationErrors,
+                    formResponses: formResponses.endTime or session.journey.bookAVideoLink.endTime
+                }) }}
+
+                {% set items = [{ text: "Select prison room", value: "" }] %}
+                {% for room in rooms | filter('allowedForMain', true) %}
+                    {% set items = (items.push({
+                        value: room.key,
+                        text: room.description,
+                        selected: formResponses.location == room.key or session.journey.bookAVideoLink.locationCode == room.key
+                    }), items) %}
+                {% endfor %}
+
+                {{ govukSelect({
+                    name: "location",
+                    id: "location",
+                    label: {
+                        text: "Prison room for court hearing" if session.req.params.type == BavlJourneyType.COURT else "Prison room for probation meeting",
+                        classes: 'govuk-label--s'
+                    },
+                    items: items,
+                    errorMessage: validationErrors | findError("location"),
+                    classes: "govuk-!-width-one-third"
+                }) }}
+
+                {% if session.req.params.type == BavlJourneyType.COURT %}
+                    {% set items = [{ text: "Select prison room", value: "" }] %}
+                    {% for room in rooms | filter('allowedForPre', true) %}
+                        {% set items = (items.push({
+                            value: room.key,
+                            text: room.description,
+                            selected: formResponses.preLocation == room.key or session.journey.bookAVideoLink.preLocationCode == room.key
+                        }), items) %}
+                    {% endfor %}
+
+                    {% set preLocationsHtml %}
+                        {{ govukSelect({
+                            name: "preLocation",
+                            id: "preLocation",
+                            label: {
+                                text: "Prison room for pre-court hearing briefing",
+                                classes: 'govuk-label--s'
+                            },
+                            items: items,
+                            errorMessage: validationErrors | findError("preLocation"),
+                            classes: "govuk-!-width-one-third"
+                        }) }}
+                    {% endset -%}
+
+                    {{ govukRadios({
+                        idPrefix: "preRequired",
+                        name: "preRequired",
+                        errorMessage: validationErrors | findError('preRequired'),
+                        fieldset: {
+                            legend: {
+                                text: "Do you want to add a pre-court hearing briefing?",
+                                classes: "govuk-fieldset__legend--s"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes",
+                                checked: formResponses.preRequired == 'yes' or (session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired),
+                                conditional: {
+                                    html: preLocationsHtml
+                                }
+                            },
+                            {
+                                value: "no",
+                                text: "No",
+                                checked: formResponses.preRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired)
+                            }
+                        ]
+                    }) }}
+
+                    {% set items = [{ text: "Select prison room", value: "" }] %}
+                    {% for room in rooms | filter('allowedForPost', true) %}
+                        {% set items = (items.push({
+                            value: room.key,
+                            text: room.description,
+                            selected: formResponses.postLocation == room.key or session.journey.bookAVideoLink.postLocationCode == room.key
+                        }), items) %}
+                    {% endfor %}
+                    {% set postLocationsHtml %}
+                        {{ govukSelect({
+                            name: "postLocation",
+                            id: "postLocation",
+                            label: {
+                                text:  "Prison room for post-court hearing briefing",
+                                classes: 'govuk-label--s'
+                            },
+                            items: items,
+                            errorMessage: validationErrors | findError("postLocation"),
+                            classes: "govuk-!-width-one-third"
+                        }) }}
+                    {% endset -%}
+
+                    {{ govukRadios({
+                        idPrefix: "postRequired",
+                        name: "postRequired",
+                        errorMessage: validationErrors | findError('postRequired'),
+                        fieldset: {
+                            legend: {
+                                text: "Do you want to add a post-court hearing briefing?",
+                                classes: "govuk-fieldset__legend--s"
+                            }
+                        },
+                        items: [
+                            {
+                                value: "yes",
+                                text: "Yes",
+                                checked: formResponses.postRequired == 'yes' or (session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired),
+                                conditional: {
+                                    html: postLocationsHtml
+                                }
+                            },
+                            {
+                                value: "no",
+                                text: "No",
+                                checked: formResponses.postRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired)
+                            }
+                        ]
+                    }) }}
+
+                    {% set courtHearingLinkHtml %}
+                        {{ govukInput({
+                            id: "videoLinkUrl",
+                            name: "videoLinkUrl",
+                            label: {
+                                text: "Court hearing link",
+                                classes: 'govuk-label--s'
+                            },
+                            classes: 'govuk-!-width-three-quarters',
+                            errorMessage: validationErrors | findError('videoLinkUrl'),
+                            value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
+                        }) }}
+                    {% endset %}
+
+                    {{ govukRadios({
+                        idPrefix: "cvpRequired",
+                        name: "cvpRequired",
+                        errorMessage: validationErrors | findError('cvpRequired'),
+                        fieldset: {
+                            legend: {
+                                text: "Do you know the link for this video link hearing?",
+                                classes: "govuk-fieldset__legend--s"
+                            }
+                        },
+                        items: [
+                            {
+                                value: 'yes',
+                                text: "Yes",
+                                checked: formResponses.cvpRequired == 'yes' or session.journey.bookAVideoLink.videoLinkUrl,
+                                conditional: {
+                                    html: courtHearingLinkHtml
+                                }
+                            },
+                            {
+                                value: 'no',
+                                text: "No",
+                                checked: formResponses.cvpRequired == 'no' or (not session.journey.bookAVideoLink.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
+                            }
+                        ]
+                    }) }}
+
+                {% endif %}
+
+                {{ govukButton({
+                    text: "Continue",
+                    type: "submit"
+                }) }}
+            </form>
+
+            {% if mode == 'create' or mode == 'request' %}
+                <a href="../../../create/prisoner-search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+            {% else %}
+                <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

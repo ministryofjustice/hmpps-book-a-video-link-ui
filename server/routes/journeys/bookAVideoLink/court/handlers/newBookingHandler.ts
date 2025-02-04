@@ -25,17 +25,11 @@ import { PrisonAppointment } from '../../../../../@types/bookAVideoLinkApi/types
 
 class Body {
   @Expose()
-  @IsNotEmpty({
-    message: args =>
-      `Select a ${(args.object as { type: string }).type === BavlJourneyType.COURT ? 'court' : 'probation team'}`,
-  })
+  @IsNotEmpty({ message: `Select a court` })
   agencyCode: string
 
   @Expose()
-  @IsNotEmpty({
-    message: args =>
-      `Select a ${(args.object as { type: string }).type === BavlJourneyType.COURT ? 'hearing type' : 'meeting type'}`,
-  })
+  @IsNotEmpty({ message: `Select a hearing type` })
   hearingTypeCode: string
 
   @Expose()
@@ -72,31 +66,26 @@ class Body {
   location: string
 
   @Expose()
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsEnum(YesNo, { message: 'Select if a pre-court hearing should be added' })
   preRequired: YesNo
 
   @Expose()
   @Transform(({ value, obj }) => (obj.preRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @ValidateIf(o => o.preRequired === YesNo.YES)
   @IsNotEmpty({ message: 'Select a prison room for the pre-court hearing' })
   preLocation: string
 
   @Expose()
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsEnum(YesNo, { message: 'Select if a post-court hearing should be added' })
   postRequired: YesNo
 
   @Expose()
   @Transform(({ value, obj }) => (obj.postRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @ValidateIf(o => o.postRequired === YesNo.YES)
   @IsNotEmpty({ message: 'Select a prison room for the post-court hearing' })
   postLocation: string
 
   @Expose()
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
   @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
   cvpRequired: string
 

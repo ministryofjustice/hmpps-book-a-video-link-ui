@@ -36,28 +36,12 @@
                     },
                     {
                         key: {
-                            text: "Court"
-                        },
-                        value: {
-                            text: booking.courtDescription
-                        }
-                    } if booking.bookingType == 'COURT',
-                    {
-                        key: {
                             text: "Probation team"
                         },
                         value: {
                             text: booking.probationTeamDescription
                         }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Hearing type"
-                        },
-                        value: {
-                            text: booking.courtHearingTypeDescription
-                        }
-                    } if booking.bookingType == 'COURT',
+                    },
                     {
                         key: {
                             text: "Meeting type"
@@ -65,15 +49,7 @@
                         value: {
                             text: booking.probationMeetingTypeDescription
                         }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Prison room"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
-                        }
-                    } if booking.bookingType == 'COURT',
+                    },
                     {
                         key: {
                             text: "Prison room"
@@ -81,15 +57,7 @@
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
                         }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Date"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).appointmentDate | formatDate
-                        }
-                    } if booking.bookingType == 'COURT',
+                    },
                     {
                         key: {
                             text: "Date"
@@ -97,15 +65,7 @@
                         value: {
                             text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).appointmentDate | formatDate
                         }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Hearing start time"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime
-                        }
-                    } if booking.bookingType == 'COURT',
+                    },
                     {
                         key: {
                             text: "Meeting start time"
@@ -113,15 +73,7 @@
                         value: {
                             text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime
                         }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Hearing end time"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
-                        }
-                    } if booking.bookingType == 'COURT',
+                    },
                     {
                         key: {
                             text: "Meeting end time"
@@ -129,31 +81,7 @@
                         value: {
                             text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
                         }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Pre-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
-                    {
-                        key: {
-                            text: "Post-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
-                    {
-                        key: {
-                            text: "Court hearing link"
-                        },
-                        value: {
-                            text: booking.videoLinkUrl or "Not yet known"
-                        }
-                    } if booking.bookingType == 'COURT'
+                    }
                 ]
             }) }}
 

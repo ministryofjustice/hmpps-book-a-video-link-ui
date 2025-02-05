@@ -57,7 +57,7 @@
                             value: {
                                 text: agencies[0].description
                             }
-                        } if agencies.length == 1 and session.req.params.type == BavlJourneyType.COURT,
+                        } if agencies.length == 1,
                         {
                             key: {
                                 text: "Court"
@@ -65,23 +65,7 @@
                             value: {
                                 text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
                             }
-                        } if mode == 'amend' and agencies.length > 1 and session.req.params.type == BavlJourneyType.COURT,
-                        {
-                            key: {
-                                text: "Probation Team"
-                            },
-                            value: {
-                                text: agencies[0].description
-                            }
-                        } if agencies.length == 1 and session.req.params.type == BavlJourneyType.PROBATION,
-                        {
-                            key: {
-                                text: "Probation Team"
-                            },
-                            value: {
-                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
-                            }
-                        } if mode == 'amend' and agencies.length > 1 and session.req.params.type == BavlJourneyType.PROBATION
+                        } if mode == 'amend' and agencies.length > 1
                     ]
                 }) }}
 
@@ -91,7 +75,7 @@
                     <input type="hidden" name="agencyCode" value="{{ session.journey.bookAVideoLink.agencyCode }}" />
                 {% else %}
                     
-                    {% set items = [{ text: "Select court" if session.req.params.type == BavlJourneyType.COURT else "Select probation team", value: "" }] %}
+                    {% set items = [{ text: "Select court", value: "" }] %}
                     {% for agency in agencies %}
                         {% set items = (items.push({
                             value: agency.code,
@@ -104,7 +88,7 @@
                         name: "agencyCode",
                         id: "agencyCode",
                         label: {
-                            text: "Which court is the hearing for?" if session.req.params.type == BavlJourneyType.COURT else "Which probation team is the meeting for?",
+                            text: "Which court is the hearing for?",
                             classes: 'govuk-label--s'
                         },
                         items: items,
@@ -113,7 +97,7 @@
                     }) }}
                 {% endif %}
 
-                {% set items = [{ text: "Select hearing type" if session.req.params.type == BavlJourneyType.COURT else "Select meeting type", value: "" }] %}
+                {% set items = [{ text: "Select hearing type", value: "" }] %}
                 {% for hearingType in hearingTypes %}
                     {% set items = (items.push({
                         value: hearingType.code,
@@ -125,7 +109,7 @@
                     name: "hearingTypeCode",
                     id: "hearingTypeCode",
                     label: {
-                        text: "Which type of hearing is this?" if session.req.params.type == BavlJourneyType.COURT else "Which type of meeting is this?",
+                        text: "Which type of hearing is this?",
                         classes: 'govuk-label--s'
                     },
                     items: items,
@@ -183,7 +167,7 @@
                     name: "location",
                     id: "location",
                     label: {
-                        text: "Prison room for court hearing" if session.req.params.type == BavlJourneyType.COURT else "Prison room for probation meeting",
+                        text: "Prison room for court hearing",
                         classes: 'govuk-label--s'
                     },
                     items: items,
@@ -191,148 +175,145 @@
                     classes: "govuk-!-width-one-third"
                 }) }}
 
-                {% if session.req.params.type == BavlJourneyType.COURT %}
-                    {% set items = [{ text: "Select prison room", value: "" }] %}
-                    {% for room in rooms | filter('allowedForPre', true) %}
-                        {% set items = (items.push({
-                            value: room.key,
-                            text: room.description,
-                            selected: formResponses.preLocation == room.key or session.journey.bookAVideoLink.preLocationCode == room.key
-                        }), items) %}
-                    {% endfor %}
+                {% set items = [{ text: "Select prison room", value: "" }] %}
+                {% for room in rooms | filter('allowedForPre', true) %}
+                    {% set items = (items.push({
+                        value: room.key,
+                        text: room.description,
+                        selected: formResponses.preLocation == room.key or session.journey.bookAVideoLink.preLocationCode == room.key
+                    }), items) %}
+                {% endfor %}
 
-                    {% set preLocationsHtml %}
-                        {{ govukSelect({
-                            name: "preLocation",
-                            id: "preLocation",
-                            label: {
-                                text: "Prison room for pre-court hearing briefing",
-                                classes: 'govuk-label--s'
-                            },
-                            items: items,
-                            errorMessage: validationErrors | findError("preLocation"),
-                            classes: "govuk-!-width-one-third"
-                        }) }}
-                    {% endset -%}
+                {% set preLocationsHtml %}
+                    {{ govukSelect({
+                        name: "preLocation",
+                        id: "preLocation",
+                        label: {
+                            text: "Prison room for pre-court hearing briefing",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("preLocation"),
+                        classes: "govuk-!-width-one-third"
+                    }) }}
+                {% endset -%}
 
-                    {{ govukRadios({
-                        idPrefix: "preRequired",
-                        name: "preRequired",
-                        errorMessage: validationErrors | findError('preRequired'),
-                        fieldset: {
-                            legend: {
-                                text: "Do you want to add a pre-court hearing briefing?",
-                                classes: "govuk-fieldset__legend--s"
+                {{ govukRadios({
+                    idPrefix: "preRequired",
+                    name: "preRequired",
+                    errorMessage: validationErrors | findError('preRequired'),
+                    fieldset: {
+                        legend: {
+                            text: "Do you want to add a pre-court hearing briefing?",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "yes",
+                            text: "Yes",
+                            checked: formResponses.preRequired == 'yes' or (session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired),
+                            conditional: {
+                                html: preLocationsHtml
                             }
                         },
-                        items: [
-                            {
-                                value: "yes",
-                                text: "Yes",
-                                checked: formResponses.preRequired == 'yes' or (session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired),
-                                conditional: {
-                                    html: preLocationsHtml
-                                }
-                            },
-                            {
-                                value: "no",
-                                text: "No",
-                                checked: formResponses.preRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired)
-                            }
-                        ]
+                        {
+                            value: "no",
+                            text: "No",
+                            checked: formResponses.preRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired)
+                        }
+                    ]
+                }) }}
+
+                {% set items = [{ text: "Select prison room", value: "" }] %}
+                {% for room in rooms | filter('allowedForPost', true) %}
+                    {% set items = (items.push({
+                        value: room.key,
+                        text: room.description,
+                        selected: formResponses.postLocation == room.key or session.journey.bookAVideoLink.postLocationCode == room.key
+                    }), items) %}
+                {% endfor %}
+                {% set postLocationsHtml %}
+                    {{ govukSelect({
+                        name: "postLocation",
+                        id: "postLocation",
+                        label: {
+                            text:  "Prison room for post-court hearing briefing",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("postLocation"),
+                        classes: "govuk-!-width-one-third"
                     }) }}
+                {% endset -%}
 
-                    {% set items = [{ text: "Select prison room", value: "" }] %}
-                    {% for room in rooms | filter('allowedForPost', true) %}
-                        {% set items = (items.push({
-                            value: room.key,
-                            text: room.description,
-                            selected: formResponses.postLocation == room.key or session.journey.bookAVideoLink.postLocationCode == room.key
-                        }), items) %}
-                    {% endfor %}
-                    {% set postLocationsHtml %}
-                        {{ govukSelect({
-                            name: "postLocation",
-                            id: "postLocation",
-                            label: {
-                                text:  "Prison room for post-court hearing briefing",
-                                classes: 'govuk-label--s'
-                            },
-                            items: items,
-                            errorMessage: validationErrors | findError("postLocation"),
-                            classes: "govuk-!-width-one-third"
-                        }) }}
-                    {% endset -%}
-
-                    {{ govukRadios({
-                        idPrefix: "postRequired",
-                        name: "postRequired",
-                        errorMessage: validationErrors | findError('postRequired'),
-                        fieldset: {
-                            legend: {
-                                text: "Do you want to add a post-court hearing briefing?",
-                                classes: "govuk-fieldset__legend--s"
+                {{ govukRadios({
+                    idPrefix: "postRequired",
+                    name: "postRequired",
+                    errorMessage: validationErrors | findError('postRequired'),
+                    fieldset: {
+                        legend: {
+                            text: "Do you want to add a post-court hearing briefing?",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "yes",
+                            text: "Yes",
+                            checked: formResponses.postRequired == 'yes' or (session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired),
+                            conditional: {
+                                html: postLocationsHtml
                             }
                         },
-                        items: [
-                            {
-                                value: "yes",
-                                text: "Yes",
-                                checked: formResponses.postRequired == 'yes' or (session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired),
-                                conditional: {
-                                    html: postLocationsHtml
-                                }
-                            },
-                            {
-                                value: "no",
-                                text: "No",
-                                checked: formResponses.postRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired)
-                            }
-                        ]
+                        {
+                            value: "no",
+                            text: "No",
+                            checked: formResponses.postRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired)
+                        }
+                    ]
+                }) }}
+
+                {% set courtHearingLinkHtml %}
+                    {{ govukInput({
+                        id: "videoLinkUrl",
+                        name: "videoLinkUrl",
+                        label: {
+                            text: "Court hearing link",
+                            classes: 'govuk-label--s'
+                        },
+                        classes: 'govuk-!-width-three-quarters',
+                        errorMessage: validationErrors | findError('videoLinkUrl'),
+                        value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
                     }) }}
+                {% endset %}
 
-                    {% set courtHearingLinkHtml %}
-                        {{ govukInput({
-                            id: "videoLinkUrl",
-                            name: "videoLinkUrl",
-                            label: {
-                                text: "Court hearing link",
-                                classes: 'govuk-label--s'
-                            },
-                            classes: 'govuk-!-width-three-quarters',
-                            errorMessage: validationErrors | findError('videoLinkUrl'),
-                            value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
-                        }) }}
-                    {% endset %}
-
-                    {{ govukRadios({
-                        idPrefix: "cvpRequired",
-                        name: "cvpRequired",
-                        errorMessage: validationErrors | findError('cvpRequired'),
-                        fieldset: {
-                            legend: {
-                                text: "Do you know the link for this video link hearing?",
-                                classes: "govuk-fieldset__legend--s"
+                {{ govukRadios({
+                    idPrefix: "cvpRequired",
+                    name: "cvpRequired",
+                    errorMessage: validationErrors | findError('cvpRequired'),
+                    fieldset: {
+                        legend: {
+                            text: "Do you know the link for this video link hearing?",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: [
+                        {
+                            value: 'yes',
+                            text: "Yes",
+                            checked: formResponses.cvpRequired == 'yes' or session.journey.bookAVideoLink.videoLinkUrl,
+                            conditional: {
+                                html: courtHearingLinkHtml
                             }
                         },
-                        items: [
-                            {
-                                value: 'yes',
-                                text: "Yes",
-                                checked: formResponses.cvpRequired == 'yes' or session.journey.bookAVideoLink.videoLinkUrl,
-                                conditional: {
-                                    html: courtHearingLinkHtml
-                                }
-                            },
-                            {
-                                value: 'no',
-                                text: "No",
-                                checked: formResponses.cvpRequired == 'no' or (not session.journey.bookAVideoLink.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
-                            }
-                        ]
-                    }) }}
-
-                {% endif %}
+                        {
+                            value: 'no',
+                            text: "No",
+                            checked: formResponses.cvpRequired == 'no' or (not session.journey.bookAVideoLink.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
+                        }
+                    ]
+                }) }}
 
                 {{ govukButton({
                     text: "Continue",

@@ -41,7 +41,7 @@ export default function AmendRoutes({
 
   route(
     '/video-link-booking',
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route('/video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
   route('/video-link-booking/comments', new CommentsHandler())

@@ -37,7 +37,7 @@ export default function RequestRoutes({
   route('/prisoner/prisoner-details', new PrisonerDetailsHandler(prisonService))
   route(
     '/prisoner/video-link-booking',
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route(
     `/prisoner/video-link-booking/check-booking`,

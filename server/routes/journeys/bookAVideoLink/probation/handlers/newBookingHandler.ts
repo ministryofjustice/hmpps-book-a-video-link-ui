@@ -5,7 +5,6 @@ import { IsNotEmpty } from 'class-validator'
 import { addMinutes, isValid, startOfToday } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import CourtsService from '../../../../../services/courtsService'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import {
   dateAtTime,
@@ -19,7 +18,6 @@ import Validator from '../../../../validators/validator'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import BavlJourneyType from '../../../../enumerator/bavlJourneyType'
 import { PrisonAppointment } from '../../../../../@types/bookAVideoLinkApi/types'
 
 class Body {
@@ -71,7 +69,6 @@ export default class NewBookingHandler implements PageHandler {
   public BODY = Body
 
   constructor(
-    private readonly courtsService: CourtsService,
     private readonly probationTeamsService: ProbationTeamsService,
     private readonly prisonService: PrisonService,
     private readonly prisonerService: PrisonerService,
@@ -80,25 +77,19 @@ export default class NewBookingHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type, mode } = req.params
+    const { mode } = req.params
     const bookingId = req.session.journey.bookAVideoLink?.bookingId
     const offender = req.session.journey.bookAVideoLink?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
-    const agencies =
-      type === BavlJourneyType.COURT
-        ? await this.courtsService.getUserPreferences(user)
-        : await this.probationTeamsService.getUserPreferences(user)
+    const agencies = await this.probationTeamsService.getUserPreferences(user)
 
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
     const rooms = await this.getRooms(prisoner.prisonId, bookingId, user)
 
-    const hearingTypes =
-      type === BavlJourneyType.COURT
-        ? await this.videoLinkService.getCourtHearingTypes(user)
-        : await this.videoLinkService.getProbationMeetingTypes(user)
+    const hearingTypes = await this.videoLinkService.getProbationMeetingTypes(user)
 
     res.render('pages/bookAVideoLink/probation/newBooking', {
       prisoner: {
@@ -168,7 +159,7 @@ export default class NewBookingHandler implements PageHandler {
       this.prisonService.getAppointmentLocations(prisonId, true, user),
       this.prisonService.getAppointmentLocations(prisonId, false, user),
     ])
-    const { preAppointment, mainAppointment, postAppointment } = bookingId
+    const { mainAppointment } = bookingId
       ? await this.videoLinkService
           .getVideoLinkBookingById(bookingId, user)
           .then(booking => extractPrisonAppointmentsFromBooking(booking))
@@ -180,9 +171,7 @@ export default class NewBookingHandler implements PageHandler {
 
     return appointmentRooms.map(room => ({
       ...room,
-      allowedForPre: isRoomAllowed(room.key, preAppointment),
       allowedForMain: isRoomAllowed(room.key, mainAppointment),
-      allowedForPost: isRoomAllowed(room.key, postAppointment),
     }))
   }
 

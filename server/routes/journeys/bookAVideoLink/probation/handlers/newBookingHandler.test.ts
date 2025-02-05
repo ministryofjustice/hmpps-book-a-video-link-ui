@@ -11,7 +11,6 @@ import {
   getPageHeader,
   getValueByKey,
 } from '../../../../testutils/cheerio'
-import CourtsService from '../../../../../services/courtsService'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -19,18 +18,16 @@ import VideoLinkService from '../../../../../services/videoLinkService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../../utils/utils'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
-import { Court, Location, ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import { Location, ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 
 jest.mock('../../../../../services/auditService')
-jest.mock('../../../../../services/courtsService')
 jest.mock('../../../../../services/probationTeamsService')
 jest.mock('../../../../../services/prisonService')
 jest.mock('../../../../../services/prisonerService')
 jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
@@ -40,7 +37,7 @@ let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService },
+    services: { auditService, probationTeamsService, prisonService, prisonerService, videoLinkService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -49,10 +46,6 @@ const appSetup = (journeySession = {}) => {
 beforeEach(() => {
   appSetup()
 
-  courtsService.getUserPreferences.mockResolvedValue([
-    { code: 'C1', description: 'Court 1' },
-    { code: 'C2', description: 'Court 2' },
-  ] as Court[])
   probationTeamsService.getUserPreferences.mockResolvedValue([
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
@@ -68,20 +61,19 @@ beforeEach(() => {
   } as Prisoner)
 
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
-    bookingType: 'COURT',
+    bookingType: 'PROBATION',
     prisonAppointments: [
       {
         prisonerNumber: 'A1234AA',
-        appointmentType: 'VLB_COURT_MAIN',
+        appointmentType: 'VLB_PROBATION',
         appointmentDate: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
         startTime: '08:00',
         endTime: '09:00',
         prisonLocKey: 'LOCATION_CODE',
       },
     ],
-    courtCode: 'COURT_CODE',
-    courtHearingType: 'APPEAL',
-    videoLinkUrl: 'http://example.com',
+    probationTeamCode: 'PROBATION_CODE',
+    probationMeetingType: 'PSR',
     comments: 'test',
   } as VideoLinkBooking)
 
@@ -104,7 +96,7 @@ afterEach(() => {
 
 describe('New Booking handler', () => {
   describe('GET', () => {
-    it('%s journey - should render the correct view page', () => {
+    it('should render the correct view page', () => {
       return request(app)
         .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect('Content-Type', /html/)
@@ -121,9 +113,7 @@ describe('New Booking handler', () => {
           expect(dropdownOptions($, 'location')).toEqual(['VIDE'])
 
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
-          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-          expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
           expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
           expect(existsByName($, 'preRequired')).toBe(false)
           expect(existsByName($, 'postRequired')).toBe(false)
@@ -172,7 +162,8 @@ describe('New Booking handler', () => {
           expect(dropdownOptions($, 'location')).toEqual(['VIDE', 'LOCATION_CODE'])
 
           expect(heading).toEqual('Change video link booking')
-          expect(existsByLabel($, 'Which court is the hearing for?')).toBe(false)
+          expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(false)
+          expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -180,13 +171,13 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {
-            type: 'COURT',
-            agencyCode: 'COURT_CODE',
+            type: 'PROBATION',
+            agencyCode: 'PROBATION_CODE',
             bookingId: 1,
             date: startOfTomorrow().toISOString(),
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
-            hearingTypeCode: 'APPEAL',
+            hearingTypeCode: 'PSR',
             locationCode: 'LOCATION_CODE',
             prisoner: {
               firstName: 'Joe',
@@ -196,7 +187,6 @@ describe('New Booking handler', () => {
               prisonerNumber: 'A1234AA',
               prisonId: 'MDI',
             },
-            videoLinkUrl: 'http://example.com',
             comments: 'test',
           }),
         )
@@ -224,10 +214,6 @@ describe('New Booking handler', () => {
       startTime: { hour: 15, minute: 30 },
       endTime: { hour: 16, minute: 30 },
       location: 'VIDE',
-      preRequired: 'no',
-      postRequired: 'no',
-      cvpRequired: 'yes',
-      videoLinkUrl: 'https://www.google.co.uk',
     }
 
     it('should validate an empty form on the probation journey', () => {

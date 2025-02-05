@@ -39,10 +39,7 @@ export default function AmendRoutes({
     return next()
   })
 
-  route(
-    '/video-link-booking',
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
-  )
+  route('/video-link-booking', new NewBookingHandler(courtsService, prisonService, prisonerService, videoLinkService))
   route('/video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
   route('/video-link-booking/comments', new CommentsHandler())
   route(

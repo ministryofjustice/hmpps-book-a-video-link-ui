@@ -6,7 +6,6 @@ import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
-import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import {
   dateAtTime,
   extractPrisonAppointmentsFromBooking,
@@ -20,7 +19,6 @@ import Validator from '../../../../validators/validator'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import BavlJourneyType from '../../../../enumerator/bavlJourneyType'
 import { PrisonAppointment } from '../../../../../@types/bookAVideoLinkApi/types'
 
 class Body {
@@ -104,7 +102,6 @@ export default class NewBookingHandler implements PageHandler {
 
   constructor(
     private readonly courtsService: CourtsService,
-    private readonly probationTeamsService: ProbationTeamsService,
     private readonly prisonService: PrisonService,
     private readonly prisonerService: PrisonerService,
     private readonly videoLinkService: VideoLinkService,
@@ -112,25 +109,19 @@ export default class NewBookingHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type, mode } = req.params
+    const { mode } = req.params
     const bookingId = req.session.journey.bookAVideoLink?.bookingId
     const offender = req.session.journey.bookAVideoLink?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
-    const agencies =
-      type === BavlJourneyType.COURT
-        ? await this.courtsService.getUserPreferences(user)
-        : await this.probationTeamsService.getUserPreferences(user)
+    const agencies = await this.courtsService.getUserPreferences(user)
 
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
     const rooms = await this.getRooms(prisoner.prisonId, bookingId, user)
 
-    const hearingTypes =
-      type === BavlJourneyType.COURT
-        ? await this.videoLinkService.getCourtHearingTypes(user)
-        : await this.videoLinkService.getProbationMeetingTypes(user)
+    const hearingTypes = await this.videoLinkService.getCourtHearingTypes(user)
 
     res.render('pages/bookAVideoLink/court/newBooking', {
       prisoner: {

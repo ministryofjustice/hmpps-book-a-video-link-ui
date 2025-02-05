@@ -29,7 +29,7 @@ export default function CreateRoutes({
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
   route(
     `${basePath}/video-link-booking`,
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,

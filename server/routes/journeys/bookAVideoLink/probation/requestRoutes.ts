@@ -14,7 +14,6 @@ import BookingRequestedHandler from '../handlers/bookingRequestedHandler'
 export default function RequestRoutes({
   auditService,
   prisonService,
-  courtsService,
   probationTeamsService,
   prisonerService,
   videoLinkService,
@@ -41,7 +40,7 @@ export default function RequestRoutes({
   )
   route(
     `/prisoner/video-link-booking/check-booking`,
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(probationTeamsService, prisonService, videoLinkService),
   )
   route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
 

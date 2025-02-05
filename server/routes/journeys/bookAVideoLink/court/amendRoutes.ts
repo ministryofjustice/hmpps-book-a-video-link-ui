@@ -14,7 +14,6 @@ import CommentsHandler from './handlers/commentsHandler'
 export default function AmendRoutes({
   auditService,
   courtsService,
-  probationTeamsService,
   prisonService,
   prisonerService,
   videoLinkService,
@@ -42,10 +41,7 @@ export default function AmendRoutes({
   route('/video-link-booking', new NewBookingHandler(courtsService, prisonService, prisonerService, videoLinkService))
   route('/video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
   route('/video-link-booking/comments', new CommentsHandler())
-  route(
-    '/video-link-booking/check-booking',
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
-  )
+  route('/video-link-booking/check-booking', new CheckBookingHandler(courtsService, prisonService, videoLinkService))
 
   return router
 }

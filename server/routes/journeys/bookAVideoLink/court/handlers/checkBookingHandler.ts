@@ -6,7 +6,6 @@ import { parseISO } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
-import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 
@@ -24,13 +23,12 @@ export default class CheckBookingHandler implements PageHandler {
 
   constructor(
     private readonly courtsService: CourtsService,
-    private readonly probationTeamsService: ProbationTeamsService,
     private readonly prisonService: PrisonService,
     private readonly videoLinkService: VideoLinkService,
   ) {}
 
   public GET = async (req: Request, res: Response) => {
-    const { type, mode } = req.params
+    const { mode } = req.params
     const { user } = res.locals
     const { bookAVideoLink } = req.session.journey
     const { prisoner, date, preHearingStartTime, startTime } = bookAVideoLink
@@ -41,17 +39,11 @@ export default class CheckBookingHandler implements PageHandler {
       return res.redirect('not-available')
     }
 
-    const agencies =
-      type === 'court'
-        ? await this.courtsService.getUserPreferences(user)
-        : await this.probationTeamsService.getUserPreferences(user)
+    const agencies = await this.courtsService.getUserPreferences(user)
 
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
 
-    const hearingTypes =
-      type === 'court'
-        ? await this.videoLinkService.getCourtHearingTypes(user)
-        : await this.videoLinkService.getProbationMeetingTypes(user)
+    const hearingTypes = await this.videoLinkService.getCourtHearingTypes(user)
 
     const warnPrison =
       mode !== 'request' &&

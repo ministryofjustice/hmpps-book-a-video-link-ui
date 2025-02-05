@@ -77,7 +77,7 @@
                     },
                     {
                         key: {
-                            text: "Court" if session.req.params.type == BavlJourneyType.COURT else "Probation team"
+                            text: "Court"
                         },
                         value: {
                             text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
@@ -85,7 +85,7 @@
                     },
                     {
                         key: {
-                            text: "Hearing type" if session.req.params.type == BavlJourneyType.COURT else "Meeting type"
+                            text: "Hearing type"
                         },
                         value: {
                             text: (hearingTypes | find('code', session.journey.bookAVideoLink.hearingTypeCode)).description
@@ -93,7 +93,7 @@
                     },
                     {
                         key: {
-                            text: "Prison room for court hearing" if session.req.params.type == BavlJourneyType.COURT else "Prison room for probation meeting"
+                            text: "Prison room for court hearing"
                         },
                         value: {
                             text: (rooms | find('key', session.journey.bookAVideoLink.locationCode)).description
@@ -109,7 +109,7 @@
                     },
                     {
                         key: {
-                            text: "Hearing start time" if session.req.params.type == BavlJourneyType.COURT else "Meeting start time"
+                            text: "Hearing start time"
                         },
                         value: {
                             text: session.journey.bookAVideoLink.startTime | formatDate('HH:mm')
@@ -117,7 +117,7 @@
                     },
                     {
                         key: {
-                            text: "Hearing end time" if session.req.params.type == BavlJourneyType.COURT else "Meeting end time"
+                            text: "Hearing end time"
                         },
                         value: {
                             text: session.journey.bookAVideoLink.endTime | formatDate('HH:mm')
@@ -146,7 +146,7 @@
                         value: {
                             text: session.journey.bookAVideoLink.videoLinkUrl or "Not yet known"
                         }
-                    } if session.req.params.type == BavlJourneyType.COURT
+                    }
                 ]
             }) }}
 
@@ -170,7 +170,7 @@
                         text: "Comments (optional)"
                     },
                     hint: {
-                        text: "This might include case number, co-defendant details if this is a multi-handed case, or details of the approver if you have borrowed another court’s room." if session.req.params.type == BavlJourneyType.COURT else "This should include Probation Officer’s full name, contact information, and any other additional details."
+                        text: "This might include case number, co-defendant details if this is a multi-handed case, or details of the approver if you have borrowed another court’s room."
                     },
                     errorMessage: validationErrors | findError('comments'),
                     value: formResponses.comments or session.journey.bookAVideoLink.comments

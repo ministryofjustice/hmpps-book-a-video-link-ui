@@ -13,7 +13,6 @@ import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function CreateRoutes({
   auditService,
-  courtsService,
   probationTeamsService,
   prisonService,
   prisonerService,
@@ -45,7 +44,7 @@ export default function CreateRoutes({
   route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
     `${basePath}/video-link-booking/check-booking`,
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(probationTeamsService, prisonService, videoLinkService),
   )
   route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
 

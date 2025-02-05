@@ -4,27 +4,23 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
-import CourtsService from '../../../../../services/courtsService'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import {
   AvailabilityResponse,
-  Court,
   Location,
   ProbationTeam,
   ReferenceCode,
 } from '../../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../../services/auditService')
-jest.mock('../../../../../services/courtsService')
 jest.mock('../../../../../services/probationTeamsService')
 jest.mock('../../../../../services/prisonService')
 jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
@@ -33,7 +29,7 @@ let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, courtsService, probationTeamsService, prisonService, videoLinkService },
+    services: { auditService, probationTeamsService, prisonService, videoLinkService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -55,18 +51,11 @@ afterEach(() => {
 
 describe('Check Booking handler', () => {
   beforeEach(() => {
-    courtsService.getUserPreferences.mockResolvedValue([
-      { code: 'C1', description: 'Court 1' },
-      { code: 'C2', description: 'Court 2' },
-    ] as Court[])
     probationTeamsService.getUserPreferences.mockResolvedValue([
       { code: 'P1', description: 'Probation 1' },
       { code: 'P2', description: 'Probation 2' },
     ] as ProbationTeam[])
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
-    videoLinkService.getCourtHearingTypes.mockResolvedValue([
-      { code: 'KEY', description: 'description' },
-    ] as ReferenceCode[])
     videoLinkService.getProbationMeetingTypes.mockResolvedValue([
       { code: 'KEY', description: 'description' },
     ] as ReferenceCode[])
@@ -75,12 +64,9 @@ describe('Check Booking handler', () => {
   })
 
   describe('GET', () => {
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s journey - should render the correct view page', (_: string, journey: string) => {
+    it('should render the correct view page', () => {
       return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -92,19 +78,8 @@ describe('Check Booking handler', () => {
             correlationId: expect.any(String),
           })
 
-          if (journey === 'court') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
-            expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
-            expect(videoLinkService.getProbationMeetingTypes).not.toHaveBeenCalled()
-          }
-
-          if (journey === 'probation') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-            expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
-            expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
-          }
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
         })
     })
 
@@ -167,7 +142,7 @@ describe('Check Booking handler', () => {
 
   describe('POST', () => {
     it('should validate the comment being too long', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
+      appSetup({ bookAVideoLink: { type: 'PROBATION' } })
 
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
@@ -184,7 +159,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should save the posted fields', () => {
-      appSetup({ bookAVideoLink: { type: 'COURT' } })
+      appSetup({ bookAVideoLink: { type: 'PROBATION' } })
 
       videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
 
@@ -197,7 +172,7 @@ describe('Check Booking handler', () => {
           expect(videoLinkService.createVideoLinkBooking).toHaveBeenCalledWith(
             {
               comments: 'comment',
-              type: 'COURT',
+              type: 'PROBATION',
             },
             user,
           )

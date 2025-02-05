@@ -13,7 +13,6 @@ import CommentsHandler from './handlers/commentsHandler'
 
 export default function AmendRoutes({
   auditService,
-  courtsService,
   probationTeamsService,
   prisonService,
   prisonerService,
@@ -47,7 +46,7 @@ export default function AmendRoutes({
   route('/video-link-booking/comments', new CommentsHandler())
   route(
     '/video-link-booking/check-booking',
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(probationTeamsService, prisonService, videoLinkService),
   )
 
   return router

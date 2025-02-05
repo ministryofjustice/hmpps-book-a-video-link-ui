@@ -104,12 +104,9 @@ afterEach(() => {
 
 describe('New Booking handler', () => {
   describe('GET', () => {
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s journey - should render the correct view page', (_: string, journey: string) => {
+    it('%s journey - should render the correct view page', () => {
       return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -124,27 +121,14 @@ describe('New Booking handler', () => {
           expect(dropdownOptions($, 'location')).toEqual(['VIDE'])
 
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
-          if (journey === 'court') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
-            expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
-            expect(videoLinkService.getProbationMeetingTypes).not.toHaveBeenCalled()
-            expect(existsByName($, 'preRequired')).toBe(true)
-            expect(existsByName($, 'postRequired')).toBe(true)
-            expect(existsByLabel($, 'Which court is the hearing for?')).toBe(true)
-            expect(existsByLabel($, 'Which type of hearing is this?')).toBe(true)
-          }
-
-          if (journey === 'probation') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-            expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
-            expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
-            expect(existsByName($, 'preRequired')).toBe(false)
-            expect(existsByName($, 'postRequired')).toBe(false)
-            expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)
-            expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
-          }
+          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
+          expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          expect(existsByName($, 'preRequired')).toBe(false)
+          expect(existsByName($, 'postRequired')).toBe(false)
+          expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)
+          expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
         })
     })
 
@@ -487,7 +471,6 @@ describe('New Booking handler', () => {
             },
             startTime: '1970-01-01T15:30:00.000Z',
             type: 'PROBATION',
-            videoLinkUrl: 'https://www.google.co.uk',
           }),
         )
     })

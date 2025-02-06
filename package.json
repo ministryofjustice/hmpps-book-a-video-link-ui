@@ -174,5 +174,8 @@
     "ts-jest": "^29.2.5",
     "typescript": "^5.7.3",
     "wiremock": "^3.11.0"
+  },
+  "overrides": {
+    "undici": "^6.21.1"
   }
 }

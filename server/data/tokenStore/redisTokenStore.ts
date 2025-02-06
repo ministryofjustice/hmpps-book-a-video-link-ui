@@ -4,7 +4,7 @@ import logger from '../../../logger'
 import TokenStore from './tokenStore'
 
 export default class RedisTokenStore implements TokenStore {
-  private readonly prefix = 'systemToken:'
+  private readonly prefix = 'bookAVideoLinkSystemToken:'
 
   constructor(private readonly client: RedisClient) {
     client.on('error', error => {

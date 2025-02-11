@@ -1,20 +1,20 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { existsByKey, getByDataQa, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
-import VideoLinkService from '../../../../services/videoLinkService'
-import PrisonerService from '../../../../services/prisonerService'
-import PrisonService from '../../../../services/prisonService'
-import expectJourneySession from '../../../testutils/testUtilRoute'
-import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
-import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { existsByKey, getByDataQa, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import PrisonerService from '../../../../../services/prisonerService'
+import PrisonService from '../../../../../services/prisonService'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
+import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
+import { Location, Prison, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/videoLinkService')
-jest.mock('../../../../services/prisonerService')
-jest.mock('../../../../services/prisonService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/videoLinkService')
+jest.mock('../../../../../services/prisonerService')
+jest.mock('../../../../../services/prisonService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>

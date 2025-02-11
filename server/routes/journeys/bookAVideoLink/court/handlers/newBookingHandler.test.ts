@@ -2,30 +2,33 @@ import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { dropdownOptions, existsByLabel, existsByName, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
-import PrisonService from '../../../../services/prisonService'
-import PrisonerService from '../../../../services/prisonerService'
-import VideoLinkService from '../../../../services/videoLinkService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
-import { formatDate } from '../../../../utils/utils'
-import expectJourneySession from '../../../testutils/testUtilRoute'
-import { Court, Location, ProbationTeam, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
-import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import {
+  dropdownOptions,
+  existsByLabel,
+  existsByName,
+  getPageHeader,
+  getValueByKey,
+} from '../../../../testutils/cheerio'
+import CourtsService from '../../../../../services/courtsService'
+import PrisonService from '../../../../../services/prisonService'
+import PrisonerService from '../../../../../services/prisonerService'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { formatDate } from '../../../../../utils/utils'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
+import { Court, Location, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/courtsService')
-jest.mock('../../../../services/probationTeamsService')
-jest.mock('../../../../services/prisonService')
-jest.mock('../../../../services/prisonerService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/courtsService')
+jest.mock('../../../../../services/prisonService')
+jest.mock('../../../../../services/prisonerService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
-const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
@@ -34,7 +37,7 @@ let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService },
+    services: { auditService, courtsService, prisonService, prisonerService, videoLinkService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -47,10 +50,6 @@ beforeEach(() => {
     { code: 'C1', description: 'Court 1' },
     { code: 'C2', description: 'Court 2' },
   ] as Court[])
-  probationTeamsService.getUserPreferences.mockResolvedValue([
-    { code: 'P1', description: 'Probation 1' },
-    { code: 'P2', description: 'Probation 2' },
-  ] as ProbationTeam[])
 
   prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
     prisonId: 'MDI',
@@ -98,12 +97,9 @@ afterEach(() => {
 
 describe('New Booking handler', () => {
   describe('GET', () => {
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s journey - should render the correct view page', (_: string, journey: string) => {
+    it('should render the correct view page', () => {
       return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -118,27 +114,12 @@ describe('New Booking handler', () => {
           expect(dropdownOptions($, 'location')).toEqual(['VIDE'])
 
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
-          if (journey === 'court') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
-            expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
-            expect(videoLinkService.getProbationMeetingTypes).not.toHaveBeenCalled()
-            expect(existsByName($, 'preRequired')).toBe(true)
-            expect(existsByName($, 'postRequired')).toBe(true)
-            expect(existsByLabel($, 'Which court is the hearing for?')).toBe(true)
-            expect(existsByLabel($, 'Which type of hearing is this?')).toBe(true)
-          }
-
-          if (journey === 'probation') {
-            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
-            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-            expect(videoLinkService.getCourtHearingTypes).not.toHaveBeenCalled()
-            expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
-            expect(existsByName($, 'preRequired')).toBe(false)
-            expect(existsByName($, 'postRequired')).toBe(false)
-            expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)
-            expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
-          }
+          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
+          expect(existsByName($, 'preRequired')).toBe(true)
+          expect(existsByName($, 'postRequired')).toBe(true)
+          expect(existsByLabel($, 'Which court is the hearing for?')).toBe(true)
+          expect(existsByLabel($, 'Which type of hearing is this?')).toBe(true)
         })
     })
 
@@ -290,46 +271,6 @@ describe('New Booking handler', () => {
               fieldId: 'cvpRequired',
               href: '#cvpRequired',
               text: 'Select if you know the court hearing link',
-            },
-          ])
-        })
-    })
-
-    it('should validate an empty form on the probation journey', () => {
-      return request(app)
-        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
-        .send({})
-        .expect(() => {
-          expectErrorMessages([
-            {
-              fieldId: 'agencyCode',
-              href: '#agencyCode',
-              text: 'Select a probation team',
-            },
-            {
-              fieldId: 'hearingTypeCode',
-              href: '#hearingTypeCode',
-              text: 'Select a meeting type',
-            },
-            {
-              fieldId: 'date',
-              href: '#date',
-              text: 'Enter a date',
-            },
-            {
-              fieldId: 'startTime',
-              href: '#startTime',
-              text: 'Enter a start time',
-            },
-            {
-              fieldId: 'endTime',
-              href: '#endTime',
-              text: 'Enter an end time',
-            },
-            {
-              fieldId: 'location',
-              href: '#location',
-              text: 'Select a prison room for the court hearing',
             },
           ])
         })

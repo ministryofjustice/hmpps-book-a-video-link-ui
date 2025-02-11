@@ -1,16 +1,16 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
-import VideoLinkService from '../../../../services/videoLinkService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
-import expectJourneySession from '../../../testutils/testUtilRoute'
-import { AvailabilityResponse } from '../../../../@types/bookAVideoLinkApi/types'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getPageHeader } from '../../../../testutils/cheerio'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
+import { AvailabilityResponse } from '../../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/videoLinkService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
@@ -46,7 +46,7 @@ describe('Check Booking handler', () => {
   describe('GET', () => {
     it('should render the correct view page', () => {
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -64,7 +64,7 @@ describe('Check Booking handler', () => {
       videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
 
       return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
         .expect(302)
         .expect('location', 'check-booking')
     })
@@ -82,7 +82,7 @@ describe('Check Booking handler', () => {
 
     it('should validate no fields posted', () => {
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
         .send({})
         .expect(() => {
           expectErrorMessages([
@@ -122,7 +122,7 @@ describe('Check Booking handler', () => {
 
     it('should validate invalid fields posted', () => {
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
         .send({
           startTime: 'invalid',
           endTime: 'invalid',
@@ -171,7 +171,7 @@ describe('Check Booking handler', () => {
       appSetup({ bookAVideoLink: {} })
 
       return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
         .send({ ...validForm, preStart: undefined, preEnd: undefined, postStart: undefined, postEnd: undefined })
         .expect(() => expectNoErrorMessages())
     })
@@ -180,7 +180,7 @@ describe('Check Booking handler', () => {
       videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
 
       await request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
         .send(validForm)
         .expect(302)
         .expect('location', 'check-booking')

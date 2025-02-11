@@ -1,41 +1,32 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
-import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import CourtsService from '../../../../services/courtsService'
-import ProbationTeamsService from '../../../../services/probationTeamsService'
+import { IsNotEmpty } from 'class-validator'
+import { addMinutes, isValid, startOfToday } from 'date-fns'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import {
   dateAtTime,
   extractPrisonAppointmentsFromBooking,
   formatDate,
   parseDatePickerDate,
   simpleTimeToDate,
-} from '../../../../utils/utils'
-import YesNo from '../../../enumerator/yesNo'
-import IsValidDate from '../../../validators/isValidDate'
-import Validator from '../../../validators/validator'
-import PrisonService from '../../../../services/prisonService'
-import PrisonerService from '../../../../services/prisonerService'
-import VideoLinkService from '../../../../services/videoLinkService'
-import BavlJourneyType from '../../../enumerator/bavlJourneyType'
-import { PrisonAppointment } from '../../../../@types/bookAVideoLinkApi/types'
+} from '../../../../../utils/utils'
+import IsValidDate from '../../../../validators/isValidDate'
+import Validator from '../../../../validators/validator'
+import PrisonService from '../../../../../services/prisonService'
+import PrisonerService from '../../../../../services/prisonerService'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { PrisonAppointment } from '../../../../../@types/bookAVideoLinkApi/types'
 
 class Body {
   @Expose()
-  @IsNotEmpty({
-    message: args =>
-      `Select a ${(args.object as { type: string }).type === BavlJourneyType.COURT ? 'court' : 'probation team'}`,
-  })
+  @IsNotEmpty({ message: `Select a probation team` })
   agencyCode: string
 
   @Expose()
-  @IsNotEmpty({
-    message: args =>
-      `Select a ${(args.object as { type: string }).type === BavlJourneyType.COURT ? 'hearing type' : 'meeting type'}`,
-  })
+  @IsNotEmpty({ message: `Select a meeting type` })
   hearingTypeCode: string
 
   @Expose()
@@ -68,44 +59,8 @@ class Body {
   endTime: Date
 
   @Expose()
-  @IsNotEmpty({ message: 'Select a prison room for the court hearing' })
+  @IsNotEmpty({ message: 'Select a prison room for the probation meeting' })
   location: string
-
-  @Expose()
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @IsEnum(YesNo, { message: 'Select if a pre-court hearing should be added' })
-  preRequired: YesNo
-
-  @Expose()
-  @Transform(({ value, obj }) => (obj.preRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @ValidateIf(o => o.preRequired === YesNo.YES)
-  @IsNotEmpty({ message: 'Select a prison room for the pre-court hearing' })
-  preLocation: string
-
-  @Expose()
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @IsEnum(YesNo, { message: 'Select if a post-court hearing should be added' })
-  postRequired: YesNo
-
-  @Expose()
-  @Transform(({ value, obj }) => (obj.postRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @ValidateIf(o => o.postRequired === YesNo.YES)
-  @IsNotEmpty({ message: 'Select a prison room for the post-court hearing' })
-  postLocation: string
-
-  @Expose()
-  @ValidateIf(o => o.type === BavlJourneyType.COURT)
-  @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
-  cvpRequired: string
-
-  @Expose()
-  @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.cvpRequired === YesNo.YES)
-  @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
-  @IsNotEmpty({ message: 'Enter the court hearing link' })
-  videoLinkUrl: string
 }
 
 export default class NewBookingHandler implements PageHandler {
@@ -114,7 +69,6 @@ export default class NewBookingHandler implements PageHandler {
   public BODY = Body
 
   constructor(
-    private readonly courtsService: CourtsService,
     private readonly probationTeamsService: ProbationTeamsService,
     private readonly prisonService: PrisonService,
     private readonly prisonerService: PrisonerService,
@@ -123,27 +77,21 @@ export default class NewBookingHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type, mode } = req.params
+    const { mode } = req.params
     const bookingId = req.session.journey.bookAVideoLink?.bookingId
     const offender = req.session.journey.bookAVideoLink?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
-    const agencies =
-      type === BavlJourneyType.COURT
-        ? await this.courtsService.getUserPreferences(user)
-        : await this.probationTeamsService.getUserPreferences(user)
+    const agencies = await this.probationTeamsService.getUserPreferences(user)
 
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
     const rooms = await this.getRooms(prisoner.prisonId, bookingId, user)
 
-    const hearingTypes =
-      type === BavlJourneyType.COURT
-        ? await this.videoLinkService.getCourtHearingTypes(user)
-        : await this.videoLinkService.getProbationMeetingTypes(user)
+    const hearingTypes = await this.videoLinkService.getProbationMeetingTypes(user)
 
-    res.render('pages/bookAVideoLink/newBooking', {
+    res.render('pages/bookAVideoLink/probation/newBooking', {
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,
@@ -165,19 +113,7 @@ export default class NewBookingHandler implements PageHandler {
     const offender = req.session.journey.bookAVideoLink?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
-    const {
-      agencyCode,
-      hearingTypeCode,
-      date,
-      startTime,
-      endTime,
-      location,
-      preRequired,
-      postRequired,
-      preLocation,
-      postLocation,
-      videoLinkUrl,
-    } = req.body
+    const { agencyCode, hearingTypeCode, date, startTime, endTime, location } = req.body
 
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
@@ -210,14 +146,7 @@ export default class NewBookingHandler implements PageHandler {
       date: date.toISOString(),
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
-      preHearingStartTime: preRequired === YesNo.YES ? subMinutes(startTime, 15).toISOString() : undefined,
-      preHearingEndTime: preRequired === YesNo.YES ? startTime.toISOString() : undefined,
-      postHearingStartTime: postRequired === YesNo.YES ? endTime.toISOString() : undefined,
-      postHearingEndTime: postRequired === YesNo.YES ? addMinutes(endTime, 15).toISOString() : undefined,
       locationCode: location,
-      preLocationCode: preLocation,
-      postLocationCode: postLocation,
-      videoLinkUrl,
     }
 
     return res.redirect('video-link-booking/check-booking')
@@ -230,7 +159,7 @@ export default class NewBookingHandler implements PageHandler {
       this.prisonService.getAppointmentLocations(prisonId, true, user),
       this.prisonService.getAppointmentLocations(prisonId, false, user),
     ])
-    const { preAppointment, mainAppointment, postAppointment } = bookingId
+    const { mainAppointment } = bookingId
       ? await this.videoLinkService
           .getVideoLinkBookingById(bookingId, user)
           .then(booking => extractPrisonAppointmentsFromBooking(booking))
@@ -242,9 +171,7 @@ export default class NewBookingHandler implements PageHandler {
 
     return appointmentRooms.map(room => ({
       ...room,
-      allowedForPre: isRoomAllowed(room.key, preAppointment),
       allowedForMain: isRoomAllowed(room.key, mainAppointment),
-      allowedForPost: isRoomAllowed(room.key, postAppointment),
     }))
   }
 
@@ -270,11 +197,7 @@ export default class NewBookingHandler implements PageHandler {
       .getAppointmentLocations(prisonId, true, user)
       .then(room => room.map(r => r.key))
 
-    const locations: Pick<Body, 'preLocation' | 'location' | 'postLocation'> = {
-      preLocation: body.preLocation,
-      location: body.location,
-      postLocation: body.postLocation,
-    }
+    const locations: Pick<Body, 'location'> = { location: body.location }
 
     return Object.entries(locations)
       .filter(([_, value]) => value && !videoRoomsKeys.includes(value))

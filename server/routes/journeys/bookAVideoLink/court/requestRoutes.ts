@@ -1,21 +1,20 @@
 import { Router } from 'express'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import type { Services } from '../../../services'
-import { PageHandler } from '../../interfaces/pageHandler'
-import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import validationMiddleware from '../../../middleware/validationMiddleware'
-import PrisonerNotListedHandler from './handlers/prisonerNotListedHandler'
-import PrisonerDetailsHandler from './handlers/prisonerDetailsHandler'
+import asyncMiddleware from '../../../../middleware/asyncMiddleware'
+import type { Services } from '../../../../services'
+import { PageHandler } from '../../../interfaces/pageHandler'
+import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
+import validationMiddleware from '../../../../middleware/validationMiddleware'
+import PrisonerNotListedHandler from '../handlers/prisonerNotListedHandler'
+import PrisonerDetailsHandler from '../handlers/prisonerDetailsHandler'
 import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
-import BookingRequestedHandler from './handlers/bookingRequestedHandler'
+import BookingRequestedHandler from '../handlers/bookingRequestedHandler'
 
 export default function RequestRoutes({
   auditService,
   prisonService,
   courtsService,
-  probationTeamsService,
   prisonerService,
   videoLinkService,
 }: Services): Router {
@@ -37,11 +36,11 @@ export default function RequestRoutes({
   route('/prisoner/prisoner-details', new PrisonerDetailsHandler(prisonService))
   route(
     '/prisoner/video-link-booking',
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(courtsService, prisonService, prisonerService, videoLinkService),
   )
   route(
     `/prisoner/video-link-booking/check-booking`,
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(courtsService, prisonService, videoLinkService),
   )
   route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
 

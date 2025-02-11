@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import { parseISO } from 'date-fns'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import type { Services } from '../../../services'
-import { PageHandler } from '../../interfaces/pageHandler'
-import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
+import asyncMiddleware from '../../../../middleware/asyncMiddleware'
+import type { Services } from '../../../../services'
+import { PageHandler } from '../../../interfaces/pageHandler'
+import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
 import NewBookingHandler from './handlers/newBookingHandler'
-import validationMiddleware from '../../../middleware/validationMiddleware'
+import validationMiddleware from '../../../../middleware/validationMiddleware'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
@@ -13,7 +13,6 @@ import CommentsHandler from './handlers/commentsHandler'
 
 export default function AmendRoutes({
   auditService,
-  courtsService,
   probationTeamsService,
   prisonService,
   prisonerService,
@@ -41,13 +40,13 @@ export default function AmendRoutes({
 
   route(
     '/video-link-booking',
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route('/video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
   route('/video-link-booking/comments', new CommentsHandler())
   route(
     '/video-link-booking/check-booking',
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(probationTeamsService, prisonService, videoLinkService),
   )
 
   return router

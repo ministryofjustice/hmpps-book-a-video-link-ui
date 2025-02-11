@@ -1,19 +1,18 @@
 import { Router } from 'express'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import type { Services } from '../../../services'
-import { PageHandler } from '../../interfaces/pageHandler'
-import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
+import asyncMiddleware from '../../../../middleware/asyncMiddleware'
+import type { Services } from '../../../../services'
+import { PageHandler } from '../../../interfaces/pageHandler'
+import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
 import NewBookingHandler from './handlers/newBookingHandler'
-import PrisonerSearchHandler from './handlers/prisonerSearchHandler'
-import validationMiddleware from '../../../middleware/validationMiddleware'
+import PrisonerSearchHandler from '../handlers/prisonerSearchHandler'
+import validationMiddleware from '../../../../middleware/validationMiddleware'
 import CheckBookingHandler from './handlers/checkBookingHandler'
-import PrisonerSearchResultsHandler from './handlers/prisonerSearchResultsHandler'
+import PrisonerSearchResultsHandler from '../handlers/prisonerSearchResultsHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function CreateRoutes({
   auditService,
-  courtsService,
   probationTeamsService,
   prisonService,
   prisonerService,
@@ -29,7 +28,7 @@ export default function CreateRoutes({
   route('/prisoner-search', new PrisonerSearchHandler(prisonService))
   route(
     `${basePath}/video-link-booking`,
-    new NewBookingHandler(courtsService, probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),
   )
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,
@@ -45,7 +44,7 @@ export default function CreateRoutes({
   route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
     `${basePath}/video-link-booking/check-booking`,
-    new CheckBookingHandler(courtsService, probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(probationTeamsService, prisonService, videoLinkService),
   )
   route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
 

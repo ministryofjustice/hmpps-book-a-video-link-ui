@@ -1,0 +1,100 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set mode = session.req.params.mode %}
+{% set pageTitle = "The video link has been booked" if mode == 'create' else 'The video link booking has been updated' %}
+{% set hideBackLink = true %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({ titleText: pageTitle, classes: 'govuk-!-margin-bottom-6' }) }}
+
+            <p class='govuk-body'>We have emailed you with the video link details. An email has also been sent to the prison.</p>
+
+            <h2 class='govuk-heading-m'>Video link details</h2>
+            {{ govukSummaryList({
+                rows: [
+                    {
+                        key: {
+                            text: "Name"
+                        },
+                        value: {
+                            text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ' (' + prisoner.prisonerNumber + ')'
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Prison"
+                        },
+                        value: {
+                            text: prison.name
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Probation team"
+                        },
+                        value: {
+                            text: booking.probationTeamDescription
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Meeting type"
+                        },
+                        value: {
+                            text: booking.probationMeetingTypeDescription
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Prison room"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).appointmentDate | formatDate
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Meeting start time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Meeting end time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
+                        }
+                    }
+                ]
+            }) }}
+
+            <div class="govuk-button-group">
+                {% if mode == 'create' %}
+                    {{ govukButton({ text: "Exit", href: '/' }) }}
+                    <a href='/{{ session.req.params.type }}/booking/create/prisoner-search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+                {% else %}
+                    {{ govukButton({ text: "Return to booking", href: '/' + session.req.params.type + '/view-booking/' + booking.videoLinkBookingId }) }}
+                    <a href='/{{ session.req.params.type }}/view-booking' class="govuk-link govuk-link--no-visited-state">Exit to all video link bookings</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+{% endblock %}

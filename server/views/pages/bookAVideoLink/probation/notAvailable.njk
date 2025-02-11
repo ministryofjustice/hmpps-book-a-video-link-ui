@@ -17,7 +17,7 @@
         <div class="govuk-grid-column-three-quarters">
             <div class="govuk-body">
                 <p>There are no video link bookings available at that time in the rooms selected.</p>
-                <p>You can choose a different date or time or search using different rooms allocated to your {{ "court" if session.req.params.type == BavlJourneyType.COURT else "probation team" }}.</p>
+                <p>You can choose a different date or time or search using different rooms allocated to your probation team.</p>
             </div>
 
             {{ govukDetails({
@@ -44,21 +44,13 @@
                             value: { text: session.journey.bookAVideoLink.date | formatDate }
                         },
                         {
-                            key:   { text: "Court hearing start time" if session.req.params.type == BavlJourneyType.COURT else "Probation meeting start time" },
+                            key:   { text: "Probation meeting start time" },
                             value: { text: alternative.main.interval.start }
                         },
                         {
-                            key:   { text: "Court hearing end time" if session.req.params.type == BavlJourneyType.COURT else "Probation meeting end time" },
+                            key:   { text: "Probation meeting end time" },
                             value: { text: alternative.main.interval.end }
-                        },
-                        {
-                            key:   { text: "Pre-court hearing briefing" },
-                            value: { text: alternative.pre.interval.start + " to " + alternative.pre.interval.end }
-                        } if alternative.pre,
-                        {
-                            key:   { text: "Post-court hearing briefing" },
-                            value: { text: alternative.post.interval.start + " to " + alternative.post.interval.end }
-                        } if alternative.post
+                        }
                     ] %}
 
                     {{ govukSummaryList({ rows: rows }) }}
@@ -67,10 +59,6 @@
                         <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                         <input type="hidden" name="startTime" value="{{ alternative.main.interval.start }}" />
                         <input type="hidden" name="endTime" value="{{ alternative.main.interval.end }}" />
-                        <input type="hidden" name="preStart" value="{{ alternative.pre.interval.start }}" />
-                        <input type="hidden" name="preEnd" value="{{ alternative.pre.interval.end }}" />
-                        <input type="hidden" name="postStart" value="{{ alternative.post.interval.start }}" />
-                        <input type="hidden" name="postEnd" value="{{ alternative.post.interval.end }}" />
                         {{ govukButton({ text: "Book video link", type: "submit", classes: 'govuk-button govuk-button--secondary', attributes: {'data-qa': 'option-' + loop.index} }) }}
                     </form>
                 {% endfor %}

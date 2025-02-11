@@ -3,10 +3,10 @@ import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsNotEmpty, ValidateIf } from 'class-validator'
 import { parse } from 'date-fns'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import VideoLinkService from '../../../../services/videoLinkService'
-import IsValidDate from '../../../validators/isValidDate'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import IsValidDate from '../../../../validators/isValidDate'
 
 const transformTime = (value: string) => (value ? parse(value, 'HH:mm', new Date(0)) : undefined)
 
@@ -69,7 +69,7 @@ export default class BookingNotAvailableHandler implements PageHandler {
       return res.redirect('check-booking')
     }
 
-    return res.render('pages/bookAVideoLink/notAvailable', { alternatives })
+    return res.render('pages/bookAVideoLink/court/notAvailable', { alternatives })
   }
 
   public POST = async (req: Request, res: Response) => {

@@ -1,18 +1,18 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
-import VideoLinkService from '../../../../services/videoLinkService'
-import PrisonerService from '../../../../services/prisonerService'
-import expectJourneySession from '../../../testutils/testUtilRoute'
-import { VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
-import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import PrisonerService from '../../../../../services/prisonerService'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
+import { VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/videoLinkService')
-jest.mock('../../../../services/prisonerService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/videoLinkService')
+jest.mock('../../../../../services/prisonerService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
@@ -35,7 +35,7 @@ beforeEach(() => {
     prisonAppointments: [
       {
         prisonerNumber: 'A1234AA',
-        appointmentType: 'VLB_PROBATION',
+        appointmentType: 'VLB_COURT_MAIN',
         prisonLocKey: 'VCC-ROOM-1',
         appointmentDate: '2024-04-05',
         startTime: '11:30',

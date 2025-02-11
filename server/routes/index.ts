@@ -31,8 +31,9 @@ export default function routes(services: Services): Router {
   router.use('/admin', admin(services))
 
   router.use('/:type(court|probation)/prisoner-search', prisonerSearch(services))
-  router.use('/:type(court)/booking', bookAVideoLinkCourt(services))
-  router.use('/:type(probation)/booking', bookAVideoLinkProbation(services))
+
+  router.use('/court/booking', bookAVideoLinkCourt(services))
+  router.use('/probation/booking', bookAVideoLinkProbation(services))
 
   router.use('/:type(court|probation)/view-booking', viewBooking(services))
 

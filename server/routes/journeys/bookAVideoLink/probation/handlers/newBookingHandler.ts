@@ -2,7 +2,7 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsNotEmpty } from 'class-validator'
-import { addMinutes, isValid, startOfToday } from 'date-fns'
+import { isValid, startOfToday } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
@@ -38,13 +38,9 @@ class Body {
 
   @Expose()
   @Transform(({ value }) => simpleTimeToDate(value))
-  @Validator(
-    (startTime, { date }) => date < startOfToday() || dateAtTime(date, startTime) > addMinutes(new Date(), 15),
-    {
-      // To allow for a pre-court hearing starting 15 minutes before the main hearing
-      message: 'Enter a time which is at least 15 minutes in the future',
-    },
-  )
+  @Validator((startTime, { date }) => date < startOfToday() || dateAtTime(date, startTime) > new Date(), {
+    message: 'Enter a time which is in the future',
+  })
   @IsValidDate({ message: 'Enter a valid start time' })
   @IsNotEmpty({ message: 'Enter a start time' })
   startTime: Date
@@ -139,7 +135,7 @@ export default class NewBookingHandler implements PageHandler {
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
-      type: req.params.type.toUpperCase(),
+      type: 'PROBATION',
       agencyCode,
       hearingTypeCode,
       date: date.toISOString(),
@@ -175,8 +171,8 @@ export default class NewBookingHandler implements PageHandler {
   }
 
   private validateSchedule = async (prisonId: string, bookingId: number, body: Body, user: Express.User) => {
-    // NOTE: The prison staff may create or amend a booking to place the pre, main or post appointment in a non-video enabled room
-    // In this case, the court user may not change the schedule of the appointments, without also selecting a video enabled room.
+    // NOTE: The prison staff may create or amend a booking to place the appointment in a non-video enabled room
+    // In this case, the user may not change the schedule of the appointments, without also selecting a video enabled room.
     const { mainAppointment } = bookingId
       ? await this.videoLinkService
           .getVideoLinkBookingById(bookingId, user)

@@ -1,12 +1,12 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
-import expectJourneySession from '../../../testutils/testUtilRoute'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
 
-jest.mock('../../../../services/auditService')
+jest.mock('../../../../../services/auditService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
@@ -29,7 +29,7 @@ afterEach(() => {
 describe('GET', () => {
   it('should render the correct view page', () => {
     return request(app)
-      .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/confirmation`)
+      .get(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_REQUESTED_PAGE, {
@@ -42,7 +42,7 @@ describe('GET', () => {
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
         expect(heading).toEqual('The video link has been requested')
-        expect(bookAnotherLink).toEqual(`/court/prisoner-search/search`)
+        expect(bookAnotherLink).toEqual(`/probation/prisoner-search/search`)
       })
       .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })

@@ -304,7 +304,7 @@ describe('New Booking handler', () => {
         })
     })
 
-    it('should validate that the start time is more than 15 minutes into the future', () => {
+    it('should validate that the start time is in the future', () => {
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -317,7 +317,7 @@ describe('New Booking handler', () => {
             {
               fieldId: 'startTime',
               href: '#startTime',
-              text: 'Enter a time which is at least 15 minutes in the future',
+              text: 'Enter a time which is in the future',
             },
           ])
         })

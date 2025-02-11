@@ -1,11 +1,11 @@
 import { Router } from 'express'
 import { parseISO } from 'date-fns'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
-import type { Services } from '../../../services'
-import { PageHandler } from '../../interfaces/pageHandler'
-import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import validationMiddleware from '../../../middleware/validationMiddleware'
-import ConfirmCancelHandler from './court/handlers/confirmCancelHandler'
+import asyncMiddleware from '../../../../middleware/asyncMiddleware'
+import type { Services } from '../../../../services'
+import { PageHandler } from '../../../interfaces/pageHandler'
+import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
+import validationMiddleware from '../../../../middleware/validationMiddleware'
+import ConfirmCancelHandler from './handlers/confirmCancelHandler'
 import BookingCancelledHandler from './handlers/bookingCancelledHandler'
 
 export default function CancelRoutes({ auditService, prisonerService, videoLinkService }: Services): Router {
@@ -24,7 +24,7 @@ export default function CancelRoutes({ auditService, prisonerService, videoLinkS
 
     if (!videoLinkService.bookingIsAmendable(bookingDate, bookingTime, bookingStatus)) {
       req.session.journey.bookAVideoLink = null
-      return res.redirect(`/${req.params.type}/view-booking/${bookingId}`)
+      return res.redirect(`/probation/view-booking/${bookingId}`)
     }
     return next()
   })

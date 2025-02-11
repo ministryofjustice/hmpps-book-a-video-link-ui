@@ -1,0 +1,26 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "The video link has been requested" %}
+{% set hideBackLink = true %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({ titleText: pageTitle, classes: 'govuk-!-margin-bottom-6' }) }}
+
+            <p class='govuk-body'>
+                We have emailed the prison to book the video link. The details have also been sent to you.
+                The prison will email your probation team when they have booked the video link.
+            </p>
+            
+            <div class="govuk-button-group">
+                {{ govukButton({ text: "Exit", href: '/' }) }}
+                <a href='/probation/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

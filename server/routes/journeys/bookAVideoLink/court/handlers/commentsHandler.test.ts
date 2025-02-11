@@ -41,12 +41,9 @@ afterEach(() => {
 
 describe('Comments handler', () => {
   describe('GET', () => {
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s journey - should render the correct view page', (_: string, journey: string) => {
+    it('should render the correct view page', () => {
       return request(app)
-        .get(`/${journey}/booking/amend/1001/${journeyId()}/video-link-booking/comments`)
+        .get(`/court/booking/amend/1001/${journeyId()}/video-link-booking/comments`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -54,7 +51,7 @@ describe('Comments handler', () => {
           const cancelLink = getByDataQa($, 'cancel-link').attr('href')
 
           expect(heading).toEqual('Change comments on this booking')
-          expect(cancelLink).toEqual(`/${journey}/view-booking/1001`)
+          expect(cancelLink).toEqual(`/court/view-booking/1001`)
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.COMMENTS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),

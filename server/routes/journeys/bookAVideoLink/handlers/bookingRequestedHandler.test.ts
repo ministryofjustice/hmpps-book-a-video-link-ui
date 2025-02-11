@@ -42,7 +42,7 @@ describe('GET', () => {
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
         expect(heading).toEqual('The video link has been requested')
-        expect(bookAnotherLink).toEqual(`/court/booking/create/prisoner-search`)
+        expect(bookAnotherLink).toEqual(`/court/prisoner-search/search`)
       })
       .then(() => expectJourneySession(app, 'bookAVideoLink', null))
   })

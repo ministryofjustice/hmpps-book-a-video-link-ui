@@ -1,14 +1,6 @@
 export type BookAVideoLinkJourney = {
   bookingId?: number
   bookingStatus?: string
-  search?: {
-    firstName: string
-    lastName: string
-    dateOfBirth: string
-    prison: string
-    prisonerNumber: string
-    pncNumber: string
-  }
   type?: string
   prisoner?: {
     firstName: string

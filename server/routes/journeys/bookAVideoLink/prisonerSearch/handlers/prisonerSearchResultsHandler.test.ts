@@ -1,15 +1,15 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
-import PrisonService from '../../../../services/prisonService'
-import PrisonerService from '../../../../services/prisonerService'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getPageHeader } from '../../../../testutils/cheerio'
+import PrisonService from '../../../../../services/prisonService'
+import PrisonerService from '../../../../../services/prisonerService'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/prisonerService')
-jest.mock('../../../../services/prisonService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/prisonerService')
+jest.mock('../../../../../services/prisonService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
@@ -26,7 +26,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup({ bookAVideoLink: { search: { firstName: 'John', lastName: 'Doe' } } })
+  appSetup({ prisonerSearch: { firstName: 'John', lastName: 'Doe' } })
 })
 
 afterEach(() => {
@@ -37,7 +37,7 @@ describe('Prisoner search results handler', () => {
   describe('GET', () => {
     it('should search for prisoners matching the criteria and render the correct view page', async () => {
       await request(app)
-        .get(`/court/booking/create/${journeyId()}/prisoner-search/results`)
+        .get(`/court/prisoner-search/${journeyId()}/results`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -60,7 +60,7 @@ describe('Prisoner search results handler', () => {
 
     it('should search using the correct pagination', async () => {
       await request(app)
-        .get(`/court/booking/create/${journeyId()}/prisoner-search/results?page=5`)
+        .get(`/court/prisoner-search/${journeyId()}/results?page=5`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -86,10 +86,7 @@ describe('Prisoner search results handler', () => {
     ])('%s journey - should return home if there is no journey in session', (_: string, journey: string) => {
       appSetup()
 
-      return request(app)
-        .get(`/${journey}/booking/create/${journeyId()}/prisoner-search/results`)
-        .expect(302)
-        .expect('location', '/')
+      return request(app).get(`/${journey}/prisoner-search/${journeyId()}/results`).expect(302).expect('location', '/')
     })
   })
 })

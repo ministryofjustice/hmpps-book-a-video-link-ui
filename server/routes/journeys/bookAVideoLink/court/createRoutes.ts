@@ -3,11 +3,9 @@ import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
-import NewBookingHandler from './handlers/newBookingHandler'
-import PrisonerSearchHandler from '../handlers/prisonerSearchHandler'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
+import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
-import PrisonerSearchResultsHandler from '../handlers/prisonerSearchResultsHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
@@ -25,7 +23,6 @@ export default function CreateRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  route('/prisoner-search', new PrisonerSearchHandler(prisonService))
   route(
     `${basePath}/video-link-booking`,
     new NewBookingHandler(courtsService, prisonService, prisonerService, videoLinkService),
@@ -41,7 +38,6 @@ export default function CreateRoutes({
     return next()
   })
 
-  route('/prisoner-search/results', new PrisonerSearchResultsHandler(prisonerService, prisonService))
   route(
     `${basePath}/video-link-booking/check-booking`,
     new CheckBookingHandler(courtsService, prisonService, videoLinkService),

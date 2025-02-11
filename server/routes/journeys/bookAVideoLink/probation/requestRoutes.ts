@@ -4,7 +4,6 @@ import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
-import PrisonerNotListedHandler from '../handlers/prisonerNotListedHandler'
 import PrisonerDetailsHandler from '../handlers/prisonerDetailsHandler'
 import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
@@ -24,6 +23,7 @@ export default function RequestRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
+  route('/prisoner/prisoner-details', new PrisonerDetailsHandler(prisonService))
   route(`/prisoner/video-link-booking/confirmation`, new BookingRequestedHandler())
 
   // Book a video link journey is required in session for the following routes
@@ -32,8 +32,6 @@ export default function RequestRoutes({
     return next()
   })
 
-  route('/prisoner-search/prisoner-not-listed', new PrisonerNotListedHandler())
-  route('/prisoner/prisoner-details', new PrisonerDetailsHandler(prisonService))
   route(
     '/prisoner/video-link-booking',
     new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),

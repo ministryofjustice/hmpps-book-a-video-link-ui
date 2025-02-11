@@ -11,7 +11,7 @@
         {% if user.isCourtUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
-                    "href": "/court/booking/create/prisoner-search",
+                    "href": "/court/prisoner-search/search",
                     "clickable": "true",
                     "heading": "Book a new video link",
                     "description": "Create a new video link booking between a court and a prison.",
@@ -43,7 +43,7 @@
         {% if user.isProbationUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
-                    "href": "/probation/booking/create/prisoner-search",
+                    "href": "/probation/prisoner-search/search",
                     "clickable": "true",
                     "heading": "Book a new video link",
                     "description": "Create a new video link booking between a probation team and a prison.",

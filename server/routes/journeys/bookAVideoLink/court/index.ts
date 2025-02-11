@@ -16,7 +16,7 @@ export default function Index(services: Services): Router {
     return res.locals.user.isCourtUser ? next() : next(createError(404, 'Not found'))
   })
 
-  router.use('/:mode(create)/', insertJourneyIdentifier())
+  router.use('/:mode(create|request)/', insertJourneyIdentifier())
   router.use('/:mode(create)/:journeyId', journeyDataMiddleware('bookAVideoLink'), createRoutes(services))
   router.use('/:mode(request)/:journeyId', journeyDataMiddleware('bookAVideoLink'), requestRoutes(services))
 

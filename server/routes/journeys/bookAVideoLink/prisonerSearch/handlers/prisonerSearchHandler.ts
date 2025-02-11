@@ -3,12 +3,12 @@ import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { Matches, ValidateIf } from 'class-validator'
 import { startOfToday } from 'date-fns'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import Validator from '../../../validators/validator'
-import { simpleDateToDate, toDateString } from '../../../../utils/utils'
-import IsValidDate from '../../../validators/isValidDate'
-import PrisonService from '../../../../services/prisonService'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import Validator from '../../../../validators/validator'
+import { simpleDateToDate, toDateString } from '../../../../../utils/utils'
+import IsValidDate from '../../../../validators/isValidDate'
+import PrisonService from '../../../../../services/prisonService'
 
 class Body {
   @Expose()
@@ -56,22 +56,20 @@ export default class PrisonerSearchHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const prisons = await this.prisonService.getPrisons(false, user)
-    res.render('pages/bookAVideoLink/prisonerSearch', { prisons })
+    res.render('pages/bookAVideoLink/prisonerSearch/prisonerSearch', { prisons })
   }
 
   public POST = async (req: Request, res: Response) => {
     const { body } = req
-    req.session.journey.bookAVideoLink = {
-      search: {
-        firstName: body.firstName,
-        lastName: body.lastName,
-        dateOfBirth: body.dateOfBirth ? toDateString(body.dateOfBirth) : null,
-        prison: body.prison,
-        prisonerNumber: body.prisonerNumber,
-        pncNumber: body.pncNumber,
-      },
+    req.session.journey.prisonerSearch = {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      dateOfBirth: body.dateOfBirth ? toDateString(body.dateOfBirth) : null,
+      prison: body.prison,
+      prisonerNumber: body.prisonerNumber,
+      pncNumber: body.pncNumber,
     }
 
-    res.redirect('prisoner-search/results')
+    res.redirect('results')
   }
 }

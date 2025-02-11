@@ -71,7 +71,7 @@ describe('GET', () => {
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
         expect(heading).toEqual('The video link has been booked')
-        expect(bookAnotherLink).toEqual(`/${journey}/booking/create/prisoner-search`)
+        expect(bookAnotherLink).toEqual(`/${journey}/prisoner-search/search`)
 
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')

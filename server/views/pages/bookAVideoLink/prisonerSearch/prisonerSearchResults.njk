@@ -18,13 +18,13 @@
                 {% set resultString = 'result' if results.totalElements === 1 else 'results' %}
                 <p class="govuk-body">
                     Showing {{ results.totalElements }} {{ resultString }}{{ (" (page " + (results.number + 1) + " of " + results.totalPages + ")") if results.totalPages > 1 }}.
-                    <a href="../prisoner-search" class="govuk-link govuk-!-font-size-19">Search again</a>
+                    <a href="search" class="govuk-link govuk-!-font-size-19">Search again</a>
                 </p>
 
                 {% set rows = [] %}
                 {% for result in results.content %}
                     {% set bookLinkHtml %}
-                        <a href="../{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
+                        <a href="../../booking/create/{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
                     {% endset %}
 
                     {% set rows = (rows.push([
@@ -82,7 +82,7 @@
                 }) }}
             {% endif %}
 
-            <a href="../../../request/{{ session.req.params.journeyId }}/prisoner-search/prisoner-not-listed" class="govuk-link govuk-!-font-size-19">The prisoner is not listed</a>
+            <a href="prisoner-not-listed" class="govuk-link govuk-!-font-size-19">The prisoner is not listed</a>
         </div>
     </div>
 {% endblock %}

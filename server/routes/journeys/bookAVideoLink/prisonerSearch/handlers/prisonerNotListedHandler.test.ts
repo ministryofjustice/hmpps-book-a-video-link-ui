@@ -1,11 +1,11 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getPageHeader } from '../../../../testutils/cheerio'
 
-jest.mock('../../../../services/auditService')
+jest.mock('../../../../../services/auditService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 
@@ -21,7 +21,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {},
+    prisonerSearch: {},
   })
 })
 
@@ -32,7 +32,7 @@ afterEach(() => {
 describe('GET', () => {
   it('should render the correct page', () => {
     return request(app)
-      .get(`/court/booking/request/${journeyId()}/prisoner-search/prisoner-not-listed`)
+      .get(`/court/prisoner-search/${journeyId()}/prisoner-not-listed`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRISONER_NOT_LISTED_PAGE, {

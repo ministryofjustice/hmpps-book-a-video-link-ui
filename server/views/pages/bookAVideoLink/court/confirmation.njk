@@ -112,7 +112,7 @@
             <div class="govuk-button-group">
                 {% if mode == 'create' %}
                     {{ govukButton({ text: "Exit", href: '/' }) }}
-                    <a href='/{{ session.req.params.type }}/booking/create/prisoner-search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+                    <a href='/{{ session.req.params.type }}/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
                 {% else %}
                     {{ govukButton({ text: "Return to booking", href: '/' + session.req.params.type + '/view-booking/' + booking.videoLinkBookingId }) }}
                     <a href='/{{ session.req.params.type }}/view-booking' class="govuk-link govuk-link--no-visited-state">Exit to all video link bookings</a>

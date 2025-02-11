@@ -5,7 +5,7 @@ import {
   PaginationRequest,
   Prisoner,
 } from '../@types/prisonerOffenderSearchApi/types'
-import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
+import { PrisonerSearchJourney } from '../routes/journeys/bookAVideoLink/prisonerSearch/journey'
 
 export default class PrisonerService {
   constructor(private readonly prisonerOffenderSearchApiClient: PrisonerOffenderSearchApiClient) {}
@@ -15,7 +15,7 @@ export default class PrisonerService {
   }
 
   public searchPrisonersByCriteria(
-    criteria: BookAVideoLinkJourney['search'],
+    criteria: PrisonerSearchJourney,
     pagination: PaginationRequest,
     user: Express.User,
   ): Promise<PagePrisoner> {

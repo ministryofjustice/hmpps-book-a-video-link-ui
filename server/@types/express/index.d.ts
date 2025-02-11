@@ -1,5 +1,6 @@
 import type { UserDetails } from '../../services/userService'
 import { BookAVideoLinkJourney } from '../../routes/journeys/bookAVideoLink/journey'
+import { PrisonerSearchJourney } from '../../routes/journeys/bookAVideoLink/prisonerSearch/journey'
 
 export default {}
 
@@ -9,6 +10,7 @@ export interface JourneyData extends Journey {
 
 export interface Journey {
   bookAVideoLink?: BookAVideoLinkJourney
+  prisonerSearch?: PrisonerSearchJourney
 }
 
 declare module 'express-session' {

@@ -131,7 +131,6 @@ export default class NewBookingHandler implements PageHandler {
     }
 
     req.session.journey.bookAVideoLink = {
-      ...req.session.journey.bookAVideoLink,
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,

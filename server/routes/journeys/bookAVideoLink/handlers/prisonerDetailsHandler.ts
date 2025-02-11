@@ -50,7 +50,6 @@ export default class PrisonerDetailsHandler implements PageHandler {
     const prisons = await this.prisonService.getPrisons(true, user)
 
     req.session.journey.bookAVideoLink = {
-      ...req.session.journey.bookAVideoLink,
       prisoner: {
         firstName,
         lastName,

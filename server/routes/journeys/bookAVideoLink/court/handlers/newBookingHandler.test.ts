@@ -174,7 +174,6 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookACourtHearing', {
-            type: 'COURT',
             courtCode: 'COURT_CODE',
             bookingId: 1,
             date: startOfTomorrow().toISOString(),
@@ -492,7 +491,6 @@ describe('New Booking handler', () => {
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'COURT',
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )
@@ -534,7 +532,6 @@ describe('New Booking handler', () => {
               prisonName: 'Moorland',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'COURT',
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )

@@ -41,7 +41,7 @@ export default class CourtBookingService {
 
     return {
       vlbIdToExclude: journey.bookingId,
-      bookingType: journey.type,
+      bookingType: 'COURT',
       courtOrProbationCode: journey.courtCode,
       prisonCode: journey.prisoner.prisonId,
       date: formatDate(journey.date, 'yyyy-MM-dd'),
@@ -66,7 +66,7 @@ export default class CourtBookingService {
 
   private buildBookingRequest<T extends VideoBookingRequest>(journey: BookACourtHearingJourney): T {
     return {
-      bookingType: journey.type,
+      bookingType: 'COURT',
       prisoners: [
         {
           firstName: journey.prisoner.firstName,
@@ -77,12 +77,10 @@ export default class CourtBookingService {
           appointments: this.mapSessionToAppointments(journey),
         },
       ],
-      courtCode: journey.type === 'COURT' ? journey.courtCode : undefined,
-      courtHearingType: journey.type === 'COURT' ? journey.hearingTypeCode : undefined,
-      probationTeamCode: journey.type === 'PROBATION' ? journey.courtCode : undefined,
-      probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
+      courtCode: journey.courtCode,
+      courtHearingType: journey.hearingTypeCode,
       comments: journey.comments,
-      videoLinkUrl: journey.type === 'COURT' ? journey.videoLinkUrl : undefined,
+      videoLinkUrl: journey.videoLinkUrl,
     } as unknown as T
   }
 
@@ -99,30 +97,21 @@ export default class CourtBookingService {
         : undefined
 
     return [
-      journey.type === 'COURT'
-        ? createAppointment(
-            'VLB_COURT_PRE',
-            journey.preLocationCode,
-            journey.date,
-            journey.preHearingStartTime,
-            journey.preHearingEndTime,
-          )
-        : undefined,
-      journey.type === 'COURT'
-        ? createAppointment('VLB_COURT_MAIN', journey.locationCode, journey.date, journey.startTime, journey.endTime)
-        : undefined,
-      journey.type === 'COURT'
-        ? createAppointment(
-            'VLB_COURT_POST',
-            journey.postLocationCode,
-            journey.date,
-            journey.postHearingStartTime,
-            journey.postHearingEndTime,
-          )
-        : undefined,
-      journey.type === 'PROBATION'
-        ? createAppointment('VLB_PROBATION', journey.locationCode, journey.date, journey.startTime, journey.endTime)
-        : undefined,
+      createAppointment(
+        'VLB_COURT_PRE',
+        journey.preLocationCode,
+        journey.date,
+        journey.preHearingStartTime,
+        journey.preHearingEndTime,
+      ),
+      createAppointment('VLB_COURT_MAIN', journey.locationCode, journey.date, journey.startTime, journey.endTime),
+      createAppointment(
+        'VLB_COURT_POST',
+        journey.postLocationCode,
+        journey.date,
+        journey.postHearingStartTime,
+        journey.postHearingEndTime,
+      ),
     ].filter(Boolean)
   }
 }

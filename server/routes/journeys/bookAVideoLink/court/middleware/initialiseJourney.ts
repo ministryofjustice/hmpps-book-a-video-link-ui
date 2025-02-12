@@ -24,7 +24,6 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
     req.session.journey.bookACourtHearing = {
       bookingId: Number(bookingId),
       bookingStatus: booking.statusCode,
-      type: booking.bookingType,
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,
@@ -33,8 +32,8 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
-      courtCode: booking.courtCode || booking.probationTeamCode,
-      hearingTypeCode: booking.courtHearingType || booking.probationMeetingType,
+      courtCode: booking.courtCode,
+      hearingTypeCode: booking.courtHearingType,
       date: parseDateToISOString(mainAppointment.appointmentDate),
       startTime: parseTimeToISOString(mainAppointment.startTime),
       endTime: parseTimeToISOString(mainAppointment.endTime),

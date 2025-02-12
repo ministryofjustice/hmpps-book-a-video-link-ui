@@ -22,7 +22,6 @@ describe('Court booking service', () => {
 
   describe('checkAvailability', () => {
     const commonJourney = {
-      type: 'COURT',
       prisoner: {
         prisonId: 'MDI',
         prisonerNumber: 'ABC123',
@@ -153,58 +152,10 @@ describe('Court booking service', () => {
   })
 
   describe('createVideoLinkBooking', () => {
-    it('Posts a request to create a probation meeting booking', async () => {
+    it('Posts a request to create a court hearing booking, with main appointment only', async () => {
       bookAVideoLinkClient.createVideoLinkBooking.mockResolvedValue(1)
 
       const journey = {
-        type: 'PROBATION',
-        prisoner: {
-          prisonId: 'MDI',
-          prisonerNumber: 'ABC123',
-          prisonName: 'Moorland',
-        },
-        date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION',
-        startTime: '1970-01-01T13:30:00Z',
-        endTime: '1970-01-01T14:30:00Z',
-        courtCode: 'PROBATION_TEAM',
-        hearingTypeCode: 'PSR',
-        comments: 'comments',
-      } as BookACourtHearingJourney
-
-      const expectedBody = {
-        bookingType: 'PROBATION',
-        prisoners: [
-          {
-            prisonCode: 'MDI',
-            prisonerNumber: 'ABC123',
-            appointments: [
-              {
-                type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
-                date: '2022-03-20',
-                startTime: '13:30',
-                endTime: '14:30',
-              },
-            ],
-          },
-        ],
-        probationTeamCode: 'PROBATION_TEAM',
-        probationMeetingType: 'PSR',
-        comments: 'comments',
-      }
-
-      const result = await courtBookingService.createVideoLinkBooking(journey, user)
-
-      expect(bookAVideoLinkClient.createVideoLinkBooking).toHaveBeenCalledWith(expectedBody, user)
-      expect(result).toEqual(1)
-    })
-
-    it('Posts a request to create a court hearing booking only', async () => {
-      bookAVideoLinkClient.createVideoLinkBooking.mockResolvedValue(1)
-
-      const journey = {
-        type: 'COURT',
         prisoner: {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
@@ -253,7 +204,6 @@ describe('Court booking service', () => {
       bookAVideoLinkClient.createVideoLinkBooking.mockResolvedValue(1)
 
       const journey = {
-        type: 'COURT',
         prisoner: {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
@@ -320,57 +270,8 @@ describe('Court booking service', () => {
   })
 
   describe('requestVideoLinkBooking', () => {
-    it('Posts a request to create a probation meeting booking', async () => {
+    it('Posts a request to create a court hearing booking, with main appointment only', async () => {
       const journey = {
-        type: 'PROBATION',
-        prisoner: {
-          prisonId: 'MDI',
-          prisonName: 'Moorland',
-          firstName: 'Joe',
-          lastName: 'Bloggs',
-          dateOfBirth: '1970-01-01',
-        },
-        date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION',
-        startTime: '1970-01-01T13:30:00Z',
-        endTime: '1970-01-01T14:30:00Z',
-        courtCode: 'PROBATION_TEAM',
-        hearingTypeCode: 'PSR',
-        comments: 'comments',
-      }
-
-      const expectedBody = {
-        bookingType: 'PROBATION',
-        prisoners: [
-          {
-            prisonCode: 'MDI',
-            firstName: 'Joe',
-            lastName: 'Bloggs',
-            dateOfBirth: '1970-01-01',
-            appointments: [
-              {
-                type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
-                date: '2022-03-20',
-                startTime: '13:30',
-                endTime: '14:30',
-              },
-            ],
-          },
-        ],
-        probationTeamCode: 'PROBATION_TEAM',
-        probationMeetingType: 'PSR',
-        comments: 'comments',
-      }
-
-      await courtBookingService.requestVideoLinkBooking(journey, user)
-
-      expect(bookAVideoLinkClient.requestVideoLinkBooking).toHaveBeenCalledWith(expectedBody, user)
-    })
-
-    it('Posts a request to create a court hearing booking only', async () => {
-      const journey = {
-        type: 'COURT',
         prisoner: {
           prisonId: 'MDI',
           prisonName: 'Moorland',
@@ -420,7 +321,6 @@ describe('Court booking service', () => {
 
     it('Posts a request to create a court hearing booking with a pre/post meeting', async () => {
       const journey = {
-        type: 'COURT',
         prisoner: {
           prisonId: 'MDI',
           prisonName: 'Moorland',
@@ -490,55 +390,9 @@ describe('Court booking service', () => {
   })
 
   describe('amendVideoLinkBooking', () => {
-    it('Posts a request to amend a probation meeting booking', async () => {
+    it('Posts a request to amend a court hearing booking, with main appointment only', async () => {
       const journey = {
         bookingId: 1,
-        type: 'PROBATION',
-        prisoner: {
-          prisonId: 'MDI',
-          prisonerNumber: 'ABC123',
-          prisonName: 'Moorland',
-        },
-        date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION',
-        startTime: '1970-01-01T13:30:00Z',
-        endTime: '1970-01-01T14:30:00Z',
-        courtCode: 'PROBATION_TEAM',
-        hearingTypeCode: 'PSR',
-        comments: 'comments',
-      } as BookACourtHearingJourney
-
-      const expectedBody = {
-        bookingType: 'PROBATION',
-        prisoners: [
-          {
-            prisonCode: 'MDI',
-            prisonerNumber: 'ABC123',
-            appointments: [
-              {
-                type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
-                date: '2022-03-20',
-                startTime: '13:30',
-                endTime: '14:30',
-              },
-            ],
-          },
-        ],
-        probationTeamCode: 'PROBATION_TEAM',
-        probationMeetingType: 'PSR',
-        comments: 'comments',
-      }
-
-      await courtBookingService.amendVideoLinkBooking(journey, user)
-
-      expect(bookAVideoLinkClient.amendVideoLinkBooking).toHaveBeenCalledWith(1, expectedBody, user)
-    })
-
-    it('Posts a request to amend a court hearing booking only', async () => {
-      const journey = {
-        bookingId: 1,
-        type: 'COURT',
         prisoner: {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',
@@ -585,7 +439,6 @@ describe('Court booking service', () => {
     it('Posts a request to amend a court hearing booking with a pre/post meeting', async () => {
       const journey = {
         bookingId: 1,
-        type: 'COURT',
         prisoner: {
           prisonId: 'MDI',
           prisonerNumber: 'ABC123',

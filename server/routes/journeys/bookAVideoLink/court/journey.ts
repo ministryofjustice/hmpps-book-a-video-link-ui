@@ -1,7 +1,6 @@
 export type BookACourtHearingJourney = {
   bookingId?: number
   bookingStatus?: string
-  type?: string
   prisoner?: {
     firstName: string
     lastName: string

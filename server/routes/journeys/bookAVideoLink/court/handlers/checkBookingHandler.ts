@@ -43,7 +43,7 @@ export default class CheckBookingHandler implements PageHandler {
       return res.redirect('not-available')
     }
 
-    const agencies = await this.courtsService.getUserPreferences(user)
+    const courts = await this.courtsService.getUserPreferences(user)
 
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
 
@@ -56,7 +56,7 @@ export default class CheckBookingHandler implements PageHandler {
     return res.render('pages/bookAVideoLink/court/checkBooking', {
       warnPrison,
       prisoner,
-      agencies,
+      courts,
       rooms,
       hearingTypes,
     })

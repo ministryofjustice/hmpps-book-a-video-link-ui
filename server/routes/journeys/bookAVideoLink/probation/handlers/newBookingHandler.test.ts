@@ -4,13 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import {
-  dropdownOptions,
-  existsByLabel,
-  existsByName,
-  getPageHeader,
-  getValueByKey,
-} from '../../../../testutils/cheerio'
+import { dropdownOptions, existsByLabel, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -125,8 +119,6 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
           expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
-          expect(existsByName($, 'preRequired')).toBe(false)
-          expect(existsByName($, 'postRequired')).toBe(false)
           expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)
           expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
         })
@@ -218,8 +210,8 @@ describe('New Booking handler', () => {
 
   describe('POST', () => {
     const validForm = {
-      agencyCode: 'CODE',
-      hearingTypeCode: 'PSR',
+      probationTeamCode: 'CODE',
+      meetingTypeCode: 'PSR',
       date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
       startTime: { hour: 15, minute: 30 },
       endTime: { hour: 16, minute: 30 },
@@ -233,13 +225,13 @@ describe('New Booking handler', () => {
         .expect(() => {
           expectErrorMessages([
             {
-              fieldId: 'agencyCode',
-              href: '#agencyCode',
+              fieldId: 'probationTeamCode',
+              href: '#probationTeamCode',
               text: 'Select a probation team',
             },
             {
-              fieldId: 'hearingTypeCode',
-              href: '#hearingTypeCode',
+              fieldId: 'meetingTypeCode',
+              href: '#meetingTypeCode',
               text: 'Select a meeting type',
             },
             {

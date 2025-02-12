@@ -80,7 +80,7 @@
                             text: "Probation team"
                         },
                         value: {
-                            text: (agencies | find('code', session.journey.bookAProbationMeeting.agencyCode)).description
+                            text: (probationTeams | find('code', session.journey.bookAProbationMeeting.agencyCode)).description
                         }
                     },
                     {
@@ -88,7 +88,7 @@
                             text: "Meeting type"
                         },
                         value: {
-                            text: (hearingTypes | find('code', session.journey.bookAProbationMeeting.hearingTypeCode)).description
+                            text: (meetingTypes | find('code', session.journey.bookAProbationMeeting.hearingTypeCode)).description
                         }
                     },
                     {

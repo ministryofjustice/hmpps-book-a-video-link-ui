@@ -7,7 +7,7 @@ import amendRoutes from './amendRoutes'
 import cancelRoutes from './cancelRoutes'
 import insertJourneyIdentifier from '../../../../middleware/insertJourneyIdentifier'
 import journeyDataMiddleware from '../../../../middleware/journeyDataMiddleware'
-import initialiseJourney from '../middleware/initialiseJourney'
+import initialiseJourney from './middleware/initialiseJourney'
 
 export default function Index(services: Services): Router {
   const router = Router({ mergeParams: true })

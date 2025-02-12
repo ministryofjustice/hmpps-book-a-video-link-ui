@@ -1,8 +1,8 @@
 import { RequestHandler } from 'express'
 import { parse } from 'date-fns'
-import { Services } from '../../../../services'
-import asyncMiddleware from '../../../../middleware/asyncMiddleware'
-import { extractPrisonAppointmentsFromBooking } from '../../../../utils/utils'
+import { Services } from '../../../../../services'
+import asyncMiddleware from '../../../../../middleware/asyncMiddleware'
+import { extractPrisonAppointmentsFromBooking } from '../../../../../utils/utils'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
   return asyncMiddleware(async (req, res, next) => {

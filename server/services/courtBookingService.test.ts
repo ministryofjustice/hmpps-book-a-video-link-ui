@@ -1,7 +1,7 @@
 import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
 import CourtBookingService from './courtBookingService'
+import { BookACourtHearingJourney } from '../routes/journeys/bookAVideoLink/court/journey'
 
 jest.mock('../data/bookAVideoLinkApiClient')
 
@@ -35,7 +35,7 @@ describe('Court booking service', () => {
       startTime: '1970-01-01T13:30:00Z',
       endTime: '1970-01-01T14:30:00Z',
       courtCode: 'AGENCY_CODE',
-    } as BookAVideoLinkJourney
+    } as BookACourtHearingJourney
 
     it('should correctly handle the case with only main appointment', async () => {
       const journey = { ...commonJourney }
@@ -170,7 +170,7 @@ describe('Court booking service', () => {
         courtCode: 'PROBATION_TEAM',
         hearingTypeCode: 'PSR',
         comments: 'comments',
-      } as BookAVideoLinkJourney
+      } as BookACourtHearingJourney
 
       const expectedBody = {
         bookingType: 'PROBATION',
@@ -218,7 +218,7 @@ describe('Court booking service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      } as BookAVideoLinkJourney
+      } as BookACourtHearingJourney
 
       const expectedBody = {
         bookingType: 'COURT',
@@ -273,7 +273,7 @@ describe('Court booking service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      } as BookAVideoLinkJourney
+      } as BookACourtHearingJourney
 
       const expectedBody = {
         bookingType: 'COURT',
@@ -506,7 +506,7 @@ describe('Court booking service', () => {
         courtCode: 'PROBATION_TEAM',
         hearingTypeCode: 'PSR',
         comments: 'comments',
-      } as BookAVideoLinkJourney
+      } as BookACourtHearingJourney
 
       const expectedBody = {
         bookingType: 'PROBATION',
@@ -552,7 +552,7 @@ describe('Court booking service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      } as BookAVideoLinkJourney
+      } as BookACourtHearingJourney
 
       const expectedBody = {
         bookingType: 'COURT',
@@ -605,7 +605,7 @@ describe('Court booking service', () => {
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
         videoLinkUrl: 'videoLinkUrl',
-      } as BookAVideoLinkJourney
+      } as BookACourtHearingJourney
 
       const expectedBody = {
         bookingType: 'COURT',

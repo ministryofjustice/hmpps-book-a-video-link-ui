@@ -5,35 +5,35 @@ import {
   CreateVideoBookingRequest,
   RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
-import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
 import { formatDate } from '../utils/utils'
+import { BookACourtHearingJourney } from '../routes/journeys/bookAVideoLink/court/journey'
 
 type VideoBookingRequest = CreateVideoBookingRequest | AmendVideoBookingRequest | RequestVideoBookingRequest
 
 export default class CourtBookingService {
   constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}
 
-  public checkAvailability(journey: BookAVideoLinkJourney, user: Express.User) {
+  public checkAvailability(journey: BookACourtHearingJourney, user: Express.User) {
     const availabilityRequest = this.buildAvailabilityRequest(journey)
     return this.bookAVideoLinkApiClient.checkAvailability(availabilityRequest, user)
   }
 
-  public createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+  public createVideoLinkBooking(journey: BookACourtHearingJourney, user: Express.User) {
     const request = this.buildBookingRequest<CreateVideoBookingRequest>(journey)
     return this.bookAVideoLinkApiClient.createVideoLinkBooking(request, user)
   }
 
-  public requestVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+  public requestVideoLinkBooking(journey: BookACourtHearingJourney, user: Express.User) {
     const request = this.buildBookingRequest<RequestVideoBookingRequest>(journey)
     return this.bookAVideoLinkApiClient.requestVideoLinkBooking(request, user)
   }
 
-  public amendVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
+  public amendVideoLinkBooking(journey: BookACourtHearingJourney, user: Express.User) {
     const request = this.buildBookingRequest<AmendVideoBookingRequest>(journey)
     return this.bookAVideoLinkApiClient.amendVideoLinkBooking(journey.bookingId, request, user)
   }
 
-  private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {
+  private buildAvailabilityRequest(journey: BookACourtHearingJourney): AvailabilityRequest {
     const formatInterval = (start: string, end: string) => ({
       start: formatDate(start, 'HH:mm'),
       end: formatDate(end, 'HH:mm'),
@@ -64,7 +64,7 @@ export default class CourtBookingService {
     } as AvailabilityRequest
   }
 
-  private buildBookingRequest<T extends VideoBookingRequest>(journey: BookAVideoLinkJourney): T {
+  private buildBookingRequest<T extends VideoBookingRequest>(journey: BookACourtHearingJourney): T {
     return {
       bookingType: journey.type,
       prisoners: [
@@ -86,7 +86,7 @@ export default class CourtBookingService {
     } as unknown as T
   }
 
-  private mapSessionToAppointments(journey: BookAVideoLinkJourney) {
+  private mapSessionToAppointments(journey: BookACourtHearingJourney) {
     const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
       locationCode
         ? {

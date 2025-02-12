@@ -1,4 +1,4 @@
-export type BookAVideoLinkJourney = {
+export type BookACourtHearingJourney = {
   bookingId?: number
   bookingStatus?: string
   type?: string

@@ -1,6 +1,7 @@
 import type { UserDetails } from '../../services/userService'
-import { BookAVideoLinkJourney } from '../../routes/journeys/bookAVideoLink/journey'
 import { PrisonerSearchJourney } from '../../routes/journeys/bookAVideoLink/prisonerSearch/journey'
+import { BookACourtHearingJourney } from '../../routes/journeys/bookAVideoLink/court/journey'
+import { BookAProbationMeetingJourney } from '../../routes/journeys/bookAVideoLink/probation/journey'
 
 export default {}
 
@@ -9,8 +10,8 @@ export interface JourneyData extends Journey {
 }
 
 export interface Journey {
-  bookACourtHearing?: BookAVideoLinkJourney
-  bookAProbationMeeting?: BookAVideoLinkJourney
+  bookACourtHearing?: BookACourtHearingJourney
+  bookAProbationMeeting?: BookAProbationMeetingJourney
   prisonerSearch?: PrisonerSearchJourney
 }
 

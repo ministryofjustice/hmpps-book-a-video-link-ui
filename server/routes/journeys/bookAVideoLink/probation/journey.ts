@@ -1,7 +1,6 @@
 export type BookAProbationMeetingJourney = {
   bookingId?: number
   bookingStatus?: string
-  type?: string
   prisoner?: {
     firstName: string
     lastName: string
@@ -10,18 +9,12 @@ export type BookAProbationMeetingJourney = {
     prisonId: string
     prisonName: string
   }
-  courtCode?: string
-  hearingTypeCode?: string
+  probationTeamCode?: string
+  meetingTypeCode?: string
   date?: string
   startTime?: string
   endTime?: string
-  preHearingStartTime?: string
-  preHearingEndTime?: string
-  postHearingStartTime?: string
-  postHearingEndTime?: string
   locationCode?: string
-  preLocationCode?: string
-  postLocationCode?: string
   comments?: string
   videoLinkUrl?: string
 }

@@ -80,7 +80,7 @@
                         {% set items = (items.push({
                             value: court.code,
                             text: court.description,
-                            selected: formResponses.courtCode == agency.code or session.journey.bookACourtHearing.courtCode == court.code
+                            selected: formResponses.courtCode == court.code or session.journey.bookACourtHearing.courtCode == court.code
                         }), items) %}
                     {% endfor %}
 

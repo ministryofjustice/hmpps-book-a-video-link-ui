@@ -41,32 +41,20 @@ export default class ProbationBookingService {
 
     return {
       vlbIdToExclude: journey.bookingId,
-      bookingType: journey.type,
-      courtOrProbationCode: journey.courtCode,
+      bookingType: 'PROBATION',
+      courtOrProbationCode: journey.probationTeamCode,
       prisonCode: journey.prisoner.prisonId,
       date: formatDate(journey.date, 'yyyy-MM-dd'),
-      preAppointment: journey.preLocationCode
-        ? {
-            prisonLocKey: journey.preLocationCode,
-            interval: formatInterval(journey.preHearingStartTime, journey.preHearingEndTime),
-          }
-        : undefined,
       mainAppointment: {
         prisonLocKey: journey.locationCode,
         interval: formatInterval(journey.startTime, journey.endTime),
       },
-      postAppointment: journey.postLocationCode
-        ? {
-            prisonLocKey: journey.postLocationCode,
-            interval: formatInterval(journey.postHearingStartTime, journey.postHearingEndTime),
-          }
-        : undefined,
     } as AvailabilityRequest
   }
 
   private buildBookingRequest<T extends VideoBookingRequest>(journey: BookAProbationMeetingJourney): T {
     return {
-      bookingType: journey.type,
+      bookingType: 'PROBATION',
       prisoners: [
         {
           firstName: journey.prisoner.firstName,
@@ -77,52 +65,21 @@ export default class ProbationBookingService {
           appointments: this.mapSessionToAppointments(journey),
         },
       ],
-      courtCode: journey.type === 'COURT' ? journey.courtCode : undefined,
-      courtHearingType: journey.type === 'COURT' ? journey.hearingTypeCode : undefined,
-      probationTeamCode: journey.type === 'PROBATION' ? journey.courtCode : undefined,
-      probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
+      probationTeamCode: journey.probationTeamCode,
+      probationMeetingType: journey.meetingTypeCode,
       comments: journey.comments,
-      videoLinkUrl: journey.type === 'COURT' ? journey.videoLinkUrl : undefined,
     } as unknown as T
   }
 
   private mapSessionToAppointments(journey: BookAProbationMeetingJourney) {
-    const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
-      locationCode
-        ? {
-            type,
-            locationKey: locationCode,
-            date: formatDate(date, 'yyyy-MM-dd'),
-            startTime: formatDate(startTime, 'HH:mm'),
-            endTime: formatDate(endTime, 'HH:mm'),
-          }
-        : undefined
-
     return [
-      journey.type === 'COURT'
-        ? createAppointment(
-            'VLB_COURT_PRE',
-            journey.preLocationCode,
-            journey.date,
-            journey.preHearingStartTime,
-            journey.preHearingEndTime,
-          )
-        : undefined,
-      journey.type === 'COURT'
-        ? createAppointment('VLB_COURT_MAIN', journey.locationCode, journey.date, journey.startTime, journey.endTime)
-        : undefined,
-      journey.type === 'COURT'
-        ? createAppointment(
-            'VLB_COURT_POST',
-            journey.postLocationCode,
-            journey.date,
-            journey.postHearingStartTime,
-            journey.postHearingEndTime,
-          )
-        : undefined,
-      journey.type === 'PROBATION'
-        ? createAppointment('VLB_PROBATION', journey.locationCode, journey.date, journey.startTime, journey.endTime)
-        : undefined,
-    ].filter(Boolean)
+      {
+        type: 'VLB_PROBATION',
+        locationKey: journey.locationCode,
+        date: formatDate(journey.date, 'yyyy-MM-dd'),
+        startTime: formatDate(journey.startTime, 'HH:mm'),
+        endTime: formatDate(journey.endTime, 'HH:mm'),
+      },
+    ]
   }
 }

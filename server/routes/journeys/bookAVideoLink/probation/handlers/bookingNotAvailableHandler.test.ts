@@ -5,7 +5,7 @@ import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetu
 import AuditService, { Page } from '../../../../../services/auditService'
 import { getPageHeader } from '../../../../testutils/cheerio'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { AvailabilityResponse } from '../../../../../@types/bookAVideoLinkApi/types'
 
@@ -27,10 +27,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {
-      preLocationCode: 'LOCATION_CODE',
-      postLocationCode: 'LOCATION_CODE',
-    },
+    bookAVideoLink: {},
   })
 })
 
@@ -74,10 +71,6 @@ describe('Check Booking handler', () => {
     const validForm = {
       startTime: '13:00',
       endTime: '14:00',
-      preStart: '12:45',
-      preEnd: '13:00',
-      postStart: '14:00',
-      postEnd: '14:15',
     }
 
     it('should validate no fields posted', () => {
@@ -96,26 +89,6 @@ describe('Check Booking handler', () => {
               href: '#endTime',
               text: 'A end time must be present',
             },
-            {
-              fieldId: 'preStart',
-              href: '#preStart',
-              text: 'A pre-court start time must be present',
-            },
-            {
-              fieldId: 'preEnd',
-              href: '#preEnd',
-              text: 'A pre-court end time must be present',
-            },
-            {
-              fieldId: 'postStart',
-              href: '#postStart',
-              text: 'A post-court start time must be present',
-            },
-            {
-              fieldId: 'postEnd',
-              href: '#postEnd',
-              text: 'A post-court end time must be present',
-            },
           ])
         })
     })
@@ -126,10 +99,6 @@ describe('Check Booking handler', () => {
         .send({
           startTime: 'invalid',
           endTime: 'invalid',
-          preStart: 'invalid',
-          preEnd: 'invalid',
-          postStart: 'invalid',
-          postEnd: 'invalid',
         })
         .expect(() => {
           expectErrorMessages([
@@ -143,37 +112,8 @@ describe('Check Booking handler', () => {
               href: '#endTime',
               text: 'A valid end time must be present',
             },
-            {
-              fieldId: 'preStart',
-              href: '#preStart',
-              text: 'A valid pre-court start time must be present',
-            },
-            {
-              fieldId: 'preEnd',
-              href: '#preEnd',
-              text: 'A valid pre-court end time must be present',
-            },
-            {
-              fieldId: 'postStart',
-              href: '#postStart',
-              text: 'A valid post-court start time must be present',
-            },
-            {
-              fieldId: 'postEnd',
-              href: '#postEnd',
-              text: 'A valid post-court end time must be present',
-            },
           ])
         })
-    })
-
-    it('should validate empty pre and post times are accepted', () => {
-      appSetup({ bookAVideoLink: {} })
-
-      return request(app)
-        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
-        .send({ ...validForm, preStart: undefined, preEnd: undefined, postStart: undefined, postEnd: undefined })
-        .expect(() => expectNoErrorMessages())
     })
 
     it('should save the posted fields', async () => {
@@ -186,14 +126,8 @@ describe('Check Booking handler', () => {
         .expect('location', 'check-booking')
         .then(() =>
           expectJourneySession(app, 'bookAVideoLink', {
-            endTime: '1970-01-01T14:00:00.000Z',
-            postHearingEndTime: '1970-01-01T14:15:00.000Z',
-            postHearingStartTime: '1970-01-01T14:00:00.000Z',
-            postLocationCode: 'LOCATION_CODE',
-            preHearingEndTime: '1970-01-01T13:00:00.000Z',
-            preHearingStartTime: '1970-01-01T12:45:00.000Z',
-            preLocationCode: 'LOCATION_CODE',
             startTime: '1970-01-01T13:00:00.000Z',
+            endTime: '1970-01-01T14:00:00.000Z',
           }),
         )
     })

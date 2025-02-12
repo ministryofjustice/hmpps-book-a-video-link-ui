@@ -3,12 +3,12 @@ import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { IsNotEmpty } from 'class-validator'
 import { startOfToday } from 'date-fns'
-import { Page } from '../../../../services/auditService'
-import { PageHandler } from '../../../interfaces/pageHandler'
-import Validator from '../../../validators/validator'
-import { simpleDateToDate } from '../../../../utils/utils'
-import IsValidDate from '../../../validators/isValidDate'
-import PrisonService from '../../../../services/prisonService'
+import { Page } from '../../../../../services/auditService'
+import { PageHandler } from '../../../../interfaces/pageHandler'
+import Validator from '../../../../validators/validator'
+import { simpleDateToDate } from '../../../../../utils/utils'
+import IsValidDate from '../../../../validators/isValidDate'
+import PrisonService from '../../../../../services/prisonService'
 
 class Body {
   @Expose()
@@ -41,7 +41,7 @@ export default class PrisonerDetailsHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const prisons = await this.prisonService.getPrisons(true, user)
-    return res.render('pages/bookAVideoLink/prisonerDetails', { prisons })
+    return res.render('pages/bookAVideoLink/probation/prisonerDetails', { prisons })
   }
 
   public POST = async (req: Request, res: Response) => {

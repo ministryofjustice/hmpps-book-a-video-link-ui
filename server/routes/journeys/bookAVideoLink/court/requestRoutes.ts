@@ -4,11 +4,11 @@ import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
-import PrisonerDetailsHandler from '../handlers/prisonerDetailsHandler'
+import PrisonerDetailsHandler from './handlers/prisonerDetailsHandler'
 import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
-import BookingRequestedHandler from '../handlers/bookingRequestedHandler'
+import BookingRequestedHandler from './handlers/bookingRequestedHandler'
 
 export default function RequestRoutes({
   auditService,

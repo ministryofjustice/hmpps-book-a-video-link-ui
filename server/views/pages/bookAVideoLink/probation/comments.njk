@@ -22,7 +22,7 @@
                     id: "comments",
                     maxlength: 400,
                     label: { text: "Comments (optional)" },
-                    hint: { text: "This can include the hearing number, type of hearing and any other additional details" if session.journey.bookAVideoLink.type === 'COURT' else 'This should include Probation Officer’s full name, contact information, and any other additional details.' },
+                    hint: { text: "This should include Probation Officer’s full name, contact information, and any other additional details." },
                     value: session.journey.bookAVideoLink.comments
                 }) }}
 
@@ -33,7 +33,7 @@
                 }) }}
             </form>
 
-            <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='cancel-link'>Cancel</a>
+            <a href="/probation/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='cancel-link'>Cancel</a>
         </div>
     </div>
 {% endblock %}

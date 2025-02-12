@@ -27,13 +27,13 @@ export default function AmendRoutes({
   route('/video-link-booking/confirmation', new ConfirmationHandler(videoLinkService, prisonerService, prisonService))
 
   router.use((req, res, next) => {
-    const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookAVideoLink
+    const { bookingId, date, startTime, bookingStatus } = req.session.journey.bookAVideoLink
     const bookingDate = parseISO(date)
-    const bookingTime = parseISO(preHearingStartTime || startTime)
+    const bookingTime = parseISO(startTime)
 
     if (!videoLinkService.bookingIsAmendable(bookingDate, bookingTime, bookingStatus)) {
       req.session.journey.bookAVideoLink = null
-      return res.redirect(`/${req.params.type}/view-booking/${bookingId}`)
+      return res.redirect(`/probation/view-booking/${bookingId}`)
     }
     return next()
   })

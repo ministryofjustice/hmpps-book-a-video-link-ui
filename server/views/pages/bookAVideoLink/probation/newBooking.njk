@@ -57,7 +57,7 @@
                             value: {
                                 text: agencies[0].description
                             }
-                        } if agencies.length == 1 and session.req.params.type,
+                        } if agencies.length == 1,
                         {
                             key: {
                                 text: "Probation Team"
@@ -184,7 +184,7 @@
             {% if mode == 'create' or mode == 'request' %}
                 <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
-                <a href="/{{ session.req.params.type }}/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a href="/probation/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

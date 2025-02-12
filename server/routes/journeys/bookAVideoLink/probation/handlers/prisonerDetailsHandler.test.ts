@@ -1,16 +1,16 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { appWithAllRoutes, journeyId, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
-import PrisonService from '../../../../services/prisonService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../testutils/expectErrorMessage'
-import expectJourneySession from '../../../testutils/testUtilRoute'
-import { Prison } from '../../../../@types/bookAVideoLinkApi/types'
+import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
+import AuditService, { Page } from '../../../../../services/auditService'
+import { getPageHeader } from '../../../../testutils/cheerio'
+import PrisonService from '../../../../../services/prisonService'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import expectJourneySession from '../../../../testutils/testUtilRoute'
+import { Prison } from '../../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../services/auditService')
-jest.mock('../../../../services/prisonService')
+jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/prisonService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
@@ -36,12 +36,9 @@ afterEach(() => {
 
 describe('Prisoner details handler', () => {
   describe('GET', () => {
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s - should render the correct view page', (_: string, journey) => {
+    it('should render the correct view page', () => {
       return request(app)
-        .get(`/${journey}/booking/request/${journeyId()}/prisoner/prisoner-details`)
+        .get(`/probation/booking/request/${journeyId()}/prisoner/prisoner-details`)
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
@@ -64,12 +61,9 @@ describe('Prisoner details handler', () => {
       prison: 'MDI',
     }
 
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s - should validate an empty form', (_: string, journey) => {
+    it('should validate an empty form', () => {
       return request(app)
-        .post(`/${journey}/booking/request/${journeyId()}/prisoner/prisoner-details`)
+        .post(`/probation/booking/request/${journeyId()}/prisoner/prisoner-details`)
         .send({ dateOfBirth: {} })
         .expect(() => {
           expectErrorMessages([
@@ -97,12 +91,9 @@ describe('Prisoner details handler', () => {
         })
     })
 
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s - should validate the date of birth being a valid date', (_: string, journey) => {
+    it('should validate the date of birth being a valid date', () => {
       return request(app)
-        .post(`/${journey}/booking/request/${journeyId()}/prisoner/prisoner-details`)
+        .post(`/probation/booking/request/${journeyId()}/prisoner/prisoner-details`)
         .send({ ...validForm, dateOfBirth: { day: '30', month: '02', year: '1970' } })
         .expect(() => {
           expectErrorMessages([
@@ -115,12 +106,9 @@ describe('Prisoner details handler', () => {
         })
     })
 
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s - should validate the date of birth being in the past', (_: string, journey) => {
+    it('should validate the date of birth being in the past', () => {
       return request(app)
-        .post(`/${journey}/booking/request/${journeyId()}/prisoner/prisoner-details`)
+        .post(`/probation/booking/request/${journeyId()}/prisoner/prisoner-details`)
         .send({ ...validForm, dateOfBirth: { day: '01', month: '01', year: '2100' } })
         .expect(() => {
           expectErrorMessages([
@@ -133,12 +121,9 @@ describe('Prisoner details handler', () => {
         })
     })
 
-    it.each([
-      ['Probation', 'probation'],
-      ['Court', 'court'],
-    ])('%s - should save the prisoner details in session', (_: string, journey) => {
+    it('should save the prisoner details in session', () => {
       return request(app)
-        .post(`/${journey}/booking/request/${journeyId()}/prisoner/prisoner-details`)
+        .post(`/probation/booking/request/${journeyId()}/prisoner/prisoner-details`)
         .send({ ...validForm })
         .expect(() => expectNoErrorMessages())
         .then(() =>

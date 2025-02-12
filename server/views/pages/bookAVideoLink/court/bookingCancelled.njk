@@ -14,8 +14,8 @@
             <p class='govuk-body'>We have emailed you confirming the cancellation. An email has also been sent to the prison.</p>
 
             <div class="govuk-button-group">
-                {{ govukButton({ text: "Return to all video link bookings", href: '/' + session.req.params.type + '/view-booking' }) }}
-                <a href='/{{ session.req.params.type }}/booking/create/{{ prisoner.prisonerNumber }}/video-link-booking' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
+                {{ govukButton({ text: "Return to all video link bookings", href: '/court/view-booking' }) }}
+                <a href='/court/booking/create/{{ prisoner.prisonerNumber }}/video-link-booking' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
             </div>
         </div>
     </div>

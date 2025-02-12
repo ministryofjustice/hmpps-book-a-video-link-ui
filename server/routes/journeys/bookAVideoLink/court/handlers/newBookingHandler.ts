@@ -183,7 +183,7 @@ export default class NewBookingHandler implements PageHandler {
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
-      type: req.params.type.toUpperCase(),
+      type: 'COURT',
       agencyCode,
       hearingTypeCode,
       date: date.toISOString(),

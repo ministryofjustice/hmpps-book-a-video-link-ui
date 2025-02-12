@@ -1,0 +1,22 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "This video link booking has been cancelled" %}
+{% set hideBackLink = true %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {{ govukPanel({ titleText: pageTitle, classes: 'govuk-!-margin-bottom-6' }) }}
+
+            <p class='govuk-body'>We have emailed you confirming the cancellation. An email has also been sent to the prison.</p>
+
+            <div class="govuk-button-group">
+                {{ govukButton({ text: "Return to all video link bookings", href: '/probation/view-booking' }) }}
+                <a href='/probation/booking/create/{{ prisoner.prisonerNumber }}/video-link-booking' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

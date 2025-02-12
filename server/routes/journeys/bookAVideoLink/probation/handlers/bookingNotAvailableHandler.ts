@@ -5,8 +5,8 @@ import { IsNotEmpty } from 'class-validator'
 import { parse } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import VideoLinkService from '../../../../../services/videoLinkService'
 import IsValidDate from '../../../../validators/isValidDate'
+import ProbationBookingService from '../../../../../services/probationBookingService'
 
 const transformTime = (value: string) => (value ? parse(value, 'HH:mm', new Date(0)) : undefined)
 
@@ -29,13 +29,13 @@ export default class BookingNotAvailableHandler implements PageHandler {
 
   public BODY = Body
 
-  constructor(private readonly videoLinkService: VideoLinkService) {}
+  constructor(private readonly probationBookingService: ProbationBookingService) {}
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { bookAVideoLink } = req.session.journey
 
-    const { availabilityOk, alternatives } = await this.videoLinkService.checkAvailability(bookAVideoLink, user)
+    const { availabilityOk, alternatives } = await this.probationBookingService.checkAvailability(bookAVideoLink, user)
 
     if (availabilityOk) {
       return res.redirect('check-booking')

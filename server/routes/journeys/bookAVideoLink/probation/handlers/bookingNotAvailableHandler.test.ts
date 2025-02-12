@@ -4,22 +4,22 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import { getPageHeader } from '../../../../testutils/cheerio'
-import VideoLinkService from '../../../../../services/videoLinkService'
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { AvailabilityResponse } from '../../../../../@types/bookAVideoLinkApi/types'
+import ProbationBookingService from '../../../../../services/probationBookingService'
 
 jest.mock('../../../../../services/auditService')
-jest.mock('../../../../../services/videoLinkService')
+jest.mock('../../../../../services/probationBookingService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
-const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
+const probationBookingService = new ProbationBookingService(null) as jest.Mocked<ProbationBookingService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, videoLinkService },
+    services: { auditService, probationBookingService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -37,7 +37,7 @@ afterEach(() => {
 
 describe('Check Booking handler', () => {
   beforeEach(() => {
-    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
+    probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
   })
 
   describe('GET', () => {
@@ -58,7 +58,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should redirect to check booking page if availability is ok', () => {
-      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
+      probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
 
       return request(app)
         .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
@@ -117,7 +117,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should save the posted fields', async () => {
-      videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
+      probationBookingService.createVideoLinkBooking.mockResolvedValue(1)
 
       await request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)

@@ -14,22 +14,35 @@ import {
   ProbationTeam,
   ReferenceCode,
 } from '../../../../../@types/bookAVideoLinkApi/types'
+import ReferenceDataService from '../../../../../services/referenceDataService'
+import ProbationBookingService from '../../../../../services/probationBookingService'
 
 jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/probationBookingService')
 jest.mock('../../../../../services/probationTeamsService')
 jest.mock('../../../../../services/prisonService')
+jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const probationBookingService = new ProbationBookingService(null) as jest.Mocked<ProbationBookingService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, probationTeamsService, prisonService, videoLinkService },
+    services: {
+      auditService,
+      probationBookingService,
+      probationTeamsService,
+      prisonService,
+      referenceDataService,
+      videoLinkService,
+    },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -56,10 +69,10 @@ describe('Check Booking handler', () => {
       { code: 'P2', description: 'Probation 2' },
     ] as ProbationTeam[])
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
-    videoLinkService.getProbationMeetingTypes.mockResolvedValue([
+    referenceDataService.getProbationMeetingTypes.mockResolvedValue([
       { code: 'KEY', description: 'description' },
     ] as ReferenceCode[])
-    videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
+    probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
   })
 
@@ -79,7 +92,7 @@ describe('Check Booking handler', () => {
           })
 
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-          expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
         })
     })
 
@@ -131,7 +144,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should redirect to select alternatives if the selected room is not available', () => {
-      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
+      probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
         .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
@@ -161,7 +174,7 @@ describe('Check Booking handler', () => {
     it('should save the posted fields', () => {
       appSetup({ bookAVideoLink: { type: 'PROBATION' } })
 
-      videoLinkService.createVideoLinkBooking.mockResolvedValue(1)
+      probationBookingService.createVideoLinkBooking.mockResolvedValue(1)
 
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
@@ -169,7 +182,7 @@ describe('Check Booking handler', () => {
         .expect(302)
         .expect('location', 'confirmation/1')
         .expect(() => {
-          expect(videoLinkService.createVideoLinkBooking).toHaveBeenCalledWith(
+          expect(probationBookingService.createVideoLinkBooking).toHaveBeenCalledWith(
             {
               comments: 'comment',
               type: 'PROBATION',
@@ -180,7 +193,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should redirect to select alternatives if the selected room is not available', () => {
-      videoLinkService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
+      probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
@@ -206,7 +219,7 @@ describe('Check Booking handler', () => {
         .expect(302)
         .expect('location', 'confirmation')
         .expect(() => {
-          expect(videoLinkService.amendVideoLinkBooking).toHaveBeenCalledWith(
+          expect(probationBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
             { ...bookAVideoLink, comments: 'comment' },
             user,
           )

@@ -25,28 +25,28 @@ class Body {
 
   @Expose()
   @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookAVideoLink.preLocationCode)
+  @ValidateIf(o => o.journey.bookACourtHearing.preLocationCode)
   @IsValidDate({ message: 'A valid pre-court start time must be present' })
   @IsNotEmpty({ message: 'A pre-court start time must be present' })
   preStart: Date
 
   @Expose()
   @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookAVideoLink.preLocationCode)
+  @ValidateIf(o => o.journey.bookACourtHearing.preLocationCode)
   @IsValidDate({ message: 'A valid pre-court end time must be present' })
   @IsNotEmpty({ message: 'A pre-court end time must be present' })
   preEnd: Date
 
   @Expose()
   @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookAVideoLink.postLocationCode)
+  @ValidateIf(o => o.journey.bookACourtHearing.postLocationCode)
   @IsValidDate({ message: 'A valid post-court start time must be present' })
   @IsNotEmpty({ message: 'A post-court start time must be present' })
   postStart: Date
 
   @Expose()
   @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookAVideoLink.postLocationCode)
+  @ValidateIf(o => o.journey.bookACourtHearing.postLocationCode)
   @IsValidDate({ message: 'A valid post-court end time must be present' })
   @IsNotEmpty({ message: 'A post-court end time must be present' })
   postEnd: Date
@@ -61,9 +61,9 @@ export default class BookingNotAvailableHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { bookAVideoLink } = req.session.journey
+    const { bookACourtHearing } = req.session.journey
 
-    const { availabilityOk, alternatives } = await this.courtBookingService.checkAvailability(bookAVideoLink, user)
+    const { availabilityOk, alternatives } = await this.courtBookingService.checkAvailability(bookACourtHearing, user)
 
     if (availabilityOk) {
       return res.redirect('check-booking')
@@ -75,8 +75,8 @@ export default class BookingNotAvailableHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { startTime, endTime, preStart, preEnd, postStart, postEnd } = req.body
 
-    req.session.journey.bookAVideoLink = {
-      ...req.session.journey.bookAVideoLink,
+    req.session.journey.bookACourtHearing = {
+      ...req.session.journey.bookACourtHearing,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
       preHearingStartTime: preStart?.toISOString(),

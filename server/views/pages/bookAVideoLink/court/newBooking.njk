@@ -63,7 +63,7 @@
                                 text: "Court"
                             },
                             value: {
-                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                                text: (agencies | find('code', session.journey.bookACourtHearing.agencyCode)).description
                             }
                         } if mode == 'amend' and agencies.length > 1
                     ]
@@ -72,7 +72,7 @@
                 {% if agencies.length === 1 %}
                     <input type="hidden" name="agencyCode" value="{{ agencies[0].code }}" />
                 {% elseif mode === 'amend' %}
-                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookAVideoLink.agencyCode }}" />
+                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookACourtHearing.agencyCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select court", value: "" }] %}
@@ -80,7 +80,7 @@
                         {% set items = (items.push({
                             value: agency.code,
                             text: agency.description,
-                            selected: formResponses.agencyCode == agency.code or session.journey.bookAVideoLink.agencyCode == agency.code
+                            selected: formResponses.agencyCode == agency.code or session.journey.bookACourtHearing.agencyCode == agency.code
                         }), items) %}
                     {% endfor %}
 
@@ -102,7 +102,7 @@
                     {% set items = (items.push({
                         value: hearingType.code,
                         text: hearingType.description,
-                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookAVideoLink.hearingTypeCode == hearingType.code
+                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookACourtHearing.hearingTypeCode == hearingType.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({
@@ -128,7 +128,7 @@
                         text: 'Enter the date, for example ' + exampleDatePickerDate() + ', or select the calendar to pick a date'
                     },
                     errorMessage: validationErrors | findError('date'),
-                    value: formResponses.date or session.journey.bookAVideoLink.date | formatDate('dd/MM/yyyy')
+                    value: formResponses.date or session.journey.bookACourtHearing.date | formatDate('dd/MM/yyyy')
                 }) }}
 
                 {{ hmppsTimePicker({
@@ -139,7 +139,7 @@
                         classes: 'govuk-fieldset__legend--s'
                     },
                     errorMessage: validationErrors | findError('startTime'),
-                    formResponses: formResponses.startTime or session.journey.bookAVideoLink.startTime
+                    formResponses: formResponses.startTime or session.journey.bookACourtHearing.startTime
                 }) }}
 
                 {{ hmppsTimePicker({
@@ -151,7 +151,7 @@
                     },
                     errorMessage: validationErrors | findError('endTime'),
                     validationErrors: validationErrors,
-                    formResponses: formResponses.endTime or session.journey.bookAVideoLink.endTime
+                    formResponses: formResponses.endTime or session.journey.bookACourtHearing.endTime
                 }) }}
 
                 {% set items = [{ text: "Select prison room", value: "" }] %}
@@ -159,7 +159,7 @@
                     {% set items = (items.push({
                         value: room.key,
                         text: room.description,
-                        selected: formResponses.location == room.key or session.journey.bookAVideoLink.locationCode == room.key
+                        selected: formResponses.location == room.key or session.journey.bookACourtHearing.locationCode == room.key
                     }), items) %}
                 {% endfor %}
 
@@ -180,7 +180,7 @@
                     {% set items = (items.push({
                         value: room.key,
                         text: room.description,
-                        selected: formResponses.preLocation == room.key or session.journey.bookAVideoLink.preLocationCode == room.key
+                        selected: formResponses.preLocation == room.key or session.journey.bookACourtHearing.preLocationCode == room.key
                     }), items) %}
                 {% endfor %}
 
@@ -212,7 +212,7 @@
                         {
                             value: "yes",
                             text: "Yes",
-                            checked: formResponses.preRequired == 'yes' or (session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired),
+                            checked: formResponses.preRequired == 'yes' or (session.journey.bookACourtHearing.preLocationCode and not formResponses.preRequired),
                             conditional: {
                                 html: preLocationsHtml
                             }
@@ -220,7 +220,7 @@
                         {
                             value: "no",
                             text: "No",
-                            checked: formResponses.preRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.preLocationCode and not formResponses.preRequired)
+                            checked: formResponses.preRequired == 'no' or (session.journey.bookACourtHearing.locationCode and not session.journey.bookACourtHearing.preLocationCode and not formResponses.preRequired)
                         }
                     ]
                 }) }}
@@ -230,7 +230,7 @@
                     {% set items = (items.push({
                         value: room.key,
                         text: room.description,
-                        selected: formResponses.postLocation == room.key or session.journey.bookAVideoLink.postLocationCode == room.key
+                        selected: formResponses.postLocation == room.key or session.journey.bookACourtHearing.postLocationCode == room.key
                     }), items) %}
                 {% endfor %}
                 {% set postLocationsHtml %}
@@ -261,7 +261,7 @@
                         {
                             value: "yes",
                             text: "Yes",
-                            checked: formResponses.postRequired == 'yes' or (session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired),
+                            checked: formResponses.postRequired == 'yes' or (session.journey.bookACourtHearing.postLocationCode and not formResponses.postRequired),
                             conditional: {
                                 html: postLocationsHtml
                             }
@@ -269,7 +269,7 @@
                         {
                             value: "no",
                             text: "No",
-                            checked: formResponses.postRequired == 'no' or (session.journey.bookAVideoLink.locationCode and not session.journey.bookAVideoLink.postLocationCode and not formResponses.postRequired)
+                            checked: formResponses.postRequired == 'no' or (session.journey.bookACourtHearing.locationCode and not session.journey.bookACourtHearing.postLocationCode and not formResponses.postRequired)
                         }
                     ]
                 }) }}
@@ -284,7 +284,7 @@
                         },
                         classes: 'govuk-!-width-three-quarters',
                         errorMessage: validationErrors | findError('videoLinkUrl'),
-                        value: formResponses.videoLinkUrl or session.journey.bookAVideoLink.videoLinkUrl
+                        value: formResponses.videoLinkUrl or session.journey.bookACourtHearing.videoLinkUrl
                     }) }}
                 {% endset %}
 
@@ -302,7 +302,7 @@
                         {
                             value: 'yes',
                             text: "Yes",
-                            checked: formResponses.cvpRequired == 'yes' or session.journey.bookAVideoLink.videoLinkUrl,
+                            checked: formResponses.cvpRequired == 'yes' or session.journey.bookACourtHearing.videoLinkUrl,
                             conditional: {
                                 html: courtHearingLinkHtml
                             }
@@ -310,7 +310,7 @@
                         {
                             value: 'no',
                             text: "No",
-                            checked: formResponses.cvpRequired == 'no' or (not session.journey.bookAVideoLink.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
+                            checked: formResponses.cvpRequired == 'no' or (not session.journey.bookACourtHearing.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
                         }
                     ]
                 }) }}
@@ -324,7 +324,7 @@
             {% if mode == 'create' or mode == 'request' %}
                 <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
-                <a href="/court/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

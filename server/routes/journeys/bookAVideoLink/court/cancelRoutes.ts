@@ -18,12 +18,12 @@ export default function CancelRoutes({ auditService, prisonerService, videoLinkS
   route('/confirmation', new BookingCancelledHandler(videoLinkService, prisonerService))
 
   router.use((req, res, next) => {
-    const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookAVideoLink
+    const { bookingId, date, preHearingStartTime, startTime, bookingStatus } = req.session.journey.bookACourtHearing
     const bookingDate = parseISO(date)
     const bookingTime = parseISO(preHearingStartTime || startTime)
 
     if (!videoLinkService.bookingIsAmendable(bookingDate, bookingTime, bookingStatus)) {
-      req.session.journey.bookAVideoLink = null
+      req.session.journey.bookACourtHearing = null
       return res.redirect(`/court/view-booking/${bookingId}`)
     }
     return next()

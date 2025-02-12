@@ -10,6 +10,7 @@ export interface JourneyData extends Journey {
 
 export interface Journey {
   bookAVideoLink?: BookAVideoLinkJourney
+  bookACourtHearing?: BookAVideoLinkJourney
   prisonerSearch?: PrisonerSearchJourney
 }
 

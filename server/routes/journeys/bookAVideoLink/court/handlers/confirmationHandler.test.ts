@@ -71,7 +71,7 @@ describe('GET', () => {
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
       })
-      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+      .then(() => expectJourneySession(app, 'bookACourtHearing', null))
   })
 
   it('should render the correct page in amend mode', () => {
@@ -103,7 +103,7 @@ describe('GET', () => {
 
         expect(heading).toEqual('The video link booking has been updated')
       })
-      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+      .then(() => expectJourneySession(app, 'bookACourtHearing', null))
   })
 })
 

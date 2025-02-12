@@ -63,7 +63,7 @@
                                 text: "Probation Team"
                             },
                             value: {
-                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                                text: (agencies | find('code', session.journey.bookAProbationMeeting.agencyCode)).description
                             }
                         } if mode == 'amend' and agencies.length > 1
                     ]
@@ -72,7 +72,7 @@
                 {% if agencies.length === 1 %}
                     <input type="hidden" name="agencyCode" value="{{ agencies[0].code }}" />
                 {% elseif mode === 'amend' %}
-                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookAVideoLink.agencyCode }}" />
+                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookAProbationMeeting.agencyCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select probation team", value: "" }] %}
@@ -80,7 +80,7 @@
                         {% set items = (items.push({
                             value: agency.code,
                             text: agency.description,
-                            selected: formResponses.agencyCode == agency.code or session.journey.bookAVideoLink.agencyCode == agency.code
+                            selected: formResponses.agencyCode == agency.code or session.journey.bookAProbationMeeting.agencyCode == agency.code
                         }), items) %}
                     {% endfor %}
 
@@ -102,7 +102,7 @@
                     {% set items = (items.push({
                         value: hearingType.code,
                         text: hearingType.description,
-                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookAVideoLink.hearingTypeCode == hearingType.code
+                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookAProbationMeeting.hearingTypeCode == hearingType.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({
@@ -128,7 +128,7 @@
                         text: 'Enter the date, for example ' + exampleDatePickerDate() + ', or select the calendar to pick a date'
                     },
                     errorMessage: validationErrors | findError('date'),
-                    value: formResponses.date or session.journey.bookAVideoLink.date | formatDate('dd/MM/yyyy')
+                    value: formResponses.date or session.journey.bookAProbationMeeting.date | formatDate('dd/MM/yyyy')
                 }) }}
 
                 {{ hmppsTimePicker({
@@ -139,7 +139,7 @@
                         classes: 'govuk-fieldset__legend--s'
                     },
                     errorMessage: validationErrors | findError('startTime'),
-                    formResponses: formResponses.startTime or session.journey.bookAVideoLink.startTime
+                    formResponses: formResponses.startTime or session.journey.bookAProbationMeeting.startTime
                 }) }}
 
                 {{ hmppsTimePicker({
@@ -151,7 +151,7 @@
                     },
                     errorMessage: validationErrors | findError('endTime'),
                     validationErrors: validationErrors,
-                    formResponses: formResponses.endTime or session.journey.bookAVideoLink.endTime
+                    formResponses: formResponses.endTime or session.journey.bookAProbationMeeting.endTime
                 }) }}
 
                 {% set items = [{ text: "Select prison room", value: "" }] %}
@@ -159,7 +159,7 @@
                     {% set items = (items.push({
                         value: room.key,
                         text: room.description,
-                        selected: formResponses.location == room.key or session.journey.bookAVideoLink.locationCode == room.key
+                        selected: formResponses.location == room.key or session.journey.bookAProbationMeeting.locationCode == room.key
                     }), items) %}
                 {% endfor %}
 
@@ -184,7 +184,7 @@
             {% if mode == 'create' or mode == 'request' %}
                 <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
-                <a href="/probation/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a href="/probation/view-booking/{{ session.journey.bookAProbationMeeting.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

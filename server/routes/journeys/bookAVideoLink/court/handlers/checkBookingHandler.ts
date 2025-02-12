@@ -34,10 +34,10 @@ export default class CheckBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { mode } = req.params
     const { user } = res.locals
-    const { bookAVideoLink } = req.session.journey
-    const { prisoner, date, preHearingStartTime, startTime } = bookAVideoLink
+    const { bookACourtHearing } = req.session.journey
+    const { prisoner, date, preHearingStartTime, startTime } = bookACourtHearing
 
-    const { availabilityOk } = await this.courtBookingService.checkAvailability(bookAVideoLink, user)
+    const { availabilityOk } = await this.courtBookingService.checkAvailability(bookACourtHearing, user)
 
     if (!availabilityOk) {
       return res.redirect('not-available')
@@ -67,13 +67,13 @@ export default class CheckBookingHandler implements PageHandler {
     const { body } = req
     const { mode } = req.params
 
-    req.session.journey.bookAVideoLink = {
-      ...req.session.journey.bookAVideoLink,
+    req.session.journey.bookACourtHearing = {
+      ...req.session.journey.bookACourtHearing,
       comments: body.comments,
     }
 
     const { availabilityOk } = await this.courtBookingService.checkAvailability(
-      req.session.journey.bookAVideoLink,
+      req.session.journey.bookACourtHearing,
       user,
     )
     if (!availabilityOk) {
@@ -81,16 +81,16 @@ export default class CheckBookingHandler implements PageHandler {
     }
 
     if (mode === 'create') {
-      const id = await this.courtBookingService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      const id = await this.courtBookingService.createVideoLinkBooking(req.session.journey.bookACourtHearing, user)
       return res.redirect(`confirmation/${id}`)
     }
 
     if (mode === 'amend') {
-      await this.courtBookingService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.courtBookingService.amendVideoLinkBooking(req.session.journey.bookACourtHearing, user)
     }
 
     if (mode === 'request') {
-      await this.courtBookingService.requestVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.courtBookingService.requestVideoLinkBooking(req.session.journey.bookACourtHearing, user)
     }
 
     return res.redirect(`confirmation`)

@@ -34,10 +34,10 @@ export default class CheckBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { mode } = req.params
     const { user } = res.locals
-    const { bookAVideoLink } = req.session.journey
-    const { prisoner, date, preHearingStartTime, startTime } = bookAVideoLink
+    const { bookAProbationMeeting } = req.session.journey
+    const { prisoner, date, preHearingStartTime, startTime } = bookAProbationMeeting
 
-    const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAVideoLink, user)
+    const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAProbationMeeting, user)
 
     if (!availabilityOk) {
       return res.redirect('not-available')
@@ -67,13 +67,13 @@ export default class CheckBookingHandler implements PageHandler {
     const { body } = req
     const { mode } = req.params
 
-    req.session.journey.bookAVideoLink = {
-      ...req.session.journey.bookAVideoLink,
+    req.session.journey.bookAProbationMeeting = {
+      ...req.session.journey.bookAProbationMeeting,
       comments: body.comments,
     }
 
     const { availabilityOk } = await this.probationBookingService.checkAvailability(
-      req.session.journey.bookAVideoLink,
+      req.session.journey.bookAProbationMeeting,
       user,
     )
     if (!availabilityOk) {
@@ -81,16 +81,19 @@ export default class CheckBookingHandler implements PageHandler {
     }
 
     if (mode === 'create') {
-      const id = await this.probationBookingService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      const id = await this.probationBookingService.createVideoLinkBooking(
+        req.session.journey.bookAProbationMeeting,
+        user,
+      )
       return res.redirect(`confirmation/${id}`)
     }
 
     if (mode === 'amend') {
-      await this.probationBookingService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.probationBookingService.amendVideoLinkBooking(req.session.journey.bookAProbationMeeting, user)
     }
 
     if (mode === 'request') {
-      await this.probationBookingService.requestVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.probationBookingService.requestVideoLinkBooking(req.session.journey.bookAProbationMeeting, user)
     }
 
     return res.redirect(`confirmation`)

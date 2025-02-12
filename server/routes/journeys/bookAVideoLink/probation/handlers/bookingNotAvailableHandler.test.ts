@@ -27,7 +27,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {},
+    bookAProbationMeeting: {},
   })
 })
 
@@ -125,7 +125,7 @@ describe('Check Booking handler', () => {
         .expect(302)
         .expect('location', 'check-booking')
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
+          expectJourneySession(app, 'bookAProbationMeeting', {
             startTime: '1970-01-01T13:00:00.000Z',
             endTime: '1970-01-01T14:00:00.000Z',
           }),

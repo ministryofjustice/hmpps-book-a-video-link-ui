@@ -25,7 +25,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {
+    bookACourtHearing: {
       bookingId: 1,
       prisoner: { prisonId: 'MDI', firstName: 'John', lastName: 'Smith' },
       date: '2024-06-12',
@@ -65,7 +65,7 @@ describe('Confirm Cancel handler', () => {
         .get(`/court/booking/cancel/1/${journeyId()}/confirm`)
         .expect(302)
         .expect('location', '/court/view-booking/1')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+        .then(() => expectJourneySession(app, 'bookACourtHearing', null))
     })
   })
 

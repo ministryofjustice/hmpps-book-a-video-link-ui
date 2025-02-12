@@ -78,6 +78,6 @@ describe('GET', () => {
         expect(heading).toEqual('This video link booking has been cancelled')
         expect(bookAnotherLink).toEqual(`/court/booking/create/A1234AA/video-link-booking`)
       })
-      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+      .then(() => expectJourneySession(app, 'bookACourtHearing', null))
   })
 })

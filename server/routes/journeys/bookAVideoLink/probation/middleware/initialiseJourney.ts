@@ -1,15 +1,15 @@
 import { RequestHandler } from 'express'
 import { parse } from 'date-fns'
-import { Services } from '../../../../services'
-import asyncMiddleware from '../../../../middleware/asyncMiddleware'
-import { extractPrisonAppointmentsFromBooking } from '../../../../utils/utils'
+import { Services } from '../../../../../services'
+import asyncMiddleware from '../../../../../middleware/asyncMiddleware'
+import { extractPrisonAppointmentsFromBooking } from '../../../../../utils/utils'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
   return asyncMiddleware(async (req, res, next) => {
     const { bookingId } = req.params
     const { user } = res.locals
 
-    if (bookingId === req.session.journey.bookAVideoLink?.bookingId?.toString()) return next()
+    if (bookingId === req.session.journey.bookAProbationMeeting?.bookingId?.toString()) return next()
 
     const booking = await videoLinkService.getVideoLinkBookingById(Number(bookingId), user)
 
@@ -21,7 +21,7 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
 
     const prisoner = await prisonerService.getPrisonerByPrisonerNumber(mainAppointment?.prisonerNumber, user)
 
-    req.session.journey.bookAVideoLink = {
+    req.session.journey.bookAProbationMeeting = {
       bookingId: Number(bookingId),
       bookingStatus: booking.statusCode,
       type: booking.bookingType,

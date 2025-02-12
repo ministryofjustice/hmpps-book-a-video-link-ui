@@ -6,7 +6,7 @@ export default class BookingRequestedHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_REQUESTED_PAGE
 
   public GET = async (req: Request, res: Response) => {
-    req.session.journey.bookAVideoLink = null
+    req.session.journey.bookACourtHearing = null
     res.render('pages/bookAVideoLink/court/bookingRequested')
   }
 }

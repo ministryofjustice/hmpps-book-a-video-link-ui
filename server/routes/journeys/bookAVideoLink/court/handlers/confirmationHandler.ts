@@ -29,7 +29,7 @@ export default class ConfirmationHandler implements PageHandler {
       this.prisonService.getAppointmentLocations(prisonCode, false, user),
     ])
 
-    req.session.journey.bookAVideoLink = null
+    req.session.journey.bookACourtHearing = null
 
     res.render('pages/bookAVideoLink/court/confirmation', {
       prisoner,

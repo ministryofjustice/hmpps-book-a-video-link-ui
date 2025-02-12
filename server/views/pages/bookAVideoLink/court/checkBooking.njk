@@ -80,7 +80,7 @@
                             text: "Court"
                         },
                         value: {
-                            text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                            text: (agencies | find('code', session.journey.bookACourtHearing.agencyCode)).description
                         }
                     },
                     {
@@ -88,7 +88,7 @@
                             text: "Hearing type"
                         },
                         value: {
-                            text: (hearingTypes | find('code', session.journey.bookAVideoLink.hearingTypeCode)).description
+                            text: (hearingTypes | find('code', session.journey.bookACourtHearing.hearingTypeCode)).description
                         }
                     },
                     {
@@ -96,7 +96,7 @@
                             text: "Prison room for court hearing"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookAVideoLink.locationCode)).description
+                            text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
                         }
                     },
                     {
@@ -104,7 +104,7 @@
                             text: "Date"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.date | formatDate
+                            text: session.journey.bookACourtHearing.date | formatDate
                         }
                     },
                     {
@@ -112,7 +112,7 @@
                             text: "Hearing start time"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.startTime | formatDate('HH:mm')
+                            text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm')
                         }
                     },
                     {
@@ -120,7 +120,7 @@
                             text: "Hearing end time"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.endTime | formatDate('HH:mm')
+                            text: session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
                         }
                     },
                     {
@@ -128,23 +128,23 @@
                             text: "Pre-court hearing"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookAVideoLink.preLocationCode)).description + " - " +  session.journey.bookAVideoLink.preHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookAVideoLink.preHearingEndTime | formatDate('HH:mm')
+                            text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).description + " - " +  session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookAVideoLink.preLocationCode,
+                    } if session.journey.bookACourtHearing.preLocationCode,
                     {
                         key: {
                             text: "Post-court hearing"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookAVideoLink.postLocationCode)).description + " - " +  session.journey.bookAVideoLink.postHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookAVideoLink.postHearingEndTime | formatDate('HH:mm')
+                            text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).description + " - " +  session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookAVideoLink.postLocationCode,
+                    } if session.journey.bookACourtHearing.postLocationCode,
                     {
                         key: {
                             text: "Court hearing link"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.videoLinkUrl or "Not yet known"
+                            text: session.journey.bookACourtHearing.videoLinkUrl or "Not yet known"
                         }
                     }
                 ]
@@ -173,7 +173,7 @@
                         text: "This might include case number, co-defendant details if this is a multi-handed case, or details of the approver if you have borrowed another court’s room."
                     },
                     errorMessage: validationErrors | findError('comments'),
-                    value: formResponses.comments or session.journey.bookAVideoLink.comments
+                    value: formResponses.comments or session.journey.bookACourtHearing.comments
                 }) }}
 
                 {% set callToActionText %}
@@ -199,7 +199,7 @@
                 {% if mode == 'create' or mode == 'request' %}
                     <a href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
                 {% else %}
-                    <a href="/court/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                    <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 {% endif %}
             </form>
         </div>

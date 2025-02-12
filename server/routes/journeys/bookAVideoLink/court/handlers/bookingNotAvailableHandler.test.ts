@@ -27,7 +27,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {
+    bookACourtHearing: {
       preLocationCode: 'LOCATION_CODE',
       postLocationCode: 'LOCATION_CODE',
     },
@@ -168,7 +168,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should validate empty pre and post times are accepted', () => {
-      appSetup({ bookAVideoLink: {} })
+      appSetup({ bookACourtHearing: {} })
 
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
@@ -185,7 +185,7 @@ describe('Check Booking handler', () => {
         .expect(302)
         .expect('location', 'check-booking')
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
+          expectJourneySession(app, 'bookACourtHearing', {
             endTime: '1970-01-01T14:00:00.000Z',
             postHearingEndTime: '1970-01-01T14:15:00.000Z',
             postHearingStartTime: '1970-01-01T14:00:00.000Z',

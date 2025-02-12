@@ -24,7 +24,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {
+    bookACourtHearing: {
       bookingId: 1001,
       date: '2024-06-12',
       startTime: '1970-01-01T16:00',

@@ -28,9 +28,9 @@ export default function RequestRoutes({
   route('/prisoner/prisoner-details', new PrisonerDetailsHandler(prisonService))
   route(`/prisoner/video-link-booking/confirmation`, new BookingRequestedHandler())
 
-  // Book a video link journey is required in session for the following routes
+  // Book a probation meeting journey is required in session for the following routes
   router.use((req, res, next) => {
-    if (!req.session.journey.bookAVideoLink) return res.redirect('/')
+    if (!req.session.journey.bookAProbationMeeting) return res.redirect('/')
     return next()
   })
 

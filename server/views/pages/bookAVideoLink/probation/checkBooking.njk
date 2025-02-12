@@ -80,7 +80,7 @@
                             text: "Probation team"
                         },
                         value: {
-                            text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                            text: (agencies | find('code', session.journey.bookAProbationMeeting.agencyCode)).description
                         }
                     },
                     {
@@ -88,7 +88,7 @@
                             text: "Meeting type"
                         },
                         value: {
-                            text: (hearingTypes | find('code', session.journey.bookAVideoLink.hearingTypeCode)).description
+                            text: (hearingTypes | find('code', session.journey.bookAProbationMeeting.hearingTypeCode)).description
                         }
                     },
                     {
@@ -96,7 +96,7 @@
                             text: "Prison room for probation meeting"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookAVideoLink.locationCode)).description
+                            text: (rooms | find('key', session.journey.bookAProbationMeeting.locationCode)).description
                         }
                     },
                     {
@@ -104,7 +104,7 @@
                             text: "Date"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.date | formatDate
+                            text: session.journey.bookAProbationMeeting.date | formatDate
                         }
                     },
                     {
@@ -112,7 +112,7 @@
                             text: "Meeting start time"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.startTime | formatDate('HH:mm')
+                            text: session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm')
                         }
                     },
                     {
@@ -120,7 +120,7 @@
                             text: "Meeting end time"
                         },
                         value: {
-                            text: session.journey.bookAVideoLink.endTime | formatDate('HH:mm')
+                            text: session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm')
                         }
                     }
                 ]
@@ -149,7 +149,7 @@
                         text: "This should include Probation Officer’s full name, contact information, and any other additional details."
                     },
                     errorMessage: validationErrors | findError('comments'),
-                    value: formResponses.comments or session.journey.bookAVideoLink.comments
+                    value: formResponses.comments or session.journey.bookAProbationMeeting.comments
                 }) }}
 
                 {% set callToActionText %}
@@ -175,7 +175,7 @@
                 {% if mode == 'create' or mode == 'request' %}
                     <a href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
                 {% else %}
-                    <a href="/probation/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                    <a href="/probation/view-booking/{{ session.journey.bookAProbationMeeting.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 {% endif %}
             </form>
         </div>

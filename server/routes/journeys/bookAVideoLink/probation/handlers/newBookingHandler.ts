@@ -76,8 +76,8 @@ export default class NewBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { mode } = req.params
-    const bookingId = req.session.journey.bookAVideoLink?.bookingId
-    const offender = req.session.journey.bookAVideoLink?.prisoner
+    const bookingId = req.session.journey.bookAProbationMeeting?.bookingId
+    const offender = req.session.journey.bookAProbationMeeting?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
     const agencies = await this.probationTeamsService.getUserPreferences(user)
@@ -107,8 +107,8 @@ export default class NewBookingHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { mode } = req.params
-    const bookingId = req.session.journey.bookAVideoLink?.bookingId
-    const offender = req.session.journey.bookAVideoLink?.prisoner
+    const bookingId = req.session.journey.bookAProbationMeeting?.bookingId
+    const offender = req.session.journey.bookAProbationMeeting?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
     const { agencyCode, hearingTypeCode, date, startTime, endTime, location } = req.body
@@ -128,7 +128,7 @@ export default class NewBookingHandler implements PageHandler {
       return res.validationFailed()
     }
 
-    req.session.journey.bookAVideoLink = {
+    req.session.journey.bookAProbationMeeting = {
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,

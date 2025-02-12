@@ -17,13 +17,13 @@ export default function Index(services: Services): Router {
   })
 
   router.use('/:mode(create|request)/', insertJourneyIdentifier())
-  router.use('/:mode(create)/:journeyId', journeyDataMiddleware('bookAVideoLink'), createRoutes(services))
-  router.use('/:mode(request)/:journeyId', journeyDataMiddleware('bookAVideoLink'), requestRoutes(services))
+  router.use('/:mode(create)/:journeyId', journeyDataMiddleware('bookAProbationMeeting'), createRoutes(services))
+  router.use('/:mode(request)/:journeyId', journeyDataMiddleware('bookAProbationMeeting'), requestRoutes(services))
 
   router.use('/:mode(amend)/:bookingId', insertJourneyIdentifier())
   router.use(
     '/:mode(amend)/:bookingId/:journeyId',
-    journeyDataMiddleware('bookAVideoLink'),
+    journeyDataMiddleware('bookAProbationMeeting'),
     initialiseJourney(services),
     amendRoutes(services),
   )
@@ -31,7 +31,7 @@ export default function Index(services: Services): Router {
   router.use('/:mode(cancel)/:bookingId', insertJourneyIdentifier())
   router.use(
     '/:mode(cancel)/:bookingId/:journeyId',
-    journeyDataMiddleware('bookAVideoLink'),
+    journeyDataMiddleware('bookAProbationMeeting'),
     initialiseJourney(services),
     cancelRoutes(services),
   )

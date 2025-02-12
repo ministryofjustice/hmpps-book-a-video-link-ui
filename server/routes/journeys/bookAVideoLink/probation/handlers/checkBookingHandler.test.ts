@@ -50,7 +50,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   appSetup({
-    bookAVideoLink: {
+    bookAProbationMeeting: {
       prisoner: { prisonId: 'MDI' },
       date: '2024-06-12',
       startTime: '1970-01-01T16:00',
@@ -155,7 +155,7 @@ describe('Check Booking handler', () => {
 
   describe('POST', () => {
     it('should validate the comment being too long', () => {
-      appSetup({ bookAVideoLink: { type: 'PROBATION' } })
+      appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
 
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
@@ -172,7 +172,7 @@ describe('Check Booking handler', () => {
     })
 
     it('should save the posted fields', () => {
-      appSetup({ bookAVideoLink: { type: 'PROBATION' } })
+      appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
 
       probationBookingService.createVideoLinkBooking.mockResolvedValue(1)
 
@@ -203,14 +203,14 @@ describe('Check Booking handler', () => {
     })
 
     it('should amend the posted fields', () => {
-      const bookAVideoLink = {
+      const bookAProbationMeeting = {
         bookingId: 1,
         date: '2024-06-27',
         startTime: '15:00',
       }
 
       appSetup({
-        bookAVideoLink,
+        bookAProbationMeeting,
       })
 
       return request(app)
@@ -220,7 +220,7 @@ describe('Check Booking handler', () => {
         .expect('location', 'confirmation')
         .expect(() => {
           expect(probationBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
-            { ...bookAVideoLink, comments: 'comment' },
+            { ...bookAProbationMeeting, comments: 'comment' },
             user,
           )
         })

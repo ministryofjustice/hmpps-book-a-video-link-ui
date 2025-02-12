@@ -134,7 +134,7 @@ describe('New Booking handler', () => {
 
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
-        bookAVideoLink: {
+        bookAProbationMeeting: {
           prisoner: {
             prisonId: 'MDI',
             firstName: 'Joe',
@@ -180,7 +180,7 @@ describe('New Booking handler', () => {
           })
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
+          expectJourneySession(app, 'bookAProbationMeeting', {
             type: 'PROBATION',
             agencyCode: 'PROBATION_CODE',
             bookingId: 1,
@@ -212,7 +212,7 @@ describe('New Booking handler', () => {
         .get(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
         .expect(302)
         .expect('location', '/probation/view-booking/1')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+        .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
     })
   })
 
@@ -410,7 +410,7 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
+          expectJourneySession(app, 'bookAProbationMeeting', {
             agencyCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
@@ -432,7 +432,7 @@ describe('New Booking handler', () => {
 
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
-        bookAVideoLink: {
+        bookAProbationMeeting: {
           prisoner: {
             prisonId: 'MDI',
             firstName: 'Joe',
@@ -452,7 +452,7 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
+          expectJourneySession(app, 'bookAProbationMeeting', {
             agencyCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',

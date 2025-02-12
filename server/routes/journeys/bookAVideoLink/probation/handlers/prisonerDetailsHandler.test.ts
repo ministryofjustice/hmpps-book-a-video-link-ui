@@ -26,7 +26,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  appSetup({ bookAVideoLink: {} })
+  appSetup({ bookAProbationMeeting: {} })
   prisonService.getPrisons.mockResolvedValue([{ code: 'MDI', name: 'Moorland' }] as Prison[])
 })
 
@@ -127,7 +127,7 @@ describe('Prisoner details handler', () => {
         .send({ ...validForm })
         .expect(() => expectNoErrorMessages())
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
+          expectJourneySession(app, 'bookAProbationMeeting', {
             prisoner: {
               firstName: 'John',
               lastName: 'Smith',

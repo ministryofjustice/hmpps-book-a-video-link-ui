@@ -33,9 +33,12 @@ export default class BookingNotAvailableHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { bookAVideoLink } = req.session.journey
+    const { bookAProbationMeeting } = req.session.journey
 
-    const { availabilityOk, alternatives } = await this.probationBookingService.checkAvailability(bookAVideoLink, user)
+    const { availabilityOk, alternatives } = await this.probationBookingService.checkAvailability(
+      bookAProbationMeeting,
+      user,
+    )
 
     if (availabilityOk) {
       return res.redirect('check-booking')
@@ -47,8 +50,8 @@ export default class BookingNotAvailableHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { startTime, endTime } = req.body
 
-    req.session.journey.bookAVideoLink = {
-      ...req.session.journey.bookAVideoLink,
+    req.session.journey.bookAProbationMeeting = {
+      ...req.session.journey.bookAProbationMeeting,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
     }

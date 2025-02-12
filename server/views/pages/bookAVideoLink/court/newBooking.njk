@@ -55,44 +55,44 @@
                                 text: "Court"
                             },
                             value: {
-                                text: agencies[0].description
+                                text: courts[0].description
                             }
-                        } if agencies.length == 1,
+                        } if courts.length == 1,
                         {
                             key: {
                                 text: "Court"
                             },
                             value: {
-                                text: (agencies | find('code', session.journey.bookACourtHearing.agencyCode)).description
+                                text: (courts | find('code', session.journey.bookACourtHearing.agencyCode)).description
                             }
-                        } if mode == 'amend' and agencies.length > 1
+                        } if mode == 'amend' and courts.length > 1
                     ]
                 }) }}
 
-                {% if agencies.length === 1 %}
-                    <input type="hidden" name="agencyCode" value="{{ agencies[0].code }}" />
+                {% if courts.length === 1 %}
+                    <input type="hidden" name="courtCode" value="{{ courts[0].code }}" />
                 {% elseif mode === 'amend' %}
-                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookACourtHearing.agencyCode }}" />
+                    <input type="hidden" name="courtCode" value="{{ session.journey.bookACourtHearing.agencyCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select court", value: "" }] %}
-                    {% for agency in agencies %}
+                    {% for court in courts %}
                         {% set items = (items.push({
-                            value: agency.code,
-                            text: agency.description,
-                            selected: formResponses.agencyCode == agency.code or session.journey.bookACourtHearing.agencyCode == agency.code
+                            value: court.code,
+                            text: court.description,
+                            selected: formResponses.courtCode == agency.code or session.journey.bookACourtHearing.agencyCode == court.code
                         }), items) %}
                     {% endfor %}
 
                     {{ govukSelect({
-                        name: "agencyCode",
-                        id: "agencyCode",
+                        name: "courtCode",
+                        id: "courtCode",
                         label: {
                             text: "Which court is the hearing for?",
                             classes: 'govuk-label--s'
                         },
                         items: items,
-                        errorMessage: validationErrors | findError("agencyCode"),
+                        errorMessage: validationErrors | findError("courtCode"),
                         classes: "govuk-!-width-one-third"
                     }) }}
                 {% endif %}

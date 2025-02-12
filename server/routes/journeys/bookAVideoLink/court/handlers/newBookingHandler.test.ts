@@ -212,7 +212,7 @@ describe('New Booking handler', () => {
 
   describe('POST', () => {
     const validForm = {
-      agencyCode: 'CODE',
+      courtCode: 'CODE',
       hearingTypeCode: 'APPEAL',
       date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
       startTime: { hour: 15, minute: 30 },
@@ -231,8 +231,8 @@ describe('New Booking handler', () => {
         .expect(() => {
           expectErrorMessages([
             {
-              fieldId: 'agencyCode',
-              href: '#agencyCode',
+              fieldId: 'courtCode',
+              href: '#courtCode',
               text: 'Select a court',
             },
             {

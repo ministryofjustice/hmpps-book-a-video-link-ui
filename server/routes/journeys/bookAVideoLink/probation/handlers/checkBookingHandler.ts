@@ -35,7 +35,7 @@ export default class CheckBookingHandler implements PageHandler {
     const { mode } = req.params
     const { user } = res.locals
     const { bookAProbationMeeting } = req.session.journey
-    const { prisoner, date, preHearingStartTime, startTime } = bookAProbationMeeting
+    const { prisoner, date, startTime } = bookAProbationMeeting
 
     const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAProbationMeeting, user)
 
@@ -43,22 +43,21 @@ export default class CheckBookingHandler implements PageHandler {
       return res.redirect('not-available')
     }
 
-    const agencies = await this.probationTeamsService.getUserPreferences(user)
+    const probationTeams = await this.probationTeamsService.getUserPreferences(user)
 
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
 
-    const hearingTypes = await this.referenceDataService.getProbationMeetingTypes(user)
+    const meetingTypes = await this.referenceDataService.getProbationMeetingTypes(user)
 
     const warnPrison =
-      mode !== 'request' &&
-      this.videoLinkService.prisonShouldBeWarnedOfBooking(parseISO(date), parseISO(preHearingStartTime || startTime))
+      mode !== 'request' && this.videoLinkService.prisonShouldBeWarnedOfBooking(parseISO(date), parseISO(startTime))
 
     return res.render('pages/bookAVideoLink/probation/checkBooking', {
       warnPrison,
       prisoner,
-      agencies,
+      probationTeams,
       rooms,
-      hearingTypes,
+      meetingTypes,
     })
   }
 

@@ -40,7 +40,7 @@ export default function CreateRoutes({
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
   )
 
-  // Book a video link journey is required in session for the following routes
+  // Book a probation meeting journey is required in session for the following routes
   router.use((req, res, next) => {
     if (!req.session.journey.bookAProbationMeeting) return res.redirect('/')
     return next()

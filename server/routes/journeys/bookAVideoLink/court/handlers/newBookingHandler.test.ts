@@ -175,7 +175,7 @@ describe('New Booking handler', () => {
         .then(() =>
           expectJourneySession(app, 'bookACourtHearing', {
             type: 'COURT',
-            agencyCode: 'COURT_CODE',
+            courtCode: 'COURT_CODE',
             bookingId: 1,
             date: startOfTomorrow().toISOString(),
             startTime: '1970-01-01T08:00:00.000Z',
@@ -472,7 +472,7 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookACourtHearing', {
-            agencyCode: 'CODE',
+            courtCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',
@@ -521,7 +521,7 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookACourtHearing', {
-            agencyCode: 'CODE',
+            courtCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',

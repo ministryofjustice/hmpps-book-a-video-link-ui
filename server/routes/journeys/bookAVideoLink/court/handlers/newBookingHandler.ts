@@ -186,7 +186,7 @@ export default class NewBookingHandler implements PageHandler {
         prisonName: prisoner.prisonName,
       },
       type: 'COURT',
-      agencyCode: courtCode,
+      courtCode,
       hearingTypeCode,
       date: date.toISOString(),
       startTime: startTime.toISOString(),

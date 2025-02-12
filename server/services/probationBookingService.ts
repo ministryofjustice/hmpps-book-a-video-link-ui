@@ -42,7 +42,7 @@ export default class ProbationBookingService {
     return {
       vlbIdToExclude: journey.bookingId,
       bookingType: journey.type,
-      courtOrProbationCode: journey.agencyCode,
+      courtOrProbationCode: journey.courtCode,
       prisonCode: journey.prisoner.prisonId,
       date: formatDate(journey.date, 'yyyy-MM-dd'),
       preAppointment: journey.preLocationCode
@@ -77,9 +77,9 @@ export default class ProbationBookingService {
           appointments: this.mapSessionToAppointments(journey),
         },
       ],
-      courtCode: journey.type === 'COURT' ? journey.agencyCode : undefined,
+      courtCode: journey.type === 'COURT' ? journey.courtCode : undefined,
       courtHearingType: journey.type === 'COURT' ? journey.hearingTypeCode : undefined,
-      probationTeamCode: journey.type === 'PROBATION' ? journey.agencyCode : undefined,
+      probationTeamCode: journey.type === 'PROBATION' ? journey.courtCode : undefined,
       probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
       comments: journey.comments,
       videoLinkUrl: journey.type === 'COURT' ? journey.videoLinkUrl : undefined,

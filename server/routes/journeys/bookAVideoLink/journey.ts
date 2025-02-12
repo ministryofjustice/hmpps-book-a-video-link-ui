@@ -10,7 +10,7 @@ export type BookAVideoLinkJourney = {
     prisonId: string
     prisonName: string
   }
-  agencyCode?: string
+  courtCode?: string
   hearingTypeCode?: string
   date?: string
   startTime?: string

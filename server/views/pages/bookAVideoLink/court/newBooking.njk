@@ -63,7 +63,7 @@
                                 text: "Court"
                             },
                             value: {
-                                text: (courts | find('code', session.journey.bookACourtHearing.agencyCode)).description
+                                text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
                             }
                         } if mode == 'amend' and courts.length > 1
                     ]
@@ -72,7 +72,7 @@
                 {% if courts.length === 1 %}
                     <input type="hidden" name="courtCode" value="{{ courts[0].code }}" />
                 {% elseif mode === 'amend' %}
-                    <input type="hidden" name="courtCode" value="{{ session.journey.bookACourtHearing.agencyCode }}" />
+                    <input type="hidden" name="courtCode" value="{{ session.journey.bookACourtHearing.courtCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select court", value: "" }] %}
@@ -80,7 +80,7 @@
                         {% set items = (items.push({
                             value: court.code,
                             text: court.description,
-                            selected: formResponses.courtCode == agency.code or session.journey.bookACourtHearing.agencyCode == court.code
+                            selected: formResponses.courtCode == agency.code or session.journey.bookACourtHearing.courtCode == court.code
                         }), items) %}
                     {% endfor %}
 

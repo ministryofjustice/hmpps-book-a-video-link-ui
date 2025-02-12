@@ -33,7 +33,7 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
-      agencyCode: booking.courtCode || booking.probationTeamCode,
+      courtCode: booking.courtCode || booking.probationTeamCode,
       hearingTypeCode: booking.courtHearingType || booking.probationMeetingType,
       date: parseDateToISOString(mainAppointment.appointmentDate),
       startTime: parseTimeToISOString(mainAppointment.startTime),

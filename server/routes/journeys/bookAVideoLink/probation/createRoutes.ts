@@ -11,9 +11,11 @@ import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function CreateRoutes({
   auditService,
+  probationBookingService,
   probationTeamsService,
   prisonService,
   prisonerService,
+  referenceDataService,
   videoLinkService,
 }: Services): Router {
   const basePath = '/:prisonerNumber([a-zA-Z][0-9]{4}[a-zA-Z]{2})'
@@ -25,7 +27,13 @@ export default function CreateRoutes({
 
   route(
     `${basePath}/video-link-booking`,
-    new NewBookingHandler(probationTeamsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(
+      probationTeamsService,
+      prisonService,
+      prisonerService,
+      referenceDataService,
+      videoLinkService,
+    ),
   )
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,
@@ -40,9 +48,15 @@ export default function CreateRoutes({
 
   route(
     `${basePath}/video-link-booking/check-booking`,
-    new CheckBookingHandler(probationTeamsService, prisonService, videoLinkService),
+    new CheckBookingHandler(
+      probationBookingService,
+      probationTeamsService,
+      prisonService,
+      referenceDataService,
+      videoLinkService,
+    ),
   )
-  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
+  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(probationBookingService))
 
   return router
 }

@@ -20,24 +20,27 @@ import { formatDate } from '../../../../../utils/utils'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Court, Location, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
+import ReferenceDataService from '../../../../../services/referenceDataService'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtsService')
 jest.mock('../../../../../services/prisonService')
 jest.mock('../../../../../services/prisonerService')
+jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, courtsService, prisonService, prisonerService, videoLinkService },
+    services: { auditService, courtsService, prisonService, prisonerService, referenceDataService, videoLinkService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -115,7 +118,7 @@ describe('New Booking handler', () => {
 
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
-          expect(videoLinkService.getCourtHearingTypes).toHaveBeenCalledWith(user)
+          expect(referenceDataService.getCourtHearingTypes).toHaveBeenCalledWith(user)
           expect(existsByName($, 'preRequired')).toBe(true)
           expect(existsByName($, 'postRequired')).toBe(true)
           expect(existsByLabel($, 'Which court is the hearing for?')).toBe(true)

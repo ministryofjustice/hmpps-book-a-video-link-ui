@@ -2,20 +2,10 @@ import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import _ from 'lodash'
 import express from 'express'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import {
-  AmendVideoBookingRequest,
-  AvailabilityRequest,
-  CreateVideoBookingRequest,
-  Location,
-  RequestVideoBookingRequest,
-  ScheduleItem,
-} from '../@types/bookAVideoLinkApi/types'
-import { BookAVideoLinkJourney } from '../routes/journeys/bookAVideoLink/journey'
-import { dateAtTime, formatDate } from '../utils/utils'
+import { Location, ScheduleItem } from '../@types/bookAVideoLinkApi/types'
+import { dateAtTime } from '../utils/utils'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
 import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
-
-type VideoBookingRequest = CreateVideoBookingRequest | AmendVideoBookingRequest | RequestVideoBookingRequest
 
 export default class VideoLinkService {
   constructor(
@@ -23,36 +13,8 @@ export default class VideoLinkService {
     private readonly prisonerOffenderSearchApiClient: PrisonerOffenderSearchApiClient,
   ) {}
 
-  public getCourtHearingTypes(user: Express.User) {
-    return this.bookAVideoLinkApiClient.getReferenceCodesForGroup('COURT_HEARING_TYPE', user)
-  }
-
-  public getProbationMeetingTypes(user: Express.User) {
-    return this.bookAVideoLinkApiClient.getReferenceCodesForGroup('PROBATION_MEETING_TYPE', user)
-  }
-
   public getVideoLinkBookingById(id: number, user: Express.User) {
     return this.bookAVideoLinkApiClient.getVideoLinkBookingById(id, user)
-  }
-
-  public checkAvailability(journey: BookAVideoLinkJourney, user: Express.User) {
-    const availabilityRequest = this.buildAvailabilityRequest(journey)
-    return this.bookAVideoLinkApiClient.checkAvailability(availabilityRequest, user)
-  }
-
-  public createVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
-    const request = this.buildBookingRequest<CreateVideoBookingRequest>(journey)
-    return this.bookAVideoLinkApiClient.createVideoLinkBooking(request, user)
-  }
-
-  public requestVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
-    const request = this.buildBookingRequest<RequestVideoBookingRequest>(journey)
-    return this.bookAVideoLinkApiClient.requestVideoLinkBooking(request, user)
-  }
-
-  public amendVideoLinkBooking(journey: BookAVideoLinkJourney, user: Express.User) {
-    const request = this.buildBookingRequest<AmendVideoBookingRequest>(journey)
-    return this.bookAVideoLinkApiClient.amendVideoLinkBooking(journey.bookingId, request, user)
   }
 
   public cancelVideoLinkBooking(videoLinkBookingId: number, user: Express.User) {
@@ -126,59 +88,6 @@ export default class VideoLinkService {
     return this.bookAVideoLinkApiClient.downloadProbationDataByBookingDate(date, daysToExtract, response, user)
   }
 
-  private buildAvailabilityRequest(journey: BookAVideoLinkJourney): AvailabilityRequest {
-    const formatInterval = (start: string, end: string) => ({
-      start: formatDate(start, 'HH:mm'),
-      end: formatDate(end, 'HH:mm'),
-    })
-
-    return {
-      vlbIdToExclude: journey.bookingId,
-      bookingType: journey.type,
-      courtOrProbationCode: journey.agencyCode,
-      prisonCode: journey.prisoner.prisonId,
-      date: formatDate(journey.date, 'yyyy-MM-dd'),
-      preAppointment: journey.preLocationCode
-        ? {
-            prisonLocKey: journey.preLocationCode,
-            interval: formatInterval(journey.preHearingStartTime, journey.preHearingEndTime),
-          }
-        : undefined,
-      mainAppointment: {
-        prisonLocKey: journey.locationCode,
-        interval: formatInterval(journey.startTime, journey.endTime),
-      },
-      postAppointment: journey.postLocationCode
-        ? {
-            prisonLocKey: journey.postLocationCode,
-            interval: formatInterval(journey.postHearingStartTime, journey.postHearingEndTime),
-          }
-        : undefined,
-    } as AvailabilityRequest
-  }
-
-  private buildBookingRequest<T extends VideoBookingRequest>(journey: BookAVideoLinkJourney): T {
-    return {
-      bookingType: journey.type,
-      prisoners: [
-        {
-          firstName: journey.prisoner.firstName,
-          lastName: journey.prisoner.lastName,
-          dateOfBirth: formatDate(journey.prisoner.dateOfBirth, 'yyyy-MM-dd'),
-          prisonCode: journey.prisoner.prisonId,
-          prisonerNumber: journey.prisoner.prisonerNumber,
-          appointments: this.mapSessionToAppointments(journey),
-        },
-      ],
-      courtCode: journey.type === 'COURT' ? journey.agencyCode : undefined,
-      courtHearingType: journey.type === 'COURT' ? journey.hearingTypeCode : undefined,
-      probationTeamCode: journey.type === 'PROBATION' ? journey.agencyCode : undefined,
-      probationMeetingType: journey.type === 'PROBATION' ? journey.hearingTypeCode : undefined,
-      comments: journey.comments,
-      videoLinkUrl: journey.type === 'COURT' ? journey.videoLinkUrl : undefined,
-    } as unknown as T
-  }
-
   private async fetchPrisonLocations(prisonCodes: string[], user: Express.User) {
     return Promise.all(
       prisonCodes.map(code => this.bookAVideoLinkApiClient.getAppointmentLocations(code, false, user)),
@@ -192,45 +101,5 @@ export default class VideoLinkService {
 
   private findPrisonLocationDescription(prisonLocations: Location[], prisonLocKey: string) {
     return prisonLocations.find(loc => loc.key === prisonLocKey)?.description ?? ''
-  }
-
-  private mapSessionToAppointments(journey: BookAVideoLinkJourney) {
-    const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
-      locationCode
-        ? {
-            type,
-            locationKey: locationCode,
-            date: formatDate(date, 'yyyy-MM-dd'),
-            startTime: formatDate(startTime, 'HH:mm'),
-            endTime: formatDate(endTime, 'HH:mm'),
-          }
-        : undefined
-
-    return [
-      journey.type === 'COURT'
-        ? createAppointment(
-            'VLB_COURT_PRE',
-            journey.preLocationCode,
-            journey.date,
-            journey.preHearingStartTime,
-            journey.preHearingEndTime,
-          )
-        : undefined,
-      journey.type === 'COURT'
-        ? createAppointment('VLB_COURT_MAIN', journey.locationCode, journey.date, journey.startTime, journey.endTime)
-        : undefined,
-      journey.type === 'COURT'
-        ? createAppointment(
-            'VLB_COURT_POST',
-            journey.postLocationCode,
-            journey.date,
-            journey.postHearingStartTime,
-            journey.postHearingEndTime,
-          )
-        : undefined,
-      journey.type === 'PROBATION'
-        ? createAppointment('VLB_PROBATION', journey.locationCode, journey.date, journey.startTime, journey.endTime)
-        : undefined,
-    ].filter(Boolean)
   }
 }

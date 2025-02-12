@@ -13,9 +13,11 @@ import CommentsHandler from './handlers/commentsHandler'
 
 export default function AmendRoutes({
   auditService,
+  courtBookingService,
   courtsService,
   prisonService,
   prisonerService,
+  referenceDataService,
   videoLinkService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -38,10 +40,16 @@ export default function AmendRoutes({
     return next()
   })
 
-  route('/video-link-booking', new NewBookingHandler(courtsService, prisonService, prisonerService, videoLinkService))
-  route('/video-link-booking/not-available', new BookingNotAvailableHandler(videoLinkService))
+  route(
+    '/video-link-booking',
+    new NewBookingHandler(courtsService, prisonService, prisonerService, referenceDataService, videoLinkService),
+  )
+  route('/video-link-booking/not-available', new BookingNotAvailableHandler(courtBookingService))
   route('/video-link-booking/comments', new CommentsHandler())
-  route('/video-link-booking/check-booking', new CheckBookingHandler(courtsService, prisonService, videoLinkService))
+  route(
+    '/video-link-booking/check-booking',
+    new CheckBookingHandler(courtBookingService, courtsService, prisonService, referenceDataService, videoLinkService),
+  )
 
   return router
 }

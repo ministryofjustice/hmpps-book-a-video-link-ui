@@ -8,6 +8,8 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
+import ReferenceDataService from '../../../../../services/referenceDataService'
+import ProbationBookingService from '../../../../../services/probationBookingService'
 
 class Body {
   @Expose()
@@ -22,8 +24,10 @@ export default class CheckBookingHandler implements PageHandler {
   public BODY = Body
 
   constructor(
+    private readonly probationBookingService: ProbationBookingService,
     private readonly probationTeamsService: ProbationTeamsService,
     private readonly prisonService: PrisonService,
+    private readonly referenceDataService: ReferenceDataService,
     private readonly videoLinkService: VideoLinkService,
   ) {}
 
@@ -33,7 +37,7 @@ export default class CheckBookingHandler implements PageHandler {
     const { bookAVideoLink } = req.session.journey
     const { prisoner, date, preHearingStartTime, startTime } = bookAVideoLink
 
-    const { availabilityOk } = await this.videoLinkService.checkAvailability(bookAVideoLink, user)
+    const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAVideoLink, user)
 
     if (!availabilityOk) {
       return res.redirect('not-available')
@@ -43,7 +47,7 @@ export default class CheckBookingHandler implements PageHandler {
 
     const rooms = await this.prisonService.getAppointmentLocations(prisoner.prisonId, false, user)
 
-    const hearingTypes = await this.videoLinkService.getProbationMeetingTypes(user)
+    const hearingTypes = await this.referenceDataService.getProbationMeetingTypes(user)
 
     const warnPrison =
       mode !== 'request' &&
@@ -68,22 +72,25 @@ export default class CheckBookingHandler implements PageHandler {
       comments: body.comments,
     }
 
-    const { availabilityOk } = await this.videoLinkService.checkAvailability(req.session.journey.bookAVideoLink, user)
+    const { availabilityOk } = await this.probationBookingService.checkAvailability(
+      req.session.journey.bookAVideoLink,
+      user,
+    )
     if (!availabilityOk) {
       return res.redirect('not-available')
     }
 
     if (mode === 'create') {
-      const id = await this.videoLinkService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      const id = await this.probationBookingService.createVideoLinkBooking(req.session.journey.bookAVideoLink, user)
       return res.redirect(`confirmation/${id}`)
     }
 
     if (mode === 'amend') {
-      await this.videoLinkService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.probationBookingService.amendVideoLinkBooking(req.session.journey.bookAVideoLink, user)
     }
 
     if (mode === 'request') {
-      await this.videoLinkService.requestVideoLinkBooking(req.session.journey.bookAVideoLink, user)
+      await this.probationBookingService.requestVideoLinkBooking(req.session.journey.bookAVideoLink, user)
     }
 
     return res.redirect(`confirmation`)

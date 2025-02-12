@@ -12,9 +12,11 @@ import BookingRequestedHandler from './handlers/bookingRequestedHandler'
 
 export default function RequestRoutes({
   auditService,
-  prisonService,
+  courtBookingService,
   courtsService,
+  prisonService,
   prisonerService,
+  referenceDataService,
   videoLinkService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
@@ -34,13 +36,13 @@ export default function RequestRoutes({
 
   route(
     '/prisoner/video-link-booking',
-    new NewBookingHandler(courtsService, prisonService, prisonerService, videoLinkService),
+    new NewBookingHandler(courtsService, prisonService, prisonerService, referenceDataService, videoLinkService),
   )
   route(
     `/prisoner/video-link-booking/check-booking`,
-    new CheckBookingHandler(courtsService, prisonService, videoLinkService),
+    new CheckBookingHandler(courtBookingService, courtsService, prisonService, referenceDataService, videoLinkService),
   )
-  route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(videoLinkService))
+  route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(courtBookingService))
 
   return router
 }

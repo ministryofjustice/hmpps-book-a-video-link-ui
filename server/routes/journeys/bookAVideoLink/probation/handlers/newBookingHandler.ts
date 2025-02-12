@@ -19,6 +19,7 @@ import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import { PrisonAppointment } from '../../../../../@types/bookAVideoLinkApi/types'
+import ReferenceDataService from '../../../../../services/referenceDataService'
 
 class Body {
   @Expose()
@@ -68,6 +69,7 @@ export default class NewBookingHandler implements PageHandler {
     private readonly probationTeamsService: ProbationTeamsService,
     private readonly prisonService: PrisonService,
     private readonly prisonerService: PrisonerService,
+    private readonly referenceDataService: ReferenceDataService,
     private readonly videoLinkService: VideoLinkService,
   ) {}
 
@@ -85,7 +87,7 @@ export default class NewBookingHandler implements PageHandler {
 
     const rooms = await this.getRooms(prisoner.prisonId, bookingId, user)
 
-    const hearingTypes = await this.videoLinkService.getProbationMeetingTypes(user)
+    const hearingTypes = await this.referenceDataService.getProbationMeetingTypes(user)
 
     res.render('pages/bookAVideoLink/probation/newBooking', {
       prisoner: {

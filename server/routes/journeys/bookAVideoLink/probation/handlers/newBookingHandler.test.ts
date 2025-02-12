@@ -20,24 +20,34 @@ import { formatDate } from '../../../../../utils/utils'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Location, ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
+import ReferenceDataService from '../../../../../services/referenceDataService'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/probationTeamsService')
 jest.mock('../../../../../services/prisonService')
 jest.mock('../../../../../services/prisonerService')
+jest.mock('../../../../../services/referenceDataService')
 jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
+const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, probationTeamsService, prisonService, prisonerService, videoLinkService },
+    services: {
+      auditService,
+      probationTeamsService,
+      prisonService,
+      prisonerService,
+      referenceDataService,
+      videoLinkService,
+    },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -114,7 +124,7 @@ describe('New Booking handler', () => {
 
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-          expect(videoLinkService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
           expect(existsByName($, 'preRequired')).toBe(false)
           expect(existsByName($, 'postRequired')).toBe(false)
           expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)

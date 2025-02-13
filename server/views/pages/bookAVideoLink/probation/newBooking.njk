@@ -63,7 +63,7 @@
                                 text: "Probation Team"
                             },
                             value: {
-                                text: (probationTeams | find('code', session.journey.bookAProbationMeeting.agencyCode)).description
+                                text: (probationTeams | find('code', session.journey.bookAProbationMeeting.probationTeamCode)).description
                             }
                         } if mode == 'amend' and probationTeams.length > 1
                     ]
@@ -72,7 +72,7 @@
                 {% if probationTeams.length === 1 %}
                     <input type="hidden" name="probationTeamCode" value="{{ probationTeams[0].code }}" />
                 {% elseif mode === 'amend' %}
-                    <input type="hidden" name="probationTeamCode" value="{{ session.journey.bookAProbationMeeting.agencyCode }}" />
+                    <input type="hidden" name="probationTeamCode" value="{{ session.journey.bookAProbationMeeting.probationTeamCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select probation team", value: "" }] %}
@@ -80,7 +80,7 @@
                         {% set items = (items.push({
                             value: team.code,
                             text: team.description,
-                            selected: formResponses.probationTeamCode == team.code or session.journey.bookAProbationMeeting.agencyCode == team.code
+                            selected: formResponses.probationTeamCode == team.code or session.journey.bookAProbationMeeting.probationTeamCode == team.code
                         }), items) %}
                     {% endfor %}
 
@@ -102,7 +102,7 @@
                     {% set items = (items.push({
                         value: meetingType.code,
                         text: meetingType.description,
-                        selected: formResponses.meetingTypeCode == meetingType.code or session.journey.bookAProbationMeeting.hearingTypeCode == meetingType.code
+                        selected: formResponses.meetingTypeCode == meetingType.code or session.journey.bookAProbationMeeting.meetingTypeCode == meetingType.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({

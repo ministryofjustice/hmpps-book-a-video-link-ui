@@ -173,13 +173,12 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookAProbationMeeting', {
-            type: 'PROBATION',
-            agencyCode: 'PROBATION_CODE',
+            probationTeamCode: 'PROBATION_CODE',
             bookingId: 1,
             date: startOfTomorrow().toISOString(),
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
-            hearingTypeCode: 'PSR',
+            meetingTypeCode: 'PSR',
             locationCode: 'LOCATION_CODE',
             prisoner: {
               firstName: 'Joe',
@@ -403,10 +402,10 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookAProbationMeeting', {
-            agencyCode: 'CODE',
+            probationTeamCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
-            hearingTypeCode: 'PSR',
+            meetingTypeCode: 'PSR',
             locationCode: 'VIDE',
             prisoner: {
               firstName: 'Joe',
@@ -417,7 +416,6 @@ describe('New Booking handler', () => {
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'PROBATION',
           }),
         )
     })
@@ -445,10 +443,10 @@ describe('New Booking handler', () => {
         })
         .then(() =>
           expectJourneySession(app, 'bookAProbationMeeting', {
-            agencyCode: 'CODE',
+            probationTeamCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
-            hearingTypeCode: 'PSR',
+            meetingTypeCode: 'PSR',
             locationCode: 'VIDE',
             prisoner: {
               firstName: 'Joe',
@@ -458,7 +456,6 @@ describe('New Booking handler', () => {
               prisonName: 'Moorland',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'PROBATION',
           }),
         )
     })

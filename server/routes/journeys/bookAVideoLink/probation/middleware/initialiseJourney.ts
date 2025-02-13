@@ -17,14 +17,13 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
     const parseDateToISOString = (date: string) =>
       date ? parse(date, 'yyyy-MM-dd', new Date()).toISOString() : undefined
 
-    const { preAppointment, mainAppointment, postAppointment } = extractPrisonAppointmentsFromBooking(booking)
+    const { mainAppointment } = extractPrisonAppointmentsFromBooking(booking)
 
     const prisoner = await prisonerService.getPrisonerByPrisonerNumber(mainAppointment?.prisonerNumber, user)
 
     req.session.journey.bookAProbationMeeting = {
       bookingId: Number(bookingId),
       bookingStatus: booking.statusCode,
-      type: booking.bookingType,
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,
@@ -33,18 +32,12 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
-      agencyCode: booking.courtCode || booking.probationTeamCode,
-      hearingTypeCode: booking.courtHearingType || booking.probationMeetingType,
+      probationTeamCode: booking.probationTeamCode,
+      meetingTypeCode: booking.probationMeetingType,
       date: parseDateToISOString(mainAppointment.appointmentDate),
       startTime: parseTimeToISOString(mainAppointment.startTime),
       endTime: parseTimeToISOString(mainAppointment.endTime),
-      preHearingStartTime: parseTimeToISOString(preAppointment?.startTime),
-      preHearingEndTime: parseTimeToISOString(preAppointment?.endTime),
-      postHearingStartTime: parseTimeToISOString(postAppointment?.startTime),
-      postHearingEndTime: parseTimeToISOString(postAppointment?.endTime),
       locationCode: mainAppointment?.prisonLocKey,
-      preLocationCode: preAppointment?.prisonLocKey,
-      postLocationCode: postAppointment?.prisonLocKey,
       comments: booking.comments,
       videoLinkUrl: booking.videoLinkUrl,
     }

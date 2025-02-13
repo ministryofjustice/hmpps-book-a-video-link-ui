@@ -1,7 +1,6 @@
-export type BookAVideoLinkJourney = {
+export type BookACourtHearingJourney = {
   bookingId?: number
   bookingStatus?: string
-  type?: string
   prisoner?: {
     firstName: string
     lastName: string
@@ -10,7 +9,7 @@ export type BookAVideoLinkJourney = {
     prisonId: string
     prisonName: string
   }
-  agencyCode?: string
+  courtCode?: string
   hearingTypeCode?: string
   date?: string
   startTime?: string

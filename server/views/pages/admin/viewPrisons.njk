@@ -1,7 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 
-{% set pageTitle = "Prisons enabled for video link booking" %}
+{% set pageTitle = "Manage a prison's video link rooms" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -11,8 +11,9 @@
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full-from-desktop">
+        <div class="govuk-grid-column-three-quarters">
             {% if prisonList.length %}
+               <div class="govuk-body">Showing<strong> {{ prisonList | length }}</strong> prisons</div>
                <p class="govuk-body">
                    {% set rows = [] %}
 
@@ -20,15 +21,13 @@
 
                        {% set choosePrisonHtml %}
                          <a href="/admin/view-prison-locations/{{ result.code }}"
-                            class="govuk-link govuk-link--no-visited-state">Choose
+                            class="govuk-link govuk-link--no-visited-state">Manage rooms
                           </a>
                        {% endset %}
 
                        {% set rows = (rows.push([
-                           { text: result.code },
                            { text: result.name },
-                           { text: result.enabled },
-                           { text: result.notes },
+                           { text: result.code },
                            { html: choosePrisonHtml }
                           ]), rows)
                        %}
@@ -36,11 +35,12 @@
                    {% endfor %}
 
                    {{ govukTable({
+                       attributes: {
+                         'data-module': 'moj-sortable-table'
+                       },
                        head: [
-                          { text: "Code" },
-                          { text: "Name" },
-                          { text: "Enabled" },
-                          { text: "Notes" },
+                          { text: "Prison", attributes: { "aria-sort": "ascending" } },
+                          { text: "Prison code" },
                           { html: "Action" }
                       ],
                       rows: rows

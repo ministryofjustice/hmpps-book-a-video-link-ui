@@ -128,7 +128,7 @@ describe('New Booking handler', () => {
 
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
-        bookAVideoLink: {
+        bookACourtHearing: {
           prisoner: {
             prisonId: 'MDI',
             firstName: 'Joe',
@@ -173,9 +173,8 @@ describe('New Booking handler', () => {
           })
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
-            type: 'COURT',
-            agencyCode: 'COURT_CODE',
+          expectJourneySession(app, 'bookACourtHearing', {
+            courtCode: 'COURT_CODE',
             bookingId: 1,
             date: startOfTomorrow().toISOString(),
             startTime: '1970-01-01T08:00:00.000Z',
@@ -206,13 +205,13 @@ describe('New Booking handler', () => {
         .get(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .expect(302)
         .expect('location', '/court/view-booking/1')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+        .then(() => expectJourneySession(app, 'bookACourtHearing', null))
     })
   })
 
   describe('POST', () => {
     const validForm = {
-      agencyCode: 'CODE',
+      courtCode: 'CODE',
       hearingTypeCode: 'APPEAL',
       date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
       startTime: { hour: 15, minute: 30 },
@@ -231,8 +230,8 @@ describe('New Booking handler', () => {
         .expect(() => {
           expectErrorMessages([
             {
-              fieldId: 'agencyCode',
-              href: '#agencyCode',
+              fieldId: 'courtCode',
+              href: '#courtCode',
               text: 'Select a court',
             },
             {
@@ -471,8 +470,8 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
-            agencyCode: 'CODE',
+          expectJourneySession(app, 'bookACourtHearing', {
+            courtCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',
@@ -492,7 +491,6 @@ describe('New Booking handler', () => {
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'COURT',
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )
@@ -500,7 +498,7 @@ describe('New Booking handler', () => {
 
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
-        bookAVideoLink: {
+        bookACourtHearing: {
           prisoner: {
             prisonId: 'MDI',
             firstName: 'Joe',
@@ -520,8 +518,8 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
-            agencyCode: 'CODE',
+          expectJourneySession(app, 'bookACourtHearing', {
+            courtCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',
@@ -534,7 +532,6 @@ describe('New Booking handler', () => {
               prisonName: 'Moorland',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'COURT',
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )

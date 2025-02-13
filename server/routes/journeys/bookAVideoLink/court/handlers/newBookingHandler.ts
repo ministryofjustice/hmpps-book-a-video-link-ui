@@ -25,7 +25,7 @@ import ReferenceDataService from '../../../../../services/referenceDataService'
 class Body {
   @Expose()
   @IsNotEmpty({ message: `Select a court` })
-  agencyCode: string
+  courtCode: string
 
   @Expose()
   @IsNotEmpty({ message: `Select a hearing type` })
@@ -112,11 +112,11 @@ export default class NewBookingHandler implements PageHandler {
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { mode } = req.params
-    const bookingId = req.session.journey.bookAVideoLink?.bookingId
-    const offender = req.session.journey.bookAVideoLink?.prisoner
+    const bookingId = req.session.journey.bookACourtHearing?.bookingId
+    const offender = req.session.journey.bookACourtHearing?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
-    const agencies = await this.courtsService.getUserPreferences(user)
+    const courts = await this.courtsService.getUserPreferences(user)
 
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
@@ -133,7 +133,7 @@ export default class NewBookingHandler implements PageHandler {
         prisonerNumber: prisoner.prisonerNumber,
         prisonName: prisoner.prisonName,
       },
-      agencies,
+      courts,
       rooms,
       hearingTypes,
       fromReview: req.get('Referrer')?.endsWith('check-booking'),
@@ -143,12 +143,12 @@ export default class NewBookingHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { mode } = req.params
-    const bookingId = req.session.journey.bookAVideoLink?.bookingId
-    const offender = req.session.journey.bookAVideoLink?.prisoner
+    const bookingId = req.session.journey.bookACourtHearing?.bookingId
+    const offender = req.session.journey.bookACourtHearing?.prisoner
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
 
     const {
-      agencyCode,
+      courtCode,
       hearingTypeCode,
       date,
       startTime,
@@ -176,7 +176,7 @@ export default class NewBookingHandler implements PageHandler {
       return res.validationFailed()
     }
 
-    req.session.journey.bookAVideoLink = {
+    req.session.journey.bookACourtHearing = {
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,
@@ -185,8 +185,7 @@ export default class NewBookingHandler implements PageHandler {
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
       },
-      type: 'COURT',
-      agencyCode,
+      courtCode,
       hearingTypeCode,
       date: date.toISOString(),
       startTime: startTime.toISOString(),

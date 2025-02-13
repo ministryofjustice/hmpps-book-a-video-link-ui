@@ -4,13 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import {
-  dropdownOptions,
-  existsByLabel,
-  existsByName,
-  getPageHeader,
-  getValueByKey,
-} from '../../../../testutils/cheerio'
+import { dropdownOptions, existsByLabel, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -125,8 +119,6 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
           expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
-          expect(existsByName($, 'preRequired')).toBe(false)
-          expect(existsByName($, 'postRequired')).toBe(false)
           expect(existsByLabel($, 'Which probation team is the meeting for?')).toBe(true)
           expect(existsByLabel($, 'Which type of meeting is this?')).toBe(true)
         })
@@ -134,7 +126,7 @@ describe('New Booking handler', () => {
 
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
-        bookAVideoLink: {
+        bookAProbationMeeting: {
           prisoner: {
             prisonId: 'MDI',
             firstName: 'Joe',
@@ -180,14 +172,13 @@ describe('New Booking handler', () => {
           })
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
-            type: 'PROBATION',
-            agencyCode: 'PROBATION_CODE',
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            probationTeamCode: 'PROBATION_CODE',
             bookingId: 1,
             date: startOfTomorrow().toISOString(),
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
-            hearingTypeCode: 'PSR',
+            meetingTypeCode: 'PSR',
             locationCode: 'LOCATION_CODE',
             prisoner: {
               firstName: 'Joe',
@@ -212,14 +203,14 @@ describe('New Booking handler', () => {
         .get(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
         .expect(302)
         .expect('location', '/probation/view-booking/1')
-        .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+        .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
     })
   })
 
   describe('POST', () => {
     const validForm = {
-      agencyCode: 'CODE',
-      hearingTypeCode: 'PSR',
+      probationTeamCode: 'CODE',
+      meetingTypeCode: 'PSR',
       date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
       startTime: { hour: 15, minute: 30 },
       endTime: { hour: 16, minute: 30 },
@@ -233,13 +224,13 @@ describe('New Booking handler', () => {
         .expect(() => {
           expectErrorMessages([
             {
-              fieldId: 'agencyCode',
-              href: '#agencyCode',
+              fieldId: 'probationTeamCode',
+              href: '#probationTeamCode',
               text: 'Select a probation team',
             },
             {
-              fieldId: 'hearingTypeCode',
-              href: '#hearingTypeCode',
+              fieldId: 'meetingTypeCode',
+              href: '#meetingTypeCode',
               text: 'Select a meeting type',
             },
             {
@@ -410,11 +401,11 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
-            agencyCode: 'CODE',
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            probationTeamCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
-            hearingTypeCode: 'PSR',
+            meetingTypeCode: 'PSR',
             locationCode: 'VIDE',
             prisoner: {
               firstName: 'Joe',
@@ -425,14 +416,13 @@ describe('New Booking handler', () => {
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'PROBATION',
           }),
         )
     })
 
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
-        bookAVideoLink: {
+        bookAProbationMeeting: {
           prisoner: {
             prisonId: 'MDI',
             firstName: 'Joe',
@@ -452,11 +442,11 @@ describe('New Booking handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenLastCalledWith('A1234AA', user)
         })
         .then(() =>
-          expectJourneySession(app, 'bookAVideoLink', {
-            agencyCode: 'CODE',
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            probationTeamCode: 'CODE',
             date: startOfTomorrow().toISOString(),
             endTime: '1970-01-01T16:30:00.000Z',
-            hearingTypeCode: 'PSR',
+            meetingTypeCode: 'PSR',
             locationCode: 'VIDE',
             prisoner: {
               firstName: 'Joe',
@@ -466,7 +456,6 @@ describe('New Booking handler', () => {
               prisonName: 'Moorland',
             },
             startTime: '1970-01-01T15:30:00.000Z',
-            type: 'PROBATION',
           }),
         )
     })

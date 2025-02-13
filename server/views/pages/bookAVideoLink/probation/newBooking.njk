@@ -55,65 +55,65 @@
                                 text: "Probation Team"
                             },
                             value: {
-                                text: agencies[0].description
+                                text: probationTeams[0].description
                             }
-                        } if agencies.length == 1,
+                        } if probationTeams.length == 1,
                         {
                             key: {
                                 text: "Probation Team"
                             },
                             value: {
-                                text: (agencies | find('code', session.journey.bookAVideoLink.agencyCode)).description
+                                text: (probationTeams | find('code', session.journey.bookAProbationMeeting.probationTeamCode)).description
                             }
-                        } if mode == 'amend' and agencies.length > 1
+                        } if mode == 'amend' and probationTeams.length > 1
                     ]
                 }) }}
 
-                {% if agencies.length === 1 %}
-                    <input type="hidden" name="agencyCode" value="{{ agencies[0].code }}" />
+                {% if probationTeams.length === 1 %}
+                    <input type="hidden" name="probationTeamCode" value="{{ probationTeams[0].code }}" />
                 {% elseif mode === 'amend' %}
-                    <input type="hidden" name="agencyCode" value="{{ session.journey.bookAVideoLink.agencyCode }}" />
+                    <input type="hidden" name="probationTeamCode" value="{{ session.journey.bookAProbationMeeting.probationTeamCode }}" />
                 {% else %}
                     
                     {% set items = [{ text: "Select probation team", value: "" }] %}
-                    {% for agency in agencies %}
+                    {% for team in probationTeams %}
                         {% set items = (items.push({
-                            value: agency.code,
-                            text: agency.description,
-                            selected: formResponses.agencyCode == agency.code or session.journey.bookAVideoLink.agencyCode == agency.code
+                            value: team.code,
+                            text: team.description,
+                            selected: formResponses.probationTeamCode == team.code or session.journey.bookAProbationMeeting.probationTeamCode == team.code
                         }), items) %}
                     {% endfor %}
 
                     {{ govukSelect({
-                        name: "agencyCode",
-                        id: "agencyCode",
+                        name: "probationTeamCode",
+                        id: "probationTeamCode",
                         label: {
                             text: "Which probation team is the meeting for?",
                             classes: 'govuk-label--s'
                         },
                         items: items,
-                        errorMessage: validationErrors | findError("agencyCode"),
+                        errorMessage: validationErrors | findError("probationTeamCode"),
                         classes: "govuk-!-width-one-third"
                     }) }}
                 {% endif %}
 
                 {% set items = [{ text: "Select meeting type", value: "" }] %}
-                {% for hearingType in hearingTypes %}
+                {% for meetingType in meetingTypes %}
                     {% set items = (items.push({
-                        value: hearingType.code,
-                        text: hearingType.description,
-                        selected: formResponses.hearingTypeCode == hearingType.code or session.journey.bookAVideoLink.hearingTypeCode == hearingType.code
+                        value: meetingType.code,
+                        text: meetingType.description,
+                        selected: formResponses.meetingTypeCode == meetingType.code or session.journey.bookAProbationMeeting.meetingTypeCode == meetingType.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({
-                    name: "hearingTypeCode",
-                    id: "hearingTypeCode",
+                    name: "meetingTypeCode",
+                    id: "meetingTypeCode",
                     label: {
                         text: "Which type of meeting is this?",
                         classes: 'govuk-label--s'
                     },
                     items: items,
-                    errorMessage: validationErrors | findError("hearingTypeCode"),
+                    errorMessage: validationErrors | findError("meetingTypeCode"),
                     classes: "govuk-!-width-one-third"
                 }) }}
 
@@ -128,7 +128,7 @@
                         text: 'Enter the date, for example ' + exampleDatePickerDate() + ', or select the calendar to pick a date'
                     },
                     errorMessage: validationErrors | findError('date'),
-                    value: formResponses.date or session.journey.bookAVideoLink.date | formatDate('dd/MM/yyyy')
+                    value: formResponses.date or session.journey.bookAProbationMeeting.date | formatDate('dd/MM/yyyy')
                 }) }}
 
                 {{ hmppsTimePicker({
@@ -139,7 +139,7 @@
                         classes: 'govuk-fieldset__legend--s'
                     },
                     errorMessage: validationErrors | findError('startTime'),
-                    formResponses: formResponses.startTime or session.journey.bookAVideoLink.startTime
+                    formResponses: formResponses.startTime or session.journey.bookAProbationMeeting.startTime
                 }) }}
 
                 {{ hmppsTimePicker({
@@ -151,7 +151,7 @@
                     },
                     errorMessage: validationErrors | findError('endTime'),
                     validationErrors: validationErrors,
-                    formResponses: formResponses.endTime or session.journey.bookAVideoLink.endTime
+                    formResponses: formResponses.endTime or session.journey.bookAProbationMeeting.endTime
                 }) }}
 
                 {% set items = [{ text: "Select prison room", value: "" }] %}
@@ -159,7 +159,7 @@
                     {% set items = (items.push({
                         value: room.key,
                         text: room.description,
-                        selected: formResponses.location == room.key or session.journey.bookAVideoLink.locationCode == room.key
+                        selected: formResponses.location == room.key or session.journey.bookAProbationMeeting.locationCode == room.key
                     }), items) %}
                 {% endfor %}
 
@@ -184,7 +184,7 @@
             {% if mode == 'create' or mode == 'request' %}
                 <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
-                <a href="/probation/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a href="/probation/view-booking/{{ session.journey.bookAProbationMeeting.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

@@ -25,7 +25,7 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: formResponses.firstName or session.journey.bookAVideoLink.prisoner.firstName
+                    value: formResponses.firstName or session.journey.bookACourtHearing.prisoner.firstName
                 }) }}
 
                 {{ govukInput({
@@ -34,7 +34,7 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: formResponses.lastName or session.journey.bookAVideoLink.prisoner.lastName
+                    value: formResponses.lastName or session.journey.bookACourtHearing.prisoner.lastName
                 }) }}
 
                 {{ govukDateInput({
@@ -54,21 +54,21 @@
                             name: "dateOfBirth[day]",
                             label: "Day",
                             classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['day'] or session.journey.bookAVideoLink.prisoner.dateOfBirth | formatDate('dd')
+                            value: formResponses.dateOfBirth['day'] or session.journey.bookACourtHearing.prisoner.dateOfBirth | formatDate('dd')
                         },
                         {
                             id: "dateOfBirth-month",
                             name: "dateOfBirth[month]",
                             label: "Month",
                             classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['month'] or session.journey.bookAVideoLink.prisoner.dateOfBirth | formatDate('MM')
+                            value: formResponses.dateOfBirth['month'] or session.journey.bookACourtHearing.prisoner.dateOfBirth | formatDate('MM')
                         },
                         {
                             id: "dateOfBirth-year",
                             name: "dateOfBirth[year]",
                             label: "Year",
                             classes: "govuk-input--width-4" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['year'] or session.journey.bookAVideoLink.prisoner.dateOfBirth | formatDate('yyyy')
+                            value: formResponses.dateOfBirth['year'] or session.journey.bookACourtHearing.prisoner.dateOfBirth | formatDate('yyyy')
                         }
                     ]
                 }) }}
@@ -78,7 +78,7 @@
                     {% set items = (items.push({
                         value: prison.code,
                         text: prison.name,
-                        selected: formResponses.prison == prison.code or session.journey.bookAVideoLink.prisoner.prison == prison.code
+                        selected: formResponses.prison == prison.code or session.journey.bookACourtHearing.prisoner.prison == prison.code
                     }), items) %}
                 {% endfor %}
                 {{ govukSelect({

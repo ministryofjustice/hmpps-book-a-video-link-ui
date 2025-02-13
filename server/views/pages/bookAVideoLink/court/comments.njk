@@ -3,7 +3,7 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = "Change comments on this booking" if session.journey.bookAVideoLink.comments else "Add comments on this booking" %}
+{% set pageTitle = "Change comments on this booking" if session.journey.bookACourtHearing.comments else "Add comments on this booking" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -23,7 +23,7 @@
                     maxlength: 400,
                     label: { text: "Comments (optional)" },
                     hint: { text: "This can include the hearing number, type of hearing and any other additional details" },
-                    value: session.journey.bookAVideoLink.comments
+                    value: session.journey.bookACourtHearing.comments
                 }) }}
 
                 {{ govukButton({
@@ -33,7 +33,7 @@
                 }) }}
             </form>
 
-            <a href="/court/view-booking/{{ session.journey.bookAVideoLink.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='cancel-link'>Cancel</a>
+            <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='cancel-link'>Cancel</a>
         </div>
     </div>
 {% endblock %}

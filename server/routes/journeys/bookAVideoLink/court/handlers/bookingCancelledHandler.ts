@@ -21,7 +21,7 @@ export default class BookingCancelledHandler implements PageHandler {
     const { prisonerNumber } = booking.prisonAppointments[0]
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
-    req.session.journey.bookAVideoLink = null
+    req.session.journey.bookACourtHearing = null
 
     res.render('pages/bookAVideoLink/court/bookingCancelled', { prisoner })
   }

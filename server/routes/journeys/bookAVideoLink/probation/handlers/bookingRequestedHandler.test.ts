@@ -44,6 +44,6 @@ describe('GET', () => {
         expect(heading).toEqual('The video link has been requested')
         expect(bookAnotherLink).toEqual(`/probation/prisoner-search/search`)
       })
-      .then(() => expectJourneySession(app, 'bookAVideoLink', null))
+      .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
   })
 })

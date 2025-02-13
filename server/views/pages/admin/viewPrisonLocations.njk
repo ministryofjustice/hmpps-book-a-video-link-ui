@@ -2,7 +2,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
 
-{% set pageTitle = "Video link locations at " + prison.name %}
+{% set pageTitle = "Edit video link rooms at " + prison.name %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -19,55 +19,62 @@
 
                    {% for result in locationList %}
 
-                       {% set chooseLocationHtml %}
-                         <a href="/admin/view-prison-room/{{ prison.code }}/{{ result.dpsLocationId }}"
-                            class="govuk-link govuk-link--no-visited-state">Choose
+                       {% set roomSetupHtml %}
+                         {% if result.extraAttributes %}
+                            {{ locationUsageTag("Customised", "govuk-tag--green") }}
+                         {% else %}
+                            {{ locationUsageTag("Default", "govuk-tag--lightgrey") }}
+                         {% endif %}
+                       {% endset %}
+
+                       {% set roomStatusHtml %}
+                         {% if result.extraAttributes %}
+                           {% if result.extraAttributes.locationStatus == 'ACTIVE' %}
+                             {{ locationUsageTag("Active", "govuk-tag--green") }}
+                           {% else %}
+                             {{ locationUsageTag("Out of use", "govuk-tag--red") }}
+                           {% endif %}
+                         {% else %}
+                            {{ locationUsageTag("Active", "govuk-tag--green") }}
+                         {% endif %}
+                       {% endset %}
+
+                       {% set permissionsHtml %}
+                          {% if result.extraAttributes.locationUsage %}
+                             {{ locationUsageTag(result.extraAttributes.locationUsage | convertToTitleCase, "govuk-tag--lightblue") }}
+                          {% else %}
+                             {{ locationUsageTag("Shared", "govuk-tag--lightblue") }}
+                          {% endif %}
+                       {% endset %}
+
+                       {% set actionHtml %}
+                          <a href="/admin/view-prison-room/{{ prison.code }}/{{ result.dpsLocationId }}"
+                             class="govuk-link govuk-link--no-visited-state">View or edit
                           </a>
                        {% endset %}
 
-                       {% set locationUseHtml %}
-                         {% if result.extraAttributes.locationUsage %}
-                            {{ locationUsageTag(result.extraAttributes.locationUsage, "govuk-tag--blue") }}
-                         {% endif %}
-                       {% endset %}
-
-                       {% set extraAttributesHtml %}
-                         {% if result.extraAttributes %}
-                            {{ locationUsageTag("Yes", "govuk-tag--green") }}
-                         {% else %}
-                            No
-                         {% endif %}
-                       {% endset %}
-
-                       {% set statusHtml %}
-                         {% if result.extraAttributes %}
-                           {% if result.extraAttributes.locationStatus === 'ACTIVE' %}
-                             {{ locationUsageTag(result.extraAttributes.locationStatus, "govuk-tag--green") }}
-                           {% else %}
-                             {{ locationUsageTag(result.extraAttributes.locationStatus, "govuk-tag--red") }}
-                           {% endif %}
-                         {% endif %}
-                       {% endset %}
-
                        {% set rows = (rows.push([
-                           { text: result.key },
                            { text: result.description },
-                           { html: extraAttributesHtml },
-                           { html: statusHtml },
-                           { html: locationUseHtml },
-                           { html: chooseLocationHtml }
+                           { text: result.key },
+                           { html: roomSetupHtml },
+                           { html: roomStatusHtml },
+                           { html: permissionsHtml },
+                           { html: actionHtml }
                           ]), rows)
                        %}
 
                    {% endfor %}
 
                    {{ govukTable({
+                       attributes: {
+                         'data-module': 'moj-sortable-table'
+                       },
                        head: [
-                          { text: "Room Key" },
-                          { text: "Room Description" },
-                          { text: "Extra Attributes" },
-                          { text: "Status" },
-                          { text: "Location usage" },
+                          { text: "Room Name" },
+                          { text: "Room key" },
+                          { text: "Room setup", attributes: { "aria-sort": "ascending" } },
+                          { text: "Room status" },
+                          { text: "Permissions", attributes: { "aria-sort": "ascending" } },
                           { text: "Action" }
                       ],
                       rows: rows

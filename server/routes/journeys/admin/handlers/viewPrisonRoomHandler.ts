@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
+import logger from '../../../../../logger'
 
 export default class ViewPrisonRoomHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_PRISON_ROOM_PAGE
@@ -23,7 +24,20 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       const room = matchingRoom[0]
       res.render('pages/admin/viewPrisonRoom', { prison, room })
     } else {
-      res.redirect(`/view-prison-locations/$prisonCode`)
+      res.redirect(`/view-prison-locations/${prisonCode}`)
     }
+  }
+
+  public POST = async (req: Request, res: Response) => {
+    const { prisonCode, dpsLocationId, roomStatus, permission, videoUrl, notes } = req.body
+    logger.info(
+      `PrisonCode ${prisonCode}, dpsLocationId ${dpsLocationId}, status ${roomStatus}, permission ${permission}, URL ${videoUrl}, notes ${notes}`,
+    )
+
+    // TODO: Save the values here
+    // TODO: Individual schedule rows saved separately?
+    // TODO: Validation class for the input values above
+
+    res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
   }
 }

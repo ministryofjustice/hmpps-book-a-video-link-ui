@@ -36,7 +36,7 @@
                 </div>
 
                 {{ govukRadios({
-                     classes: "govuk-radios--inline govuk-radios--small",
+                     classes: "govuk-radios--inline govuk-radios--small radio-nowrap",
                      idPrefix: "roomStatus",
                      name: "roomStatus",
                      errorMessage: validationErrors | findError('roomStatus'),

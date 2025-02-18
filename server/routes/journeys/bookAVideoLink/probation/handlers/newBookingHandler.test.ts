@@ -381,15 +381,6 @@ describe('New Booking handler', () => {
     })
 
     it('should save the posted fields in session', () => {
-      prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-        prisonId: 'MDI',
-        prisonName: 'Moorland',
-        prisonerNumber: 'A1234AA',
-        firstName: 'Joe',
-        lastName: 'Bloggs',
-        dateOfBirth: '1970-01-01',
-      } as Prisoner)
-
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -409,13 +400,46 @@ describe('New Booking handler', () => {
             locationCode: 'VIDE',
             prisoner: {
               firstName: 'Joe',
-              lastName: 'Bloggs',
+              lastName: 'Smith',
               dateOfBirth: '1970-01-01',
               prisonId: 'MDI',
               prisonName: 'Moorland',
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
+          }),
+        )
+    })
+
+    it('should save the posted fields in session during the amend journey with existing booking data', () => {
+      return request(app)
+        .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
+        .send({
+          ...validForm,
+        })
+        .expect(302)
+        .expect('location', 'video-link-booking/check-booking')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            bookingId: 1,
+            probationTeamCode: 'CODE',
+            date: startOfTomorrow().toISOString(),
+            endTime: '1970-01-01T16:30:00.000Z',
+            meetingTypeCode: 'PSR',
+            locationCode: 'VIDE',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonId: 'MDI',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
+            },
+            startTime: '1970-01-01T15:30:00.000Z',
+            comments: 'test',
           }),
         )
     })

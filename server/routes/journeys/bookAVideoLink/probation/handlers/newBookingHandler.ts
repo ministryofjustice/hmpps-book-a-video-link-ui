@@ -129,6 +129,7 @@ export default class NewBookingHandler implements PageHandler {
     }
 
     req.session.journey.bookAProbationMeeting = {
+      ...req.session.journey.bookAProbationMeeting,
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,

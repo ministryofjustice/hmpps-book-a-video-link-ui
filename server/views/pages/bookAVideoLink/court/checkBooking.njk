@@ -11,7 +11,7 @@
 {% block content %}
     {% if warnPrison %}
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
+            <div class="govuk-grid-column-two-thirds">
                 {% set html %}
                     <p class="govuk-notification-banner__heading">Contact the prison to discuss before proceeding</p>
                     <p class="govuk-body">
@@ -28,7 +28,7 @@
 
     {% if mode == 'request' %}
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
+            <div class="govuk-grid-column-two-thirds">
                 {% set html %}
                     <p class="govuk-notification-banner__heading">Pending approval by {{ prisoner.prisonName }}</p>
                     <p class="govuk-body">
@@ -42,13 +42,13 @@
     {% endif %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
         </div>
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
             {{ govukSummaryList({
                 rows: [
                     {
@@ -171,6 +171,9 @@
                     },
                     hint: {
                         text: "This might include case number, co-defendant details if this is a multi-handed case, or whether you have borrowed another court’s room."
+                    },
+                    formGroup: {
+                        classes: 'govuk-!-width-two-thirds'
                     },
                     errorMessage: validationErrors | findError('comments'),
                     value: formResponses.comments or session.journey.bookACourtHearing.comments

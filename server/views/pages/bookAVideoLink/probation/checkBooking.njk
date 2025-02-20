@@ -11,7 +11,7 @@
 {% block content %}
     {% if warnPrison %}
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
+            <div class="govuk-grid-column-two-thirds">
                 {% set html %}
                     <p class="govuk-notification-banner__heading">Contact the prison to discuss before proceeding</p>
                     <p class="govuk-body">
@@ -28,7 +28,7 @@
 
     {% if mode == 'request' %}
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
+            <div class="govuk-grid-column-two-thirds">
                 {% set html %}
                     <p class="govuk-notification-banner__heading">Pending approval by {{ prisoner.prisonName }}</p>
                     <p class="govuk-body">
@@ -42,22 +42,37 @@
     {% endif %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
         </div>
     </div>
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-two-thirds">
+            {% set periods = [] %}
+            {% for period in session.journey.bookAProbationMeeting.timePeriods %}
+                {% set periods = (periods.push(TimePeriod[period]), periods) %}
+            {% endfor %}
+
             {{ govukSummaryList({
                 rows: [
                     {
                         key: {
-                            text: "Name"
+                            text: "Prisoner name"
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../../../../../prisoner-search/search",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "prisoner"
+                                }
+                            ]
+                        } if mode == 'create' or mode == 'request'
                     },
                     {
                         key: {
@@ -81,22 +96,88 @@
                         },
                         value: {
                             text: (probationTeams | find('code', session.journey.bookAProbationMeeting.probationTeamCode)).description
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#probationTeamCode",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "probation team"
+                                }
+                            ]
+                        } if (mode == 'create' or mode == 'request') and probationTeams.length > 1
                     },
+                    {
+                        key: {
+                            text: "Probation officer's full name"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.officerFullName or "None entered"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#officerFullName",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "probation officer's full name"
+                                }
+                            ]
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "Email address"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.officerEmail or "None entered"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#officerEmail",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "probation officer's email address"
+                                }
+                            ]
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "UK phone number"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.officerTelephone or "None entered"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#officerTelephone",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "probation officer's telephone"
+                                }
+                            ]
+                        }
+                    } if enhancedProbationJourneyEnabled,
                     {
                         key: {
                             text: "Meeting type"
                         },
                         value: {
                             text: (meetingTypes | find('code', session.journey.bookAProbationMeeting.meetingTypeCode)).description
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Prison room for probation meeting"
                         },
-                        value: {
-                            text: (rooms | find('key', session.journey.bookAProbationMeeting.locationCode)).description
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#meetingTypeCode",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "meeting type"
+                                }
+                            ]
                         }
                     },
                     {
@@ -105,24 +186,78 @@
                         },
                         value: {
                             text: session.journey.bookAProbationMeeting.date | formatDate
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#date",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "date"
+                                }
+                            ]
                         }
                     },
                     {
                         key: {
-                            text: "Meeting start time"
+                            text: "Meeting duration"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm')
+                            text: session.journey.bookAProbationMeeting.duration | toDuration
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#duration",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "duration"
+                                }
+                            ]
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "Time period"
+                        },
+                        value: {
+                            text: periods | join(" or ")
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#timePeriods",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "time period"
+                                }
+                            ]
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "Meeting time"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + ' to ' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm')
                         }
                     },
                     {
                         key: {
-                            text: "Meeting end time"
+                            text: "Meeting room"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm')
+                            text: (rooms | find('key', session.journey.bookAProbationMeeting.locationCode)).description
                         }
-                    }
+                    },
+                    {
+                        key: {
+                            text: "Prison video link (PVL)"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.videoLinkUrl or "None entered"
+                        }
+                    } if enhancedProbationJourneyEnabled
                 ]
             }) }}
 
@@ -146,7 +281,10 @@
                         text: "Comments (optional)"
                     },
                     hint: {
-                        text: "This should include probation officer’s full name and any other relevant details."
+                        text: "This can include any other additional information" if enhancedProbationJourneyEnabled else "This should include probation officer’s full name and any other relevant details."
+                    },
+                    formGroup: {
+                        classes: 'govuk-!-width-two-thirds'
                     },
                     errorMessage: validationErrors | findError('comments'),
                     value: formResponses.comments or session.journey.bookAProbationMeeting.comments
@@ -169,14 +307,8 @@
                         type: 'submit'
                     }) }}
 
-                    <a href='../video-link-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">{{ 'Change request' if mode == 'request' else 'Change booking' }}</a>
+                    <a href="{{ '/' if mode == 'create' or mode == 'request' else ('/probation/view-booking/' + session.journey.bookAProbationMeeting.bookingId) }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 </div>
-
-                {% if mode == 'create' or mode == 'request' %}
-                    <a href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
-                {% else %}
-                    <a href="/probation/view-booking/{{ session.journey.bookAProbationMeeting.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
-                {% endif %}
             </form>
         </div>
     </div>

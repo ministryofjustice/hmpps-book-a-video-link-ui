@@ -100,7 +100,6 @@ export default class NewBookingHandler implements PageHandler {
       probationTeams,
       rooms,
       meetingTypes,
-      fromReview: req.get('Referrer')?.endsWith('check-booking'),
     })
   }
 

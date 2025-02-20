@@ -8,6 +8,8 @@ import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
+import config from '../../../../config'
+import BookingDetailsHandler from './handlers/bookingDetailsHandler'
 
 export default function CreateRoutes({
   auditService,
@@ -25,16 +27,24 @@ export default function CreateRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  route(
-    `${basePath}/video-link-booking`,
-    new NewBookingHandler(
-      probationTeamsService,
-      prisonService,
-      prisonerService,
-      referenceDataService,
-      videoLinkService,
-    ),
-  )
+  if (config.featureToggles.enhancedProbationJourneyEnabled) {
+    route(
+      `${basePath}/video-link-booking`,
+      new BookingDetailsHandler(probationTeamsService, prisonerService, referenceDataService),
+    )
+  } else {
+    route(
+      `${basePath}/video-link-booking`,
+      new NewBookingHandler(
+        probationTeamsService,
+        prisonService,
+        prisonerService,
+        referenceDataService,
+        videoLinkService,
+      ),
+    )
+  }
+
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),

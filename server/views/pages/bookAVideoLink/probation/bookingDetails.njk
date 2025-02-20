@@ -1,0 +1,239 @@
+{% extends "partials/layout.njk" %}
+
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set mode = session.req.params.mode %}
+{% set pageTitle = ("Change" if mode == 'amend' else "Enter") + ' probation video link booking details for ' + ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {% if mode === 'amend' or probationTeams.length === 1 %}
+                    <span class="govuk-label govuk-label--s">Probation Team</span>
+                    <input type="hidden" name="probationTeamCode" value="{{ session.journey.bookAProbationMeeting.probationTeamCode or probationTeams[0].code }}" />
+                    <p class="govuk-body govuk-!-margin-bottom-6">{{ (probationTeams | find('code', session.journey.bookAProbationMeeting.probationTeamCode)).description or probationTeams[0].description }}</p>
+                {% else %}
+                    {% set items = [{ text: "", value: "" }] %}
+                    {% for team in probationTeams %}
+                        {% set items = (items.push({
+                            value: team.code,
+                            text: team.description,
+                            selected: formResponses.probationTeamCode == team.code or session.journey.bookAProbationMeeting.probationTeamCode == team.code
+                        }), items) %}
+                    {% endfor %}
+
+                    {{ govukSelect({
+                        name: "probationTeamCode",
+                        id: "probationTeamCode",
+                        label: {
+                            text: "Select probation team",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("probationTeamCode"),
+                        classes: "govuk-!-width-one-half"
+                    }) }}
+                {% endif %}
+
+
+                <div class="govuk-form-group {{ 'govuk-form-group--error' if validationErrors | findError("officerDetailsOrUnknown") }}">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Enter the probation officer's details</legend>
+                        <p id="officerDetailsOrUnknown" class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>{{ (validationErrors | findError("officerDetailsOrUnknown")).text }}</p>
+                        <p class="govuk-body">You can enter the details later if not yet known</p>
+                        {{ govukCheckboxes({
+                            idPrefix: "officerDetailsNotKnown",
+                            name: "officerDetailsNotKnown",
+                            items: [
+                                {
+                                    value: "true",
+                                    text: "Not yet known",
+                                    checked: formResponses.officerDetailsNotKnown or session.journey.bookAProbationMeeting and not session.journey.bookAProbationMeeting.officerFullName
+                                },
+                                {
+                                    divider: "or"
+                                }
+                            ],
+                            errorMessage: validationErrors | findError("officerDetailsNotKnown"),
+                            formGroup: {
+                                classes: 'govuk-!-margin-bottom-3'
+                            },
+                            classes: "govuk-!-width-one-third"
+                        }) }}
+
+                        {{ govukInput({
+                            id: "officerFullName",
+                            name: "officerFullName",
+                            label: {
+                                text: "Full name"
+                            },
+                            errorMessage: validationErrors | findError('officerFullName'),
+                            formGroup: {
+                                classes: 'govuk-!-margin-bottom-3'
+                            },
+                            classes: "govuk-!-width-one-half",
+                            value: formResponses.officerFullName or session.journey.bookAProbationMeeting.officerFullName
+                        }) }}
+
+                        {{ govukInput({
+                            id: "officerEmail",
+                            name: "officerEmail",
+                            label: {
+                                text: "Email address"
+                            },
+                            errorMessage: validationErrors | findError('officerEmail'),
+                            formGroup: {
+                                classes: 'govuk-!-margin-bottom-3'
+                            },
+                            classes: "govuk-!-width-one-half",
+                            value: formResponses.officerEmail or session.journey.bookAProbationMeeting.officerEmail
+                        }) }}
+
+                        {{ govukInput({
+                            id: "officerTelephone",
+                            name: "officerTelephone",
+                            label: {
+                                text: "UK phone number (optional)"
+                            },
+                            errorMessage: validationErrors | findError('officerTelephone'),
+                            classes: "govuk-input--width-10",
+                            value: formResponses.officerTelephone or session.journey.bookAProbationMeeting.officerTelephone
+                        }) }}
+                    </fieldset>
+                </div>
+
+                {% set items = [] %}
+                {% for meetingType in meetingTypes %}
+                    {% if meetingType.code != 'OTHER' %}
+                        {% set items = (items.push({
+                            value: meetingType.code,
+                            text: meetingType.description,
+                            checked: formResponses.meetingTypeCode == meetingType.code or session.journey.bookAProbationMeeting.meetingTypeCode == meetingType.code
+                        }), items) %}
+                    {% endif %}
+                {% endfor %}
+                {% set items = (items.push({
+                    value: 'OTHER',
+                    text: 'Other',
+                    checked: formResponses.meetingTypeCode == 'OTHER' or session.journey.bookAProbationMeeting.meetingTypeCode == 'OTHER'
+                }), items) %}
+
+                {{ govukRadios({
+                    idPrefix: "meetingTypeCode",
+                    name: "meetingTypeCode",
+                    fieldset: {
+                        legend: {
+                            text: "Select meeting type",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: items,
+                    errorMessage: validationErrors | findError("meetingTypeCode"),
+                    classes: "govuk-!-width-one-third"
+                }) }}
+
+                {{ mojDatePicker({
+                    id: 'date',
+                    name: 'date',
+                    label: {
+                        text: 'Date',
+                        classes: 'govuk-label--s'
+                    },
+                    hint: {
+                        html: '
+                                <p class="govuk-body govuk-!-margin-bottom-1">You must get permission from the prison to make a same day booking.</p>
+                                For example, ' + exampleDatePickerDate() + '
+                              '
+                    },
+                    errorMessage: validationErrors | findError('date'),
+                    value: formResponses.date or session.journey.bookAProbationMeeting.date | formatDate('dd/MM/yyyy')
+                }) }}
+
+                {{ govukRadios({
+                    idPrefix: "duration",
+                    name: "duration",
+                    fieldset: {
+                        legend: {
+                            text: "Select meeting duration",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "30",
+                            text: 30 | toDuration,
+                            checked: formResponses.duration == 30 or session.journey.bookAProbationMeeting.duration == 30
+                        },
+                        {
+                            value: "60",
+                            text: 60 | toDuration,
+                            checked: formResponses.duration == 60 or session.journey.bookAProbationMeeting.duration == 60
+                        },
+                        {
+                            value: "90",
+                            text: 90 | toDuration,
+                            checked: formResponses.duration == 90 or session.journey.bookAProbationMeeting.duration == 90
+                        },
+                        {
+                            value: "120",
+                            text: 120 | toDuration,
+                            checked: formResponses.duration == 120 or session.journey.bookAProbationMeeting.duration == 120
+                        }
+                    ],
+                    errorMessage: validationErrors | findError("duration"),
+                    classes: "govuk-!-width-one-third"
+                }) }}
+
+                {{ govukCheckboxes({
+                    idPrefix: "timePeriods",
+                    name: "timePeriods",
+                    fieldset: {
+                        legend: {
+                            text: "Select time period",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    items: [
+                        {
+                            value: "AM",
+                            text: TimePeriod['AM'],
+                            checked: (formResponses.timePeriods and 'AM' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'AM' in session.journey.bookAProbationMeeting.timePeriods)
+                        },
+                        {
+                            value: "PM",
+                            text: TimePeriod['PM'],
+                            checked: (formResponses.timePeriods and 'PM' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'PM' in session.journey.bookAProbationMeeting.timePeriods)
+                        },
+                        {
+                            value: "ED",
+                            text: TimePeriod['ED'],
+                            checked: (formResponses.timePeriods and 'ED' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'ED' in session.journey.bookAProbationMeeting.timePeriods)
+                        }
+                    ],
+                    errorMessage: validationErrors | findError("timePeriods"),
+                    classes: "govuk-!-width-one-third"
+                }) }}
+
+                {{ govukButton({
+                    text: "Continue",
+                    type: "submit"
+                }) }}
+            </form>
+        </div>
+    </div>
+{% endblock %}

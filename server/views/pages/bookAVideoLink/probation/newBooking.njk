@@ -5,8 +5,6 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/radios/macro.njk" import govukRadios %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set mode = session.req.params.mode %}
 {% set pageTitle = "Change video link booking" if mode == 'amend' else 'Enter video link booking details' %}

@@ -1,7 +1,6 @@
 {% extends "partials/layout.njk" %}
 
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
-{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
@@ -63,7 +62,7 @@
                                 {
                                     value: "true",
                                     text: "Not yet known",
-                                    checked: formResponses.officerDetailsNotKnown or session.journey.bookAProbationMeeting and not session.journey.bookAProbationMeeting.officerFullName
+                                    checked: formResponses.officerDetailsNotKnown or session.journey.bookAProbationMeeting.officerDetailsNotKnown
                                 },
                                 {
                                     divider: "or"
@@ -87,7 +86,7 @@
                                 classes: 'govuk-!-margin-bottom-3'
                             },
                             classes: "govuk-!-width-one-half",
-                            value: formResponses.officerFullName or session.journey.bookAProbationMeeting.officerFullName
+                            value: formResponses.officerFullName or session.journey.bookAProbationMeeting.officer.fullName
                         }) }}
 
                         {{ govukInput({
@@ -101,7 +100,7 @@
                                 classes: 'govuk-!-margin-bottom-3'
                             },
                             classes: "govuk-!-width-one-half",
-                            value: formResponses.officerEmail or session.journey.bookAProbationMeeting.officerEmail
+                            value: formResponses.officerEmail or session.journey.bookAProbationMeeting.officer.email
                         }) }}
 
                         {{ govukInput({
@@ -112,7 +111,7 @@
                             },
                             errorMessage: validationErrors | findError('officerTelephone'),
                             classes: "govuk-input--width-10",
-                            value: formResponses.officerTelephone or session.journey.bookAProbationMeeting.officerTelephone
+                            value: formResponses.officerTelephone or session.journey.bookAProbationMeeting.officer.telephone
                         }) }}
                     </fieldset>
                 </div>

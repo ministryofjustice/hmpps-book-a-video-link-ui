@@ -30,7 +30,8 @@ class Body {
   officerDetailsOrUnknown: boolean
 
   @Expose()
-  officerDetailsNotKnown: string
+  @Transform(({ value }) => value === 'true')
+  officerDetailsNotKnown: boolean
 
   @Expose()
   @ValidateIf(o => o.officerDetailsOrUnknown && !o.officerDetailsNotKnown)
@@ -115,6 +116,7 @@ export default class BookingDetailsHandler implements PageHandler {
 
     const {
       probationTeamCode,
+      officerDetailsNotKnown,
       officerFullName,
       officerEmail,
       officerTelephone,
@@ -138,20 +140,22 @@ export default class BookingDetailsHandler implements PageHandler {
         prisonName: prisoner.prisonName,
       },
       probationTeamCode,
-      officerFullName,
-      officerEmail,
-      officerTelephone: officerTelephone
-        ? parsePhoneNumberWithError(officerTelephone, 'GB').formatNational()
-        : undefined,
+      officerDetailsNotKnown,
+      officer: officerDetailsNotKnown
+        ? undefined
+        : {
+            fullName: officerFullName,
+            email: officerEmail,
+            telephone: officerTelephone
+              ? parsePhoneNumberWithError(officerTelephone, 'GB').formatNational()
+              : undefined,
+          },
       meetingTypeCode,
       date: date.toISOString(),
       duration: +duration,
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
-      locationCode: 'BMI-VIDEOLINK-ROOM6',
       timePeriods,
     }
 
-    return res.redirect('video-link-booking/check-booking')
+    return res.redirect('video-link-booking/availability')
   }
 }

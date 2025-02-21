@@ -113,7 +113,7 @@
                             text: "Probation officer's full name"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.officerFullName or "None entered"
+                            text: session.journey.bookAProbationMeeting.officer.fullName or "Not yet known"
                         },
                         actions: {
                             items: [
@@ -131,7 +131,7 @@
                             text: "Email address"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.officerEmail or "None entered"
+                            text: session.journey.bookAProbationMeeting.officer.email or "Not yet known"
                         },
                         actions: {
                             items: [
@@ -149,7 +149,7 @@
                             text: "UK phone number"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.officerTelephone or "None entered"
+                            text: session.journey.bookAProbationMeeting.officer.telephone or ("Not yet known" if session.journey.bookAProbationMeeting.officerDetailsNotKnown else "None entered")
                         },
                         actions: {
                             items: [
@@ -240,6 +240,16 @@
                         },
                         value: {
                             text: session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + ' to ' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm')
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "availability",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "meeting time"
+                                }
+                            ]
                         }
                     },
                     {

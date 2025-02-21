@@ -2,6 +2,7 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import {
   AmendVideoBookingRequest,
   AvailabilityRequest,
+  AvailableLocationsRequest,
   CreateVideoBookingRequest,
   RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
@@ -16,6 +17,20 @@ export default class ProbationBookingService {
   public checkAvailability(journey: BookAProbationMeetingJourney, user: Express.User) {
     const availabilityRequest = this.buildAvailabilityRequest(journey)
     return this.bookAVideoLinkApiClient.checkAvailability(availabilityRequest, user)
+  }
+
+  public getAvailableLocations(journey: BookAProbationMeetingJourney, user: Express.User) {
+    const request = {
+      prisonCode: journey.prisoner.prisonId,
+      bookingType: 'PROBATION',
+      probationTeamCode: journey.probationTeamCode,
+      date: formatDate(journey.date, 'yyyy-MM-dd'),
+      bookingDuration: journey.duration,
+      timeSlots: journey.timePeriods,
+      vlbIdToExclude: journey.bookingId,
+    } as AvailableLocationsRequest
+
+    return this.bookAVideoLinkApiClient.fetchAvailableLocations(request, user)
   }
 
   public createVideoLinkBooking(journey: BookAProbationMeetingJourney, user: Express.User) {
@@ -67,6 +82,13 @@ export default class ProbationBookingService {
       ],
       probationTeamCode: journey.probationTeamCode,
       probationMeetingType: journey.meetingTypeCode,
+      additionalBookingDetails: journey.officer
+        ? {
+            contactName: journey.officer.fullName,
+            contactEmail: journey.officer.email,
+            contactNumber: journey.officer.telephone,
+          }
+        : undefined,
       comments: journey.comments,
     } as unknown as T
   }

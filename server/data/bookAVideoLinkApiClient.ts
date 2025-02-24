@@ -14,6 +14,8 @@ import {
   ScheduleItem,
   AmendVideoBookingRequest,
   RequestVideoBookingRequest,
+  AvailableLocationsResponse,
+  AvailableLocationsRequest,
 } from '../@types/bookAVideoLinkApi/types'
 import { formatDate } from '../utils/utils'
 
@@ -103,6 +105,13 @@ export default class BookAVideoLinkApiClient extends RestClient {
 
   public checkAvailability(request: AvailabilityRequest, user: Express.User): Promise<AvailabilityResponse> {
     return this.post({ path: '/availability', data: request }, user)
+  }
+
+  public fetchAvailableLocations(
+    request: AvailableLocationsRequest,
+    user: Express.User,
+  ): Promise<AvailableLocationsResponse> {
+    return this.post({ path: '/availability/locations', data: request, query: { maxSlots: 100 } }, user)
   }
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {

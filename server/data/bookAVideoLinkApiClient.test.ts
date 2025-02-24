@@ -7,6 +7,7 @@ import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import {
   AmendVideoBookingRequest,
   AvailabilityRequest,
+  AvailableLocationsRequest,
   CreateVideoBookingRequest,
   RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
@@ -182,6 +183,23 @@ describe('bookAVideoLinkApiClient', () => {
 
       const output = await bookAVideoLinkApiClient.checkAvailability(
         { bookingType: 'COURT' } as AvailabilityRequest,
+        user,
+      )
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('fetchAvailableLocations', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/availability/locations?maxSlots=100', { bookingType: 'COURT' })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.fetchAvailableLocations(
+        { bookingType: 'COURT' } as AvailableLocationsRequest,
         user,
       )
       expect(output).toEqual(response)

@@ -15,7 +15,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
     if (o) {
       Object.keys(o).forEach(key => {
         if (typeof o[key] === 'string') {
-          o[key] = o[key].trim() || null
+          o[key] = o[key].trim() || undefined
         } else if (typeof o[key] === 'object') {
           o[key] = deepTrim(o[key])
         }

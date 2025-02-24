@@ -20,7 +20,7 @@
                 rows: [
                     {
                         key: {
-                            text: "Name"
+                            text: "Prisoner name"
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ' (' + prisoner.prisonerNumber + ')'
@@ -44,18 +44,34 @@
                     },
                     {
                         key: {
+                            text: "Probation officer's full name"
+                        },
+                        value: {
+                            text: booking.additionalBookingDetails.contactName or "Not yet known"
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "Email address"
+                        },
+                        value: {
+                            text: booking.additionalBookingDetails.contactEmail or "Not yet known"
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "UK phone number"
+                        },
+                        value: {
+                            text: booking.additionalBookingDetails.contactNumber or ("Not yet known" if booking.additionalBookingDetails.contactName else "None entered")
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
                             text: "Meeting type"
                         },
                         value: {
                             text: booking.probationMeetingTypeDescription
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Prison room"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
                         }
                     },
                     {
@@ -68,18 +84,34 @@
                     },
                     {
                         key: {
-                            text: "Meeting start time"
+                            text: "Meeting time"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
                         }
                     },
                     {
                         key: {
-                            text: "Meeting end time"
+                            text: "Meeting room"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Prison video link (PVL)"
+                        },
+                        value: {
+                            text: booking.videoLinkUrl or "None entered"
+                        }
+                    } if enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "Comments"
+                        },
+                        value: {
+                            text: booking.comments or "None entered"
                         }
                     }
                 ]

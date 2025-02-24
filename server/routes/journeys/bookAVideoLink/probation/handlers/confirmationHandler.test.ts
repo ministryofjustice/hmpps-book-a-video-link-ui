@@ -68,7 +68,7 @@ describe('GET', () => {
         expect(heading).toEqual('The video link has been booked')
         expect(bookAnotherLink).toEqual(`/probation/prisoner-search/search`)
 
-        expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
+        expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
       })
       .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))

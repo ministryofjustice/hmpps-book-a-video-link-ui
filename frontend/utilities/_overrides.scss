@@ -3,3 +3,14 @@
     max-width: revert;
   }
 }
+
+.govuk-radios--double-label {
+  .govuk-radios__label {
+    span {
+      display: inline-block;
+      &:first-of-type {
+        width: 200px;
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ import {
   simpleDateToDate,
   simpleTimeToDate,
   toDateString,
+  toDuration,
 } from './utils'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 
@@ -133,6 +134,24 @@ describe('dateAtTime', () => {
     const time = parse('13:35', 'HH:mm', new Date(0))
 
     expect(dateAtTime(date, time)).toEqual(parse('2022-03-20 13:35', 'yyyy-MM-dd HH:mm', new Date()))
+  })
+})
+
+describe('toDuration', () => {
+  it.each([
+    [0, '0 minutes'],
+    [1, '1 minute'],
+    [45, '45 minutes'],
+    [60, '1 hour'],
+    [90, '1 hour 30 minutes'],
+    [120, '2 hours'],
+    [185, '3 hours 5 minutes'],
+  ])("converts %i minutes to '%s'", (input, expected) => {
+    expect(toDuration(input)).toBe(expected)
+  })
+
+  it('throws an error for negative minutes', () => {
+    expect(() => toDuration(-10)).toThrow('Minutes cannot be negative')
   })
 })
 

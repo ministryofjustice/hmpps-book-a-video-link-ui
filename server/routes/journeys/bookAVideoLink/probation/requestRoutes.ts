@@ -9,6 +9,9 @@ import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 import BookingRequestedHandler from './handlers/bookingRequestedHandler'
+import config from '../../../../config'
+import BookingDetailsHandler from './handlers/bookingDetailsHandler'
+import BookingAvailabilityHandler from './handlers/bookingAvailabilityHandler'
 
 export default function RequestRoutes({
   auditService,
@@ -34,16 +37,26 @@ export default function RequestRoutes({
     return next()
   })
 
-  route(
-    '/prisoner/video-link-booking',
-    new NewBookingHandler(
-      probationTeamsService,
-      prisonService,
-      prisonerService,
-      referenceDataService,
-      videoLinkService,
-    ),
-  )
+  if (config.featureToggles.enhancedProbationJourneyEnabled) {
+    route(
+      `/prisoner/video-link-booking`,
+      new BookingDetailsHandler(probationTeamsService, prisonerService, referenceDataService),
+    )
+    route(`/prisoner/video-link-booking/availability`, new BookingAvailabilityHandler(probationBookingService))
+  } else {
+    route(
+      `/prisoner/video-link-booking`,
+      new NewBookingHandler(
+        probationTeamsService,
+        prisonService,
+        prisonerService,
+        referenceDataService,
+        videoLinkService,
+      ),
+    )
+    route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(probationBookingService))
+  }
+
   route(
     `/prisoner/video-link-booking/check-booking`,
     new CheckBookingHandler(
@@ -54,7 +67,6 @@ export default function RequestRoutes({
       videoLinkService,
     ),
   )
-  route(`/prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(probationBookingService))
 
   return router
 }

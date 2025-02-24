@@ -69,6 +69,16 @@ export const simpleTimeToDate = (time: { hour: string; minute: string }): Date =
 export const dateAtTime = (date: Date, time: Date): Date =>
   set(date, { hours: time.getHours(), minutes: time.getMinutes() })
 
+export const toDuration = (minutes: number): string => {
+  if (minutes < 0) throw new Error('Minutes cannot be negative')
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  return (
+    [h ? `${h} hour${h > 1 ? 's' : ''}` : '', m ? `${m} minute${m > 1 ? 's' : ''}` : ''].filter(Boolean).join(' ') ||
+    '0 minutes'
+  )
+}
+
 export const extractPrisonAppointmentsFromBooking = (booking: VideoLinkBooking) => {
   const getAppointment = (type: string) => booking.prisonAppointments.find(a => a.appointmentType === type)
 

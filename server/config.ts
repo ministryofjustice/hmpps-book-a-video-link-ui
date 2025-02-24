@@ -142,4 +142,7 @@ export default {
     startDateTime: get('MAINTENANCE_START_DATETIME', null),
     endDateTime: get('MAINTENANCE_END_DATETIME', null),
   },
+  featureToggles: {
+    enhancedProbationJourneyEnabled: get('FEATURE_ENHANCED_PROBATION_JOURNEY', 'false') === 'true',
+  },
 }

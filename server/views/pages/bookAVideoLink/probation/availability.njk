@@ -1,0 +1,95 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+{% set pageTitle = "Available bookings" if locations.length > 0 else "No bookings available" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% set periods = [] %}
+            {% for period in session.journey.bookAProbationMeeting.timePeriods %}
+                {% set periods = (periods.push(TimePeriod[period]), periods) %}
+            {% endfor %}
+            {{ govukSummaryList({
+                classes: "govuk-summary-list--no-border govuk-!-margin-bottom-3",
+                rows: [
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.date | formatDate
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Duration"
+                        },
+                        value: {
+                            text: session.journey.bookAProbationMeeting.duration | toDuration
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Time period"
+                        },
+                        value: {
+                            text: periods | join(" or ")
+                        }
+                    }
+                ]
+            }) }}
+
+            {{ govukButton({
+                text: "Change",
+                href: '../video-link-booking',
+                classes: 'govuk-button--blue'
+            }) }}
+        </div>
+    </div>
+
+    <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {% for period in session.journey.bookAProbationMeeting.timePeriods %}
+            <div class="govuk-grid-row govuk-!-margin-top-6">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-heading-m">Available {{ TimePeriod[period] }} bookings</h2>
+
+                    {% set items = [] %}
+                    {% for option in locations | filter('timeSlot', period) %}
+                        {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey %}
+                        {% set items = (items.push({
+                            value: value,
+                            html: '
+                                <span>' + option.startTime + ' to ' + option.endTime + '</span>
+                                <span>' + option.name + '</span>
+                              ',
+                            checked: value == session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.locationCode
+                        }), items) %}
+                    {% endfor %}
+                    {{ govukRadios({
+                        idPrefix: "option" + (('-' + period) if loop.index0 > 0),
+                        name: "option",
+                        items: items,
+                        errorMessage: validationErrors | findError("option"),
+                        classes: 'govuk-radios--double-label'
+                    }) }}
+
+                    {{ govukButton({
+                        text: "Continue"
+                    }) }}
+                </div>
+            </div>
+        {% endfor %}
+    </form>
+{% endblock %}

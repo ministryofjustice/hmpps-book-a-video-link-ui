@@ -85,7 +85,6 @@ describe('Probation booking service', () => {
           probationTeamCode: 'AGENCY_CODE',
           date: '2022-03-20',
           bookingDuration: 120,
-          timeSlots: ['AM'],
         },
         user,
       )

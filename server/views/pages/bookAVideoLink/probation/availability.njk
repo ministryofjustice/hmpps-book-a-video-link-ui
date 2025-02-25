@@ -1,10 +1,15 @@
 {% extends "partials/layout.njk" %}
 
+{% from "moj/components/alert/macro.njk" import mojAlert %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 
-{% set pageTitle = "Available bookings" if locations.length > 0 else "No bookings available" %}
+{% set availableBookings = requestedSlots.length > 0 %}
+{% set otherBookingsAvailableOnly = (not availableBookings) and otherSlots.length > 0 %}
+{% set noBookings = not (availableBookings or otherBookingsAvailableOnly) %}
+
+{% set pageTitle = "Available bookings" if availableBookings else ("No bookings available for your selected time periods" if otherBookingsAvailableOnly else "No bookings available") %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -12,6 +17,29 @@
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
         </div>
     </div>
+
+    {% if otherBookingsAvailableOnly %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <p class="govuk-body">
+                    There are available bookings at other time periods on your selected date. Choose one of these, or change the date.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if noBookings %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                {{ mojAlert({
+                    variant: "information",
+                    title: "No bookings available",
+                    dismissible: false,
+                    text: 'There are no bookings available on the date you selected. You will need to change the date.'
+                }) }}
+            </div>
+        </div>
+    {% endif %}
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -37,7 +65,7 @@
                         value: {
                             text: session.journey.bookAProbationMeeting.duration | toDuration
                         }
-                    },
+                    } if not noBookings,
                     {
                         key: {
                             text: "Time period"
@@ -45,51 +73,54 @@
                         value: {
                             text: periods | join(" or ")
                         }
-                    }
+                    } if not noBookings
                 ]
             }) }}
 
             {{ govukButton({
-                text: "Change",
-                href: '../video-link-booking',
+                text: "Change date" if noBookings else "Change",
+                href: '../video-link-booking' + ('#date' if noBookings else "#timePeriods"),
                 classes: 'govuk-button--blue'
             }) }}
         </div>
     </div>
 
-    <form method='POST'>
-        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+    {% set options = requestedSlots if availableBookings else otherSlots %}
+    {% if options.length > 0 %}
+        <form method='POST'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-        {% for period in session.journey.bookAProbationMeeting.timePeriods %}
-            <div class="govuk-grid-row govuk-!-margin-top-6">
-                <div class="govuk-grid-column-two-thirds">
-                    <h2 class="govuk-heading-m">Available {{ TimePeriod[period] }} bookings</h2>
+            {% for period, options in options | groupBy('timeSlot') %}
+                <div class="govuk-grid-row govuk-!-margin-top-6">
+                    <div class="govuk-grid-column-two-thirds">
+                        <h2 class="govuk-heading-m">Available {{ TimePeriod[period] }} bookings</h2>
 
-                    {% set items = [] %}
-                    {% for option in locations | filter('timeSlot', period) %}
-                        {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey %}
-                        {% set items = (items.push({
-                            value: value,
-                            html: '
-                                <span>' + option.startTime + ' to ' + option.endTime + '</span>
-                                <span>' + option.name + '</span>
-                              ',
-                            checked: value == session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.locationCode
-                        }), items) %}
-                    {% endfor %}
-                    {{ govukRadios({
-                        idPrefix: "option" + (('-' + period) if loop.index0 > 0),
-                        name: "option",
-                        items: items,
-                        errorMessage: validationErrors | findError("option"),
-                        classes: 'govuk-radios--double-label'
-                    }) }}
+                        {% set items = [] %}
+                        {% for option in options %}
+                            {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey %}
+                            {% set items = (items.push({
+                                value: value,
+                                html: '
+                                        <span>' + option.startTime + ' to ' + option.endTime + '</span>
+                                        <span>' + option.name + '</span>
+                                      ',
+                                checked: value == session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.locationCode
+                            }), items) %}
+                        {% endfor %}
+                        {{ govukRadios({
+                            idPrefix: "option" + (('-' + period) if loop.index0 > 0),
+                            name: "option",
+                            items: items,
+                            errorMessage: validationErrors | findError("option"),
+                            classes: 'govuk-radios--double-label'
+                        }) }}
 
-                    {{ govukButton({
-                        text: "Continue"
-                    }) }}
+                        {{ govukButton({
+                            text: "Continue"
+                        }) }}
+                    </div>
                 </div>
-            </div>
-        {% endfor %}
-    </form>
+            {% endfor %}
+        </form>
+    {% endif %}
 {% endblock %}

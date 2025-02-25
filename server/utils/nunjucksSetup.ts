@@ -3,7 +3,7 @@
 import path from 'path'
 import nunjucks from 'nunjucks'
 import express from 'express'
-import { map, uniq } from 'lodash'
+import { groupBy, map, uniq } from 'lodash'
 import { addYears } from 'date-fns'
 import { convertToTitleCase, dateAtTime, formatDate, initialiseName, parseDate, toDuration } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
@@ -59,6 +59,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
   njkEnv.addFilter('map', map)
+  njkEnv.addFilter('groupBy', groupBy)
   njkEnv.addFilter('find', (l: any[], iteratee: string, eq: unknown) => l.find(o => o[iteratee] === eq))
   njkEnv.addFilter('filter', (l: any[], iteratee: string, eq: unknown) => l.filter(o => o[iteratee] === eq))
   njkEnv.addFilter('findError', (v: FieldValidationError[], i: string) => v?.find(e => e.fieldId === i))

@@ -26,7 +26,6 @@ export default class ProbationBookingService {
       probationTeamCode: journey.probationTeamCode,
       date: formatDate(journey.date, 'yyyy-MM-dd'),
       bookingDuration: journey.duration,
-      timeSlots: journey.timePeriods,
       vlbIdToExclude: journey.bookingId,
     } as AvailableLocationsRequest
 

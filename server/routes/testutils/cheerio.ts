@@ -37,3 +37,10 @@ export const dropdownOptions = ($: Root, name: string) => {
     .get()
     .filter(s => s.length > 1)
 }
+
+export const radioOptions = ($: Root, name: string) => {
+  return getByName($, name)
+    .map((_, option) => $(option).attr('value'))
+    .get()
+    .filter(s => s.length > 1)
+}

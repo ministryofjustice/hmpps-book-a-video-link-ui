@@ -39,7 +39,10 @@ export default class BookingAvailabilityHandler implements PageHandler {
 
     const { locations } = await this.probationBookingService.getAvailableLocations(bookAProbationMeeting, user)
 
-    return res.render('pages/bookAVideoLink/probation/availability', { locations })
+    return res.render('pages/bookAVideoLink/probation/availability', {
+      requestedSlots: locations.filter(l => bookAProbationMeeting.timePeriods.includes(l.timeSlot)),
+      otherSlots: locations.filter(l => !bookAProbationMeeting.timePeriods.includes(l.timeSlot)),
+    })
   }
 
   public POST = async (req: Request, res: Response) => {

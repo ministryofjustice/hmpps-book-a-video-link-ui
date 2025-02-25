@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfTomorrow } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { getPageHeader } from '../../../../testutils/cheerio'
+import { getPageHeader, radioOptions } from '../../../../testutils/cheerio'
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { AvailableLocationsResponse } from '../../../../../@types/bookAVideoLinkApi/types'
@@ -64,12 +64,14 @@ beforeEach(() => {
         startTime: '10:00',
         endTime: '12:00',
         dpsLocationKey: 'VIDEO_1',
+        timeSlot: 'AM',
       },
       {
         name: 'Video room 2',
         startTime: '11:00',
         endTime: '13:00',
         dpsLocationKey: 'VIDEO_2',
+        timeSlot: 'AM',
       },
     ],
   } as AvailableLocationsResponse)
@@ -88,6 +90,7 @@ describe('Booking availability handler', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
+          const radios = radioOptions($, 'option')
 
           expect(heading).toEqual('Available bookings')
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_AVAILABILITY_PAGE, {
@@ -95,6 +98,58 @@ describe('Booking availability handler', () => {
             correlationId: expect.any(String),
           })
 
+          expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
+          expect(radios).toEqual(['10:00///12:00///VIDEO_1', '11:00///13:00///VIDEO_2'])
+        })
+    })
+
+    it('should offer alternative suggestions if the requested slot is not available', () => {
+      probationBookingService.getAvailableLocations.mockResolvedValue({
+        locations: [
+          {
+            name: 'Video room 1',
+            startTime: '13:00',
+            endTime: '14:00',
+            dpsLocationKey: 'VIDEO_1',
+            timeSlot: 'PM',
+          },
+          {
+            name: 'Video room 2',
+            startTime: '15:00',
+            endTime: '16:00',
+            dpsLocationKey: 'VIDEO_2',
+            timeSlot: 'PM',
+          },
+        ],
+      } as AvailableLocationsResponse)
+
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/availability`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          const radios = radioOptions($, 'option')
+
+          expect(heading).toEqual('No bookings available for your selected time periods')
+          expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
+          expect(radios).toEqual(['13:00///14:00///VIDEO_1', '15:00///16:00///VIDEO_2'])
+        })
+    })
+
+    it('should handle no available suggestions', () => {
+      probationBookingService.getAvailableLocations.mockResolvedValue({
+        locations: [],
+      } as AvailableLocationsResponse)
+
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/availability`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('No bookings available')
           expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
         })
     })

@@ -99,7 +99,7 @@ describe('Booking availability handler', () => {
           })
 
           expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
-          expect(radios).toEqual(['10:00///12:00///VIDEO_1', '11:00///13:00///VIDEO_2'])
+          expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
         })
     })
 
@@ -133,7 +133,7 @@ describe('Booking availability handler', () => {
 
           expect(heading).toEqual('No bookings available for your selected time periods')
           expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
-          expect(radios).toEqual(['13:00///14:00///VIDEO_1', '15:00///16:00///VIDEO_2'])
+          expect(radios).toEqual(['13:00///14:00///VIDEO_1///PM', '15:00///16:00///VIDEO_2///PM'])
         })
     })
 
@@ -157,7 +157,7 @@ describe('Booking availability handler', () => {
 
   describe('POST', () => {
     const validForm = {
-      option: '11:00///12:00///VIDEO_2',
+      option: '15:00///16:00///VIDEO_2///PM',
     }
 
     it('should validate an empty form', () => {
@@ -186,9 +186,10 @@ describe('Booking availability handler', () => {
         .then(() =>
           expectJourneySession(app, 'bookAProbationMeeting', {
             ...bookAProbationMeetingSession,
-            startTime: '1970-01-01T11:00:00.000Z',
-            endTime: '1970-01-01T12:00:00.000Z',
+            startTime: '1970-01-01T15:00:00.000Z',
+            endTime: '1970-01-01T16:00:00.000Z',
             locationCode: 'VIDEO_2',
+            timePeriods: ['PM'],
           }),
         )
     })

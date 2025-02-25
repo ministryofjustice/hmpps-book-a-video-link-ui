@@ -97,7 +97,7 @@
 
                         {% set items = [] %}
                         {% for option in options %}
-                            {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey %}
+                            {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey + '///' + option.timeSlot %}
                             {% set items = (items.push({
                                 value: value,
                                 html: '

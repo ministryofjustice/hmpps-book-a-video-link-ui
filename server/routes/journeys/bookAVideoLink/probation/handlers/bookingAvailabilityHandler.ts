@@ -24,6 +24,10 @@ class Body {
   @Expose()
   @Transform(({ obj }) => obj.option && obj.option.split('///')[2])
   dpsLocationKey: string
+
+  @Expose()
+  @Transform(({ obj }) => obj.option && obj.option.split('///')[3])
+  timeSlot: string
 }
 
 export default class BookingAvailabilityHandler implements PageHandler {
@@ -46,13 +50,14 @@ export default class BookingAvailabilityHandler implements PageHandler {
   }
 
   public POST = async (req: Request, res: Response) => {
-    const { startTime, endTime, dpsLocationKey } = req.body
+    const { startTime, endTime, dpsLocationKey, timeSlot } = req.body
 
     req.session.journey.bookAProbationMeeting = {
       ...req.session.journey.bookAProbationMeeting,
       startTime: startTime.toISOString(),
       endTime: endTime.toISOString(),
       locationCode: dpsLocationKey,
+      timePeriods: [timeSlot],
     }
 
     return res.redirect('check-booking')

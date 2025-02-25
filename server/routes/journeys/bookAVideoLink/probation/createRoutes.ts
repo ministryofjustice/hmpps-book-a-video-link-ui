@@ -8,6 +8,9 @@ import NewBookingHandler from './handlers/newBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
+import config from '../../../../config'
+import BookingDetailsHandler from './handlers/bookingDetailsHandler'
+import BookingAvailabilityHandler from './handlers/bookingAvailabilityHandler'
 
 export default function CreateRoutes({
   auditService,
@@ -25,16 +28,24 @@ export default function CreateRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  route(
-    `${basePath}/video-link-booking`,
-    new NewBookingHandler(
-      probationTeamsService,
-      prisonService,
-      prisonerService,
-      referenceDataService,
-      videoLinkService,
-    ),
-  )
+  if (config.featureToggles.enhancedProbationJourneyEnabled) {
+    route(
+      `${basePath}/video-link-booking`,
+      new BookingDetailsHandler(probationTeamsService, prisonerService, referenceDataService),
+    )
+  } else {
+    route(
+      `${basePath}/video-link-booking`,
+      new NewBookingHandler(
+        probationTeamsService,
+        prisonService,
+        prisonerService,
+        referenceDataService,
+        videoLinkService,
+      ),
+    )
+  }
+
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
@@ -46,6 +57,12 @@ export default function CreateRoutes({
     return next()
   })
 
+  if (config.featureToggles.enhancedProbationJourneyEnabled) {
+    route(`${basePath}/video-link-booking/availability`, new BookingAvailabilityHandler(probationBookingService))
+  } else {
+    route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(probationBookingService))
+  }
+
   route(
     `${basePath}/video-link-booking/check-booking`,
     new CheckBookingHandler(
@@ -56,7 +73,6 @@ export default function CreateRoutes({
       videoLinkService,
     ),
   )
-  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(probationBookingService))
 
   return router
 }

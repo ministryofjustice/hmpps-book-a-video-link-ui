@@ -10,8 +10,16 @@ export type BookAProbationMeetingJourney = {
     prisonName: string
   }
   probationTeamCode?: string
+  officerDetailsNotKnown?: boolean
+  officer?: {
+    fullName: string
+    email: string
+    telephone?: string
+  }
   meetingTypeCode?: string
   date?: string
+  duration?: number
+  timePeriods?: string[]
   startTime?: string
   endTime?: string
   locationCode?: string

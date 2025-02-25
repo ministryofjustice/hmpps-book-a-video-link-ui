@@ -5,11 +5,12 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import { map, uniq } from 'lodash'
 import { addYears } from 'date-fns'
-import { convertToTitleCase, dateAtTime, formatDate, initialiseName, parseDate } from './utils'
+import { convertToTitleCase, dateAtTime, formatDate, initialiseName, parseDate, toDuration } from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
 import { FieldValidationError } from '../middleware/setUpFlash'
+import TimePeriod from '../routes/enumerator/timePeriod'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -65,10 +66,15 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('formatDate', formatDate)
   njkEnv.addFilter('dateAtTime', dateAtTime)
   njkEnv.addFilter('unique', uniq)
+  njkEnv.addFilter('toDuration', toDuration)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
   njkEnv.addGlobal('now', () => new Date())
 
   // Enums
   njkEnv.addGlobal('BavlJourneyType', BavlJourneyType)
+  njkEnv.addGlobal('TimePeriod', TimePeriod)
+
+  // Feature toggles
+  njkEnv.addGlobal('enhancedProbationJourneyEnabled', config.featureToggles.enhancedProbationJourneyEnabled)
 }

@@ -9,6 +9,7 @@ import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -23,6 +24,8 @@ const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 let app: Express
 
 const appSetup = (journeySession = {}) => {
+  config.featureToggles.enhancedProbationJourneyEnabled = true
+
   app = appWithAllRoutes({
     services: { auditService, videoLinkService, prisonerService, prisonService },
     userSupplier: () => user,
@@ -84,20 +87,27 @@ describe('GET', () => {
         expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
         expect(changeLink).toEqual(`/${journey}/booking/amend/1001/video-link-booking`)
 
-        expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
+        expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
 
         const courtFields = [
           'Court',
           'Hearing type',
-          'Hearing start time',
-          'Hearing end time',
+          'Hearing time',
           'Pre-court hearing',
           'Post-court hearing',
           'Court hearing link',
         ]
 
-        const probationFields = ['Probation team', 'Meeting type', 'Meeting start time', 'Meeting end time']
+        const probationFields = [
+          'Probation team',
+          "Probation officer's full name",
+          'Email address',
+          'UK phone number',
+          'Meeting type',
+          'Meeting time',
+          'Prison video link (PVL)',
+        ]
 
         courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
         probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))

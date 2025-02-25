@@ -28,7 +28,7 @@
                 rows: [
                     {
                         key: {
-                            text: "Name"
+                            text: "Prisoner name"
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ' (' + prisoner.prisonerNumber + ')'
@@ -42,22 +42,6 @@
                             text: prison.name
                         }
                     },
-                    {
-                    key: {
-                        text: "Prison room"
-                    },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
-                        }
-                    } if booking.bookingType == 'COURT',
-                    {
-                        key: {
-                            text: "Prison room"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
-                        }
-                    } if booking.bookingType == 'PROBATION',
                     {
                         key: {
                             text: "Court"
@@ -74,6 +58,30 @@
                             text: booking.probationTeamDescription
                         }
                     } if booking.bookingType == 'PROBATION',
+                    {
+                        key: {
+                            text: "Probation officer's full name"
+                        },
+                        value: {
+                            text: booking.additionalBookingDetails.contactName or "Not yet known"
+                        }
+                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "Email address"
+                        },
+                        value: {
+                            text: booking.additionalBookingDetails.contactEmail or "Not yet known"
+                        }
+                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    {
+                        key: {
+                            text: "UK phone number"
+                        },
+                        value: {
+                            text: booking.additionalBookingDetails.contactNumber or ("Not yet known" if not booking.additionalBookingDetails.contactName else "None entered")
+                        }
+                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
                     {
                         key: {
                             text: "Hearing type"
@@ -108,34 +116,34 @@
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Hearing start time"
+                            text: "Hearing time"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
                         }
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
-                            text: "Meeting start time"
+                            text: "Meeting time"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
                         }
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Hearing end time"
+                            text: "Prison room"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
                         }
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
-                            text: "Meeting end time"
+                            text: "Meeting room"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
                         }
                     } if booking.bookingType == 'PROBATION',
                     {
@@ -173,10 +181,18 @@
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
+                            text: "Prison video link (PVL)"
+                        },
+                        value: {
+                            text: booking.videoLinkUrl or "None entered"
+                        }
+                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    {
+                        key: {
                             text: "Comments"
                         },
                         value: {
-                            text: booking.comments or "None provided"
+                            text: booking.comments or "None entered"
                         },
                         actions: {
                             items: [

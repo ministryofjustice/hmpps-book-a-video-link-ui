@@ -65,20 +65,8 @@ export default class BookAVideoLinkApiClient extends RestClient {
   }
 
   public getAppointmentLocations(prisonCode: string, videoLinkOnly: boolean, user: Express.User): Promise<Location[]> {
-    return this.get({ path: `/prisons/${prisonCode}/locations`, query: { videoLinkOnly } }, user)
-  }
-
-  public getDecoratedAppointmentLocations(
-    prisonCode: string,
-    videoLinkOnly: boolean,
-    extendedAttributes: boolean,
-    user: Express.User,
-  ): Promise<Location[]> {
     return this.get(
-      {
-        path: `/prisons/${prisonCode}/locations`,
-        query: { videoLinkOnly, extendedAttributes },
-      },
+      { path: `/prisons/${prisonCode}/locations`, query: { videoLinkOnly, extendedAttributes: true } },
       user,
     )
   }
@@ -111,7 +99,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
     request: AvailableLocationsRequest,
     user: Express.User,
   ): Promise<AvailableLocationsResponse> {
-    return this.post({ path: '/availability/locations', data: request, query: { maxSlots: 100 } }, user)
+    return this.post({ path: '/availability/locations', data: request }, user)
   }
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {

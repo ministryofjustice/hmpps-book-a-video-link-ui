@@ -15,7 +15,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
 
     const [prison, locationList] = await Promise.all([
       this.prisonService.getPrisonByCode(prisonCode, user),
-      this.prisonService.getDecoratedAppointmentLocations(prisonCode, true, true, user),
+      this.prisonService.getAppointmentLocations(prisonCode, true, user),
     ])
 
     const matchingRoom = locationList.filter(loc => loc.dpsLocationId === dpsLocationId)

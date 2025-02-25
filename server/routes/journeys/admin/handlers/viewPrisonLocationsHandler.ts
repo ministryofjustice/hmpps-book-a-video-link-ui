@@ -14,7 +14,7 @@ export default class ViewPrisonLocationsHandler implements PageHandler {
 
     const [prison, locationList] = await Promise.all([
       this.prisonService.getPrisonByCode(prisonCode, user),
-      this.prisonService.getDecoratedAppointmentLocations(prisonCode, true, true, user),
+      this.prisonService.getAppointmentLocations(prisonCode, true, user),
     ])
 
     res.render('pages/admin/viewPrisonLocations', { prison, locationList })

@@ -92,6 +92,8 @@ export default {
   stubAvailabilityCheck: (response = { availabilityOk: true }) =>
     stubPost('/book-a-video-link-api/availability', response),
 
+  stubAvailableLocations: response => stubPost('/book-a-video-link-api/availability/locations', response),
+
   stubCreateBooking: () => stubPost('/book-a-video-link-api/video-link-booking'),
   stubRequestBooking: () => stubPost('/book-a-video-link-api/video-link-booking/request'),
   stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),

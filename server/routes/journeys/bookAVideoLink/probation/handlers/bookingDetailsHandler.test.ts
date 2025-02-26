@@ -395,48 +395,6 @@ describe('Booking details handler', () => {
         )
     })
 
-    it('should redirect straight to the check answers page during amend if the requested schedule has not changed', () => {
-      return request(app)
-        .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
-        .send({
-          ...validForm,
-          duration: 60,
-        })
-        .expect(302)
-        .expect('location', 'video-link-booking/check-booking')
-        .expect(() => {
-          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
-        })
-        .then(() =>
-          expectJourneySession(app, 'bookAProbationMeeting', {
-            bookingId: 1,
-            probationTeamCode: 'CODE',
-            date: startOfTomorrow().toISOString(),
-            meetingTypeCode: 'PSR',
-            prisoner: {
-              firstName: 'Joe',
-              lastName: 'Smith',
-              dateOfBirth: '1970-01-01',
-              prisonId: 'MDI',
-              prisonName: 'Moorland',
-              prisonerNumber: 'A1234AA',
-            },
-            officerDetailsNotKnown: false,
-            officer: {
-              fullName: 'John Bing',
-              email: 'jbing@gmail.com',
-              telephone: '07892 398108',
-            },
-            duration: 60,
-            timePeriods: ['AM'],
-            locationCode: 'LOCATION_CODE',
-            startTime: '1970-01-01T08:00:00.000Z',
-            endTime: '1970-01-01T09:00:00.000Z',
-            comments: 'test',
-          }),
-        )
-    })
-
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
         bookAProbationMeeting: {

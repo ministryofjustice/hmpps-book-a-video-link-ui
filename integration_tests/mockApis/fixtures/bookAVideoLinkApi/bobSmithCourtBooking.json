@@ -12,7 +12,8 @@
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
       "appointmentDate": "2050-01-01",
       "startTime": "14:45",
-      "endTime": "15:00"
+      "endTime": "15:00",
+      "timeSlot": "PM"
     },
     {
       "prisonAppointmentId": 61,
@@ -23,7 +24,8 @@
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
       "appointmentDate": "2050-01-01",
       "startTime": "15:00",
-      "endTime": "16:00"
+      "endTime": "16:00",
+      "timeSlot": "PM"
     },
     {
       "prisonAppointmentId": 62,
@@ -34,7 +36,8 @@
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
       "appointmentDate": "2050-01-01",
       "startTime": "16:00",
-      "endTime": "16:15"
+      "endTime": "16:15",
+      "timeSlot": "PM"
     }
   ],
   "courtCode": "ABERFC",

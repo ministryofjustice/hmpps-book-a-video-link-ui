@@ -11,8 +11,9 @@
       "comments": null,
       "prisonLocKey": "NMI-VIDEOLINK-CVC_6_CC",
       "appointmentDate": "2050-01-01",
-      "startTime": "15:00",
-      "endTime": "16:00"
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "timeSlot": "AM"
     }
   ],
   "courtCode": null,
@@ -29,5 +30,10 @@
   "createdBy": "testuser@justice.gov.uk",
   "createdAt": "2024-06-27T20:36:10.28997",
   "amendedBy": null,
-  "amendedAt": null
+  "amendedAt": null,
+  "additionalBookingDetails": {
+    "contactName": "Alan Key",
+    "contactEmail": "akey@justice.gov.uk",
+    "contactNumber": null
+  }
 }

@@ -13,8 +13,10 @@ import CheckBookingPage from '../pages/bookAVideoLink/checkBooking'
 import ChangeVideoLinkBookingPage from '../pages/bookAVideoLink/changeVideoLinkBooking'
 import BookingNotAvailablePage from '../pages/bookAVideoLink/bookingNotAvailable'
 import courtBookingNotAvailable from '../mockApis/fixtures/bookAVideoLinkApi/courtBookingNotAvailable.json'
-import probationBookingNotAvailable from '../mockApis/fixtures/bookAVideoLinkApi/probationBookingNotAvailable.json'
 import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
+import ChangeProbationBookingPage from '../pages/bookAVideoLink/changeProbationBooking'
+import LocationAvailabilityPage from '../pages/bookAVideoLink/locationAvailability'
+import nottinghamLocationAvailability from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocationAvailability.json'
 
 context('Amend a booking', () => {
   beforeEach(() => {
@@ -126,6 +128,7 @@ context('Amend a booking', () => {
       cy.task('stubProbationMeetingTypes')
       cy.task('stubGetProbationTeamSchedule')
       cy.task('stubGetBooking', bobSmithProbationBooking)
+      cy.task('stubAvailableLocations', nottinghamLocationAvailability)
       cy.signIn()
     })
 
@@ -154,7 +157,7 @@ context('Amend a booking', () => {
       Page.verifyOnPage(UpdateConfirmationPage)
     })
 
-    it('Can change the rooms for a probation video link booking', () => {
+    it('Can change the time for a probation video link booking', () => {
       const home = Page.verifyOnPage(HomePage)
       home.viewAndChangeVideoLinks().click()
 
@@ -172,43 +175,13 @@ context('Amend a booking', () => {
       const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
       viewBookingPage.changeBookingDetails().click()
 
-      const changeVideoLinkBookingPage = Page.verifyOnPage(ChangeVideoLinkBookingPage)
-      changeVideoLinkBookingPage.selectRoomForMeeting('Legal Visits Room 1 - Magistrates Conf')
-      changeVideoLinkBookingPage.continue().click()
+      const changeProbationBookingPage = Page.verifyOnPage(ChangeProbationBookingPage)
+      changeProbationBookingPage.selectTimePeriods(['Afternoon'])
+      changeProbationBookingPage.continue().click()
 
-      const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
-      checkBookingPage.updateBooking().click()
-
-      Page.verifyOnPage(UpdateConfirmationPage)
-    })
-
-    it('Can change the rooms for a probation video link booking with an alternative time suggested', () => {
-      cy.task('stubAvailabilityCheck', probationBookingNotAvailable)
-
-      const home = Page.verifyOnPage(HomePage)
-      home.viewAndChangeVideoLinks().click()
-
-      cy.task('stubGetProbationTeamSchedule', {
-        probationTeamCode: 'BLKPPP',
-        date: '2050-01-01',
-        response: probationBookingsForDay,
-      })
-      const searchBookingsPage = Page.verifyOnPage(SearchBookingsPage)
-      searchBookingsPage.selectDate(new Date(2050, 0, 1))
-      searchBookingsPage.selectProbationTeam('Blackpool MC (PPOC)')
-      searchBookingsPage.updateResults().click()
-      searchBookingsPage.viewOrEdit().click()
-
-      const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
-      viewBookingPage.changeBookingDetails().click()
-
-      const changeVideoLinkBookingPage = Page.verifyOnPage(ChangeVideoLinkBookingPage)
-      changeVideoLinkBookingPage.selectRoomForMeeting('Legal Visits Room 1 - Magistrates Conf')
-      changeVideoLinkBookingPage.continue().click()
-
-      cy.task('stubAvailabilityCheck')
-      const bookingNotAvailablePage = Page.verifyOnPage(BookingNotAvailablePage)
-      bookingNotAvailablePage.optionNumber(2).click()
+      const locationAvailabilityPage = Page.verifyOnPage(LocationAvailabilityPage)
+      locationAvailabilityPage.selectSlot('16:45 to 17:45')
+      locationAvailabilityPage.continue().click()
 
       const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
       checkBookingPage.updateBooking().click()

@@ -63,7 +63,7 @@
                             text: "UK phone number"
                         },
                         value: {
-                            text: booking.additionalBookingDetails.contactNumber or ("Not yet known" if booking.additionalBookingDetails.contactName else "None entered")
+                            text: booking.additionalBookingDetails.contactNumber or ("None entered" if booking.additionalBookingDetails.contactName else "Not yet known")
                         }
                     } if enhancedProbationJourneyEnabled,
                     {

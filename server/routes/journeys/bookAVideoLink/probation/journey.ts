@@ -24,5 +24,4 @@ export type BookAProbationMeetingJourney = {
   endTime?: string
   locationCode?: string
   comments?: string
-  videoLinkUrl?: string
 }

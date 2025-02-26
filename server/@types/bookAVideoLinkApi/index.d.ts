@@ -652,10 +652,8 @@ export interface paths {
 export type webhooks = Record<string, never>
 export interface components {
   schemas: {
-    /** @description
-     *       Additional information for the booking. Must provide at least one form of contact email and/or phone number.
-     *        */
     AdditionalBookingDetails: {
+      /** @description The name of the contact */
       contactName: string
       /** @description The email address for the contact, must be a valid email address */
       contactEmail: string
@@ -969,6 +967,12 @@ export interface components {
        * @example 12:30
        */
       endTime: string
+      /**
+       * @description The time slot the appointment falls into
+       * @example PM
+       * @enum {string}
+       */
+      timeSlot: 'AM' | 'PM' | 'ED'
     }
     VideoLinkBooking: {
       /**
@@ -1096,6 +1100,8 @@ export interface components {
        * @example 2024-03-14 14:45
        */
       amendedAt?: string
+      /** @description Additional details for the booking if there are any. */
+      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
     }
     /** @description The request with the requested video link booking details */
     RequestVideoBookingRequest: {
@@ -1341,12 +1347,12 @@ export interface components {
        */
       bookingDuration: number
       /**
-       * @description The time slots to look up available locations
+       * @description The time slots to look up available locations. If null, then all time slots are considered.
        * @example [
        *       "AM"
        *     ]
        */
-      timeSlots: ('AM' | 'PM' | 'ED')[]
+      timeSlots?: ('AM' | 'PM' | 'ED')[]
       /**
        * Format: int64
        * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
@@ -1383,8 +1389,12 @@ export interface components {
        * @example PROBATION
        * @enum {string}
        */
-      usage?: 'COURT' | 'PROBATION' | 'SHARED'
-      /** @enum {string} */
+      usage?: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
+      /**
+       * @description The time slot the available location falls into
+       * @example PM
+       * @enum {string}
+       */
       timeSlot: 'AM' | 'PM' | 'ED'
     }
     AvailableLocationsResponse: {
@@ -2413,10 +2423,7 @@ export interface operations {
   }
   availableLocations: {
     parameters: {
-      query?: {
-        /** @description Caps the maximum number of available slots returned, defaults to 10. Must be positive if overridden. */
-        maxSlots?: number
-      }
+      query?: never
       header?: never
       path?: never
       cookie?: never

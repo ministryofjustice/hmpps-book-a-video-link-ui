@@ -104,7 +104,7 @@
                                         <span>' + option.startTime + ' to ' + option.endTime + '</span>
                                         <span>' + option.name + '</span>
                                       ',
-                                checked: value == session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.locationCode
+                                checked: value | startsWith(session.journey.bookAProbationMeeting.startTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.endTime | formatDate('HH:mm') + '///' + session.journey.bookAProbationMeeting.locationCode)
                             }), items) %}
                         {% endfor %}
                         {{ govukRadios({

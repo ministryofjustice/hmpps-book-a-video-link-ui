@@ -10,6 +10,9 @@ import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 import CommentsHandler from './handlers/commentsHandler'
+import config from '../../../../config'
+import BookingDetailsHandler from './handlers/bookingDetailsHandler'
+import BookingAvailabilityHandler from './handlers/bookingAvailabilityHandler'
 
 export default function AmendRoutes({
   auditService,
@@ -40,17 +43,26 @@ export default function AmendRoutes({
     return next()
   })
 
-  route(
-    '/video-link-booking',
-    new NewBookingHandler(
-      probationTeamsService,
-      prisonService,
-      prisonerService,
-      referenceDataService,
-      videoLinkService,
-    ),
-  )
-  route('/video-link-booking/not-available', new BookingNotAvailableHandler(probationBookingService))
+  if (config.featureToggles.enhancedProbationJourneyEnabled) {
+    route(
+      `/video-link-booking`,
+      new BookingDetailsHandler(probationTeamsService, prisonerService, referenceDataService),
+    )
+    route(`/video-link-booking/availability`, new BookingAvailabilityHandler(probationBookingService))
+  } else {
+    route(
+      '/video-link-booking',
+      new NewBookingHandler(
+        probationTeamsService,
+        prisonService,
+        prisonerService,
+        referenceDataService,
+        videoLinkService,
+      ),
+    )
+    route('/video-link-booking/not-available', new BookingNotAvailableHandler(probationBookingService))
+  }
+
   route('/video-link-booking/comments', new CommentsHandler())
   route(
     '/video-link-booking/check-booking',

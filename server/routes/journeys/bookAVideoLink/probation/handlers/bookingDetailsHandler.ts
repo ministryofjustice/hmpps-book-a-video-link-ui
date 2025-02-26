@@ -4,6 +4,7 @@ import { Expose, Transform } from 'class-transformer'
 import { ArrayNotEmpty, Equals, IsEmail, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator'
 import { startOfToday } from 'date-fns'
 import { parsePhoneNumberWithError } from 'libphonenumber-js'
+import _ from 'lodash'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
@@ -129,6 +130,12 @@ export default class BookingDetailsHandler implements PageHandler {
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
+    const scheduleUnamended =
+      mode === 'amend' &&
+      date.toISOString() === req.session.journey.bookAProbationMeeting.date &&
+      +duration === req.session.journey.bookAProbationMeeting.duration &&
+      _.isEqual(timePeriods, req.session.journey.bookAProbationMeeting.timePeriods)
+
     req.session.journey.bookAProbationMeeting = {
       ...req.session.journey.bookAProbationMeeting,
       prisoner: {
@@ -156,6 +163,6 @@ export default class BookingDetailsHandler implements PageHandler {
       timePeriods,
     }
 
-    return res.redirect('video-link-booking/availability')
+    return res.redirect(scheduleUnamended ? 'video-link-booking/check-booking' : 'video-link-booking/availability')
   }
 }

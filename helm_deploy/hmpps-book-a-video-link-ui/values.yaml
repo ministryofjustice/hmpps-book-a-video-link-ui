@@ -61,6 +61,8 @@ generic-service:
       MAINTENANCE_MODE: "maintenance_mode?"
       MAINTENANCE_START_DATETIME: "maintenance_start_datetime?"
       MAINTENANCE_END_DATETIME: "maintenance_end_datetime?"
+    feature-toggles:
+      FEATURE_ENHANCED_PROBATION_JOURNEY: "FEATURE_MASTER_VLPM_TYPES"
 
   allowlist:
     groups:

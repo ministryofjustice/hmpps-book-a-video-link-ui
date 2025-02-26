@@ -176,11 +176,10 @@ context('Amend a booking', () => {
       viewBookingPage.changeBookingDetails().click()
 
       const changeProbationBookingPage = Page.verifyOnPage(ChangeProbationBookingPage)
-      changeProbationBookingPage.selectTimePeriods(['Afternoon'])
       changeProbationBookingPage.continue().click()
 
       const locationAvailabilityPage = Page.verifyOnPage(LocationAvailabilityPage)
-      locationAvailabilityPage.selectSlot('16:45 to 17:45')
+      locationAvailabilityPage.selectSlot('10:00 to 11:00')
       locationAvailabilityPage.continue().click()
 
       const checkBookingPage = Page.verifyOnPage(CheckBookingPage)

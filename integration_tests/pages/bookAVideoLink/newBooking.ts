@@ -7,11 +7,7 @@ export default class NewBookingPage extends Page {
 
   selectCourt = (court: string) => this.getByLabel('Which court is the hearing for?').select(court)
 
-  selectProbationTeam = (team: string) => this.getByLabel('Which probation team is the meeting for?').select(team)
-
   selectHearingType = (type: string) => this.getByLabel('Which type of hearing is this?').select(type)
-
-  selectMeetingType = (type: string) => this.getByLabel('Which type of meeting is this?').select(type)
 
   selectDate = (date: Date) => this.selectDatePickerDate('Date', date)
 
@@ -20,8 +16,6 @@ export default class NewBookingPage extends Page {
   selectEndTime = (hour, minute) => this.selectTimePickerTime('End time', hour, minute)
 
   selectRoomForMainHearing = (room: string) => this.getByLabel('Prison room for court hearing').select(room)
-
-  selectRoomForMeeting = (room: string) => this.getByLabel('Prison room for probation meeting').select(room)
 
   selectPreHearingRequired = (yesOrNo: string) =>
     cy

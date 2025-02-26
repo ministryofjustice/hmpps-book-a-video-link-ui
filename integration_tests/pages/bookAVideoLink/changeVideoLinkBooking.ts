@@ -12,7 +12,5 @@ export default class ChangeVideoLinkBookingPage extends Page {
   selectRoomForPostHearing = (room: string) =>
     this.getByLabel('Prison room for post-court hearing briefing').select(room)
 
-  selectRoomForMeeting = (room: string) => this.getByLabel('Prison room for probation meeting').select(room)
-
   continue = (): PageElement => this.getButton('Continue')
 }

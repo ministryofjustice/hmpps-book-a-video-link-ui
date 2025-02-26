@@ -1,0 +1,328 @@
+{
+  "locations": [
+    {
+      "name": "Closed Visits Cubicle 6 - Crown Ct",
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "dpsLocationId": "812eff58-aa83-42fa-beb8-d61e4e345724",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 6 - Crown Ct",
+      "startTime": "08:15",
+      "endTime": "09:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "dpsLocationId": "812eff58-aa83-42fa-beb8-d61e4e345724",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 6 - Crown Ct",
+      "startTime": "08:30",
+      "endTime": "09:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "dpsLocationId": "812eff58-aa83-42fa-beb8-d61e4e345724",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 6 - Crown Ct",
+      "startTime": "08:45",
+      "endTime": "09:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "dpsLocationId": "812eff58-aa83-42fa-beb8-d61e4e345724",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 6 - Crown Ct",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "dpsLocationId": "812eff58-aa83-42fa-beb8-d61e4e345724",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 6 - Crown Ct",
+      "startTime": "09:15",
+      "endTime": "10:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_6_CC",
+      "dpsLocationId": "812eff58-aa83-42fa-beb8-d61e4e345724",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "09:30",
+      "endTime": "10:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "09:45",
+      "endTime": "10:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "10:15",
+      "endTime": "11:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "10:30",
+      "endTime": "11:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "10:45",
+      "endTime": "11:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "11:15",
+      "endTime": "12:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "11:30",
+      "endTime": "12:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "11:45",
+      "endTime": "12:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "AM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "12:15",
+      "endTime": "13:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "12:30",
+      "endTime": "13:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "12:45",
+      "endTime": "13:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "13:00",
+      "endTime": "14:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "13:15",
+      "endTime": "14:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "13:30",
+      "endTime": "14:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "13:45",
+      "endTime": "14:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "14:15",
+      "endTime": "15:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "14:30",
+      "endTime": "15:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "14:45",
+      "endTime": "15:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "15:15",
+      "endTime": "16:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "15:30",
+      "endTime": "16:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "15:45",
+      "endTime": "16:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "16:00",
+      "endTime": "17:00",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "16:15",
+      "endTime": "17:15",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "16:30",
+      "endTime": "17:30",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    },
+    {
+      "name": "Closed Visits Cubicle 5 - Crown Ct",
+      "startTime": "16:45",
+      "endTime": "17:45",
+      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
+      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
+      "usage": null,
+      "timeSlot": "PM"
+    }
+  ]
+}

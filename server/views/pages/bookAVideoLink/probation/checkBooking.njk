@@ -246,7 +246,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "availability",
+                                    href: "availability" if enhancedProbationJourneyEnabled else "../video-link-booking#startTime",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
                                     visuallyHiddenText: "meeting time"
@@ -260,7 +260,17 @@
                         },
                         value: {
                             text: room.description
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#location",
+                                    text: "Change",
+                                    classes: 'govuk-link--no-visited-state',
+                                    visuallyHiddenText: "meeting room"
+                                }
+                            ]
+                        } if not enhancedProbationJourneyEnabled
                     },
                     {
                         key: {

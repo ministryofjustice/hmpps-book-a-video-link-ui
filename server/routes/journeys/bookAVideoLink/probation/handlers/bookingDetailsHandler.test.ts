@@ -10,20 +10,23 @@ import PrisonerService from '../../../../../services/prisonerService'
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../../utils/utils'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
-import { ProbationTeam } from '../../../../../@types/bookAVideoLinkApi/types'
+import { ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import config from '../../../../../config'
+import VideoLinkService from '../../../../../services/videoLinkService'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/probationTeamsService')
 jest.mock('../../../../../services/prisonerService')
 jest.mock('../../../../../services/referenceDataService')
+jest.mock('../../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<ProbationTeamsService>
 const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const referenceDataService = new ReferenceDataService(null) as jest.Mocked<ReferenceDataService>
+const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
 
@@ -36,6 +39,7 @@ const appSetup = (journeySession = {}) => {
       probationTeamsService,
       prisonerService,
       referenceDataService,
+      videoLinkService,
     },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
@@ -58,6 +62,26 @@ beforeEach(() => {
     prisonName: 'Moorland',
     prisonerNumber: 'A1234AA',
   } as Prisoner)
+
+  videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+    bookingType: 'PROBATION',
+    prisonAppointments: [
+      {
+        prisonerNumber: 'A1234AA',
+        appointmentType: 'VLB_PROBATION',
+        appointmentDate: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
+        startTime: '08:00',
+        endTime: '09:00',
+        timeSlot: 'AM',
+        prisonLocKey: 'LOCATION_CODE',
+      },
+    ],
+    probationTeamCode: 'PROBATION_CODE',
+    probationMeetingType: 'PSR',
+    comments: 'test',
+  } as VideoLinkBooking)
+
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -331,7 +355,86 @@ describe('Booking details handler', () => {
     })
 
     it('should save the posted fields in session during the amend journey with existing booking data', () => {
-      // TODO
+      return request(app)
+        .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
+        .send({
+          ...validForm,
+        })
+        .expect(302)
+        .expect('location', 'video-link-booking/availability')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            bookingId: 1,
+            probationTeamCode: 'CODE',
+            date: startOfTomorrow().toISOString(),
+            meetingTypeCode: 'PSR',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonId: 'MDI',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
+            },
+            officerDetailsNotKnown: false,
+            officer: {
+              fullName: 'John Bing',
+              email: 'jbing@gmail.com',
+              telephone: '07892 398108',
+            },
+            duration: 120,
+            timePeriods: ['AM'],
+            locationCode: 'LOCATION_CODE',
+            startTime: '1970-01-01T08:00:00.000Z',
+            endTime: '1970-01-01T09:00:00.000Z',
+            comments: 'test',
+          }),
+        )
+    })
+
+    it('should redirect straight to the check answers page during amend if the requested schedule has not changed', () => {
+      return request(app)
+        .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
+        .send({
+          ...validForm,
+          duration: 60,
+        })
+        .expect(302)
+        .expect('location', 'video-link-booking/check-booking')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            bookingId: 1,
+            probationTeamCode: 'CODE',
+            date: startOfTomorrow().toISOString(),
+            meetingTypeCode: 'PSR',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonId: 'MDI',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
+            },
+            officerDetailsNotKnown: false,
+            officer: {
+              fullName: 'John Bing',
+              email: 'jbing@gmail.com',
+              telephone: '07892 398108',
+            },
+            duration: 60,
+            timePeriods: ['AM'],
+            locationCode: 'LOCATION_CODE',
+            startTime: '1970-01-01T08:00:00.000Z',
+            endTime: '1970-01-01T09:00:00.000Z',
+            comments: 'test',
+          }),
+        )
     })
 
     it('should get the prisoner information from the session for the request journey', () => {

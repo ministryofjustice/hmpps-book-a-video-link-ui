@@ -120,7 +120,7 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/prisons/MDI/locations?videoLinkOnly=true')
+        .get('/prisons/MDI/locations?videoLinkOnly=true&extendedAttributes=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
@@ -194,7 +194,7 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .post('/availability/locations?maxSlots=100', { bookingType: 'COURT' })
+        .post('/availability/locations', { bookingType: 'COURT' })
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 

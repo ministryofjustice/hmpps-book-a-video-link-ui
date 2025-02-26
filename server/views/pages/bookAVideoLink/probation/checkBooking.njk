@@ -8,6 +8,8 @@
 {% set mode = session.req.params.mode %}
 {% set pageTitle = "Check and confirm your request" if mode == 'request' else "Check and confirm your booking" %}
 
+{% set room = rooms | find('key', session.journey.bookAProbationMeeting.locationCode) %}
+
 {% block content %}
     {% if warnPrison %}
         <div class="govuk-grid-row">
@@ -257,7 +259,7 @@
                             text: "Meeting room"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookAProbationMeeting.locationCode)).description
+                            text: room.description
                         }
                     },
                     {
@@ -265,7 +267,7 @@
                             text: "Prison video link (PVL)"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.videoLinkUrl or "None entered"
+                            text: room.extraAttributes.prisonVideoUrl or "None entered"
                         }
                     } if enhancedProbationJourneyEnabled
                 ]

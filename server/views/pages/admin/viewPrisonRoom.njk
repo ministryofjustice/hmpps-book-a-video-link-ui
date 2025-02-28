@@ -32,10 +32,6 @@
                 <input type="hidden" name="prisonCode" value="{{ prison.code }}" />
                 <input type="hidden" name="dpsLocationId" value="{{ room.dpsLocationId }}" />
 
-                <div>
-                  <h2 class="govuk-heading-m">Room status</h2>
-                </div>
-
                 {{ govukRadios({
                      classes: "govuk-radios--inline govuk-radios--small",
                      idPrefix: "roomStatus",
@@ -43,9 +39,14 @@
                      errorMessage: validationErrors | findError('roomStatus'),
                      fieldset: {
                        legend: {
-                         text: "Select out of use if the room is not available for any bookings",
-                         classes: "govuk-hint"
+                         text: "Room status",
+                         isPageHeading: true,
+                         classes: 'govuk-fieldset__legend--m'
                        }
+                     },
+                     hint: {
+                       text: "Select out of use if the room is not available for any bookings",
+                       classes: "govuk-hint"
                      },
                      items: [
                        {
@@ -61,21 +62,17 @@
                      ]
                 }) }}
 
-                <div>
-                  <h2 class="govuk-heading-m">Room link</h2>
-                </div>
-
                 {{ govukInput({
                   id: "videoUrl",
                   name: "videoUrl",
+                  label: {
+                    text: "Room link",
+                    classes: 'govuk-fieldset__legend--m'
+                  },
                   errorMessage: validationErrors | findError('videoUrl'),
                   classes: 'govuk-!-width-one-third',
                   value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
                 }) }}
-
-                <div>
-                  <h2 class="govuk-heading-m">Room permissions</h2>
-                </div>
 
                 {# Conditionally revealed list of courts #}
 
@@ -134,9 +131,14 @@
                   errorMessage: validationErrors | findError('permission'),
                   fieldset: {
                     legend: {
-                      text: "All courts and probation teams applied by default unless specified. Select schedule to customise room availability.",
-                      classes: "govuk-hint"
+                      text: "Room permissions",
+                      isPageHeading: true,
+                      classes: 'govuk-fieldset__legend--m'
                     }
+                  },
+                  hint: {
+                    text: "All courts and probation teams applied by default unless specified. Select schedule to customise room availability.",
+                    classes: "govuk-hint"
                   },
                   items: [
                     {
@@ -169,9 +171,6 @@
                 }) }}
 
                 {% if room.extraAttributes.schedule.length %}
-                   <div>
-                      <h2 class="govuk-heading-m">Room schedule</h2>
-                    </div>
 
                     <div class="govuk-body">
                        {% set rows = [] %}
@@ -211,6 +210,8 @@
                        {% endfor %}
 
                        {{ govukTable({
+                         caption: "Room schedule",
+                         captionClasses: "govuk-table__caption--m",
                          head: [
                            { text: "Start day" },
                            { text: "End day" },
@@ -227,13 +228,14 @@
                     {# TODO: The else part of this should display the entry fields for the first schedule #}
                 {% endif %}
 
-                <div>
-                  <h2 class="govuk-heading-m">Comments (optional)</h2>
-                </div>
-
                 {{ govukCharacterCount({
                   name: "notes",
                   id: "notes",
+                  label: {
+                     text: "Comments (optional)",
+                     isPageHeading: true,
+                     classes: 'govuk-fieldset__legend--m'
+                  },
                   maxlength: 100,
                   value: formResponses.notes or room.extraAttributes.notes
                 }) }}

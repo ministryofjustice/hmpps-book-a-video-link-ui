@@ -120,7 +120,7 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .get('/prisons/MDI/locations?videoLinkOnly=true&extendedAttributes=true')
+        .get('/prisons/MDI/locations?videoLinkOnly=true')
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 

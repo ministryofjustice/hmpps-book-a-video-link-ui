@@ -3,26 +3,34 @@ import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
 import logger from '../../../../../logger'
+import ProbationTeamsService from '../../../../services/probationTeamsService'
+import CourtsService from '../../../../services/courtsService'
 
 export default class ViewPrisonRoomHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_PRISON_ROOM_PAGE
 
-  constructor(private readonly prisonService: PrisonService) {}
+  constructor(
+    private readonly prisonService: PrisonService,
+    private readonly courtsService: CourtsService,
+    private readonly probationTeamsService: ProbationTeamsService,
+  ) {}
 
   GET = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
 
-    const [prison, locationList] = await Promise.all([
+    const [prison, locationList, courts, probationTeams] = await Promise.all([
       this.prisonService.getPrisonByCode(prisonCode, user),
       this.prisonService.getAppointmentLocations(prisonCode, true, user),
+      this.courtsService.getAllEnabledCourts(user),
+      this.probationTeamsService.getAllEnabledProbationTeams(user),
     ])
 
     const matchingRoom = locationList.filter(loc => loc.dpsLocationId === dpsLocationId)
 
     if (matchingRoom && matchingRoom.length > 0) {
       const room = matchingRoom[0]
-      res.render('pages/admin/viewPrisonRoom', { prison, room })
+      res.render('pages/admin/viewPrisonRoom', { prison, room, courts, probationTeams })
     } else {
       res.redirect(`/view-prison-locations/${prisonCode}`)
     }

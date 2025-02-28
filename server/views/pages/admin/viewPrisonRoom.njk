@@ -3,6 +3,7 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
 
@@ -42,7 +43,7 @@
                      errorMessage: validationErrors | findError('roomStatus'),
                      fieldset: {
                        legend: {
-                         text: "Select out of use if the room should not be available for any bookings",
+                         text: "Select out of use if the room is not available for any bookings",
                          classes: "govuk-hint"
                        }
                      },
@@ -61,8 +62,70 @@
                 }) }}
 
                 <div>
+                  <h2 class="govuk-heading-m">Room link</h2>
+                </div>
+
+                {{ govukInput({
+                  id: "videoUrl",
+                  name: "videoUrl",
+                  errorMessage: validationErrors | findError('videoUrl'),
+                  classes: 'govuk-!-width-one-third',
+                  value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
+                }) }}
+
+                <div>
                   <h2 class="govuk-heading-m">Room permissions</h2>
                 </div>
+
+                {# Conditionally revealed list of courts #}
+
+                {% set courtHtml %}
+                  {# TODO: This section - Add Another - allow multiple courts to be set here #}
+                  {% set items = [{ text: "", value: "" }] %}
+                  {% for court in courts %}
+                    {% set items = (items.push({
+                       value: court.code,
+                       text: court.description,
+                       selected: formResponses.courtCode == court.code
+                    }), items) %}
+                  {% endfor %}
+
+                  {{ govukSelect({
+                     name: "courtCode",
+                     id: "courtCode",
+                     items: items,
+                     label: {
+                       text: "Specify court (optional)"
+                     },
+                     errorMessage: validationErrors | findError("courtCode"),
+                     classes: "govuk-!-width-one-third"
+                  }) }}
+                {% endset -%}
+
+                {# Conditionally revealed list of probation teams #}
+
+                {% set probationHtml %}
+                  {# TODO: This sections - Add Another - allow multiple teams to be set here #}
+                  {% set items = [{ text: "", value: "" }] %}
+                  {% for team in probationTeams %}
+                    {% set items = (items.push({
+                      value: team.code,
+                      text: team.description,
+                      selected: formResponses.probationTeamCode == team.code
+                    }), items) %}
+                  {% endfor %}
+
+                  {{ govukSelect({
+                    name: "probationTeamCode",
+                    id: "probationTeamCode",
+                    items: items,
+                    label: {
+                      text: "Specify probation team (optional)"
+                    },
+                    errorMessage: validationErrors | findError("probationTeamCode"),
+                    classes: "govuk-!-width-one-third"
+                  }) }}
+                {% endset -%}
 
                 {{ govukRadios({
                   classes: "govuk-radios--small",
@@ -79,12 +142,18 @@
                     {
                       value: "court",
                       text: "Court",
-                      checked: formResponses.permission == 'court' or room.extraAttributes.locationUsage == "COURT"
+                      checked: formResponses.permission == 'court' or room.extraAttributes.locationUsage == "COURT",
+                      conditional: {
+                        html: courtHtml
+                      }
                     },
                     {
                       value: "probation",
                       text: "Probation",
-                      checked: formResponses.permission == 'probation' or room.extraAttributes.locationUsage == "PROBATION"
+                      checked: formResponses.permission == 'probation' or room.extraAttributes.locationUsage == "PROBATION",
+                      conditional: {
+                        html: probationHtml
+                      }
                     },
                     {
                       value: "shared",
@@ -107,7 +176,11 @@
                     <div class="govuk-body">
                        {% set rows = [] %}
                        {% for schedule in room.extraAttributes.schedule %}
-                          {% set editLinkHtml %}
+                          {% set editLinksHtml %}
+                            <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                             class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">Delete
+                            </a>
+
                             <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
                               class="govuk-link govuk-link--no-visited-state">Edit
                             </a>
@@ -117,13 +190,21 @@
                             {{ locationUsageTag(schedule.locationUsage | convertToTitleCase, "govuk-tag--blue") }}
                           {% endset %}
 
+                          {# TODO: look up the court or probation names in the lists, using code in allowedParties #}
+                          {% set specificHtml %}
+                            {% for party in schedule.allowedParties %}
+                              <span>{{ party | upper }}</span>
+                            {% endfor %}
+                          {% endset %}
+
                           {% set rows = (rows.push([
-                              { text: schedule.startDayOfWeek },
-                              { text: schedule.endDayOfWeek },
+                              { text: schedule.startDayOfWeek | capitalize },
+                              { text: schedule.endDayOfWeek | capitalize },
                               { text: schedule.startTime },
                               { text: schedule.endTime },
                               { html: usageHtml },
-                              { html: editLinkHtml }
+                              { html: specificHtml },
+                              { html: editLinksHtml }
                             ]), rows)
                           %}
 
@@ -136,28 +217,15 @@
                            { text: "Start time" },
                            { text: "End time" },
                            { text: "Permissions" },
+                           { text: "Specifics" },
                            { text: "Action" }
                          ],
                          rows: rows
                        }) }}
 
                     </div>
+                    {# TODO: The else part of this should display the entry fields for the first schedule #}
                 {% endif %}
-
-                {# Add another button #}
-
-                <div>
-                  <h2 class="govuk-heading-m">Room video link</h2>
-                </div>
-
-                {{ govukInput({
-                    id: "videoUrl",
-                    name: "videoUrl",
-                    errorMessage: validationErrors | findError('videoUrl'),
-                    label: { text: "The video URL for this room" },
-                    classes: 'govuk-!-width-one-third',
-                    value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
-                }) }}
 
                 <div>
                   <h2 class="govuk-heading-m">Comments (optional)</h2>
@@ -178,7 +246,7 @@
                   }) }}
 
                   {{ govukButton({
-                    text: "Go back to room list",
+                    text: "Cancel",
                     classes: "govuk-button--secondary",
                     href: "/admin/view-prison-locations/" + prison.code
                   }) }}

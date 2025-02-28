@@ -12,7 +12,13 @@ import ViewPrisonsHandler from './handlers/viewPrisonsHandler'
 import ViewPrisonLocationsHandler from './handlers/viewPrisonLocationsHandler'
 import ViewPrisonRoomHandler from './handlers/viewPrisonRoomHandler'
 
-export default function Index({ auditService, videoLinkService, prisonService }: Services): Router {
+export default function Index({
+  auditService,
+  videoLinkService,
+  prisonService,
+  courtsService,
+  probationTeamsService,
+}: Services): Router {
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
@@ -28,7 +34,10 @@ export default function Index({ auditService, videoLinkService, prisonService }:
   route('/extract-by-hearing-date', new ExtractByHearingDateHandler(videoLinkService))
   route('/view-prison-list', new ViewPrisonsHandler(prisonService))
   route('/view-prison-locations/:prisonCode', new ViewPrisonLocationsHandler(prisonService))
-  route('/view-prison-room/:prisonCode/:dpsLocationId', new ViewPrisonRoomHandler(prisonService))
+  route(
+    '/view-prison-room/:prisonCode/:dpsLocationId',
+    new ViewPrisonRoomHandler(prisonService, courtsService, probationTeamsService),
+  )
 
   return router
 }

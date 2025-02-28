@@ -19,6 +19,14 @@
 
                    {% for result in locationList %}
 
+                       {% set roomLinkHtml %}
+                         {% if result.extraAttributes.prisonVideoUrl %}
+                            {{ result.extraAttributes.prisonVideoUrl | upper }}
+                         {% else %}
+                             None entered
+                         {% endif %}
+                       {% endset %}
+
                        {% set roomSetupHtml %}
                          {% if result.extraAttributes %}
                             {{ locationUsageTag("Customised", "govuk-tag--green") }}
@@ -56,6 +64,7 @@
                        {% set rows = (rows.push([
                            { text: result.description },
                            { text: result.key },
+                           { html: roomLinkHtml },
                            { html: roomSetupHtml },
                            { html: roomStatusHtml },
                            { html: permissionsHtml },
@@ -70,8 +79,9 @@
                          'data-module': 'moj-sortable-table'
                        },
                        head: [
-                          { text: "Room Name" },
+                          { text: "Room name" },
                           { text: "Room key" },
+                          { text: "Room link" },
                           { text: "Room setup", attributes: { "aria-sort": "ascending" } },
                           { text: "Room status" },
                           { text: "Permissions", attributes: { "aria-sort": "ascending" } },

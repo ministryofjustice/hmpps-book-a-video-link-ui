@@ -65,10 +65,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
   }
 
   public getAppointmentLocations(prisonCode: string, videoLinkOnly: boolean, user: Express.User): Promise<Location[]> {
-    return this.get(
-      { path: `/prisons/${prisonCode}/locations`, query: { videoLinkOnly, extendedAttributes: true } },
-      user,
-    )
+    return this.get({ path: `/prisons/${prisonCode}/locations`, query: { videoLinkOnly } }, user)
   }
 
   public getPrisons(enabledOnly: boolean, user: Express.User): Promise<Prison[]> {

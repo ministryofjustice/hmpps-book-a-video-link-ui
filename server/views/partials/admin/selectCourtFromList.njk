@@ -1,0 +1,28 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% macro selectCourtFromList(courts, fieldName) %}
+
+    {# TODO: This section needs an Add Another wrapper to allow multiple courts to be set #}
+
+    {% set items = [{ text: "", value: "", selected: false }] %}
+
+    {% for court in courts %}
+        {% set items = (items.push({
+            value: court.code,
+            text: court.description,
+            selected: formResponses[fieldName] == court.code
+        }), items) %}
+    {% endfor %}
+
+    {{ govukSelect({
+        name: fieldName,
+        id: fieldName,
+        items: items,
+        label: {
+            text: "Specify court (optional)"
+        },
+        errorMessage: validationErrors | findError(fieldName),
+        classes: "govuk-!-width-one-third"
+    }) }}
+
+{% endmacro %}

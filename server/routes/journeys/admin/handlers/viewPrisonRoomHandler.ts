@@ -37,10 +37,11 @@ export default class ViewPrisonRoomHandler implements PageHandler {
   }
 
   public POST = async (req: Request, res: Response) => {
-    const { prisonCode, dpsLocationId, roomStatus, permission, videoUrl, notes } = req.body
-    logger.info(
-      `PrisonCode ${prisonCode}, dpsLocationId ${dpsLocationId}, status ${roomStatus}, permission ${permission}, URL ${videoUrl}, notes ${notes}`,
-    )
+    const { prisonCode, dpsLocationId } = req.body
+    // const { roomStatus, permission, courtCode, probationTeamCode, videoUrl, notes } = req.body
+    // const { existingSchedule, scheduleStartDay, scheduleEndDay, schedulePermission, scheduleStartTime, scheduleEndTime } = req.body
+
+    logger.info(`POST body is ${JSON.stringify(req.body, null, 2)}`)
 
     // TODO: Save the values here
     // TODO: Individual schedule rows saved separately?

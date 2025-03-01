@@ -1,18 +1,28 @@
 {% extends "partials/layout.njk" %}
+
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
+
+{% from "partials/admin/displayRoomSchedule.njk" import displayRoomSchedule %}
+{% from "partials/admin/firstRoomSchedule.njk" import firstRoomSchedule %}
+{% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
+{% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
 
 {% set pageTitle = room.description %}
 
 {% block content %}
+
+    {# Page header #}
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <span class="govuk-body govuk-caption govuk-!-margin-bottom-2">{{ prison.name }}<span>
+            <span class="govuk-body govuk-caption govuk-!-margin-bottom-2">{{ prison.name }}</span>
             <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
                {% if room.extraAttributes %}
@@ -27,231 +37,155 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters-from-desktop">
 
-            <form method='POST'">
+            <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
                 <input type="hidden" name="prisonCode" value="{{ prison.code }}" />
                 <input type="hidden" name="dpsLocationId" value="{{ room.dpsLocationId }}" />
 
+                {# Room status #}
+
                 {{ govukRadios({
-                     classes: "govuk-radios--inline govuk-radios--small",
-                     idPrefix: "roomStatus",
-                     name: "roomStatus",
-                     errorMessage: validationErrors | findError('roomStatus'),
-                     fieldset: {
-                       legend: {
-                         text: "Room status",
-                         isPageHeading: true,
-                         classes: 'govuk-fieldset__legend--m'
-                       }
-                     },
-                     hint: {
-                       text: "Select out of use if the room is not available for any bookings",
-                       classes: "govuk-hint"
-                     },
-                     items: [
-                       {
-                         value: "active",
-                         text: "Active",
-                         checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE"
-                       },
-                       {
-                         value: "inactive",
-                         text: "Out of service",
-                         checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE"
-                       }
-                     ]
+                    classes: "govuk-radios--inline govuk-radios--small",
+                    idPrefix: "roomStatus",
+                    name: "roomStatus",
+                    errorMessage: validationErrors | findError('roomStatus'),
+                    fieldset: {
+                        legend: {
+                            text: "Room status",
+                            isPageHeading: true,
+                            classes: 'govuk-fieldset__legend--m'
+                        }
+                    },
+                    hint: {
+                        text: "Select out of use if the room is not available for any bookings",
+                        classes: "govuk-hint"
+                    },
+                    items: [
+                        {
+                            value: "active",
+                            text: "Active",
+                            checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE"
+                        },
+                        {
+                            value: "inactive",
+                            text: "Out of service",
+                            checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE"
+                        }
+                    ]
                 }) }}
+
+                {# Room link #}
 
                 {{ govukInput({
-                  id: "videoUrl",
-                  name: "videoUrl",
-                  label: {
-                    text: "Room link",
-                    classes: 'govuk-fieldset__legend--m'
-                  },
-                  errorMessage: validationErrors | findError('videoUrl'),
-                  classes: 'govuk-!-width-one-third',
-                  value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
+                    id: "videoUrl",
+                    name: "videoUrl",
+                    label: {
+                        text: "Room link",
+                        classes: "govuk-fieldset__legend--m"
+                    },
+                    errorMessage: validationErrors | findError('videoUrl'),
+                    classes: 'govuk-!-width-one-third',
+                    value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
                 }) }}
 
-                {# Conditionally revealed list of courts #}
+                {# Room permissions #}
 
                 {% set courtHtml %}
-                  {# TODO: This section - Add Another - allow multiple courts to be set here #}
-                  {% set items = [{ text: "", value: "" }] %}
-                  {% for court in courts %}
-                    {% set items = (items.push({
-                       value: court.code,
-                       text: court.description,
-                       selected: formResponses.courtCode == court.code
-                    }), items) %}
-                  {% endfor %}
-
-                  {{ govukSelect({
-                     name: "courtCode",
-                     id: "courtCode",
-                     items: items,
-                     label: {
-                       text: "Specify court (optional)"
-                     },
-                     errorMessage: validationErrors | findError("courtCode"),
-                     classes: "govuk-!-width-one-third"
-                  }) }}
-                {% endset -%}
-
-                {# Conditionally revealed list of probation teams #}
+                    {{  selectCourtFromList(courts, "courtCode") }}
+                {% endset %}
 
                 {% set probationHtml %}
-                  {# TODO: This sections - Add Another - allow multiple teams to be set here #}
-                  {% set items = [{ text: "", value: "" }] %}
-                  {% for team in probationTeams %}
-                    {% set items = (items.push({
-                      value: team.code,
-                      text: team.description,
-                      selected: formResponses.probationTeamCode == team.code
-                    }), items) %}
-                  {% endfor %}
-
-                  {{ govukSelect({
-                    name: "probationTeamCode",
-                    id: "probationTeamCode",
-                    items: items,
-                    label: {
-                      text: "Specify probation team (optional)"
-                    },
-                    errorMessage: validationErrors | findError("probationTeamCode"),
-                    classes: "govuk-!-width-one-third"
-                  }) }}
-                {% endset -%}
+                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCode") }}
+                {% endset %}
 
                 {{ govukRadios({
-                  classes: "govuk-radios--small",
-                  idPrefix: "permission",
-                  name: "permission",
-                  errorMessage: validationErrors | findError('permission'),
-                  fieldset: {
-                    legend: {
-                      text: "Room permissions",
-                      isPageHeading: true,
-                      classes: 'govuk-fieldset__legend--m'
-                    }
-                  },
-                  hint: {
-                    text: "All courts and probation teams applied by default unless specified. Select schedule to customise room availability.",
-                    classes: "govuk-hint"
-                  },
-                  items: [
-                    {
-                      value: "court",
-                      text: "Court",
-                      checked: formResponses.permission == 'court' or room.extraAttributes.locationUsage == "COURT",
-                      conditional: {
-                        html: courtHtml
-                      }
+                    classes: "govuk-radios--small",
+                    idPrefix: "permission",
+                    name: "permission",
+                    errorMessage: validationErrors | findError('permission'),
+                    fieldset: {
+                        legend: {
+                            text: "Room permissions",
+                            isPageHeading: true,
+                            classes: 'govuk-fieldset__legend--m'
+                        }
                     },
-                    {
-                      value: "probation",
-                      text: "Probation",
-                      checked: formResponses.permission == 'probation' or room.extraAttributes.locationUsage == "PROBATION",
-                      conditional: {
-                        html: probationHtml
-                      }
+                    hint: {
+                        text: "All courts and probation teams applied by default unless specified. Select schedule to customise room availability.",
+                        classes: "govuk-hint"
                     },
-                    {
-                      value: "shared",
-                      text: "Shared",
-                      checked: formResponses.permission == 'shared' or room.extraAttributes.locationUsage == "SHARED" or room.extraAttributes.locationUsage is null
-                    },
-                    {
-                      value: "schedule",
-                      text: "Schedule",
-                      checked: formResponses.permission == 'schedule' or room.extraAttributes.locationUsage == "SCHEDULE"
-                    }
-                  ]
+                    items: [
+                        {
+                            value: "court",
+                            text: "Court",
+                            checked: formResponses.permission == 'court' or room.extraAttributes.locationUsage == "COURT",
+                            conditional: {
+                                html: courtHtml
+                            }
+                        },
+                        {
+                            value: "probation",
+                            text: "Probation",
+                            checked: formResponses.permission == 'probation' or room.extraAttributes.locationUsage == "PROBATION",
+                            conditional: {
+                                html: probationHtml
+                            }
+                        },
+                        {
+                            value: "shared",
+                            text: "Shared",
+                            checked: formResponses.permission == 'shared' or room.extraAttributes.locationUsage == "SHARED" or room.extraAttributes.locationUsage is null
+                        },
+                        {
+                            value: "schedule",
+                            text: "Schedule",
+                            checked: formResponses.permission == 'schedule' or room.extraAttributes.locationUsage == "SCHEDULE"
+                        }
+                    ]
                 }) }}
+
+                {# Conditional schedules - list of existing rows or prompt for first entry #}
 
                 {% if room.extraAttributes.schedule.length %}
+                    {# Display existing schedules and edit links #}
 
-                    <div class="govuk-body">
-                       {% set rows = [] %}
-                       {% for schedule in room.extraAttributes.schedule %}
-                          {% set editLinksHtml %}
-                            <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
-                             class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">Delete
-                            </a>
+                    {{ displayRoomSchedule(prison, room) }}
 
-                            <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
-                              class="govuk-link govuk-link--no-visited-state">Edit
-                            </a>
-                          {% endset %}
+                {% else %}
+                    {# Display the input fields for a first schedule row #}
 
-                          {% set usageHtml %}
-                            {{ locationUsageTag(schedule.locationUsage | convertToTitleCase, "govuk-tag--blue") }}
-                          {% endset %}
+                    {{ firstRoomSchedule(prison, room, courts, probationTeams) }}
 
-                          {# TODO: look up the court or probation names in the lists, using code in allowedParties #}
-                          {% set specificHtml %}
-                            {% for party in schedule.allowedParties %}
-                              <span>{{ party | upper }}</span>
-                            {% endfor %}
-                          {% endset %}
-
-                          {% set rows = (rows.push([
-                              { text: schedule.startDayOfWeek | capitalize },
-                              { text: schedule.endDayOfWeek | capitalize },
-                              { text: schedule.startTime },
-                              { text: schedule.endTime },
-                              { html: usageHtml },
-                              { html: specificHtml },
-                              { html: editLinksHtml }
-                            ]), rows)
-                          %}
-
-                       {% endfor %}
-
-                       {{ govukTable({
-                         caption: "Room schedule",
-                         captionClasses: "govuk-table__caption--m",
-                         head: [
-                           { text: "Start day" },
-                           { text: "End day" },
-                           { text: "Start time" },
-                           { text: "End time" },
-                           { text: "Permissions" },
-                           { text: "Specifics" },
-                           { text: "Action" }
-                         ],
-                         rows: rows
-                       }) }}
-
-                    </div>
-                    {# TODO: The else part of this should display the entry fields for the first schedule #}
                 {% endif %}
 
+                {# Room comments #}
+
                 {{ govukCharacterCount({
-                  name: "notes",
-                  id: "notes",
-                  label: {
-                     text: "Comments (optional)",
-                     isPageHeading: true,
-                     classes: 'govuk-fieldset__legend--m'
-                  },
-                  maxlength: 100,
-                  value: formResponses.notes or room.extraAttributes.notes
+                    name: "notes",
+                    id: "notes",
+                    label: {
+                        text: "Comments (optional)",
+                        isPageHeading: true,
+                        classes: 'govuk-fieldset__legend--m'
+                    },
+                    maxlength: 100,
+                    value: formResponses.notes or room.extraAttributes.notes
                 }) }}
 
-                <div class="govuk-button-group">
-                  {{ govukButton({
-                    text: "Save",
-                    preventDoubleClick: true,
-                    type: "submit"
-                  }) }}
+                {# Submit and cancel button group #}
 
-                  {{ govukButton({
-                    text: "Cancel",
-                    classes: "govuk-button--secondary",
-                    href: "/admin/view-prison-locations/" + prison.code
-                  }) }}
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Save",
+                        preventDoubleClick: true,
+                        type: "submit"
+                    }) }}
+
+                    {{ govukButton({
+                        text: "Cancel",
+                        classes: "govuk-button--secondary",
+                        href: "/admin/view-prison-locations/" + prison.code
+                    }) }}
                 </div>
             </form>
         </div>

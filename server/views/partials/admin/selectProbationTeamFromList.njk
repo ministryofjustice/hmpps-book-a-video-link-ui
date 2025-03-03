@@ -1,0 +1,28 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+
+{% macro selectProbationTeamFromList(teams, fieldName) %}
+
+    {# TODO: This section needs an Add Another wrapper to allow multiple teams to be set #}
+
+    {% set items = [{ text: "", value: "", selected: false }] %}
+
+    {% for team in teams %}
+        {% set items = (items.push({
+            value: team.code,
+            text: team.description,
+            selected: formResponses[fieldName] == team.code
+        }), items) %}
+    {% endfor %}
+
+    {{ govukSelect({
+        name: fieldName,
+        id: fieldName,
+        items: items,
+        label: {
+            text: "Specify probation team (optional)"
+        },
+        errorMessage: validationErrors | findError(fieldName),
+        classes: "govuk-!-width-one-third"
+    }) }}
+
+{% endmacro %}

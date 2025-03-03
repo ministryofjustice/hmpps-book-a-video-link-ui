@@ -1,0 +1,78 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/locationUsageTag.njk" import locationUsageTag %}
+
+{#
+  Macro to display the schedule rows and edit links for a decorated prison room.
+  Params:
+   - prison:  Prison object (Prison)
+   - room: Room object(LocationAttribute)
+#}
+
+{% macro displayRoomSchedule(prison, room) %}
+
+    <input type="hidden" name="existingSchedule" value="true" />
+
+    {% set rows = [] %}
+
+    {% for schedule in room.extraAttributes.schedule %}
+
+        {% set editLinksHtml %}
+            <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+               class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">Delete
+            </a>
+
+            <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+               class="govuk-link govuk-link--no-visited-state">Edit
+            </a>
+        {% endset %}
+
+        {% set usageHtml %}
+            {{ locationUsageTag(schedule.locationUsage | convertToTitleCase, "govuk-tag--blue") }}
+        {% endset %}
+
+        {# TODO: pass in the codes / description mapping for allowedParties #}
+
+        {% set specificHtml %}
+            {% for party in schedule.allowedParties %}
+                <span>{{ party | upper }}</span>
+            {% endfor %}
+        {% endset %}
+
+        {% set rows = (rows.push([
+            { text: schedule.startDayOfWeek | capitalize },
+            { text: schedule.endDayOfWeek | capitalize },
+            { text: schedule.startTime },
+            { text: schedule.endTime },
+            { html: usageHtml },
+            { html: specificHtml },
+            { html: editLinksHtml }
+        ]), rows) %}
+
+    {% endfor %}
+
+    {{ govukTable({
+        caption: "Room schedule",
+        captionClasses: "govuk-table__caption--m",
+        head: [
+            { text: "Start day" },
+            { text: "End day" },
+            { text: "Start time" },
+            { text: "End time" },
+            { text: "Permissions" },
+            { text: "Specifics" },
+            { text: "Action" }
+        ],
+        rows: rows
+    }) }}
+
+    {# Add another schedule #}
+    <div class="govuk-button-group">
+        {{ govukButton({
+            classes: "govuk-button--secondary",
+            text: "Add another schedule",
+            href: '/admin/add-schedule/' + prison.code + '/' + room.dpsLocationId + ''
+        }) }}
+    </div>
+
+{% endmacro %}

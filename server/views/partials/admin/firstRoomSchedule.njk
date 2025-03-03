@@ -1,0 +1,137 @@
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
+{% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
+{% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
+
+{#
+  Macro to display the entry fields and components for the frst schedule row.
+  Params:
+    - prison:  Prison object (Prison)
+    - room: Room object(LocationAttribute)
+    - courts: A list of court objects
+    - probationTeams: A list of probation team objects
+#}
+
+{% macro firstRoomSchedule(prison, room, courts, probationTeams) %}
+
+    <input type="hidden" name="existingSchedule" value="false"/>
+
+    <h2 class="govuk-heading-m">Add room schedule</h2>
+
+    {# Start and end days #}
+
+    {% set items = [
+        { text: "Monday", value: 1 },
+        { text: "Tuesday", value: 2 },
+        { text: "Wednesday", value: 3 },
+        { text: "Thursday", value: 4 },
+        { text: "Friday", value: 5 },
+        { text: "Saturday", value: 6 },
+        { text: "Sunday", value: 7 }
+      ]
+    %}
+
+    {{ govukSelect({
+        name: "scheduleStartDay",
+        id: "scheduleStartDay",
+        items: items,
+        label: {
+            text: "Select start day"
+        },
+        errorMessage: validationErrors | findError("scheduleStartDay"),
+        classes: "govuk-!-width-one-third"
+    }) }}
+
+    {{ govukSelect({
+        name: "scheduleEndDay",
+        id: "scheduleEndDay",
+        items: items,
+        label: {
+            text: "Select end day"
+        },
+        errorMessage: validationErrors | findError("scheduleEndDay"),
+        classes: "govuk-!-width-one-third"
+    }) }}
+
+    {# Conditionally revealed select list for courts #}
+
+    {% set courtScheduleHtml %}
+        {{  selectCourtFromList(courts, "scheduleCourtCode") }}
+    {% endset -%}
+
+    {# Conditionally revealed select list for probation teams #}
+
+    {% set probationScheduleHtml %}
+        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCode") }}
+    {% endset -%}
+
+    {# Schedule row permissions #}
+
+    {{ govukRadios({
+        classes: "govuk-radios--small",
+        idPrefix: "schedulePermission",
+        name: "schedulePermission",
+        errorMessage: validationErrors | findError('schedulePermission'),
+        fieldset: {
+            legend: {
+                text: "Select permissions",
+                isPageHeading: true,
+                classes: 'govuk-fieldset__legend--m'
+            }
+        },
+        items: [
+            {
+                value: "court",
+                text: "Court",
+                checked: formResponses.schedulePermission == 'court',
+                conditional: {
+                    html: courtScheduleHtml
+                }
+            },
+            {
+                value: "probation",
+                text: "Probation",
+                checked: formResponses.schedulePermission == 'probation',
+                conditional: {
+                    html: probationScheduleHtml
+                }
+            },
+            {
+                value: "blocked",
+                text: "Blocked",
+                checked: formResponses.schedulePermission == 'blocked'
+            }
+        ]
+    }) }}
+
+    <h2 class="govuk-heading-m">Select times</h2>
+
+    {# Start time #}
+
+    {{ hmppsTimePicker({
+        id: 'scheduleStartTime',
+        name: 'scheduleStartTime',
+        label: {
+            text: 'Start time',
+            classes: 'govuk-fieldset__legend--s'
+        },
+        errorMessage: validationErrors | findError('scheduleStartTime'),
+        formResponses: formResponses.scheduleStartTime
+    }) }}
+
+    {# End time #}
+
+    {{ hmppsTimePicker({
+        id: 'scheduleEndTime',
+        name: 'scheduleEndTime',
+        label: {
+            text: 'End time',
+            classes: 'govuk-fieldset__legend--s'
+        },
+        errorMessage: validationErrors | findError('scheduleEndTime'),
+        validationErrors: validationErrors,
+        formResponses: formResponses.scheduleEndTime
+    }) }}
+
+{% endmacro %}

@@ -1,13 +1,83 @@
+// eslint-disable-next-line max-classes-per-file
+import { IsNotEmpty, ValidateIf } from 'class-validator'
 import { Request, Response } from 'express'
+import { isValid } from 'date-fns'
+import { Expose, Transform } from 'class-transformer'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
+import { simpleTimeToDate } from '../../../../utils/utils'
 import PrisonService from '../../../../services/prisonService'
 import logger from '../../../../../logger'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
+import Validator from '../../../validators/validator'
+import IsValidDate from '../../../validators/isValidDate'
+
+class Body {
+  @Expose()
+  @IsNotEmpty({ message: `Select a room status` })
+  roomStatus: string
+
+  @Expose()
+  videoUrl: string
+
+  @Expose()
+  @IsNotEmpty({ message: `Select a room permission` })
+  permission: string
+
+  @Expose()
+  existingSchedule: string
+
+  @Expose()
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @IsNotEmpty({ message: `Select a schedule start day` })
+  scheduleStartDay: string
+
+  @Expose()
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @Validator((scheduleEndDay, { scheduleStartDay }) => +scheduleEndDay >= +scheduleStartDay, {
+    message: 'Enter a schedule end day that is the same or after the schedule start day',
+  })
+  @IsNotEmpty({ message: `Select a schedule end day` })
+  scheduleEndDay: string
+
+  @Expose()
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @IsNotEmpty({ message: `Select a schedule permission` })
+  schedulePermission: string
+
+  @Expose()
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @Transform(({ value }) => simpleTimeToDate(value))
+  @IsValidDate({ message: 'Enter a valid schedule start time' })
+  @IsNotEmpty({ message: 'Enter a schedule start time' })
+  scheduleStartTime: Date
+
+  @Expose()
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @Transform(({ value }) => simpleTimeToDate(value))
+  @Validator(
+    (scheduleEndTime, { scheduleStartTime }) =>
+      isValid(scheduleStartTime) ? scheduleEndTime > scheduleStartTime : true,
+    {
+      message: 'Enter a schedule end time that is after the start time',
+    },
+  )
+  @IsValidDate({ message: 'Enter a valid schedule end time' })
+  @IsNotEmpty({ message: 'Enter a schedule end time' })
+  scheduleEndTime: Date
+
+  @Expose()
+  scheduleCourtCode: string
+
+  @Expose()
+  scheduleProbationTeamCode: string
+}
 
 export default class ViewPrisonRoomHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_PRISON_ROOM_PAGE
+
+  public BODY = Body
 
   constructor(
     private readonly prisonService: PrisonService,
@@ -46,6 +116,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     // TODO: Save the values here
     // TODO: Individual schedule rows saved separately?
     // TODO: Validation class for the input values above
+    // TODO: Redirect with success message
 
     res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
   }

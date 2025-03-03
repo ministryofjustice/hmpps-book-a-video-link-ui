@@ -6,9 +6,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
-
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
-
 {% from "partials/admin/displayRoomSchedule.njk" import displayRoomSchedule %}
 {% from "partials/admin/firstRoomSchedule.njk" import firstRoomSchedule %}
 {% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
@@ -98,6 +96,17 @@
                      {{ selectProbationTeamFromList(probationTeams, "probationTeamCode") }}
                 {% endset %}
 
+                {% set scheduleHtml %}
+                    {# Conditional schedules - list of existing rows or prompt for first entry #}
+                    {% if room.extraAttributes.schedule.length %}
+                        {# Display existing schedules and edit links #}
+                        {{ displayRoomSchedule(prison, room) }}
+                    {% else %}
+                        {# Display the input fields for a first schedule row #}
+                        {{ firstRoomSchedule(prison, room, courts, probationTeams) }}
+                    {% endif %}
+                {% endset %}
+
                 {{ govukRadios({
                     classes: "govuk-radios--small",
                     idPrefix: "permission",
@@ -139,24 +148,13 @@
                         {
                             value: "schedule",
                             text: "Schedule",
-                            checked: formResponses.permission == 'schedule' or room.extraAttributes.locationUsage == "SCHEDULE"
+                            checked: formResponses.permission == 'schedule' or room.extraAttributes.locationUsage == "SCHEDULE",
+                            conditional: {
+                              html: scheduleHtml
+                           }
                         }
                     ]
                 }) }}
-
-                {# Conditional schedules - list of existing rows or prompt for first entry #}
-
-                {% if room.extraAttributes.schedule.length %}
-                    {# Display existing schedules and edit links #}
-
-                    {{ displayRoomSchedule(prison, room) }}
-
-                {% else %}
-                    {# Display the input fields for a first schedule row #}
-
-                    {{ firstRoomSchedule(prison, room, courts, probationTeams) }}
-
-                {% endif %}
 
                 {# Room comments #}
 

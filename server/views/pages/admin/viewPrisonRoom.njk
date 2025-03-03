@@ -103,7 +103,7 @@
                         {{ displayRoomSchedule(prison, room) }}
                     {% else %}
                         {# Display the input fields for a first schedule row #}
-                        {{ firstRoomSchedule(prison, room, courts, probationTeams) }}
+                        {{ firstRoomSchedule(prison, room, courts, probationTeams, formResponses, validationErrors) }}
                     {% endif %}
                 {% endset %}
 

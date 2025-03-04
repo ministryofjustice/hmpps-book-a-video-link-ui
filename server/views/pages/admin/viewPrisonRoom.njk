@@ -16,17 +16,15 @@
 
 {% block content %}
 
-    {# Page header #}
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <span class="govuk-body govuk-caption govuk-!-margin-bottom-2">{{ prison.name }}</span>
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-2">{{ pageTitle }}</h1>
+            <span class="govuk-caption-l">{{ prison.name }}</span>
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
                {% if room.extraAttributes %}
                    {{ locationUsageTag("Customised", "govuk-tag--green") }}
                {% else %}
-                   {{ locationUsageTag("Default", "govuk-tag--lightgrey") }}
+                   {{ locationUsageTag("Default", "govuk-tag--grey") }}
                {% endif %}
             </div>
         </div>
@@ -37,42 +35,34 @@
 
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                <input type="hidden" name="prisonCode" value="{{ prison.code }}" />
-                <input type="hidden" name="dpsLocationId" value="{{ room.dpsLocationId }}" />
-
-                {# Room status #}
 
                 {{ govukRadios({
                     classes: "govuk-radios--inline govuk-radios--small",
                     idPrefix: "roomStatus",
                     name: "roomStatus",
-                    errorMessage: validationErrors | findError('roomStatus'),
                     fieldset: {
                         legend: {
                             text: "Room status",
-                            isPageHeading: true,
                             classes: 'govuk-fieldset__legend--m'
                         }
                     },
                     hint: {
-                        text: "Select out of use if the room is not available for any bookings",
-                        classes: "govuk-hint"
+                        text: "Select out of use if the room is not available for any bookings"
                     },
                     items: [
                         {
                             value: "active",
                             text: "Active",
-                            checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE"
+                            checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE" or (not room.extraAttributes and not formResponses)
                         },
                         {
                             value: "inactive",
                             text: "Out of service",
                             checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE"
                         }
-                    ]
+                    ],
+                    errorMessage: validationErrors | findError('roomStatus')
                 }) }}
-
-                {# Room link #}
 
                 {{ govukInput({
                     id: "videoUrl",
@@ -86,14 +76,12 @@
                     value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
                 }) }}
 
-                {# Room permissions #}
-
                 {% set courtHtml %}
-                    {{  selectCourtFromList(courts, "courtCode") }}
+                    {{  selectCourtFromList(courts, "courtCodes") }}
                 {% endset %}
 
                 {% set probationHtml %}
-                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCode") }}
+                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCodes") }}
                 {% endset %}
 
                 {% set scheduleHtml %}
@@ -111,66 +99,53 @@
                     classes: "govuk-radios--small",
                     idPrefix: "permission",
                     name: "permission",
-                    errorMessage: validationErrors | findError('permission'),
                     fieldset: {
                         legend: {
                             text: "Room permissions",
-                            isPageHeading: true,
                             classes: 'govuk-fieldset__legend--m'
                         }
                     },
                     hint: {
-                        text: "All courts and probation teams applied by default unless specified. Select schedule to customise room availability.",
-                        classes: "govuk-hint"
+                        text: "All courts and probation teams applied by default unless specified. Select schedule to customise room availability."
                     },
                     items: [
                         {
                             value: "court",
                             text: "Court",
                             checked: formResponses.permission == 'court' or room.extraAttributes.locationUsage == "COURT",
-                            conditional: {
-                                html: courtHtml
-                            }
+                            conditional: { html: courtHtml }
                         },
                         {
                             value: "probation",
                             text: "Probation",
                             checked: formResponses.permission == 'probation' or room.extraAttributes.locationUsage == "PROBATION",
-                            conditional: {
-                                html: probationHtml
-                            }
+                            conditional: { html: probationHtml }
                         },
                         {
                             value: "shared",
                             text: "Shared",
-                            checked: formResponses.permission == 'shared' or room.extraAttributes.locationUsage == "SHARED" or room.extraAttributes.locationUsage is null
+                            checked: formResponses.permission == 'shared' or room.extraAttributes.locationUsage == "SHARED" or (not room.extraAttributes and not formResponses)
                         },
                         {
                             value: "schedule",
                             text: "Schedule",
                             checked: formResponses.permission == 'schedule' or room.extraAttributes.locationUsage == "SCHEDULE",
-                            conditional: {
-                              html: scheduleHtml
-                           }
+                            conditional: { html: scheduleHtml }
                         }
-                    ]
+                    ],
+                    errorMessage: validationErrors | findError('permission')
                 }) }}
-
-                {# Room comments #}
 
                 {{ govukCharacterCount({
                     name: "notes",
                     id: "notes",
                     label: {
                         text: "Comments (optional)",
-                        isPageHeading: true,
                         classes: 'govuk-fieldset__legend--m'
                     },
                     maxlength: 100,
                     value: formResponses.notes or room.extraAttributes.notes
                 }) }}
-
-                {# Submit and cancel button group #}
 
                 <div class="govuk-button-group">
                     {{ govukButton({

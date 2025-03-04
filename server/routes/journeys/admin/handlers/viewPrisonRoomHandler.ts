@@ -1,8 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
 import { IsNotEmpty, ValidateIf } from 'class-validator'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { isValid } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
+import { NotFound } from 'http-errors'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { simpleTimeToDate } from '../../../../utils/utils'
@@ -26,6 +27,14 @@ class Body {
   permission: string
 
   @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  courtCodes: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  probationTeamCodes: string[]
+
+  @Expose()
   existingSchedule: string
 
   @Expose()
@@ -47,6 +56,14 @@ class Body {
   schedulePermission: string
 
   @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  scheduleCourtCodes: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  scheduleProbationTeamCodes: string[]
+
+  @Expose()
   @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
   @Transform(({ value }) => simpleTimeToDate(value))
   @IsValidDate({ message: 'Enter a valid schedule start time' })
@@ -66,12 +83,6 @@ class Body {
   @IsValidDate({ message: 'Enter a valid schedule end time' })
   @IsNotEmpty({ message: 'Enter a schedule end time' })
   scheduleEndTime: Date
-
-  @Expose()
-  scheduleCourtCode: string
-
-  @Expose()
-  scheduleProbationTeamCode: string
 }
 
 export default class ViewPrisonRoomHandler implements PageHandler {
@@ -85,7 +96,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     private readonly probationTeamsService: ProbationTeamsService,
   ) {}
 
-  GET = async (req: Request, res: Response) => {
+  GET = async (req: Request, res: Response, next: NextFunction) => {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
 
@@ -96,20 +107,17 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       this.probationTeamsService.getAllEnabledProbationTeams(user),
     ])
 
-    const matchingRoom = locationList.filter(loc => loc.dpsLocationId === dpsLocationId)
+    const room = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
 
-    if (matchingRoom && matchingRoom.length > 0) {
-      const room = matchingRoom[0]
+    if (room) {
       res.render('pages/admin/viewPrisonRoom', { prison, room, courts, probationTeams })
     } else {
-      res.redirect(`/view-prison-locations/${prisonCode}`)
+      next(new NotFound())
     }
   }
 
   public POST = async (req: Request, res: Response) => {
-    const { prisonCode, dpsLocationId } = req.body
-    // const { roomStatus, permission, courtCode, probationTeamCode, videoUrl, notes } = req.body
-    // const { existingSchedule, scheduleStartDay, scheduleEndDay, schedulePermission, scheduleStartTime, scheduleEndTime } = req.body
+    const { prisonCode, dpsLocationId } = req.params
 
     logger.info(`POST body is ${JSON.stringify(req.body, null, 2)}`)
 

@@ -14,85 +14,75 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full-from-desktop">
             {% if locationList.length %}
-               <p class="govuk-body">
-                   {% set rows = [] %}
+                <p class="govuk-body">
+                {% set rows = [] %}
 
-                   {% for result in locationList %}
-
-                       {% set roomLinkHtml %}
-                         {% if result.extraAttributes.prisonVideoUrl %}
-                            {{ result.extraAttributes.prisonVideoUrl | upper }}
-                         {% else %}
-                             None entered
-                         {% endif %}
-                       {% endset %}
-
-                       {% set roomSetupHtml %}
-                         {% if result.extraAttributes %}
+                {% for result in locationList %}
+                    {% set roomSetupHtml %}
+                        {% if result.extraAttributes %}
                             {{ locationUsageTag("Customised", "govuk-tag--green") }}
-                         {% else %}
-                            {{ locationUsageTag("Default", "govuk-tag--lightgrey") }}
-                         {% endif %}
-                       {% endset %}
+                        {% else %}
+                            {{ locationUsageTag("Default", "govuk-tag--grey") }}
+                        {% endif %}
+                    {% endset %}
 
-                       {% set roomStatusHtml %}
-                         {% if result.extraAttributes %}
-                           {% if result.extraAttributes.locationStatus == 'ACTIVE' %}
-                             {{ locationUsageTag("Active", "govuk-tag--green") }}
-                           {% else %}
-                             {{ locationUsageTag("Out of use", "govuk-tag--red") }}
-                           {% endif %}
-                         {% else %}
+                    {% set roomStatusHtml %}
+                        {% if result.extraAttributes %}
+                            {% if result.extraAttributes.locationStatus == 'ACTIVE' %}
+                                {{ locationUsageTag("Active", "govuk-tag--green") }}
+                            {% else %}
+                                {{ locationUsageTag("Out of use", "govuk-tag--red") }}
+                            {% endif %}
+                        {% else %}
                             {{ locationUsageTag("Active", "govuk-tag--green") }}
-                         {% endif %}
-                       {% endset %}
+                        {% endif %}
+                    {% endset %}
 
-                       {% set permissionsHtml %}
-                          {% if result.extraAttributes.locationUsage %}
-                             {{ locationUsageTag(result.extraAttributes.locationUsage | convertToTitleCase, "govuk-tag--lightblue") }}
-                          {% else %}
-                             {{ locationUsageTag("Shared", "govuk-tag--lightblue") }}
-                          {% endif %}
-                       {% endset %}
+                    {% set permissionsHtml %}
+                        {% if result.extraAttributes.locationUsage %}
+                            {{ locationUsageTag(result.extraAttributes.locationUsage | convertToTitleCase, "govuk-tag--lightblue") }}
+                        {% else %}
+                            {{ locationUsageTag("Shared", "govuk-tag--lightblue") }}
+                        {% endif %}
+                    {% endset %}
 
-                       {% set actionHtml %}
-                          <a href="/admin/view-prison-room/{{ prison.code }}/{{ result.dpsLocationId }}"
-                             class="govuk-link govuk-link--no-visited-state">View or edit
-                          </a>
-                       {% endset %}
+                    {% set actionHtml %}
+                        <a href="/admin/view-prison-room/{{ prison.code }}/{{ result.dpsLocationId }}"
+                           class="govuk-link govuk-link--no-visited-state">View or edit
+                        </a>
+                    {% endset %}
 
-                       {% set rows = (rows.push([
-                           { text: result.description },
-                           { text: result.key },
-                           { html: roomLinkHtml },
-                           { html: roomSetupHtml },
-                           { html: roomStatusHtml },
-                           { html: permissionsHtml },
-                           { html: actionHtml }
-                          ]), rows)
-                       %}
+                    {% set rows = (rows.push([
+                        { text: result.description },
+                        { text: result.key },
+                        { text: (result.extraAttributes.prisonVideoUrl | upper) or "None entered" },
+                        { html: roomSetupHtml },
+                        { html: roomStatusHtml },
+                        { html: permissionsHtml },
+                        { html: actionHtml }
+                    ]), rows) %}
 
-                   {% endfor %}
+                {% endfor %}
 
-                   {{ govukTable({
-                       attributes: {
-                         'data-module': 'moj-sortable-table'
-                       },
-                       head: [
-                          { text: "Room name" },
-                          { text: "Room key" },
-                          { text: "Room link" },
-                          { text: "Room setup", attributes: { "aria-sort": "ascending" } },
-                          { text: "Room status" },
-                          { text: "Permissions", attributes: { "aria-sort": "ascending" } },
-                          { text: "Action" }
-                      ],
-                      rows: rows
-                   }) }}
+                {{ govukTable({
+                    attributes: {
+                        'data-module': 'moj-sortable-table'
+                    },
+                    head: [
+                        { text: "Room name", attributes: { "aria-sort": "ascending" } },
+                        { text: "Room key" },
+                        { text: "Room link" },
+                        { text: "Room setup", attributes: { "aria-sort": "none" } },
+                        { text: "Room status" },
+                        { text: "Permissions", attributes: { "aria-sort": "none" } },
+                        { text: "Action" }
+                    ],
+                    rows: rows
+                }) }}
             {% else %}
-              <p class="govuk-body">
-                There are no video link locations for this prison.
-              </p>
+                <p class="govuk-body">
+                    There are no video link locations for this prison.
+                </p>
             {% endif %}
         </div>
     </div>

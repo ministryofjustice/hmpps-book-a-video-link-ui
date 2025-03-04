@@ -16,7 +16,10 @@ import {
   RequestVideoBookingRequest,
   AvailableLocationsResponse,
   AvailableLocationsRequest,
+  RoomAttributes,
+  RoomSchedule,
 } from '../@types/bookAVideoLinkApi/types'
+
 import { formatDate } from '../utils/utils'
 
 export default class BookAVideoLinkApiClient extends RestClient {
@@ -193,5 +196,29 @@ export default class BookAVideoLinkApiClient extends RestClient {
       response,
       user,
     )
+  }
+
+  public createRoomAttributes(dpsLocationId: string, request: RoomAttributes, user: Express.User): Promise<Location> {
+    return this.post({ path: `/room-admin/${dpsLocationId}`, data: request }, user)
+  }
+
+  public amendRoomAttributes(dpsLocationId: string, request: RoomAttributes, user: Express.User): Promise<Location> {
+    return this.put({ path: `/room-admin/${dpsLocationId}`, data: request }, user)
+  }
+
+  public createRoomSchedule(dpsLocationId: string, request: RoomSchedule, user: Express.User): Promise<Location> {
+    return this.post({ path: `/room-admin/${dpsLocationId}/schedule`, data: request }, user)
+  }
+
+  public amendRoomSchedule(dpsLocationId: string, request: RoomSchedule, user: Express.User): Promise<Location> {
+    return this.put({ path: `/room-admin/${dpsLocationId}/schedule`, data: request }, user)
+  }
+
+  public deleteRoomAttributes(dpsLocationId: string, user: Express.User): Promise<Location> {
+    return this.delete({ path: `/room-admin/${dpsLocationId}` }, user)
+  }
+
+  public deleteRoomSchedule(dpsLocationId: string, scheduleId: number, user: Express.User): Promise<Location> {
+    return this.delete({ path: `/room-admin/${dpsLocationId}/schedule/${scheduleId}` }, user)
   }
 }

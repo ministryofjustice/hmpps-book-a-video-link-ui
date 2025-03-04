@@ -6,12 +6,14 @@ import { Expose, Transform } from 'class-transformer'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { simpleTimeToDate } from '../../../../utils/utils'
-import PrisonService from '../../../../services/prisonService'
 import logger from '../../../../../logger'
+import PrisonService from '../../../../services/prisonService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
+import AdminService from '../../../../services/adminService'
 import Validator from '../../../validators/validator'
 import IsValidDate from '../../../validators/isValidDate'
+import { Location, RoomAttributes, RoomSchedule } from '../../../../@types/bookAVideoLinkApi/types'
 
 class Body {
   @Expose()
@@ -83,6 +85,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     private readonly prisonService: PrisonService,
     private readonly courtsService: CourtsService,
     private readonly probationTeamsService: ProbationTeamsService,
+    private readonly adminService: AdminService,
   ) {}
 
   GET = async (req: Request, res: Response) => {
@@ -97,27 +100,124 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     ])
 
     const matchingRoom = locationList.filter(loc => loc.dpsLocationId === dpsLocationId)
-
     if (matchingRoom && matchingRoom.length > 0) {
       const room = matchingRoom[0]
       res.render('pages/admin/viewPrisonRoom', { prison, room, courts, probationTeams })
     } else {
+      logger.error(`No matching room for $prisonCode and $dpsLocationId - check room attributes`)
       res.redirect(`/view-prison-locations/${prisonCode}`)
     }
   }
 
-  public POST = async (req: Request, res: Response) => {
-    const { prisonCode, dpsLocationId } = req.body
-    // const { roomStatus, permission, courtCode, probationTeamCode, videoUrl, notes } = req.body
-    // const { existingSchedule, scheduleStartDay, scheduleEndDay, schedulePermission, scheduleStartTime, scheduleEndTime } = req.body
+  POST = async (req: Request, res: Response) => {
+    const { user } = res.locals
 
     logger.info(`POST body is ${JSON.stringify(req.body, null, 2)}`)
 
-    // TODO: Save the values here
-    // TODO: Individual schedule rows saved separately?
-    // TODO: Validation class for the input values above
-    // TODO: Redirect with success message
+    // Extract the validated POST values
+    const { prisonCode, dpsLocationId, existingSchedule, permission } = req.body
+    const { roomStatus, videoUrl, notes, courtCode, probationTeamCode } = req.body
+    const { scheduleStartDay, scheduleEndDay, scheduleStartTime, scheduleEndTime } = req.body
+    const { schedulePermission, scheduleCourtCode, scheduleProbationTeamCode } = req.body
 
-    res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
+    // Find the location
+    const locationList = await this.prisonService.getAppointmentLocations(prisonCode, true, user)
+    const matchingLocation: Location[] = locationList.filter((loc: Location) => loc.dpsLocationId === dpsLocationId)
+
+    // Check that the location being amended is still visible and enabled
+    if (matchingLocation && matchingLocation.length > 0) {
+      const location = matchingLocation[0]
+
+      // Convert into a common type
+      const roomAttributes: RoomAttributes = this.buildRoomAttributes(
+        roomStatus,
+        videoUrl,
+        permission,
+        notes,
+        courtCode,
+        probationTeamCode,
+      )
+
+      // If attributes exist now, update them, otherwise create them
+      if (location.extraAttributes !== null) {
+        logger.info(`Update attributes for ${location.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
+        await this.adminService.amendRoomAttributes(location.dpsLocationId, roomAttributes, user)
+      } else {
+        logger.info(`Create attributes for ${location.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
+        await this.adminService.createRoomAttributes(location.dpsLocationId, roomAttributes, user)
+      }
+
+      // If permission is set to SCHEDULE, and no schedules pre-existed, create the initial schedule row
+      if (existingSchedule === 'false' && roomAttributes.locationUsage === 'SCHEDULE') {
+        // Convert into a recognised type
+        const roomSchedule: RoomSchedule = this.buildRoomSchedule(
+          scheduleStartDay,
+          scheduleEndDay,
+          scheduleStartTime,
+          scheduleEndTime,
+          schedulePermission,
+          scheduleCourtCode,
+          scheduleProbationTeamCode,
+        )
+
+        // Create the first schedule for this location
+        await this.adminService.createRoomSchedule(location.dpsLocationId, roomSchedule, user)
+      }
+
+      // TODO: Redirect with success message
+      res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
+    } else {
+      // Log an error - can't match the location
+      res.redirect(`/view-prison-locations/${prisonCode}`)
+    }
+  }
+
+  private buildRoomAttributes = (
+    roomStatus: string,
+    videoUrl: string,
+    permission: string,
+    notes: string,
+    courtCode: string,
+    probationTeamCode: string,
+  ): RoomAttributes => {
+    return {
+      attributeId: 0,
+      locationStatus: roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE',
+      prisonVideoUrl: videoUrl,
+      locationUsage: permission.toUpperCase(),
+      notes,
+      allowedParties: this.chooseAllowed(permission, courtCode, probationTeamCode),
+    } as RoomAttributes
+  }
+
+  private buildRoomSchedule = (
+    scheduleStartDay: string,
+    scheduleEndDay: string,
+    scheduleStartTime: string,
+    scheduleEndTime: string,
+    schedulePermission: string,
+    scheduleCourtCode: string,
+    scheduleProbationTeamCode: string,
+  ): RoomSchedule => {
+    return {
+      scheduleId: 0,
+      startDayOfWeek: scheduleStartDay,
+      endDayOfWeek: scheduleEndDay,
+      startTime: scheduleStartTime,
+      endTime: scheduleEndTime,
+      locationUsage: schedulePermission.toUpperCase(),
+      allowedParties: this.chooseAllowed(schedulePermission, scheduleCourtCode, scheduleProbationTeamCode),
+    } as RoomSchedule
+  }
+
+  private chooseAllowed = (permission: string, courtCode: string, probationTeamCode: string): string[] => {
+    switch (permission) {
+      case 'court':
+        return [courtCode]
+      case 'probation':
+        return [probationTeamCode]
+      default:
+        return []
+    }
   }
 }

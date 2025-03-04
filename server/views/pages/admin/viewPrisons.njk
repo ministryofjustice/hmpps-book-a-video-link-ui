@@ -13,40 +13,39 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             {% if prisonList.length %}
-               <div class="govuk-body">Showing<strong> {{ prisonList | length }}</strong> prisons</div>
-               <p class="govuk-body">
-                   {% set rows = [] %}
+                <p class="govuk-body">Showing <span class="govuk-!-font-weight-bold">{{ prisonList | length }}</span> prisons</p>
+                <p class="govuk-body">
+                    {% set rows = [] %}
 
-                   {% for result in prisonList %}
+                    {% for result in prisonList %}
 
-                       {% set choosePrisonHtml %}
-                         <a href="/admin/view-prison-locations/{{ result.code }}"
-                            class="govuk-link govuk-link--no-visited-state">Manage rooms
-                          </a>
-                       {% endset %}
+                    {% set choosePrisonHtml %}
+                        <a href="/admin/view-prison-locations/{{ result.code }}" class="govuk-link govuk-link--no-visited-state">Manage rooms</a>
+                    {% endset %}
 
-                       {% set rows = (rows.push([
-                           { text: result.name },
-                           { text: result.code },
-                           { html: choosePrisonHtml }
-                          ]), rows)
-                       %}
+                    {% set rows = (rows.push([
+                       { text: result.name },
+                       { text: result.code },
+                       { html: choosePrisonHtml }
+                      ]), rows)
+                    %}
 
-                   {% endfor %}
+                    {% endfor %}
 
-                   {{ govukTable({
-                       attributes: {
-                         'data-module': 'moj-sortable-table'
-                       },
-                       head: [
-                          { text: "Prison", attributes: { "aria-sort": "ascending" } },
-                          { text: "Prison code" },
-                          { html: "Action" }
-                      ],
-                      rows: rows
-                   }) }}
+                    {{ govukTable({
+                        attributes: {
+                            'data-module': 'moj-sortable-table'
+                        },
+                        head: [
+                            { text: "Prison", attributes: { "aria-sort": "ascending" } },
+                            { text: "Prison code" },
+                            { html: "Action" }
+                        ],
+                        rows: rows
+                    }) }}
+                </p>
             {% else %}
-              <p class="govuk-body">There are no prisons enabled for BVLS</p>
+                <p class="govuk-body">There are no prisons enabled for BVLS.</p>
             {% endif %}
         </div>
     </div>

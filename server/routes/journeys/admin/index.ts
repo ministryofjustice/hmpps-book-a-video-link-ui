@@ -11,6 +11,7 @@ import ExtractByBookingDateHandler from './handlers/extractByBookingDateHandler'
 import ViewPrisonsHandler from './handlers/viewPrisonsHandler'
 import ViewPrisonLocationsHandler from './handlers/viewPrisonLocationsHandler'
 import ViewPrisonRoomHandler from './handlers/viewPrisonRoomHandler'
+import config from '../../../config'
 
 export default function Index({
   auditService,
@@ -33,6 +34,13 @@ export default function Index({
   route('/', new AdminHandler())
   route('/extract-by-booking-date', new ExtractByBookingDateHandler(videoLinkService))
   route('/extract-by-hearing-date', new ExtractByHearingDateHandler(videoLinkService))
+
+  // The adminLocationDecorationEnabled feature toggle is required for the following routes
+  router.use((req, res, next) => {
+    if (!config.featureToggles.adminLocationDecorationEnabled) return res.redirect('/')
+    return next()
+  })
+
   route('/view-prison-list', new ViewPrisonsHandler(prisonService))
   route('/view-prison-locations/:prisonCode', new ViewPrisonLocationsHandler(prisonService))
   route(

@@ -1,8 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
 import { IsNotEmpty, ValidateIf } from 'class-validator'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { isValid } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
+import { NotFound } from 'http-errors'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { simpleTimeToDate } from '../../../../utils/utils'
@@ -28,6 +29,14 @@ class Body {
   permission: string
 
   @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  courtCodes: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  probationTeamCodes: string[]
+
+  @Expose()
   existingSchedule: string
 
   @Expose()
@@ -49,6 +58,14 @@ class Body {
   schedulePermission: string
 
   @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  scheduleCourtCodes: string[]
+
+  @Expose()
+  @Transform(({ value }) => (value ? [value].flat() : []))
+  scheduleProbationTeamCodes: string[]
+
+  @Expose()
   @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
   @Transform(({ value }) => simpleTimeToDate(value))
   @IsValidDate({ message: 'Enter a valid schedule start time' })
@@ -68,12 +85,6 @@ class Body {
   @IsValidDate({ message: 'Enter a valid schedule end time' })
   @IsNotEmpty({ message: 'Enter a schedule end time' })
   scheduleEndTime: Date
-
-  @Expose()
-  scheduleCourtCode: string
-
-  @Expose()
-  scheduleProbationTeamCode: string
 }
 
 export default class ViewPrisonRoomHandler implements PageHandler {
@@ -88,7 +99,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     private readonly adminService: AdminService,
   ) {}
 
-  GET = async (req: Request, res: Response) => {
+  GET = async (req: Request, res: Response, next: NextFunction) => {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
 
@@ -99,35 +110,30 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       this.probationTeamsService.getAllEnabledProbationTeams(user),
     ])
 
-    const matchingRoom = locationList.filter(loc => loc.dpsLocationId === dpsLocationId)
-    if (matchingRoom && matchingRoom.length > 0) {
-      const room = matchingRoom[0]
+    const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
+    if (room) {
       res.render('pages/admin/viewPrisonRoom', { prison, room, courts, probationTeams })
     } else {
-      logger.error(`No matching room for $prisonCode and $dpsLocationId - check room attributes`)
-      res.redirect(`/view-prison-locations/${prisonCode}`)
+      next(new NotFound())
     }
   }
 
-  POST = async (req: Request, res: Response) => {
+  public POST = async (req: Request, res: Response, next: NextFunction) => {
     const { user } = res.locals
+    const { prisonCode, dpsLocationId } = req.params
 
     logger.info(`POST body is ${JSON.stringify(req.body, null, 2)}`)
 
-    // Extract the validated POST values
-    const { prisonCode, dpsLocationId, existingSchedule, permission } = req.body
-    const { roomStatus, videoUrl, notes, courtCode, probationTeamCode } = req.body
+    const { roomStatus, videoUrl, permission, existingSchedule, notes, courtCode, probationTeamCode } = req.body
     const { scheduleStartDay, scheduleEndDay, scheduleStartTime, scheduleEndTime } = req.body
     const { schedulePermission, scheduleCourtCode, scheduleProbationTeamCode } = req.body
 
     // Find the location
     const locationList = await this.prisonService.getAppointmentLocations(prisonCode, true, user)
-    const matchingLocation: Location[] = locationList.filter((loc: Location) => loc.dpsLocationId === dpsLocationId)
+    const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
 
     // Check that the location being amended is still visible and enabled
-    if (matchingLocation && matchingLocation.length > 0) {
-      const location = matchingLocation[0]
-
+    if (room) {
       // Convert into a common type
       const roomAttributes: RoomAttributes = this.buildRoomAttributes(
         roomStatus,
@@ -139,12 +145,12 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       )
 
       // If attributes exist now, update them, otherwise create them
-      if (location.extraAttributes !== null) {
-        logger.info(`Update attributes for ${location.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
-        await this.adminService.amendRoomAttributes(location.dpsLocationId, roomAttributes, user)
+      if (room.extraAttributes !== null) {
+        logger.info(`Update attributes for ${room.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
+        await this.adminService.amendRoomAttributes(room.dpsLocationId, roomAttributes, user)
       } else {
-        logger.info(`Create attributes for ${location.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
-        await this.adminService.createRoomAttributes(location.dpsLocationId, roomAttributes, user)
+        logger.info(`Create attributes for ${room.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
+        await this.adminService.createRoomAttributes(room.dpsLocationId, roomAttributes, user)
       }
 
       // If permission is set to SCHEDULE, and no schedules pre-existed, create the initial schedule row
@@ -161,14 +167,13 @@ export default class ViewPrisonRoomHandler implements PageHandler {
         )
 
         // Create the first schedule for this location
-        await this.adminService.createRoomSchedule(location.dpsLocationId, roomSchedule, user)
+        await this.adminService.createRoomSchedule(room.dpsLocationId, roomSchedule, user)
       }
 
       // TODO: Redirect with success message
       res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
     } else {
-      // Log an error - can't match the location
-      res.redirect(`/view-prison-locations/${prisonCode}`)
+      next(new NotFound())
     }
   }
 

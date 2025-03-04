@@ -59,13 +59,13 @@
     {# Conditionally revealed select list for courts #}
 
     {% set courtScheduleHtml %}
-        {{  selectCourtFromList(courts, "scheduleCourtCode") }}
+        {{  selectCourtFromList(courts, "scheduleCourtCodes") }}
     {% endset -%}
 
     {# Conditionally revealed select list for probation teams #}
 
     {% set probationScheduleHtml %}
-        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCode") }}
+        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes") }}
     {% endset -%}
 
     {# Schedule row permissions #}
@@ -79,7 +79,6 @@
         fieldset: {
             legend: {
                 text: "Select permissions",
-                isPageHeading: true,
                 classes: 'govuk-fieldset__legend--m'
             }
         },

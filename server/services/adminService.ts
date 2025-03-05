@@ -1,4 +1,5 @@
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
+import { dayOfWeekArray } from '../utils/utils'
 import {
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
@@ -7,8 +8,6 @@ import {
   RoomAttributes,
   RoomSchedule,
 } from '../@types/bookAVideoLinkApi/types'
-import { dayOfWeekArray } from '../utils/utils'
-import logger from '../../logger'
 
 export default class AdminService {
   constructor(private readonly bookAVideoLinkApiClient: BookAVideoLinkApiClient) {}
@@ -21,8 +20,6 @@ export default class AdminService {
       allowedParties: attributes.allowedParties,
       comments: attributes.notes,
     } as CreateDecoratedRoomRequest
-
-    logger.info(`Request for create room attributes = ${JSON.stringify(request, null, 2)}`)
     return this.bookAVideoLinkApiClient.createRoomAttributes(dpsLocationId, request, user)
   }
 
@@ -34,8 +31,6 @@ export default class AdminService {
       prisonVideoUrl: attributes.prisonVideoUrl,
       comments: attributes.notes,
     } as AmendDecoratedRoomRequest
-
-    logger.info(`Request for amend room attributes = ${JSON.stringify(request, null, 2)}`)
     return this.bookAVideoLinkApiClient.amendRoomAttributes(dpsLocationId, request, user)
   }
 
@@ -52,8 +47,6 @@ export default class AdminService {
       locationUsage: schedule.locationUsage,
       allowedParties: schedule.allowedParties,
     } as CreateRoomScheduleRequest
-
-    logger.info(`Request for create schedule = ${JSON.stringify(request, null, 2)}`)
     return this.bookAVideoLinkApiClient.createRoomSchedule(dpsLocationId, request, user)
   }
 

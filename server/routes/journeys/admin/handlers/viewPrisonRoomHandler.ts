@@ -7,7 +7,6 @@ import { NotFound } from 'http-errors'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { dayOfWeekArray, simpleTimeToDate } from '../../../../utils/utils'
-import logger from '../../../../../logger'
 import PrisonService from '../../../../services/prisonService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
@@ -121,10 +120,8 @@ export default class ViewPrisonRoomHandler implements PageHandler {
   public POST = async (req: Request, res: Response, next: NextFunction) => {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
-
-    logger.info(`POST body is ${JSON.stringify(req.body, null, 2)}`)
-
     const { roomStatus, videoUrl, permission, existingSchedule, notes, courtCodes, probationTeamCodes } = req.body
+
     const locationList: Location[] = await this.prisonService.getAppointmentLocations(prisonCode, true, user)
     const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
 
@@ -139,17 +136,14 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       )
 
       if (room.extraAttributes) {
-        logger.info(`Update attributes for ${room.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
         await this.adminService.amendRoomAttributes(room.dpsLocationId, roomAttributes, user)
       } else {
-        logger.info(`Create attributes for ${room.description} to ${JSON.stringify(roomAttributes, null, 2)}`)
         await this.adminService.createRoomAttributes(room.dpsLocationId, roomAttributes, user)
       }
 
       if (existingSchedule === 'false' && roomAttributes.locationUsage === 'SCHEDULE') {
         const { scheduleStartDay, scheduleEndDay, scheduleStartTime, scheduleEndTime } = req.body
         const { schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes } = req.body
-
         const roomSchedule: RoomSchedule = this.buildRoomSchedule(
           scheduleStartDay,
           scheduleEndDay,
@@ -160,11 +154,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
           scheduleProbationTeamCodes,
         )
 
-        logger.info(`Create initial schedule ${room.description} to ${JSON.stringify(roomSchedule, null, 2)}`)
-
         await this.adminService.createRoomSchedule(room.dpsLocationId, roomSchedule, user)
-      } else {
-        logger.info(`Not creating any schedules this time for ${room.description}`)
       }
 
       // TODO: Redirect with success message
@@ -188,7 +178,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       prisonVideoUrl: videoUrl,
       locationUsage: permission.toUpperCase(),
       notes,
-      allowedParties: this.chooseAllowed(permission, courtCodes, probationTeamCodes),
+      allowedParties: this.chooseAllowedParties(permission, courtCodes, probationTeamCodes),
     } as RoomAttributes
   }
 
@@ -201,7 +191,6 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     scheduleCourtCodes: string[],
     scheduleProbationTeamCodes: string[],
   ): RoomSchedule => {
-    // Format dates and times into the RoomsSchedule
     const startDayOfWeek: string = dayOfWeekArray()[parseInt(scheduleStartDay, 10) - 1]
     const endDayOfWeek: string = dayOfWeekArray()[parseInt(scheduleEndDay, 10) - 1]
     const startTimeDate = parseISO(scheduleStartTime)
@@ -214,11 +203,11 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       startTime: format(startTimeDate, 'HH:mm'),
       endTime: format(endTimeDate, 'HH:mm'),
       locationUsage: schedulePermission.toUpperCase(),
-      allowedParties: this.chooseAllowed(schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes),
+      allowedParties: this.chooseAllowedParties(schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes),
     } as RoomSchedule
   }
 
-  private chooseAllowed = (permission: string, courtCodes: string[], probationTeamCodes: string[]): string[] => {
+  private chooseAllowedParties = (permission: string, courtCodes: string[], probationTeamCodes: string[]): string[] => {
     switch (permission) {
       case 'court':
         return courtCodes

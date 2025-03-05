@@ -6,7 +6,7 @@ import { Expose, Transform } from 'class-transformer'
 import { NotFound } from 'http-errors'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import { dayOfWeekArray, simpleTimeToDate } from '../../../../utils/utils'
+import { getDaysOfWeek, simpleTimeToDate } from '../../../../utils/utils'
 import PrisonService from '../../../../services/prisonService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
@@ -191,8 +191,8 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     scheduleCourtCodes: string[],
     scheduleProbationTeamCodes: string[],
   ): RoomSchedule => {
-    const startDayOfWeek: string = dayOfWeekArray()[parseInt(scheduleStartDay, 10) - 1]
-    const endDayOfWeek: string = dayOfWeekArray()[parseInt(scheduleEndDay, 10) - 1]
+    const startDayOfWeek: string = getDaysOfWeek()[parseInt(scheduleStartDay, 10) - 1]
+    const endDayOfWeek: string = getDaysOfWeek()[parseInt(scheduleEndDay, 10) - 1]
     const startTimeDate = parseISO(scheduleStartTime)
     const endTimeDate = parseISO(scheduleEndTime)
 

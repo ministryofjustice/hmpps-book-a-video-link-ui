@@ -1,5 +1,5 @@
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { dayOfWeekArray } from '../utils/utils'
+import { getDaysOfWeek } from '../utils/utils'
 import {
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
@@ -40,8 +40,8 @@ export default class AdminService {
 
   async createRoomSchedule(dpsLocationId: string, schedule: RoomSchedule, user: Express.User): Promise<Location> {
     const request = {
-      startDayOfWeek: dayOfWeekArray().indexOf(schedule.startDayOfWeek) + 1,
-      endDayOfWeek: dayOfWeekArray().indexOf(schedule.endDayOfWeek) + 1,
+      startDayOfWeek: getDaysOfWeek().indexOf(schedule.startDayOfWeek) + 1,
+      endDayOfWeek: getDaysOfWeek().indexOf(schedule.endDayOfWeek) + 1,
       startTime: schedule.startTime,
       endTime: schedule.endTime,
       locationUsage: schedule.locationUsage,

@@ -2,9 +2,9 @@ import { isValid, parse } from 'date-fns'
 import {
   convertToTitleCase,
   dateAtTime,
-  dayOfWeekArray,
   extractPrisonAppointmentsFromBooking,
   formatDate,
+  getDaysOfWeek,
   initialiseName,
   parseDate,
   parseDatePickerDate,
@@ -223,8 +223,8 @@ describe('toDateString', () => {
   })
 })
 
-describe('dayOfWeekArray', () => {
-  it('Produces a day of week array ', () => {
-    expect(dayOfWeekArray()).toEqual(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'])
+describe('getDaysOfWeek', () => {
+  it('Produces an array containing uppercase days of the week starting with MONDAY', () => {
+    expect(getDaysOfWeek()).toEqual(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'])
   })
 })

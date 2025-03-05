@@ -4,6 +4,7 @@ import {
   dateAtTime,
   extractPrisonAppointmentsFromBooking,
   formatDate,
+  getDaysOfWeek,
   initialiseName,
   parseDate,
   parseDatePickerDate,
@@ -219,5 +220,11 @@ describe('toDateString', () => {
   it('converts a date to a string', () => {
     expect(toDateString(new Date(2022, 2, 31))).toEqual('2022-03-31')
     expect(toDateString(new Date(2022, 9, 20))).toEqual('2022-10-20')
+  })
+})
+
+describe('getDaysOfWeek', () => {
+  it('Produces an array containing uppercase days of the week starting with MONDAY', () => {
+    expect(getDaysOfWeek()).toEqual(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'])
   })
 })

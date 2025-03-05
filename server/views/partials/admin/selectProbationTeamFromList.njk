@@ -1,6 +1,6 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
-{% macro selectProbationTeamFromList(teams, fieldName) %}
+{% macro selectProbationTeamFromList(teams, fieldName, room) %}
 
     {# TODO: This section needs an Add Another wrapper to allow multiple teams to be set #}
 
@@ -10,7 +10,7 @@
         {% set items = (items.push({
             value: team.code,
             text: team.description,
-            selected: formResponses[fieldName] == team.code
+            selected: formResponses[fieldName] == team.code or (room.extraAttributes.locationUsage == 'PROBATION' and team.code in room.extraAttributes.allowedParties)
         }), items) %}
     {% endfor %}
 

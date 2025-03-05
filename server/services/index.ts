@@ -9,6 +9,7 @@ import VideoLinkService from './videoLinkService'
 import ReferenceDataService from './referenceDataService'
 import CourtBookingService from './courtBookingService'
 import ProbationBookingService from './probationBookingService'
+import AdminService from './adminService'
 
 export const services = () => {
   const {
@@ -30,6 +31,7 @@ export const services = () => {
   const prisonerService = new PrisonerService(prisonerOffenderSearchApiClient)
   const videoLinkService = new VideoLinkService(bookAVideoLinkApiClient, prisonerOffenderSearchApiClient)
   const referenceDataService = new ReferenceDataService(bookAVideoLinkApiClient)
+  const adminService = new AdminService(bookAVideoLinkApiClient)
 
   return {
     applicationInfo,
@@ -43,6 +45,7 @@ export const services = () => {
     prisonerService,
     referenceDataService,
     videoLinkService,
+    adminService,
   }
 }
 

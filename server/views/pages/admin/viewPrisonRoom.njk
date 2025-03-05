@@ -77,11 +77,11 @@
                 }) }}
 
                 {% set courtHtml %}
-                    {{  selectCourtFromList(courts, "courtCodes") }}
+                    {{  selectCourtFromList(courts, "courtCodes", room) }}
                 {% endset %}
 
                 {% set probationHtml %}
-                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCodes") }}
+                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCodes", room) }}
                 {% endset %}
 
                 {% set scheduleHtml %}

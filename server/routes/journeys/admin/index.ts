@@ -19,6 +19,7 @@ export default function Index({
   prisonService,
   courtsService,
   probationTeamsService,
+  adminService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -44,7 +45,7 @@ export default function Index({
   route('/view-prison-locations/:prisonCode', new ViewPrisonLocationsHandler(prisonService))
   route(
     '/view-prison-room/:prisonCode/:dpsLocationId',
-    new ViewPrisonRoomHandler(prisonService, courtsService, probationTeamsService),
+    new ViewPrisonRoomHandler(prisonService, courtsService, probationTeamsService, adminService),
   )
 
   return router

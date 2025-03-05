@@ -1,0 +1,36 @@
+.moj-add-another {
+
+  &__item {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  &__item:not(:first-of-type) label {
+    display: none;
+  }
+
+  &__add-button {
+    @extend .govuk-link;
+    display: none; // Hidden with JS disabled
+    position: relative;
+    margin-top: 10px;
+    font-family: "GDS Transport", Arial, sans-serif;
+    font-size: 1.1875rem;
+    background: none;
+    border: none;
+    color: #1d70b8;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  &__remove-button {
+    @extend .moj-add-another__add-button;
+    height: 40px;
+    margin: 0 10px;
+  }
+}
+
+.js-enabled .moj-add-another__add-button {
+  display: revert;
+}

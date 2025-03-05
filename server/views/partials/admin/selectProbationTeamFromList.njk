@@ -1,28 +1,32 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% macro selectProbationTeamFromList(teams, fieldName, room) %}
+    <div class="moj-add-another">
+        {% set items = [{ text: "", value: "", selected: false }] %}
 
-    {# TODO: This section needs an Add Another wrapper to allow multiple teams to be set #}
+        {% for team in teams %}
+            {% set items = (items.push({
+                value: team.code,
+                text: team.description,
+                selected: formResponses[fieldName] == team.code or (room.extraAttributes.locationUsage == 'PROBATION' and team.code in room.extraAttributes.allowedParties)
+            }), items) %}
+        {% endfor %}
 
-    {% set items = [{ text: "", value: "", selected: false }] %}
+        <fieldset class="govuk-fieldset moj-add-another__item">
+            {{ govukSelect({
+                name: fieldName,
+                id: fieldName,
+                items: items,
+                label: {
+                    text: "Allocate probation team (optional)"
+                },
+                errorMessage: validationErrors | findError(fieldName)
+            }) }}
+        </fieldset>
 
-    {% for team in teams %}
-        {% set items = (items.push({
-            value: team.code,
-            text: team.description,
-            selected: formResponses[fieldName] == team.code or (room.extraAttributes.locationUsage == 'PROBATION' and team.code in room.extraAttributes.allowedParties)
-        }), items) %}
-    {% endfor %}
-
-    {{ govukSelect({
-        name: fieldName,
-        id: fieldName,
-        items: items,
-        label: {
-            text: "Specify probation team (optional)"
-        },
-        errorMessage: validationErrors | findError(fieldName),
-        classes: "govuk-!-width-one-third"
-    }) }}
-
+        <div class="moj-button-action">
+            <button type="button" class="moj-add-another__add-button">Add another probation team</button>
+        </div>
+    </div>
 {% endmacro %}

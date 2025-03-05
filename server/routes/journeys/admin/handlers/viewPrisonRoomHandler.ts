@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express'
 import { isValid, parseISO, format } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
 import { NotFound } from 'http-errors'
+import _ from 'lodash'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { getDaysOfWeek, simpleTimeToDate } from '../../../../utils/utils'
@@ -28,11 +29,11 @@ class Body {
   permission: string
 
   @Expose()
-  @Transform(({ value }) => (value ? [value].flat() : []))
+  @Transform(({ value }) => (value ? _.uniq([value].flat().filter(Boolean)) : []))
   courtCodes: string[]
 
   @Expose()
-  @Transform(({ value }) => (value ? [value].flat() : []))
+  @Transform(({ value }) => (value ? _.uniq([value].flat().filter(Boolean)) : []))
   probationTeamCodes: string[]
 
   @Expose()
@@ -57,11 +58,11 @@ class Body {
   schedulePermission: string
 
   @Expose()
-  @Transform(({ value }) => (value ? [value].flat() : []))
+  @Transform(({ value }) => (value ? _.uniq([value].flat().filter(Boolean)) : []))
   scheduleCourtCodes: string[]
 
   @Expose()
-  @Transform(({ value }) => (value ? [value].flat() : []))
+  @Transform(({ value }) => (value ? _.uniq([value].flat().filter(Boolean)) : []))
   scheduleProbationTeamCodes: string[]
 
   @Expose()
@@ -111,7 +112,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
 
     const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
     if (room) {
-      res.render('pages/admin/viewPrisonRoom', { prison, room, courts, probationTeams })
+      res.render('pages/admin/prisonRoomDecorations', { prison, room, courts, probationTeams })
     } else {
       next(new NotFound())
     }

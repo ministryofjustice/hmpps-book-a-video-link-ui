@@ -2,6 +2,7 @@ import { isValid, parse } from 'date-fns'
 import {
   convertToTitleCase,
   dateAtTime,
+  dayOfWeekArray,
   extractPrisonAppointmentsFromBooking,
   formatDate,
   initialiseName,
@@ -219,5 +220,11 @@ describe('toDateString', () => {
   it('converts a date to a string', () => {
     expect(toDateString(new Date(2022, 2, 31))).toEqual('2022-03-31')
     expect(toDateString(new Date(2022, 9, 20))).toEqual('2022-10-20')
+  })
+})
+
+describe('dayOfWeekArray', () => {
+  it('Produces a day of week array ', () => {
+    expect(dayOfWeekArray()).toEqual(['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'])
   })
 })

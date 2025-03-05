@@ -1,4 +1,4 @@
-import { format, isValid, parse, parseISO, set, startOfToday } from 'date-fns'
+import { format, isValid, parse, parseISO, set, startOfToday, addDays, startOfWeek } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 
@@ -90,3 +90,8 @@ export const extractPrisonAppointmentsFromBooking = (booking: VideoLinkBooking) 
 }
 
 export const toDateString = (date: Date) => format(date, 'yyyy-MM-dd')
+
+export const dayOfWeekArray = () => {
+  const first = startOfWeek(new Date(), { weekStartsOn: 1 })
+  return Array.from(Array(7)).map((e, i) => format(addDays(first, i), 'EEEE').toUpperCase(), { weekStartsOn: '1' })
+}

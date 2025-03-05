@@ -1,6 +1,6 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 
-{% macro selectCourtFromList(courts, fieldName) %}
+{% macro selectCourtFromList(courts, fieldName, room) %}
 
     {# TODO: This section needs an Add Another wrapper to allow multiple courts to be set #}
 
@@ -10,7 +10,7 @@
         {% set items = (items.push({
             value: court.code,
             text: court.description,
-            selected: formResponses[fieldName] == court.code
+            selected: formResponses[fieldName] == court.code or (room.extraAttributes.locationUsage == 'COURT' and court.code in room.extraAttributes.allowedParties)
         }), items) %}
     {% endfor %}
 

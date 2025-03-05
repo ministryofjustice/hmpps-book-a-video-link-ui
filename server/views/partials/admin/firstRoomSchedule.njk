@@ -59,13 +59,13 @@
     {# Conditionally revealed select list for courts #}
 
     {% set courtScheduleHtml %}
-        {{  selectCourtFromList(courts, "scheduleCourtCodes") }}
+        {{  selectCourtFromList(courts, "scheduleCourtCodes", room) }}
     {% endset -%}
 
     {# Conditionally revealed select list for probation teams #}
 
     {% set probationScheduleHtml %}
-        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes") }}
+        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes", room) }}
     {% endset -%}
 
     {# Schedule row permissions #}

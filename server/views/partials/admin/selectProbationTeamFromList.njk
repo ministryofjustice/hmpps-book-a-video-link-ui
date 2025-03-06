@@ -1,32 +1,40 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro selectProbationTeamFromList(teams, fieldName, room) %}
+{% macro selectProbationTeamFromList(teams, fieldName, room, formResponses, validationErrors) %}
     <div class="moj-add-another">
-        {% set items = [{ text: "", value: "", selected: false }] %}
+        {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'PROBATION') or [""] %}
 
-        {% for team in teams %}
-            {% set items = (items.push({
-                value: team.code,
-                text: team.description,
-                selected: formResponses[fieldName] == team.code or (room.extraAttributes.locationUsage == 'PROBATION' and team.code in room.extraAttributes.allowedParties)
-            }), items) %}
+        {% for value in selectsToRender %}
+            <fieldset class="govuk-fieldset moj-add-another__item">
+                {% set items = [{ text: "", value: "" }] %}
+                {% for team in teams %}
+                    {% set items = (items.push({
+                        value: team.code,
+                        text: team.description,
+                        selected: value == team.code
+                    }), items) %}
+                {% endfor %}
+
+                {{ govukSelect({
+                    name: fieldName,
+                    id: fieldName + (("-" + loop.index0) if loop.index0 > 0),
+                    items: items,
+                    label: {
+                        text: "Allocate probation team (optional)"
+                    },
+                    errorMessage: validationErrors | findError(fieldName)
+                }) }}
+
+                {% if selectsToRender.length > 1 %}
+                    <button type="button" class="moj-add-another__remove-button">Remove</button>
+                {% endif %}
+            </fieldset>
         {% endfor %}
-
-        <fieldset class="govuk-fieldset moj-add-another__item">
-            {{ govukSelect({
-                name: fieldName,
-                id: fieldName,
-                items: items,
-                label: {
-                    text: "Allocate probation team (optional)"
-                },
-                errorMessage: validationErrors | findError(fieldName)
-            }) }}
-        </fieldset>
 
         <div class="moj-button-action">
             <button type="button" class="moj-add-another__add-button">Add another probation team</button>
         </div>
     </div>
 {% endmacro %}
+

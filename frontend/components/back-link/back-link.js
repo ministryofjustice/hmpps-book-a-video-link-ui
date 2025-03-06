@@ -6,6 +6,8 @@ export default function BackLink(backLink) {
   }
 
   this.backLink.addEventListener('click', e => {
+    if (e.href !== '#') return
+
     e.preventDefault()
     if (document.getElementsByClassName('govuk-error-summary__list').length > 0) {
       window.history.go(-2)

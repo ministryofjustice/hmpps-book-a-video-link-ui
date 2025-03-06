@@ -1,29 +1,36 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro selectCourtFromList(courts, fieldName, room) %}
+{% macro selectCourtFromList(courts, fieldName, room, formResponses, validationErrors) %}
     <div class="moj-add-another">
-        {% set items = [{ text: "", value: "", selected: false }] %}
+        {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'COURT') or [""] %}
 
-        {% for court in courts %}
-            {% set items = (items.push({
-                value: court.code,
-                text: court.description,
-                selected: formResponses[fieldName] == court.code or (room.extraAttributes.locationUsage == 'COURT' and court.code in room.extraAttributes.allowedParties)
-            }), items) %}
+        {% for value in selectsToRender %}
+            <fieldset class="govuk-fieldset moj-add-another__item">
+                {% set items = [{ text: "", value: "" }] %}
+                {% for court in courts %}
+                    {% set items = (items.push({
+                        value: court.code,
+                        text: court.description,
+                        selected: value == court.code
+                    }), items) %}
+                {% endfor %}
+
+                {{ govukSelect({
+                    name: fieldName,
+                    id: fieldName + (("-" + loop.index0) if loop.index0 > 0),
+                    items: items,
+                    label: {
+                        text: "Allocate court (optional)"
+                    },
+                    errorMessage: validationErrors | findError(fieldName)
+                }) }}
+
+                {% if selectsToRender.length > 1 %}
+                    <button type="button" class="moj-add-another__remove-button">Remove</button>
+                {% endif %}
+            </fieldset>
         {% endfor %}
-
-        <fieldset class="govuk-fieldset moj-add-another__item">
-            {{ govukSelect({
-                name: fieldName,
-                id: fieldName,
-                items: items,
-                label: {
-                    text: "Allocate court (optional)"
-                },
-                errorMessage: validationErrors | findError(fieldName)
-            }) }}
-        </fieldset>
 
         <div class="moj-button-action">
             <button type="button" class="moj-add-another__add-button">Add another court</button>

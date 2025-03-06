@@ -20,7 +20,8 @@
 {% if not hideBackLink %}
   <nav>
     {{ govukBackLink({
-      text: "Back"
+      text: backLinkText or "Back",
+      href: backLinkHref
     }) }}
   </nav>
 {% endif %}

@@ -12,6 +12,9 @@
 {% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
 {% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
 
+{% set backLinkText = "Back to room list" %}
+{% set backLinkHref = "/admin/view-prison-locations/" + prison.code %}
+
 {% set pageTitle = room.description %}
 
 {% block content %}
@@ -77,7 +80,7 @@
                 }) }}
 
                 {% set courtHtml %}
-                    {{  selectCourtFromList(courts, "courtCodes", room) }}
+                    {{  selectCourtFromList(courts, "courtCodes", room, formResponses, validationErrors) }}
                 {% endset %}
 
                 {% set probationHtml %}

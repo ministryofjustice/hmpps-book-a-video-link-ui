@@ -1,5 +1,5 @@
 // eslint-disable-next-line max-classes-per-file
-import { IsNotEmpty, ValidateIf } from 'class-validator'
+import { IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
 import { NextFunction, Request, Response } from 'express'
 import { isValid, parseISO, format } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
@@ -18,14 +18,15 @@ import { Location, RoomAttributes, RoomSchedule } from '../../../../@types/bookA
 
 class Body {
   @Expose()
-  @IsNotEmpty({ message: `Select a room status` })
+  @IsNotEmpty({ message: 'Select a room status' })
   roomStatus: string
 
   @Expose()
+  @MaxLength(120, { message: 'The room link must be less than 120 characters' })
   videoUrl: string
 
   @Expose()
-  @IsNotEmpty({ message: `Select a room permission` })
+  @IsNotEmpty({ message: 'Select a room permission' })
   permission: string
 
   @Expose()
@@ -41,7 +42,7 @@ class Body {
 
   @Expose()
   @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
-  @IsNotEmpty({ message: `Select a schedule start day` })
+  @IsNotEmpty({ message: 'Select a schedule start day' })
   scheduleStartDay: string
 
   @Expose()
@@ -49,12 +50,12 @@ class Body {
   @Validator((scheduleEndDay, { scheduleStartDay }) => +scheduleEndDay >= +scheduleStartDay, {
     message: 'Enter a schedule end day that is the same or after the schedule start day',
   })
-  @IsNotEmpty({ message: `Select a schedule end day` })
+  @IsNotEmpty({ message: 'Select a schedule end day' })
   scheduleEndDay: string
 
   @Expose()
   @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
-  @IsNotEmpty({ message: `Select a schedule permission` })
+  @IsNotEmpty({ message: 'Select a schedule permission' })
   schedulePermission: string
 
   @Expose()
@@ -85,6 +86,10 @@ class Body {
   @IsValidDate({ message: 'Enter a valid schedule end time' })
   @IsNotEmpty({ message: 'Enter a schedule end time' })
   scheduleEndTime: Date
+
+  @Expose()
+  @MaxLength(400, { message: 'The comments must be less than 400 characters' })
+  notes: string
 }
 
 export default class ViewPrisonRoomHandler implements PageHandler {
@@ -158,7 +163,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
         await this.adminService.createRoomSchedule(room.dpsLocationId, roomSchedule, user)
       }
 
-      // TODO: Redirect with success message
+      res.addSuccessMessage('', 'Room changes have been saved')
       res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
     } else {
       next(new NotFound())

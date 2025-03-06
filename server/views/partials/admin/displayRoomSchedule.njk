@@ -33,7 +33,7 @@
 
         {# TODO: pass in the codes / description mapping for allowedParties #}
 
-        {% set specificHtml %}
+        {% set allocationsHtml %}
             {% for party in schedule.allowedParties %}
                 <span>{{ party | upper }}</span>
             {% endfor %}
@@ -42,10 +42,10 @@
         {% set rows = (rows.push([
             { text: schedule.startDayOfWeek | capitalize },
             { text: schedule.endDayOfWeek | capitalize },
-            { text: schedule.startTime },
-            { text: schedule.endTime },
+            { text: schedule.startTime | truncate(5, true, '') },
+            { text: schedule.endTime | truncate(5, true, '') },
             { html: usageHtml },
-            { html: specificHtml },
+            { html: allocationsHtml },
             { html: editLinksHtml }
         ]), rows) %}
 
@@ -60,7 +60,7 @@
             { text: "Start time" },
             { text: "End time" },
             { text: "Permissions" },
-            { text: "Specifics" },
+            { text: "Allocations" },
             { text: "Action" }
         ],
         rows: rows

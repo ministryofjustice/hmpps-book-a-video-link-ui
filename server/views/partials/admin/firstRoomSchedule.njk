@@ -1,6 +1,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
 {% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
 
@@ -107,7 +108,24 @@
         ]
     }) }}
 
-    <h2 class="govuk-heading-m">Select times</h2>
+    {# All day times - 08:00 - 18:00 by default if clicked #}
+
+    {{ govukCheckboxes({
+        name: "allDay",
+        id: "allDay",
+        fieldset: {
+            legend: {
+                text: "Select times",
+                classes: "govuk-fieldset__legend--m"
+            }
+        },
+        items: [
+            {
+                value: "Yes",
+                text: "All day 08:00 - 18:00"
+            }
+        ]
+    }) }}
 
     {# Start time #}
 

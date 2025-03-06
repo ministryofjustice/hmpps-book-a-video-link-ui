@@ -75,7 +75,14 @@ export interface paths {
      *     * BOOK_A_VIDEO_LINK_ADMIN
      */
     post: operations['createDecoratedRoom']
-    delete?: never
+    /**
+     * Endpoint to support deletion of a decorated location including any schedules if there are any.
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     */
+    delete: operations['deleteDecoratedLocation']
     options?: never
     head?: never
     patch?: never
@@ -948,7 +955,10 @@ export interface components {
       locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
       /**
        * @description Court or probation team codes allowed to use the room (comma-separated list)
-       * @example [YRKMAG,DRBYJS
+       * @example [
+       *       "YRKMAG",
+       *       "DRBYJS"
+       *     ]
        */
       allowedParties: string[]
       /**
@@ -1000,7 +1010,7 @@ export interface components {
        * @example SHARED
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
+      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'BLOCKED'
       /**
        * @description Court or probation codes (comma-separated) that can use the room within this slot
        * @example [YRKMAG,DRBYJS]
@@ -2382,6 +2392,62 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteDecoratedLocation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dpsLocationId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The decoration was deleted. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The video booking ID was not found. */
+      404: {
         headers: {
           [name: string]: unknown
         }

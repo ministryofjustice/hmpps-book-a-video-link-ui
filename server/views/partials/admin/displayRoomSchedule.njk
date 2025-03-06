@@ -9,7 +9,7 @@
    - room: Room object(LocationAttribute)
 #}
 
-{% macro displayRoomSchedule(prison, room) %}
+{% macro displayRoomSchedule(prison, room, courts, probationTeams) %}
 
     <input type="hidden" name="existingSchedule" value="true" />
 
@@ -31,12 +31,16 @@
             {{ locationUsageTag(schedule.locationUsage | convertToTitleCase, "govuk-tag--blue") }}
         {% endset %}
 
-        {# TODO: pass in the codes / description mapping for allowedParties #}
-
         {% set allocationsHtml %}
+            <table>
             {% for party in schedule.allowedParties %}
-                <span>{{ party | upper }}</span>
+                {% if schedule.locationUsage === 'COURT' %}
+                    <tr><td>{{ (courts | find('code', party)).description or 'Unknown court' }}</td></tr>
+                {% else %}
+                    <tr><td>{{ (probationTeams | find('code', party)).description or 'Unknown team' }}</td></tr>
+                {% endif %}
             {% endfor %}
+            </table>
         {% endset %}
 
         {% set rows = (rows.push([

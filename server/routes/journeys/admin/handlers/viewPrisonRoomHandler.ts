@@ -17,6 +17,10 @@ import IsValidDate from '../../../validators/isValidDate'
 import { Location, RoomAttributes, RoomSchedule } from '../../../../@types/bookAVideoLinkApi/types'
 import logger from '../../../../../logger'
 
+// Define the start and end of day times for use with the `all-day` checkbox on schedules
+const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
+const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')
+
 class Body {
   @Expose()
   @IsNotEmpty({ message: 'Select a room status' })
@@ -161,8 +165,8 @@ export default class ViewPrisonRoomHandler implements PageHandler {
         const { schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes } = req.body
 
         // Automatically add the start and end times if the all-day checkbox is clicked
-        const startTime = allDay ? new Date('1970-01-01T07:00:00.000Z').toISOString() : scheduleStartTime.toISOString()
-        const endTime = allDay ? new Date('1970-01-01T17:00:00.000Z').toISOString() : scheduleEndTime.toISOString()
+        const startTime: string = allDay ? START_OF_DAY_TIME.toISOString() : scheduleStartTime.toISOString()
+        const endTime: string = allDay ? END_OF_DAY_TIME.toISOString() : scheduleEndTime.toISOString()
 
         const roomSchedule: RoomSchedule = this.buildRoomSchedule(
           scheduleStartDay,

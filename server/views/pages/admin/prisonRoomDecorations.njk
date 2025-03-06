@@ -90,10 +90,8 @@
                 {% set scheduleHtml %}
                     {# Conditional schedules - list of existing rows or prompt for first entry #}
                     {% if room.extraAttributes.schedule.length %}
-                        {# Display existing schedules and edit links #}
-                        {{ displayRoomSchedule(prison, room) }}
+                        {{ displayRoomSchedule(prison, room, courts, probationTeams) }}
                     {% else %}
-                        {# Display the input fields for a first schedule row #}
                         {{ firstRoomSchedule(prison, room, courts, probationTeams, formResponses, validationErrors) }}
                     {% endif %}
                 {% endset %}

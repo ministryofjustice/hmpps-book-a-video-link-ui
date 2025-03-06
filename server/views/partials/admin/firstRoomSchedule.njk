@@ -59,7 +59,7 @@
     {# Conditionally revealed select list for courts #}
 
     {% set courtScheduleHtml %}
-        {{  selectCourtFromList(courts, "scheduleCourtCodes", room) }}
+        {{  selectCourtFromList(courts, "scheduleCourtCodes", room, formResponses, validationErrors) }}
     {% endset -%}
 
     {# Conditionally revealed select list for probation teams #}

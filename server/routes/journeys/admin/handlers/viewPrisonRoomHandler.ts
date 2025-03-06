@@ -15,6 +15,7 @@ import AdminService from '../../../../services/adminService'
 import Validator from '../../../validators/validator'
 import IsValidDate from '../../../validators/isValidDate'
 import { Location, RoomAttributes, RoomSchedule } from '../../../../@types/bookAVideoLinkApi/types'
+import logger from '../../../../../logger'
 
 class Body {
   @Expose()
@@ -22,6 +23,7 @@ class Body {
   roomStatus: string
 
   @Expose()
+  @ValidateIf(o => o.videoUrl)
   @MaxLength(120, { message: 'The room link must be less than 120 characters' })
   videoUrl: string
 
@@ -67,14 +69,14 @@ class Body {
   scheduleProbationTeamCodes: string[]
 
   @Expose()
-  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule' && !o.allDay)
   @Transform(({ value }) => simpleTimeToDate(value))
   @IsValidDate({ message: 'Enter a valid schedule start time' })
   @IsNotEmpty({ message: 'Enter a schedule start time' })
   scheduleStartTime: Date
 
   @Expose()
-  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule')
+  @ValidateIf(o => o.existingSchedule === 'false' && o.permission === 'schedule' && !o.allDay)
   @Transform(({ value }) => simpleTimeToDate(value))
   @Validator(
     (scheduleEndTime, { scheduleStartTime }) =>
@@ -88,7 +90,12 @@ class Body {
   scheduleEndTime: Date
 
   @Expose()
-  @MaxLength(400, { message: 'The comments must be less than 400 characters' })
+  @Transform(({ value }) => value === 'Yes')
+  allDay: boolean
+
+  @Expose()
+  @ValidateIf(o => o.notes)
+  @MaxLength(100, { message: 'The comments must be at most 100 characters' })
   notes: string
 }
 
@@ -128,6 +135,8 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     const { prisonCode, dpsLocationId } = req.params
     const { roomStatus, videoUrl, permission, existingSchedule, notes, courtCodes, probationTeamCodes } = req.body
 
+    logger.info(`POST values ${JSON.stringify(req.body, null, 2)}`)
+
     const locationList: Location[] = await this.prisonService.getAppointmentLocations(prisonCode, true, user)
     const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
 
@@ -148,13 +157,18 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       }
 
       if (existingSchedule === 'false' && roomAttributes.locationUsage === 'SCHEDULE') {
-        const { scheduleStartDay, scheduleEndDay, scheduleStartTime, scheduleEndTime } = req.body
+        const { scheduleStartDay, scheduleEndDay, allDay, scheduleStartTime, scheduleEndTime } = req.body
         const { schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes } = req.body
+
+        // Automatically add the start and end times if the all-day checkbox is clicked
+        const startTime = allDay ? new Date('1970-01-01T07:00:00.000Z').toISOString() : scheduleStartTime.toISOString()
+        const endTime = allDay ? new Date('1970-01-01T17:00:00.000Z').toISOString() : scheduleEndTime.toISOString()
+
         const roomSchedule: RoomSchedule = this.buildRoomSchedule(
           scheduleStartDay,
           scheduleEndDay,
-          scheduleStartTime.toISOString(),
-          scheduleEndTime.toISOString(),
+          startTime,
+          endTime,
           schedulePermission,
           scheduleCourtCodes,
           scheduleProbationTeamCodes,

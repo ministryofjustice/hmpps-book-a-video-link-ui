@@ -65,7 +65,7 @@
     {# Conditionally revealed select list for probation teams #}
 
     {% set probationScheduleHtml %}
-        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes", room) }}
+        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes", room, formResponses, validationErrors) }}
     {% endset -%}
 
     {# Schedule row permissions #}

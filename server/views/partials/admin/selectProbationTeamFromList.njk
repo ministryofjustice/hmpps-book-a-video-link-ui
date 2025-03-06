@@ -3,7 +3,7 @@
 
 {% macro selectProbationTeamFromList(teams, fieldName, room, formResponses, validationErrors) %}
     <div class="moj-add-another">
-        {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'PROBATION') or [""] %}
+        {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'PROBATION' and room.extraAttributes.allowedParties.length) or [""] %}
 
         {% for value in selectsToRender %}
             <fieldset class="govuk-fieldset moj-add-another__item">

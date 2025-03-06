@@ -84,7 +84,7 @@
                 {% endset %}
 
                 {% set probationHtml %}
-                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCodes", room) }}
+                     {{ selectProbationTeamFromList(probationTeams, "probationTeamCodes", room, formResponses, validationErrors) }}
                 {% endset %}
 
                 {% set scheduleHtml %}

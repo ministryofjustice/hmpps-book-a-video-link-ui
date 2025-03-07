@@ -15,7 +15,6 @@ import AdminService from '../../../../services/adminService'
 import Validator from '../../../validators/validator'
 import IsValidDate from '../../../validators/isValidDate'
 import { Location, RoomAttributes, RoomSchedule } from '../../../../@types/bookAVideoLinkApi/types'
-import logger from '../../../../../logger'
 
 // Define the start and end of day times for use with the `all-day` checkbox on schedules
 const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
@@ -138,8 +137,6 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
     const { roomStatus, videoUrl, permission, existingSchedule, notes, courtCodes, probationTeamCodes } = req.body
-
-    logger.info(`POST values ${JSON.stringify(req.body, null, 2)}`)
 
     const locationList: Location[] = await this.prisonService.getAppointmentLocations(prisonCode, true, user)
     const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)

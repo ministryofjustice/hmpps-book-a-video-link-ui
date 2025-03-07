@@ -16,7 +16,7 @@ import Validator from '../../../validators/validator'
 import IsValidDate from '../../../validators/isValidDate'
 import { Location, RoomAttributes, RoomSchedule } from '../../../../@types/bookAVideoLinkApi/types'
 
-// Define the start and end of day times for use with the `all-day` checkbox on schedules
+// Start and end of day times (UTC) when the `all-day` radio is selected on schedules
 const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
 const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')
 
@@ -118,14 +118,13 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
 
-    const [prison, locationList, courts, probationTeams] = await Promise.all([
+    const [prison, room, courts, probationTeams] = await Promise.all([
       this.prisonService.getPrisonByCode(prisonCode, user),
-      this.prisonService.getAppointmentLocations(prisonCode, true, user),
+      this.adminService.getLocationByDpsLocationId(dpsLocationId, user),
       this.courtsService.getAllEnabledCourts(user),
       this.probationTeamsService.getAllEnabledProbationTeams(user),
     ])
 
-    const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
     if (room) {
       res.render('pages/admin/prisonRoomDecorations', { prison, room, courts, probationTeams })
     } else {
@@ -138,8 +137,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     const { prisonCode, dpsLocationId } = req.params
     const { roomStatus, videoUrl, permission, existingSchedule, notes, courtCodes, probationTeamCodes } = req.body
 
-    const locationList: Location[] = await this.prisonService.getAppointmentLocations(prisonCode, true, user)
-    const room: Location = locationList.find(loc => loc.dpsLocationId === dpsLocationId)
+    const room: Location = await this.adminService.getLocationByDpsLocationId(dpsLocationId, user)
 
     if (room) {
       const roomAttributes: RoomAttributes = this.buildRoomAttributes(

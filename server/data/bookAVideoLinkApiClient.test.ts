@@ -5,10 +5,15 @@ import config from '../config'
 import InMemoryTokenStore from './tokenStore/inMemoryTokenStore'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import {
+  AmendDecoratedRoomRequest,
+  AmendRoomScheduleRequest,
   AmendVideoBookingRequest,
   AvailabilityRequest,
   AvailableLocationsRequest,
+  CreateDecoratedRoomRequest,
+  CreateRoomScheduleRequest,
   CreateVideoBookingRequest,
+  Location,
   RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
 
@@ -358,6 +363,136 @@ describe('bookAVideoLinkApiClient', () => {
       res.on('data', chunk => {
         expect(chunk.toString()).toBe('file content')
       })
+
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
+  describe('room administration endpoints', () => {
+    it('should get a decorated location', async () => {
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+      const response = { data: 'some room data' }
+      fakeBookAVideoLinkApiClient
+        .get(`/room-admin/${dpsLocationId}`)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.getLocationByDpsLocationId(dpsLocationId, user)
+
+      expect(output).toEqual(response)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should create room decorations', async () => {
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+      const request = {
+        locationUsage: 'COURT',
+        locationStatus: 'ACTIVE',
+        prisonVideoUrl: 'link-1',
+        comments: 'hello',
+      } as CreateDecoratedRoomRequest
+
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post(`/room-admin/${dpsLocationId}`, request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, response)
+
+      const output: Location = await bookAVideoLinkApiClient.createRoomAttributes(dpsLocationId, request, user)
+      expect(output).toEqual(response)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should amend room decorations', async () => {
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+      const request = {
+        locationUsage: 'COURT',
+        locationStatus: 'ACTIVE',
+        prisonVideoUrl: 'link-1',
+        comments: 'hello',
+      } as AmendDecoratedRoomRequest
+
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .put(`/room-admin/${dpsLocationId}`, request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output: Location = await bookAVideoLinkApiClient.amendRoomAttributes(dpsLocationId, request, user)
+      expect(output).toEqual(response)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should remove all room decorations and schedules', async () => {
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+      fakeBookAVideoLinkApiClient
+        .delete(`/room-admin/${dpsLocationId}`)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(204)
+
+      await bookAVideoLinkApiClient.deleteRoomAttributesAndSchedules(dpsLocationId, user)
+
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should create a schedule within a decorated room', async () => {
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+      const request = {
+        locationUsage: 'PROBATION',
+        startDayOfWeek: 1,
+        endDayOfWeek: 2,
+        startTime: '10:00',
+        endTime: '12:00',
+      } as CreateRoomScheduleRequest
+
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post(`/room-admin/${dpsLocationId}/schedule`, request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(201, response)
+
+      const output: Location = await bookAVideoLinkApiClient.createRoomSchedule(dpsLocationId, request, user)
+      expect(output).toEqual(response)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should update a schedule for a decorated room', async () => {
+      const scheduleId = 1
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+      const request = {
+        locationUsage: 'COURT',
+        startDayOfWeek: 1,
+        endDayOfWeek: 2,
+        startTime: '10:00',
+        endTime: '12:00',
+        allowedParties: ['COURT1', 'COURT2'],
+      } as AmendRoomScheduleRequest
+
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .put(`/room-admin/${dpsLocationId}/schedule/${scheduleId}`, request)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output: Location = await bookAVideoLinkApiClient.amendRoomSchedule(dpsLocationId, scheduleId, request, user)
+      expect(output).toEqual(response)
+      expect(nock.isDone()).toBe(true)
+    })
+
+    it('should remove schedule from a decorated room', async () => {
+      const scheduleId = 1
+      const dpsLocationId = 'aaaa-bbb-cccc-dddd'
+
+      fakeBookAVideoLinkApiClient
+        .delete(`/room-admin/${dpsLocationId}/schedule/${scheduleId}`)
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(204)
+
+      await bookAVideoLinkApiClient.deleteRoomSchedule(dpsLocationId, scheduleId, user)
 
       expect(nock.isDone()).toBe(true)
     })

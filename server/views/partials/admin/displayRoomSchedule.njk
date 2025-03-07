@@ -5,8 +5,10 @@
 {#
   Macro to display the schedule rows and edit links for a decorated prison room.
   Params:
-   - prison:  Prison object (Prison)
-   - room: Room object(LocationAttribute)
+    - prison: Prison
+    - room: Location
+    - court: List<Court>
+    - probationTeams: List<ProbationTeam>
 #}
 
 {% macro displayRoomSchedule(prison, room, courts, probationTeams) %}
@@ -32,15 +34,15 @@
         {% endset %}
 
         {% set allocationsHtml %}
-            <table>
             {% for party in schedule.allowedParties %}
+                <div>
                 {% if schedule.locationUsage === 'COURT' %}
-                    <tr><td>{{ (courts | find('code', party)).description or 'Unknown court' }}</td></tr>
+                    {{ (courts | find('code', party)).description or 'Unknown court' }}
                 {% else %}
-                    <tr><td>{{ (probationTeams | find('code', party)).description or 'Unknown team' }}</td></tr>
+                    {{ (probationTeams | find('code', party)).description or 'Unknown team' }}
                 {% endif %}
+                </div>
             {% endfor %}
-            </table>
         {% endset %}
 
         {% set rows = (rows.push([

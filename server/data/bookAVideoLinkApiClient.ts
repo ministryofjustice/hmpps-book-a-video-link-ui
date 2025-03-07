@@ -16,10 +16,10 @@ import {
   RequestVideoBookingRequest,
   AvailableLocationsResponse,
   AvailableLocationsRequest,
-  RoomSchedule,
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
   AmendDecoratedRoomRequest,
+  AmendRoomScheduleRequest,
 } from '../@types/bookAVideoLinkApi/types'
 
 import { formatDate } from '../utils/utils'
@@ -200,6 +200,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
     )
   }
 
+  public getLocationByDpsLocationId(dpsLocationId: string, user: Express.User): Promise<Location> {
+    return this.get({ path: `/room-admin/${dpsLocationId}` }, user)
+  }
+
   public createRoomAttributes(
     dpsLocationId: string,
     request: CreateDecoratedRoomRequest,
@@ -216,6 +220,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.put({ path: `/room-admin/${dpsLocationId}`, data: request }, user)
   }
 
+  public deleteRoomAttributesAndSchedules(dpsLocationId: string, user: Express.User): Promise<Location> {
+    return this.delete({ path: `/room-admin/${dpsLocationId}` }, user)
+  }
+
   public createRoomSchedule(
     dpsLocationId: string,
     request: CreateRoomScheduleRequest,
@@ -224,17 +232,15 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.post({ path: `/room-admin/${dpsLocationId}/schedule`, data: request }, user)
   }
 
-  // TODO: When API type is available
-  public amendRoomSchedule(dpsLocationId: string, request: RoomSchedule, user: Express.User): Promise<Location> {
-    return this.put({ path: `/room-admin/${dpsLocationId}/schedule`, data: request }, user)
+  public amendRoomSchedule(
+    dpsLocationId: string,
+    scheduleId: number,
+    request: AmendRoomScheduleRequest,
+    user: Express.User,
+  ): Promise<Location> {
+    return this.put({ path: `/room-admin/${dpsLocationId}/schedule/${scheduleId}`, data: request }, user)
   }
 
-  // TODO: When API type is available
-  public deleteRoomAttributes(dpsLocationId: string, user: Express.User): Promise<Location> {
-    return this.delete({ path: `/room-admin/${dpsLocationId}` }, user)
-  }
-
-  // TODO: When API type is available
   public deleteRoomSchedule(dpsLocationId: string, scheduleId: number, user: Express.User): Promise<Location> {
     return this.delete({ path: `/room-admin/${dpsLocationId}/schedule/${scheduleId}` }, user)
   }

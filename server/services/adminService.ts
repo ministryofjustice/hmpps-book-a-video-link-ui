@@ -1,12 +1,9 @@
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { getDaysOfWeek } from '../utils/utils'
 import {
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
   AmendDecoratedRoomRequest,
   Location,
-  RoomAttributes,
-  RoomSchedule,
   AmendRoomScheduleRequest,
 } from '../@types/bookAVideoLinkApi/types'
 
@@ -17,25 +14,19 @@ export default class AdminService {
     return this.bookAVideoLinkApiClient.getLocationByDpsLocationId(dpsLocationId, user)
   }
 
-  async createRoomAttributes(dpsLocationId: string, attributes: RoomAttributes, user: Express.User): Promise<Location> {
-    const request = {
-      locationStatus: attributes.locationStatus,
-      locationUsage: attributes.locationUsage,
-      prisonVideoUrl: attributes.prisonVideoUrl,
-      allowedParties: attributes.allowedParties,
-      comments: attributes.notes,
-    } as CreateDecoratedRoomRequest
+  async createRoomAttributes(
+    dpsLocationId: string,
+    request: CreateDecoratedRoomRequest,
+    user: Express.User,
+  ): Promise<Location> {
     return this.bookAVideoLinkApiClient.createRoomAttributes(dpsLocationId, request, user)
   }
 
-  async amendRoomAttributes(dpsLocationId: string, attributes: RoomAttributes, user: Express.User): Promise<Location> {
-    const request = {
-      locationStatus: attributes.locationStatus,
-      locationUsage: attributes.locationUsage,
-      allowedParties: attributes.allowedParties,
-      prisonVideoUrl: attributes.prisonVideoUrl,
-      comments: attributes.notes,
-    } as AmendDecoratedRoomRequest
+  async amendRoomAttributes(
+    dpsLocationId: string,
+    request: AmendDecoratedRoomRequest,
+    user: Express.User,
+  ): Promise<Location> {
     return this.bookAVideoLinkApiClient.amendRoomAttributes(dpsLocationId, request, user)
   }
 
@@ -43,32 +34,20 @@ export default class AdminService {
     return this.bookAVideoLinkApiClient.deleteRoomAttributesAndSchedules(dpsLocationId, user)
   }
 
-  async createRoomSchedule(dpsLocationId: string, schedule: RoomSchedule, user: Express.User): Promise<Location> {
-    const request = {
-      startDayOfWeek: getDaysOfWeek().indexOf(schedule.startDayOfWeek) + 1,
-      endDayOfWeek: getDaysOfWeek().indexOf(schedule.endDayOfWeek) + 1,
-      startTime: schedule.startTime,
-      endTime: schedule.endTime,
-      locationUsage: schedule.locationUsage,
-      allowedParties: schedule.allowedParties,
-    } as CreateRoomScheduleRequest
+  async createRoomSchedule(
+    dpsLocationId: string,
+    request: CreateRoomScheduleRequest,
+    user: Express.User,
+  ): Promise<Location> {
     return this.bookAVideoLinkApiClient.createRoomSchedule(dpsLocationId, request, user)
   }
 
   async amendRoomSchedule(
     dpsLocationId: string,
     scheduleId: number,
-    schedule: RoomSchedule,
+    request: AmendRoomScheduleRequest,
     user: Express.User,
   ): Promise<Location> {
-    const request = {
-      startDayOfWeek: getDaysOfWeek().indexOf(schedule.startDayOfWeek) + 1,
-      endDayOfWeek: getDaysOfWeek().indexOf(schedule.endDayOfWeek) + 1,
-      startTime: schedule.startTime,
-      endTime: schedule.endTime,
-      locationUsage: schedule.locationUsage,
-      allowedParties: schedule.allowedParties,
-    } as AmendRoomScheduleRequest
     return this.bookAVideoLinkApiClient.amendRoomSchedule(dpsLocationId, scheduleId, request, user)
   }
 

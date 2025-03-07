@@ -36,7 +36,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters-from-desktop">
 
-            <form method='POST'>
+            <form method='POST' data-module="form-spinner" data-loading-text="Updating room settings">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ govukRadios({
@@ -90,10 +90,8 @@
                 {% set scheduleHtml %}
                     {# Conditional schedules - list of existing rows or prompt for first entry #}
                     {% if room.extraAttributes.schedule.length %}
-                        {# Display existing schedules and edit links #}
-                        {{ displayRoomSchedule(prison, room) }}
+                        {{ displayRoomSchedule(prison, room, courts, probationTeams) }}
                     {% else %}
-                        {# Display the input fields for a first schedule row #}
                         {{ firstRoomSchedule(prison, room, courts, probationTeams, formResponses, validationErrors) }}
                     {% endif %}
                 {% endset %}

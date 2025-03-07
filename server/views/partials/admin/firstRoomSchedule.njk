@@ -1,6 +1,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
 {% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
 
@@ -107,32 +108,59 @@
         ]
     }) }}
 
-    <h2 class="govuk-heading-m">Select times</h2>
+    {# Conditional HTNL to choose start and end times #}
 
-    {# Start time #}
+    {% set timesHtml %}
+        {{ hmppsTimePicker({
+            id: 'scheduleStartTime',
+            name: 'scheduleStartTime',
+            label: {
+                text: 'Start time',
+                classes: 'govuk-fieldset__legend--s'
+            },
+            errorMessage: validationErrors | findError('scheduleStartTime'),
+            formResponses: formResponses.scheduleStartTime
+        }) }}
 
-    {{ hmppsTimePicker({
-        id: 'scheduleStartTime',
-        name: 'scheduleStartTime',
-        label: {
-            text: 'Start time',
-            classes: 'govuk-fieldset__legend--s'
+        {{ hmppsTimePicker({
+            id: 'scheduleEndTime',
+            name: 'scheduleEndTime',
+            label: {
+                text: 'End time',
+                classes: 'govuk-fieldset__legend--s'
+            },
+            errorMessage: validationErrors | findError('scheduleEndTime'),
+            formResponses: formResponses.scheduleEndTime
+        }) }}
+    {% endset %}
+
+    {# Choice of all-day or manual entry of start/end times #}
+
+    {{ govukRadios({
+        classes: "govuk-radios--small",
+        idPrefix: "allDay",
+        name: "allDay",
+        fieldset: {
+            legend: {
+                text: "Select times",
+                classes: 'govuk-fieldset__legend--m'
+            }
         },
-        errorMessage: validationErrors | findError('scheduleStartTime'),
-        formResponses: formResponses.scheduleStartTime
-    }) }}
-
-    {# End time #}
-
-    {{ hmppsTimePicker({
-        id: 'scheduleEndTime',
-        name: 'scheduleEndTime',
-        label: {
-            text: 'End time',
-            classes: 'govuk-fieldset__legend--s'
-        },
-        errorMessage: validationErrors | findError('scheduleEndTime'),
-        formResponses: formResponses.scheduleEndTime
+        items: [
+            {
+                value: "Yes",
+                text: "All day 8:00 to 18:00",
+                checked: formResponses.allDay == 'Yes'
+            },
+            {
+                value: "No",
+                text: "Choose the times",
+                checked: formResponses and formResponses.allDay != 'Yes',
+                conditional: {
+                    html: timesHtml
+                }
+            }
+        ]
     }) }}
 
 {% endmacro %}

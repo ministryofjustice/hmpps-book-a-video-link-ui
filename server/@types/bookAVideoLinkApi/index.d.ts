@@ -52,7 +52,7 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Endpoint to return the details of a location
+     * Endpoint to support retrieval of a room including any decorations if there are any.
      * @description
      *
      *     Requires one of the following roles:
@@ -60,7 +60,7 @@ export interface paths {
      */
     get: operations['getLocationById']
     /**
-     * Endpoint to support changes to a decorated room.
+     * Endpoint to support amending an already decorated room.
      * @description Only BVLS administration users can change decorated rooms.
      *
      *     Requires one of the following roles:
@@ -68,14 +68,51 @@ export interface paths {
      */
     put: operations['amendDecoratedRoom']
     /**
-     * Endpoint to support the creation of a decorated room.
+     * Endpoint to support the initial decoration of a room.
      * @description Only BVLS administration users can create decorated rooms.
      *
      *     Requires one of the following roles:
      *     * BOOK_A_VIDEO_LINK_ADMIN
      */
     post: operations['createDecoratedRoom']
-    delete?: never
+    /**
+     * Endpoint to support deletion of a decorated room including any schedules if there are any.
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     */
+    delete: operations['deleteDecoratedLocation']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/room-admin/{dpsLocationId}/schedule/{scheduleId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Endpoint to support amending a room schedule.
+     * @description Only BVLS administration users can change room schedules.
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     */
+    put: operations['amendDecoratedRoom_1']
+    post?: never
+    /**
+     * Endpoint to support deletion of a schedule row from a room schedule.
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     */
+    delete: operations['deleteSchedule']
     options?: never
     head?: never
     patch?: never
@@ -218,7 +255,7 @@ export interface paths {
     get?: never
     put?: never
     /**
-     * Endpoint to support the creation of a single schedule row for a scheduled room
+     * Endpoint to support the creation of a schedule row for a decorated room schedule.
      * @description Only BVLS administration users can create a schedule.
      *
      *     Requires one of the following roles:
@@ -948,7 +985,10 @@ export interface components {
       locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
       /**
        * @description Court or probation team codes allowed to use the room (comma-separated list)
-       * @example [YRKMAG,DRBYJS
+       * @example [
+       *       "YRKMAG",
+       *       "DRBYJS"
+       *     ]
        */
       allowedParties: string[]
       /**
@@ -1000,12 +1040,55 @@ export interface components {
        * @example SHARED
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
+      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'BLOCKED'
       /**
        * @description Court or probation codes (comma-separated) that can use the room within this slot
        * @example [YRKMAG,DRBYJS]
        */
       allowedParties: string[]
+    }
+    /** @description The request with the decoration details */
+    AmendRoomScheduleRequest: {
+      /**
+       * @description The location usage for the schedule
+       * @example PROBATION
+       * @enum {string}
+       */
+      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'BLOCKED'
+      /**
+       * @description Court or probation team codes allowed to use the room
+       * @example [
+       *       "DRBYMC"
+       *     ]
+       */
+      allowedParties?: string[]
+      /**
+       * Format: int32
+       * @description The day of the week the schedule starts on. The week starts at 1 for Monday and finishes at 7 for Sunday.
+       */
+      startDayOfWeek: number
+      /**
+       * Format: int32
+       * @description The day of the week the schedule ends on. The week starts at 1 for Monday and finishes at 7 for Sunday.
+       */
+      endDayOfWeek: number
+      /**
+       * Format: partial-time
+       * @description Start time for the schedule
+       * @example 12:00
+       */
+      startTime: string
+      /**
+       * Format: partial-time
+       * @description End time for the schedule
+       * @example 15:00
+       */
+      endTime: string
+      /**
+       * @description Notes related to the schedule
+       * @example Some notes
+       */
+      notes?: string
     }
     RetryDlqResult: {
       /** Format: int32 */
@@ -2254,7 +2337,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description The returned location will include any decorations where present */
+      /** @description Successfully returned the requested room. */
       200: {
         headers: {
           [name: string]: unknown
@@ -2281,7 +2364,7 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
-      /** @description The DPS location ID was not found. */
+      /** @description The room was not found. */
       404: {
         headers: {
           [name: string]: unknown
@@ -2317,7 +2400,7 @@ export interface operations {
           'application/json': components['schemas']['Location']
         }
       }
-      /** @description The the decorated room has been changed */
+      /** @description Successfully amended the decorated room. */
       201: {
         headers: {
           [name: string]: unknown
@@ -2344,6 +2427,15 @@ export interface operations {
           'application/json': components['schemas']['ErrorResponse']
         }
       }
+      /** @description The decorated room to be amended was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
     }
   }
   createDecoratedRoom: {
@@ -2362,13 +2454,182 @@ export interface operations {
       }
     }
     responses: {
-      /** @description The the decorated room has been created */
+      /** @description Successfully created the the decorated room. */
       201: {
         headers: {
           [name: string]: unknown
         }
         content: {
           'application/json': components['schemas']['Location']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The room to be decorated was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteDecoratedLocation: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dpsLocationId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted the decorated room. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  amendDecoratedRoom_1: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The identifier of the DPS location for the room schedule to be amended. */
+        dpsLocationId: string
+        /** @description The identifier of the room schedule to be amended. */
+        scheduleId: number
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AmendRoomScheduleRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoomSchedule']
+        }
+      }
+      /** @description Successfully amended the room schedule. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['RoomSchedule']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The room schedule was not found. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  deleteSchedule: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dpsLocationId: string
+        scheduleId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successfully deleted schedule row from the schedule. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Bad request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
@@ -2595,12 +2856,14 @@ export interface operations {
       }
     }
     responses: {
-      /** @description The the schedule row has been added to the room's schedule */
+      /** @description Successfully added the schedule row to the room's schedule */
       201: {
         headers: {
           [name: string]: unknown
         }
-        content?: never
+        content: {
+          'application/json': components['schemas']['RoomSchedule']
+        }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {
@@ -2613,6 +2876,15 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description The decorated room was not found. */
+      404: {
         headers: {
           [name: string]: unknown
         }

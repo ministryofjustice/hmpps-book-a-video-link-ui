@@ -178,7 +178,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
         await this.adminService.createRoomSchedule(room.dpsLocationId, roomSchedule, user)
       }
 
-      res.addSuccessMessage('', 'Room changes have been saved')
+      res.addSuccessMessage('Room changes have been saved')
       res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
     } else {
       next(new NotFound())

@@ -5,6 +5,7 @@ import {
   AmendDecoratedRoomRequest,
   Location,
   AmendRoomScheduleRequest,
+  RoomSchedule,
 } from '../@types/bookAVideoLinkApi/types'
 
 export default class AdminService {
@@ -38,7 +39,7 @@ export default class AdminService {
     dpsLocationId: string,
     request: CreateRoomScheduleRequest,
     user: Express.User,
-  ): Promise<Location> {
+  ): Promise<RoomSchedule> {
     return this.bookAVideoLinkApiClient.createRoomSchedule(dpsLocationId, request, user)
   }
 
@@ -47,7 +48,7 @@ export default class AdminService {
     scheduleId: number,
     request: AmendRoomScheduleRequest,
     user: Express.User,
-  ): Promise<Location> {
+  ): Promise<RoomSchedule> {
     return this.bookAVideoLinkApiClient.amendRoomSchedule(dpsLocationId, scheduleId, request, user)
   }
 

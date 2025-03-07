@@ -6,9 +6,9 @@
   Macro to display the schedule rows and edit links for a decorated prison room.
   Params:
     - prison: Prison
-    - room: Location
-    - court: List<Court>
-    - probationTeams: List<ProbationTeam>
+    - room: Location - this location with decoration
+    - court: List<Court> - all courts to choose from
+    - probationTeams: List<ProbationTeam> - all probation teams to choose from
 #}
 
 {% macro displayRoomSchedule(prison, room, courts, probationTeams) %}

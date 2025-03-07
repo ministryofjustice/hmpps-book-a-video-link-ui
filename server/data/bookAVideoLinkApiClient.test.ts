@@ -15,6 +15,7 @@ import {
   CreateVideoBookingRequest,
   Location,
   RequestVideoBookingRequest,
+  RoomSchedule,
 } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -454,7 +455,7 @@ describe('bookAVideoLinkApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(201, response)
 
-      const output: Location = await bookAVideoLinkApiClient.createRoomSchedule(dpsLocationId, request, user)
+      const output: RoomSchedule = await bookAVideoLinkApiClient.createRoomSchedule(dpsLocationId, request, user)
       expect(output).toEqual(response)
       expect(nock.isDone()).toBe(true)
     })
@@ -478,7 +479,13 @@ describe('bookAVideoLinkApiClient', () => {
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
-      const output: Location = await bookAVideoLinkApiClient.amendRoomSchedule(dpsLocationId, scheduleId, request, user)
+      const output: RoomSchedule = await bookAVideoLinkApiClient.amendRoomSchedule(
+        dpsLocationId,
+        scheduleId,
+        request,
+        user,
+      )
+
       expect(output).toEqual(response)
       expect(nock.isDone()).toBe(true)
     })

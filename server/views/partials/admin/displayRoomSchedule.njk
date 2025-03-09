@@ -36,11 +36,11 @@
         {% set allocationsHtml %}
             {% for party in schedule.allowedParties %}
                 <div>
-                {% if schedule.locationUsage === 'COURT' %}
-                    {{ (courts | find('code', party)).description or 'Unknown court' }}
-                {% else %}
-                    {{ (probationTeams | find('code', party)).description or 'Unknown team' }}
-                {% endif %}
+                    {% if schedule.locationUsage === 'COURT' %}
+                        {{ (courts | find('code', party)).description or 'Unknown court' }}
+                    {% else %}
+                        {{ (probationTeams | find('code', party)).description or 'Unknown team' }}
+                    {% endif %}
                 </div>
             {% endfor %}
         {% endset %}

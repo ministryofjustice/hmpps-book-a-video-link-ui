@@ -20,7 +20,6 @@ import {
   CreateRoomScheduleRequest,
   Location,
 } from '../../../../@types/bookAVideoLinkApi/types'
-import logger from '../../../../../logger'
 
 // Start and end of day times (UTC) when the `all-day` radio is selected on schedules
 const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
@@ -142,8 +141,6 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     const { user } = res.locals
     const { prisonCode, dpsLocationId } = req.params
     const { existingSchedule, permission } = req.body
-
-    logger.info(`POST body :  ${JSON.stringify(req.body, null, 2)}`)
 
     const room: Location = await this.adminService.getLocationByDpsLocationId(dpsLocationId, user)
     if (room) {

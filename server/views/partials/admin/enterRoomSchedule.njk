@@ -6,19 +6,29 @@
 {% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
 
 {#
-  Macro to display the entry fields and components for the frst schedule row.
+  Macro for the entry fields and components for a room schedule.
   Params:
+    - mode: `first` (no schedules exist), `add` - (add another) or `amend` (change an existing)
     - prison:  Prison object (Prison)
     - room: Room object(LocationAttribute)
     - courts: A list of court objects
     - probationTeams: A list of probation team objects
+    - formResponses: List of form data from validation middleware
+    - validationErrors: List of form errors from validation middleware
 #}
 
-{% macro firstRoomSchedule(prison, room, courts, probationTeams, formResponses, validationErrors) %}
+{% macro enterRoomSchedule(mode, prison, room, courts, probationTeams, formResponses, validationErrors) %}
 
-    <input type="hidden" name="existingSchedule" value="false"/>
-
-    <h2 class="govuk-heading-m">Add room schedule</h2>
+    {% if mode == 'first' %}
+        <input type="hidden" name="existingSchedule" value="false"/>
+        <h2 class="govuk-heading-m">Add room schedule</h2>
+    {% elseif mode == 'add' %}
+        <input type="hidden" name="existingSchedule" value="true"/>
+        <h2 class="govuk-heading-m">Add another room schedule</h2>
+    {% else %}
+        <input type="hidden" name="existingSchedule" value="true"/>
+        <h2 class="govuk-heading-m">Amend a room schedule</h2>
+    {% endif %}
 
     {# Start and end days #}
 

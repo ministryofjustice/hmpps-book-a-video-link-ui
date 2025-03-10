@@ -8,7 +8,7 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
 {% from "partials/admin/displayRoomSchedule.njk" import displayRoomSchedule %}
-{% from "partials/admin/firstRoomSchedule.njk" import firstRoomSchedule %}
+{% from "partials/admin/enterRoomSchedule.njk" import enterRoomSchedule %}
 {% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
 {% from "partials/admin/selectProbationTeamFromList.njk" import selectProbationTeamFromList %}
 
@@ -88,11 +88,10 @@
                 {% endset %}
 
                 {% set scheduleHtml %}
-                    {# Conditional schedules - list of existing rows or prompt for first entry #}
                     {% if room.extraAttributes.schedule.length %}
                         {{ displayRoomSchedule(prison, room, courts, probationTeams) }}
                     {% else %}
-                        {{ firstRoomSchedule(prison, room, courts, probationTeams, formResponses, validationErrors) }}
+                        {{ enterRoomSchedule("first", prison, room, courts, probationTeams, formResponses, validationErrors) }}
                     {% endif %}
                 {% endset %}
 

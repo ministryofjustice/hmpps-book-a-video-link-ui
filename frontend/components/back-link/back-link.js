@@ -6,7 +6,7 @@ export default function BackLink(backLink) {
   }
 
   this.backLink.addEventListener('click', e => {
-    if (e.href !== '#') return
+    if (!e.target.href.endsWith("#")) return
 
     e.preventDefault()
     if (document.getElementsByClassName('govuk-error-summary__list').length > 0) {

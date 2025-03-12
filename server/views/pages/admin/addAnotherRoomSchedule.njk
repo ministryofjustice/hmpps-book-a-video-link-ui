@@ -1,0 +1,57 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "components/locationUsageTag.njk" import locationUsageTag %}
+{% from "partials/admin/displayRoomSchedule.njk" import displayRoomSchedule %}
+{% from "partials/admin/enterRoomSchedule.njk" import enterRoomSchedule %}
+
+{% set backLinkText = "Back" %}
+{% set backLinkHref = "/admin/view-prison-room/" + prison.code + "/" + room.dpsLocationId %}
+{% set pageTitle = "Add another room schedule for " + room.description %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <span class="govuk-caption-l">{{ prison.name }}</span>
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+            <div class="govuk-!-margin-bottom-6">
+                {% if room.extraAttributes %}
+                    {{ locationUsageTag("Customised", "govuk-tag--green") }}
+                {% else %}
+                    {{ locationUsageTag("Default", "govuk-tag--grey") }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters-from-desktop">
+
+            <form method='POST' data-module="form-spinner" data-loading-text="Adding schedule">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {{ displayRoomSchedule(prison, room, courts, probationTeams, false) }}
+
+                {{ enterRoomSchedule("add", prison, room, courts, probationTeams, formResponses, validationErrors) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Save",
+                        preventDoubleClick: true,
+                        type: "submit"
+                    }) }}
+
+                    {{ govukButton({
+                        text: "Cancel",
+                        classes: "govuk-button--secondary",
+                        href: "/admin/view-prison-room/" + prison.code + "/" + room.dpsLocationId
+                    }) }}
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

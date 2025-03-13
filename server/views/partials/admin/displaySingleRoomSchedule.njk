@@ -1,0 +1,54 @@
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "components/locationUsageTag.njk" import locationUsageTag %}
+
+{% macro displaySingleRoomSchedule(prison, room, courts, probationTeams, scheduleId) %}
+
+    {% set rows = [] %}
+
+    {% for schedule in room.extraAttributes.schedule %}
+
+        {% if schedule.scheduleId == scheduleId %}
+            {% set usageHtml %}
+                {{ locationUsageTag(schedule.locationUsage | convertToTitleCase, "govuk-tag--blue") }}
+            {% endset %}
+
+            {% set allocationsHtml %}
+                {% for party in schedule.allowedParties %}
+                    <div>
+                        {% if schedule.locationUsage === 'COURT' %}
+                            {{ (courts | find('code', party)).description or 'Unknown court' }}
+                        {% else %}
+                            {{ (probationTeams | find('code', party)).description or 'Unknown team' }}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endset %}
+
+            {% set rows = (rows.push([
+                { text: schedule.startDayOfWeek | capitalize },
+                { text: schedule.endDayOfWeek | capitalize },
+                { text: schedule.startTime | truncate(5, true, '') },
+                { text: schedule.endTime | truncate(5, true, '') },
+                { html: usageHtml },
+                { html: allocationsHtml }
+            ]), rows) %}
+        {% endif %}
+
+    {% endfor %}
+
+    {{ govukTable({
+        caption: "Room schedule",
+        captionClasses: "govuk-table__caption--m",
+        head: [
+            { text: "Start day" },
+            { text: "End day" },
+            { text: "Start time" },
+            { text: "End time" },
+            { text: "Permissions" },
+            { text: "Allocations" }
+        ],
+        rows: rows
+    }) }}
+
+{% endmacro %}

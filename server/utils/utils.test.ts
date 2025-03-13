@@ -2,6 +2,7 @@ import { isValid, parse } from 'date-fns'
 import {
   convertToTitleCase,
   dateAtTime,
+  dateToSimpleTime,
   extractPrisonAppointmentsFromBooking,
   formatDate,
   getDaysOfWeek,
@@ -126,6 +127,24 @@ describe('simpleTimeToDate', () => {
   it('is valid', () => {
     const date = simpleTimeToDate({ hour: '13', minute: '35' })
     expect(date).toEqual(parse('13:35', 'HH:mm', new Date(0)))
+  })
+})
+
+describe('dateToSimpleTime', () => {
+  it('invalid date returns undefined', () => {
+    expect(dateToSimpleTime(null)).toEqual(undefined)
+    expect(dateToSimpleTime(new Date('1970-02-32T17:50:00.000Z'))).toEqual(undefined)
+  })
+
+  it('is valid', () => {
+    expect(dateToSimpleTime(new Date('1970-01-01T17:50:00.000Z'))).toEqual({ hour: '17', minute: '50' })
+    expect(dateToSimpleTime(new Date('1970-01-01T22:22:00.000Z'))).toEqual({ hour: '22', minute: '22' })
+    expect(dateToSimpleTime(new Date('1977-10-03T23:59:00.000Z'))).toEqual({ hour: '23', minute: '59' })
+  })
+
+  it('pads hour and minute to 2-digits', () => {
+    expect(dateToSimpleTime(new Date('1970-01-01T01:03:00.000Z'))).toEqual({ hour: '01', minute: '03' })
+    expect(dateToSimpleTime(new Date('1970-01-01T11:02:00.000Z'))).toEqual({ hour: '11', minute: '02' })
   })
 })
 

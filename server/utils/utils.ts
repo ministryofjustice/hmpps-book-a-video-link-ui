@@ -76,6 +76,13 @@ export const simpleTimeToDate = (time: { hour: string; minute: string }): Date =
     ? parse(`${time.hour}:${time.minute}`, 'HH:mm', new Date(0), { locale: enGB })
     : null
 
+export const dateToSimpleTime = (date: Date): { hour: string; minute: string } => {
+  if (!isValid(date)) return undefined
+  const hour = format(date, 'HH')
+  const minute = format(date, 'mm')
+  return { hour, minute }
+}
+
 export const dateAtTime = (date: Date, time: Date): Date =>
   set(date, { hours: time.getHours(), minutes: time.getMinutes() })
 

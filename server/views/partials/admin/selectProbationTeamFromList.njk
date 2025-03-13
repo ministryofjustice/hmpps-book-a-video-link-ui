@@ -1,9 +1,26 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% macro selectProbationTeamFromList(teams, fieldName, room, formResponses, validationErrors) %}
+{#
+Macro to allow the add-another pattern for probation teams
+This same macro is used for the room-level allowed teams, and scedule-level allowed teams.
+
+Parameters passed in:
+  - teams             - The full list of avaiable probation teams and descriptions
+  - fieldName         - The name of the form field to render
+  - room              - The room oject
+  - formResponses     - The form responses returned after a validation error on POST
+  - validationErrors  - The list of error messages return after a validation error on POST.
+  - editValues        - A schedule object in display-format, to pre-populdate values when editing a schedule.
+#}
+
+{% macro selectProbationTeamFromList(teams, fieldName, room, formResponses, validationErrors, editValues) %}
     <div class="moj-add-another">
-        {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'PROBATION' and room.extraAttributes.allowedParties.length) or [""] %}
+        {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or
+            (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'PROBATION' and room.extraAttributes.allowedParties.length) or
+            (editValues.scheduleProbationTeams if editValues.schedulePermission == 'probation' and editValues.scheduleProbationTeams.length) or
+            [""]
+        %}
 
         {% for value in selectsToRender %}
             <fieldset class="govuk-fieldset moj-add-another__item">

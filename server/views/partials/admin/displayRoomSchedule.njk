@@ -11,7 +11,7 @@
     - probationTeams: List<ProbationTeam> - all probation teams to choose from
 #}
 
-{% macro displayRoomSchedule(prison, room, courts, probationTeams) %}
+{% macro displayRoomSchedule(prison, room, courts, probationTeams, editAllowed = true) %}
 
     <input type="hidden" name="existingSchedule" value="true" />
 
@@ -52,7 +52,7 @@
             { text: schedule.endTime | truncate(5, true, '') },
             { html: usageHtml },
             { html: allocationsHtml },
-            { html: editLinksHtml }
+            { html: editLinksHtml if editAllowed else ""}
         ]), rows) %}
 
     {% endfor %}
@@ -67,18 +67,19 @@
             { text: "End time" },
             { text: "Permissions" },
             { text: "Allocations" },
-            { text: "Action" }
+            { text: "Action" if editAllowed else ""}
         ],
         rows: rows
     }) }}
 
-    {# Add another schedule #}
-    <div class="govuk-button-group">
-        {{ govukButton({
-            classes: "govuk-button--secondary",
-            text: "Add another schedule",
-            href: '/admin/add-schedule/' + prison.code + '/' + room.dpsLocationId + ''
-        }) }}
-    </div>
+    {% if editAllowed %}
+        <div class="govuk-button-group">
+            {{ govukButton({
+                classes: "govuk-button--secondary",
+                text: "Add another schedule",
+                href: '/admin/add-schedule/' + prison.code + '/' + room.dpsLocationId + ''
+            }) }}
+        </div>
+    {% endif %}
 
 {% endmacro %}

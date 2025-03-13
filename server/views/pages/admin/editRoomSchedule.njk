@@ -6,11 +6,12 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
 {% from "partials/admin/displaySingleRoomSchedule.njk" import displaySingleRoomSchedule %}
+{% from "partials/admin/enterRoomSchedule.njk" import enterRoomSchedule %}
 
 {% set backLinkText = "Back" %}
 {% set backLinkHref = "/admin/view-prison-room/" + prison.code + "/" + room.dpsLocationId %}
 
-{% set pageTitle = "Are you sure you want to delete this schedule for " + room.description %}
+{% set pageTitle = room.description %}
 
 {% block content %}
 
@@ -31,15 +32,16 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters-from-desktop">
 
-            <form method='POST' data-module="form-spinner" data-loading-text="Deleting schedule">
+            <form method='POST' data-module="form-spinner" data-loading-text="Amending schedule">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {{ displaySingleRoomSchedule(prison, room, courts, probationTeams, scheduleId) }}
 
+                {{ enterRoomSchedule("edit", prison, room, courts, probationTeams, formResponses, validationErrors, editValues) }}
+
                 <div class="govuk-button-group">
                     {{ govukButton({
-                        text: "Yes, delete this schedule",
-                        classes: "govuk-button--warning",
+                        text: "Save",
                         preventDoubleClick: true,
                         type: "submit"
                     }) }}

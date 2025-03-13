@@ -15,9 +15,10 @@
     - probationTeams: A list of probation team objects
     - formResponses: List of form data from validation middleware
     - validationErrors: List of form errors from validation middleware
+    - editValues - the display values for a schedule to edit (only present on mode==edit)
 #}
 
-{% macro enterRoomSchedule(mode, prison, room, courts, probationTeams, formResponses, validationErrors) %}
+{% macro enterRoomSchedule(mode, prison, room, courts, probationTeams, formResponses, validationErrors, editValues) %}
 
     {% if mode == 'first' %}
         <input type="hidden" name="existingSchedule" value="false"/>
@@ -25,7 +26,7 @@
     {% elseif mode == 'add' %}
         <input type="hidden" name="existingSchedule" value="true"/>
         <h2 class="govuk-heading-m">Enter schedule details</h2>
-    {% else %}
+    {% elseif mode == 'edit'%}
         <input type="hidden" name="existingSchedule" value="true"/>
         <h2 class="govuk-heading-m">Amend a room schedule</h2>
     {% endif %}
@@ -51,7 +52,7 @@
             text: "Select start day"
         },
         errorMessage: validationErrors | findError("scheduleStartDay"),
-        value: formResponses.scheduleStartDay,
+        value: formResponses.scheduleStartDay or editValues.scheduleStartDay,
         classes: "govuk-!-width-one-third"
     }) }}
 
@@ -63,20 +64,20 @@
             text: "Select end day"
         },
         errorMessage: validationErrors | findError("scheduleEndDay"),
-        value: formResponses.scheduleEndDay,
+        value: formResponses.scheduleEndDay or editValues.scheduleEndDay,
         classes: "govuk-!-width-one-third"
     }) }}
 
     {# Conditionally revealed select list for courts #}
 
     {% set courtScheduleHtml %}
-        {{  selectCourtFromList(courts, "scheduleCourtCodes", room, formResponses, validationErrors) }}
+        {{  selectCourtFromList(courts, "scheduleCourtCodes", room, formResponses, validationErrors, editValues) }}
     {% endset -%}
 
     {# Conditionally revealed select list for probation teams #}
 
     {% set probationScheduleHtml %}
-        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes", room, formResponses, validationErrors) }}
+        {{ selectProbationTeamFromList(probationTeams, "scheduleProbationTeamCodes", room, formResponses, validationErrors, editValues) }}
     {% endset -%}
 
     {# Schedule row permissions #}
@@ -86,7 +87,7 @@
         idPrefix: "schedulePermission",
         name: "schedulePermission",
         errorMessage: validationErrors | findError('schedulePermission'),
-        value: formResponses.schedulePermission or "court",
+        value: formResponses.schedulePermission or editValues.schedulePermission or "court",
         fieldset: {
             legend: {
                 text: "Select permissions",
@@ -97,7 +98,7 @@
             {
                 value: "court",
                 text: "Court",
-                checked: formResponses.schedulePermission == 'court',
+                checked: formResponses.schedulePermission == 'court' or editValues.schedulePermission == 'court',
                 conditional: {
                     html: courtScheduleHtml
                 }
@@ -105,7 +106,7 @@
             {
                 value: "probation",
                 text: "Probation",
-                checked: formResponses.schedulePermission == 'probation',
+                checked: formResponses.schedulePermission == 'probation' or editValues.schedulePermission == 'probation',
                 conditional: {
                     html: probationScheduleHtml
                 }
@@ -113,7 +114,7 @@
             {
                 value: "blocked",
                 text: "Blocked",
-                checked: formResponses.schedulePermission == 'blocked'
+                checked: formResponses.schedulePermission == 'blocked'or editValues.schedulePermission == 'blocked'
             }
         ]
     }) }}
@@ -129,7 +130,7 @@
                 classes: 'govuk-fieldset__legend--s'
             },
             errorMessage: validationErrors | findError('scheduleStartTime'),
-            formResponses: formResponses.scheduleStartTime
+            formResponses: formResponses.scheduleStartTime or editValues.scheduleStartTime
         }) }}
 
         {{ hmppsTimePicker({
@@ -140,7 +141,7 @@
                 classes: 'govuk-fieldset__legend--s'
             },
             errorMessage: validationErrors | findError('scheduleEndTime'),
-            formResponses: formResponses.scheduleEndTime
+            formResponses: formResponses.scheduleEndTime or editValues.scheduleEndTime
         }) }}
     {% endset %}
 
@@ -160,12 +161,12 @@
             {
                 value: "Yes",
                 text: "All day 8:00 to 18:00",
-                checked: formResponses.allDay == 'Yes'
+                checked: formResponses.allDay == 'Yes' or editValues.allDay == 'Yes'
             },
             {
                 value: "No",
                 text: "Choose the times",
-                checked: formResponses and formResponses.allDay != 'Yes',
+                checked: (formResponses and formResponses.allDay != 'Yes') or (editValues and editValues.allDay != 'Yes'),
                 conditional: {
                     html: timesHtml
                 }

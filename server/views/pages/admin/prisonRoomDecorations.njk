@@ -91,7 +91,7 @@
                     {% if room.extraAttributes.schedule.length %}
                         {{ displayRoomSchedule(prison, room, courts, probationTeams, true) }}
                     {% else %}
-                        {{ enterRoomSchedule("first", prison, room, courts, probationTeams, formResponses, validationErrors) }}
+                        {{ enterRoomSchedule("first", prison, room, courts, probationTeams, formResponses, validationErrors, null) }}
                     {% endif %}
                 {% endset %}
 

@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { IsNotEmpty, ValidateIf } from 'class-validator'
 import { NextFunction, Request, Response } from 'express'
-import { isValid, parseISO, format, parse } from 'date-fns'
+import { isValid, parseISO, format, parse, addHours } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
 import { NotFound } from 'http-errors'
 import _ from 'lodash'
@@ -164,8 +164,8 @@ export default class EditRoomScheduleHandler implements PageHandler {
       scheduleProbationTeams: schedule.locationUsage.toUpperCase() === 'PROBATION' ? schedule.allowedParties : [],
       schedulePermission: schedule.locationUsage.toLowerCase(),
       allDay:
-        schedule.startTime === format(START_OF_DAY_TIME, 'HH:mm') &&
-        schedule.endTime === format(END_OF_DAY_TIME, 'HH:mm')
+        schedule.startTime === format(addHours(START_OF_DAY_TIME, 1), 'HH:mm') &&
+        schedule.endTime === format(addHours(END_OF_DAY_TIME, 1), 'HH:mm')
           ? 'Yes'
           : 'No',
       scheduleStartTime: dateToSimpleTime(startTimeAsDate),

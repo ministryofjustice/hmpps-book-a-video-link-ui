@@ -1,5 +1,6 @@
 import { Request } from 'express'
 import { addHours, format, parse, parseISO } from 'date-fns'
+import { dateToSimpleTime, getDaysOfWeek } from '../../../../../utils/utils'
 import {
   AmendDecoratedRoomRequest,
   AmendRoomScheduleRequest,
@@ -7,7 +8,6 @@ import {
   CreateRoomScheduleRequest,
   RoomSchedule,
 } from '../../../../../@types/bookAVideoLinkApi/types'
-import { dateToSimpleTime, getDaysOfWeek } from '../../../../../utils/utils'
 
 export const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
 export const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')

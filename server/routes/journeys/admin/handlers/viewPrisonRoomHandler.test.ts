@@ -215,41 +215,18 @@ describe('View prison room handler', () => {
   })
 
   describe('POST', () => {
-    const aPostWithNoSchedule = {
-      roomStatus: 'active',
-      permission: 'shared',
-      existingSchedule: 'false',
-      videoUrl: 'link',
-      notes: 'comments',
-    }
-
-    const aPostWithFirstSchedule = {
-      roomStatus: 'active',
-      permission: 'schedule',
-      existingSchedule: 'false',
-      videoUrl: 'link',
-      notes: 'comments',
-      allDay: 'Yes',
-      schedulePermission: 'court',
-      scheduleCourtCodes: ['C1'],
-      scheduleStartDay: '1',
-      scheduleEndDay: '7',
-    }
-
-    const aPostWithExistingSchedule = {
-      roomStatus: 'active',
-      permission: 'schedule',
-      existingSchedule: 'true',
-      videoUrl: 'link',
-      notes: 'comments',
-    }
-
     it(`should accept a minimal room POST and redirect`, () => {
       adminService.getLocationByDpsLocationId.mockResolvedValue(anUndecoratedLocation(dpsLocationId))
 
       return request(app)
         .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
-        .send(aPostWithNoSchedule)
+        .send({
+          roomStatus: 'active',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+        })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
         .expect(() => {
@@ -274,7 +251,18 @@ describe('View prison room handler', () => {
 
       return request(app)
         .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
-        .send(aPostWithFirstSchedule)
+        .send({
+          roomStatus: 'active',
+          permission: 'schedule',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          allDay: 'Yes',
+          schedulePermission: 'court',
+          scheduleCourtCodes: ['C1'],
+          scheduleStartDay: '1',
+          scheduleEndDay: '7',
+        })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
         .expect(() => {
@@ -312,7 +300,13 @@ describe('View prison room handler', () => {
 
       return request(app)
         .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
-        .send(aPostWithExistingSchedule)
+        .send({
+          roomStatus: 'active',
+          permission: 'schedule',
+          existingSchedule: 'true',
+          videoUrl: 'link',
+          notes: 'comments',
+        })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
         .expect(() => {

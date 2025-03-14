@@ -313,6 +313,28 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/job-admin/publish/{domainEventType}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Endpoint to publish an event to the domain events SNS topic.
+     * @description
+     *
+     *     This endpoint can only be accessed from within the ingress. Requests from elsewhere will result in a 401 response code.
+     */
+    post: operations['publishDomainEvent']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/courts/user-preferences/set': {
     parameters: {
       query?: never
@@ -371,13 +393,62 @@ export interface paths {
     put?: never
     /**
      * Endpoint to provide locations which are available for booking at time of request
+     * @deprecated
      * @description
      *
      *     Requires one of the following roles:
      *     * BOOK_A_VIDEO_LINK_ADMIN
      *     * BVLS_ACCESS__RW
      */
-    post: operations['availableLocations']
+    post: operations['availableByTimeSlotOld']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/availability/by-time-slot': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Endpoint to provide locations which are available for booking at time of request
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     *     * BVLS_ACCESS__RW
+     */
+    post: operations['availableByTimeSlot']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/availability/by-date-and-time': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Endpoint to provide locations which are available for booking at time of request
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     *     * BVLS_ACCESS__RW
+     */
+    post: operations['availableByDateTime']
     delete?: never
     options?: never
     head?: never
@@ -1040,7 +1111,7 @@ export interface components {
        * @example SHARED
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'BLOCKED'
+      locationUsage: 'COURT' | 'PROBATION' | 'BLOCKED'
       /**
        * @description Court or probation codes (comma-separated) that can use the room within this slot
        * @example [YRKMAG,DRBYJS]
@@ -1054,7 +1125,7 @@ export interface components {
        * @example PROBATION
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'BLOCKED'
+      locationUsage: 'COURT' | 'PROBATION' | 'BLOCKED'
       /**
        * @description Court or probation team codes allowed to use the room
        * @example [
@@ -1543,7 +1614,7 @@ export interface components {
        * @example PROBATION
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'SHARED' | 'BLOCKED'
+      locationUsage: 'COURT' | 'PROBATION' | 'BLOCKED'
       /**
        * @description Court or probation team codes allowed to use the room
        * @example [
@@ -1591,6 +1662,17 @@ export interface components {
        * @description The count of probation teams saved as preferences for this user
        */
       probationTeamsSaved: number
+    }
+    /** @description Describes an event to be published to the domain events SNS topic */
+    PublishEventUtilityModel: {
+      /**
+       * @description A list of entity identifiers to be published with the event
+       * @example [
+       *       1,
+       *       2
+       *     ]
+       */
+      identifiers: number[]
     }
     /** @description The request body containing the user court preferences */
     SetCourtPreferencesRequest: {
@@ -1773,6 +1855,101 @@ export interface components {
     }
     AvailableLocationsResponse: {
       locations: components['schemas']['AvailableLocation'][]
+    }
+    /** @description The search criteria for looking up available locations */
+    TimeSlotAvailabilityRequest: {
+      /**
+       * @description The prison code for the prisoner
+       * @example PVI
+       */
+      prisonCode: string
+      /**
+       * @description The booking type
+       * @example PROBATION
+       * @enum {string}
+       */
+      bookingType: 'COURT' | 'PROBATION'
+      /**
+       * @description The court code is needed if booking type is COURT, otherwise null
+       * @example DRBYMC
+       */
+      courtCode?: string
+      /**
+       * @description The probation team code is needed if booking type is PROBATION, otherwise null
+       * @example BLKPPP
+       */
+      probationTeamCode?: string
+      /**
+       * Format: date
+       * @description The present or future date when the room is needed
+       * @example 2050-01-01
+       */
+      date: string
+      /**
+       * Format: int32
+       * @description Rooms can be booked in 30 minutes slots upto a maximum of 120 minutes (two hours)
+       * @example 60
+       */
+      bookingDuration: number
+      /**
+       * @description The time slots to look up available locations. If null, then all time slots are considered.
+       * @example [
+       *       "AM"
+       *     ]
+       */
+      timeSlots?: ('AM' | 'PM' | 'ED')[]
+      /**
+       * Format: int64
+       * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
+       */
+      vlbIdToExclude?: number
+    }
+    /** @description The search criteria for looking up available locations */
+    DateTimeAvailabilityRequest: {
+      /**
+       * @description The prison code for the prisoner
+       * @example PVI
+       */
+      prisonCode: string
+      /**
+       * @description The booking type
+       * @example PROBATION
+       * @enum {string}
+       */
+      bookingType: 'COURT' | 'PROBATION'
+      /**
+       * @description The court code is needed if booking type is COURT, otherwise null
+       * @example DRBYMC
+       */
+      courtCode?: string
+      /**
+       * @description The probation team code is needed if booking type is PROBATION, otherwise null
+       * @example BLKPPP
+       */
+      probationTeamCode?: string
+      /**
+       * Format: date
+       * @description The present or future date when the room is needed
+       * @example 2050-01-01
+       */
+      date: string
+      /**
+       * Format: partial-time
+       * @description Start time for on the day
+       * @example 10:45
+       */
+      startTime: string
+      /**
+       * Format: partial-time
+       * @description End time for on the day
+       * @example 11:45
+       */
+      endTime: string
+      /**
+       * Format: int64
+       * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
+       */
+      vlbIdToExclude?: number
     }
     /** @description An item on a schedule i.e. prison appointments and their booking details */
     ScheduleItem: {
@@ -2454,7 +2631,7 @@ export interface operations {
       }
     }
     responses: {
-      /** @description Successfully created the the decorated room. */
+      /** @description Successfully created the decorated room. */
       201: {
         headers: {
           [name: string]: unknown
@@ -2967,6 +3144,39 @@ export interface operations {
       }
     }
   }
+  publishDomainEvent: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        domainEventType:
+          | 'VIDEO_BOOKING_CREATED'
+          | 'APPOINTMENT_CREATED'
+          | 'VIDEO_BOOKING_CANCELLED'
+          | 'VIDEO_BOOKING_AMENDED'
+          | 'PRISONER_RELEASED'
+          | 'PRISONER_MERGED'
+          | 'PRISONER_VIDEO_APPOINTMENT_CANCELLED'
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['PublishEventUtilityModel']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'text/plain': string
+        }
+      }
+    }
+  }
   setUserCourtPreferences: {
     parameters: {
       query?: never
@@ -3060,7 +3270,7 @@ export interface operations {
       }
     }
   }
-  availableLocations: {
+  availableByTimeSlotOld: {
     parameters: {
       query?: never
       header?: never
@@ -3070,6 +3280,90 @@ export interface operations {
     requestBody: {
       content: {
         'application/json': components['schemas']['AvailableLocationsRequest']
+      }
+    }
+    responses: {
+      /** @description Available locations response, including available locations for given criteria */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AvailableLocationsResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  availableByTimeSlot: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['TimeSlotAvailabilityRequest']
+      }
+    }
+    responses: {
+      /** @description Available locations response, including available locations for given criteria */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['AvailableLocationsResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  availableByDateTime: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DateTimeAvailabilityRequest']
       }
     }
     responses: {

@@ -128,7 +128,7 @@ const aRoomSchedule = (scheduleId: number) => {
     endDayOfWeek: 'FRIDAY',
     startTime: '10:00',
     endTime: '12:00',
-    locationUsage: 'SHARED',
+    locationUsage: 'COURT',
     allowedParties: ['ABERFM'],
   } as RoomSchedule
 }
@@ -153,7 +153,7 @@ const aDecoratedLocation = (dpsId: string): Location => {
           endDayOfWeek: 'FRIDAY',
           startTime: '10:00',
           endTime: '16:00',
-          locationUsage: 'SHARED',
+          locationUsage: 'COURT',
         } as RoomSchedule,
       ],
     } as RoomAttributes,

@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
 import { NextFunction, Request, Response } from 'express'
-import { isValid, parseISO, format } from 'date-fns'
+import { isValid } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
 import { NotFound } from 'http-errors'
 import _ from 'lodash'
@@ -14,16 +14,8 @@ import CourtsService from '../../../../services/courtsService'
 import AdminService from '../../../../services/adminService'
 import Validator from '../../../validators/validator'
 import IsValidDate from '../../../validators/isValidDate'
-import {
-  AmendDecoratedRoomRequest,
-  CreateDecoratedRoomRequest,
-  CreateRoomScheduleRequest,
-  Location,
-} from '../../../../@types/bookAVideoLinkApi/types'
-
-// Start and end of day times (UTC) when the `all-day` radio is selected on schedules
-const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
-const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')
+import { Location } from '../../../../@types/bookAVideoLinkApi/types'
+import { bodyToAmendRoomRequest, bodyToCreateRoomRequest, bodyToCreateScheduleRequest } from './shared/roomFunctions'
 
 class Body {
   @Expose()
@@ -145,82 +137,19 @@ export default class ViewPrisonRoomHandler implements PageHandler {
     const room: Location = await this.adminService.getLocationByDpsLocationId(dpsLocationId, user)
     if (room) {
       if (room.extraAttributes) {
-        await this.adminService.amendRoomAttributes(room.dpsLocationId, this.bodyToAmendRoomRequest(req), user)
+        await this.adminService.amendRoomAttributes(room.dpsLocationId, bodyToAmendRoomRequest(req), user)
       } else {
-        await this.adminService.createRoomAttributes(room.dpsLocationId, this.bodyToCreateRoomRequest(req), user)
+        await this.adminService.createRoomAttributes(room.dpsLocationId, bodyToCreateRoomRequest(req), user)
       }
 
       if (existingSchedule === 'false' && permission === 'schedule') {
-        await this.adminService.createRoomSchedule(room.dpsLocationId, this.bodyToCreateScheduleRequest(req), user)
+        await this.adminService.createRoomSchedule(room.dpsLocationId, bodyToCreateScheduleRequest(req), user)
       }
 
       res.addSuccessMessage('Room changes have been saved')
       res.redirect(`/admin/view-prison-room/${prisonCode}/${dpsLocationId}`)
     } else {
       next(new NotFound())
-    }
-  }
-
-  private bodyToCreateRoomRequest = (req: Request): CreateDecoratedRoomRequest => {
-    const { roomStatus, videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
-    return {
-      locationStatus: roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE',
-      prisonVideoUrl: videoUrl,
-      locationUsage: permission.toUpperCase(),
-      comments: notes,
-      allowedParties: this.chooseAllowedParties(permission, courtCodes, probationTeamCodes),
-    } as CreateDecoratedRoomRequest
-  }
-
-  private bodyToAmendRoomRequest = (req: Request): AmendDecoratedRoomRequest => {
-    const { roomStatus, videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
-    return {
-      locationStatus: roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE',
-      prisonVideoUrl: videoUrl,
-      locationUsage: permission.toUpperCase(),
-      comments: notes,
-      allowedParties: this.chooseAllowedParties(permission, courtCodes, probationTeamCodes),
-    } as AmendDecoratedRoomRequest
-  }
-
-  private bodyToCreateScheduleRequest = (req: Request): CreateRoomScheduleRequest => {
-    const {
-      scheduleStartDay,
-      scheduleEndDay,
-      allDay,
-      scheduleStartTime,
-      scheduleEndTime,
-      schedulePermission,
-      scheduleCourtCodes,
-      scheduleProbationTeamCodes,
-    } = req.body
-
-    // Use fixed start and end times if the all-day checkbox is clicked, otherwise the selected times
-    const startTime: string = allDay ? START_OF_DAY_TIME.toISOString() : scheduleStartTime.toISOString()
-    const endTime: string = allDay ? END_OF_DAY_TIME.toISOString() : scheduleEndTime.toISOString()
-
-    // Parse to a Date object
-    const startTimeAsDate = parseISO(startTime)
-    const endTimeAsDate = parseISO(endTime)
-
-    return {
-      startDayOfWeek: parseInt(scheduleStartDay, 10),
-      endDayOfWeek: parseInt(scheduleEndDay, 10),
-      startTime: format(startTimeAsDate, 'HH:mm'),
-      endTime: format(endTimeAsDate, 'HH:mm'),
-      locationUsage: schedulePermission.toUpperCase(),
-      allowedParties: this.chooseAllowedParties(schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes),
-    } as CreateRoomScheduleRequest
-  }
-
-  private chooseAllowedParties = (permission: string, courtCodes: string[], probationTeamCodes: string[]): string[] => {
-    switch (permission) {
-      case 'court':
-        return courtCodes
-      case 'probation':
-        return probationTeamCodes
-      default:
-        return []
     }
   }
 }

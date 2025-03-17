@@ -382,31 +382,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/availability/locations': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put?: never
-    /**
-     * Endpoint to provide locations which are available for booking at time of request
-     * @deprecated
-     * @description
-     *
-     *     Requires one of the following roles:
-     *     * BOOK_A_VIDEO_LINK_ADMIN
-     *     * BVLS_ACCESS__RW
-     */
-    post: operations['availableByTimeSlotOld']
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/availability/by-time-slot': {
     parameters: {
       query?: never
@@ -1767,8 +1742,8 @@ export interface components {
       /** @description The post appointment location and time */
       post?: components['schemas']['LocationAndInterval']
     }
-    /** @description The request containing the criteria for looking up available locations */
-    AvailableLocationsRequest: {
+    /** @description The search criteria for looking up available locations */
+    TimeSlotAvailabilityRequest: {
       /**
        * @description The prison code for the prisoner
        * @example PVI
@@ -1855,54 +1830,6 @@ export interface components {
     }
     AvailableLocationsResponse: {
       locations: components['schemas']['AvailableLocation'][]
-    }
-    /** @description The search criteria for looking up available locations */
-    TimeSlotAvailabilityRequest: {
-      /**
-       * @description The prison code for the prisoner
-       * @example PVI
-       */
-      prisonCode: string
-      /**
-       * @description The booking type
-       * @example PROBATION
-       * @enum {string}
-       */
-      bookingType: 'COURT' | 'PROBATION'
-      /**
-       * @description The court code is needed if booking type is COURT, otherwise null
-       * @example DRBYMC
-       */
-      courtCode?: string
-      /**
-       * @description The probation team code is needed if booking type is PROBATION, otherwise null
-       * @example BLKPPP
-       */
-      probationTeamCode?: string
-      /**
-       * Format: date
-       * @description The present or future date when the room is needed
-       * @example 2050-01-01
-       */
-      date: string
-      /**
-       * Format: int32
-       * @description Rooms can be booked in 30 minutes slots upto a maximum of 120 minutes (two hours)
-       * @example 60
-       */
-      bookingDuration: number
-      /**
-       * @description The time slots to look up available locations. If null, then all time slots are considered.
-       * @example [
-       *       "AM"
-       *     ]
-       */
-      timeSlots?: ('AM' | 'PM' | 'ED')[]
-      /**
-       * Format: int64
-       * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
-       */
-      vlbIdToExclude?: number
     }
     /** @description The search criteria for looking up available locations */
     DateTimeAvailabilityRequest: {
@@ -3248,48 +3175,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['AvailabilityResponse']
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  availableByTimeSlotOld: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['AvailableLocationsRequest']
-      }
-    }
-    responses: {
-      /** @description Available locations response, including available locations for given criteria */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['AvailableLocationsResponse']
         }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */

@@ -2,7 +2,7 @@ import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import {
   AmendVideoBookingRequest,
   AvailabilityRequest,
-  AvailableLocationsRequest,
+  TimeSlotAvailabilityRequest,
   CreateVideoBookingRequest,
   RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
@@ -27,7 +27,7 @@ export default class ProbationBookingService {
       date: formatDate(journey.date, 'yyyy-MM-dd'),
       bookingDuration: journey.duration,
       vlbIdToExclude: journey.bookingId,
-    } as AvailableLocationsRequest
+    } as TimeSlotAvailabilityRequest
 
     return this.bookAVideoLinkApiClient.fetchAvailableLocations(request, user)
   }

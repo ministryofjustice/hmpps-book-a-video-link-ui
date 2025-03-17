@@ -9,7 +9,7 @@ import {
   AmendRoomScheduleRequest,
   AmendVideoBookingRequest,
   AvailabilityRequest,
-  AvailableLocationsRequest,
+  TimeSlotAvailabilityRequest,
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
   CreateVideoBookingRequest,
@@ -200,12 +200,12 @@ describe('bookAVideoLinkApiClient', () => {
       const response = { data: 'data' }
 
       fakeBookAVideoLinkApiClient
-        .post('/availability/locations', { bookingType: 'COURT' })
+        .post('/availability/by-time-slot', { bookingType: 'COURT' })
         .matchHeader('authorization', `Bearer systemToken`)
         .reply(200, response)
 
       const output = await bookAVideoLinkApiClient.fetchAvailableLocations(
-        { bookingType: 'COURT' } as AvailableLocationsRequest,
+        { bookingType: 'COURT' } as TimeSlotAvailabilityRequest,
         user,
       )
       expect(output).toEqual(response)

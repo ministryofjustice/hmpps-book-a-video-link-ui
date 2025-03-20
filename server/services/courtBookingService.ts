@@ -3,6 +3,7 @@ import {
   AmendVideoBookingRequest,
   AvailabilityRequest,
   CreateVideoBookingRequest,
+  DateTimeAvailabilityRequest,
   RequestVideoBookingRequest,
 } from '../@types/bookAVideoLinkApi/types'
 import { formatDate } from '../utils/utils'
@@ -16,6 +17,16 @@ export default class CourtBookingService {
   public checkAvailability(journey: BookACourtHearingJourney, user: Express.User) {
     const availabilityRequest = this.buildAvailabilityRequest(journey)
     return this.bookAVideoLinkApiClient.checkAvailability(availabilityRequest, user)
+  }
+
+  public roomsAvailableByDateAndTime(
+    journey: BookACourtHearingJourney,
+    startTime: string,
+    endTime: string,
+    user: Express.User,
+  ) {
+    const request = this.buildAvailabilityByDateTimeRequest(journey, startTime, endTime)
+    return this.bookAVideoLinkApiClient.availableLocationsByDateAndTime(request, user)
   }
 
   public createVideoLinkBooking(journey: BookACourtHearingJourney, user: Express.User) {
@@ -62,6 +73,22 @@ export default class CourtBookingService {
           }
         : undefined,
     } as AvailabilityRequest
+  }
+
+  private buildAvailabilityByDateTimeRequest(
+    journey: BookACourtHearingJourney,
+    startTime: string,
+    endTime: string,
+  ): DateTimeAvailabilityRequest {
+    return {
+      prisonCode: journey.prisoner.prisonId,
+      bookingType: 'COURT',
+      courtCode: journey.courtCode,
+      date: formatDate(journey.date, 'yyyy-MM-dd'),
+      startTime: formatDate(startTime, 'HH:mm'),
+      endTime: formatDate(endTime, 'HH:mm'),
+      vlbIdToExclude: journey.bookingId,
+    } as DateTimeAvailabilityRequest
   }
 
   private buildBookingRequest<T extends VideoBookingRequest>(journey: BookACourtHearingJourney): T {

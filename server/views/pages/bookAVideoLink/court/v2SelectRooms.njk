@@ -1,0 +1,178 @@
+{% extends "partials/layout.njk" %}
+
+{% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+
+{% set mode = session.req.params.mode %}
+{% set pageTitle = 'Select available rooms for this booking' %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <form method='POST'>
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+                <input type="hidden" name="preRequired" value="{{ preTimes !== undefined }}" />
+                <input type="hidden" name="postRequired" value="{{ postTimes !== undefined }}" />
+
+                {{ govukSummaryList({
+                    classes: "govuk-summary-list--no-border",
+                    rows: [
+                        {
+                            key: {
+                                text: "Name"
+                            },
+                            value: {
+                                text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Prison"
+                            },
+                            value: {
+                                text: prisoner.prisonName
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Court"
+                            },
+                            value: {
+                                text: courts[0].description
+                            }
+                        } if courts.length == 1,
+                        {
+                            key: {
+                                text: "Court"
+                            },
+                            value: {
+                                text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
+                            }
+                        } if courts.length > 1,
+                        {
+                            key: {
+                                text: "Date"
+                            },
+                            value: {
+                                text: session.journey.bookACourtHearing.date | formatDate('dd/MM/yyyy')
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Hearing time"
+                            },
+                            value: {
+                                text: mainTimes
+                            }
+                        },
+                        {
+                            key: {
+                                text: "Pre-court briefing time"
+                            },
+                            value: {
+                                text: preTimes
+                            }
+                        } if preTimes,
+                        {
+                            key: {
+                                text: "Post-court briefing time"
+                            },
+                            value: {
+                                text: postTimes
+                            }
+                        } if postTimes
+                    ]
+                }) }}
+
+                {% set items = [] %}
+                {% for room in mainLocations %}
+                    {% set items = (items.push({
+                        value: room.dpsLocationKey,
+                        text: room.name,
+                        selected: formResponses.location == room.dpsLocationKey or session.journey.bookACourtHearing.locationCode == room.dpsLocationKey
+                    }), items) %}
+                {% endfor %}
+
+                {{ govukSelect({
+                    name: "location",
+                    id: "location",
+                    label: {
+                        text: "Select room for court hearing",
+                        classes: 'govuk-label--s'
+                    },
+                    items: items,
+                    errorMessage: validationErrors | findError("location"),
+                    classes: "govuk-!-width-two-thirds"
+                }) }}
+
+                {% if preTimes  %}
+                    {% set items = [] %}
+                    {% for room in preLocations %}
+                        {% set items = (items.push({
+                            value: room.dpsLocationKey,
+                            text: room.name,
+                            selected: formResponses.preLocation == room.dpsLocationKey or session.journey.bookACourtHearing.preLocationCode == room.dpsLocationKey
+                        }), items) %}
+                    {% endfor %}
+
+                    {{ govukSelect({
+                        name: "preLocation",
+                        id: "preLocation",
+                        label: {
+                            text: "Select room for pre-court hearing briefing",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("preLocation"),
+                        classes: "govuk-!-width-two-thirds"
+                    }) }}
+                {% endif %}
+
+                {% if postTimes %}
+                    {% set items = [] %}
+                    {% for room in postLocations %}
+                        {% set items = (items.push({
+                            value: room.dpsLocationKey,
+                            text: room.name,
+                            selected: formResponses.postLocation == room.dpsLocationKey or session.journey.bookACourtHearing.postLocationCode == room.dpsLocationKey
+                        }), items) %}
+                    {% endfor %}
+
+                    {{ govukSelect({
+                        name: "postLocation",
+                        id: "postLocation",
+                        label: {
+                            text:  "Select room for post-court hearing briefing",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("postLocation"),
+                        classes: "govuk-!-width-two-thirds"
+                    }) }}
+                {% endif %}
+
+                {{ govukButton({
+                    text: "Continue",
+                    type: "submit"
+                }) }}
+            </form>
+
+            {% if mode == 'create' or mode == 'request' %}
+                <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+            {% else %}
+                <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

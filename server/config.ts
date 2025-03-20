@@ -144,5 +144,6 @@ export default {
   featureToggles: {
     adminLocationDecorationEnabled: get('FEATURE_ADMIN_LOCATION_DECORATION', 'false') === 'true',
     enhancedProbationJourneyEnabled: get('FEATURE_ENHANCED_PROBATION_JOURNEY', 'false') === 'true',
+    alteredCourtJourneyEnabled: get('FEATURE_ALTERED_COURT_JOURNEY', 'false') === 'true',
   },
 }

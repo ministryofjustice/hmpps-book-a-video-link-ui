@@ -16,6 +16,7 @@ import {
   RequestVideoBookingRequest,
   AvailableLocationsResponse,
   TimeSlotAvailabilityRequest,
+  DateTimeAvailabilityRequest,
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
   AmendDecoratedRoomRequest,
@@ -103,6 +104,13 @@ export default class BookAVideoLinkApiClient extends RestClient {
     user: Express.User,
   ): Promise<AvailableLocationsResponse> {
     return this.post({ path: '/availability/by-time-slot', data: request }, user)
+  }
+
+  public availableLocationsByDateAndTime(
+    request: DateTimeAvailabilityRequest,
+    user: Express.User,
+  ): Promise<AvailableLocationsResponse> {
+    return this.post({ path: '/availability/by-date-and-time', data: request }, user)
   }
 
   public createVideoLinkBooking(request: CreateVideoBookingRequest, user: Express.User): Promise<number> {

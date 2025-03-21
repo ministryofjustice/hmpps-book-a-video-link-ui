@@ -1,90 +1,66 @@
-// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
-import { Expose, Transform } from 'class-transformer'
-import { IsNotEmpty, ValidateIf } from 'class-validator'
-import { parse } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
-import IsValidDate from '../../../../validators/isValidDate'
-import CourtBookingService from '../../../../../services/courtBookingService'
-
-const transformTime = (value: string) => (value ? parse(value, 'HH:mm', new Date(0)) : undefined)
-
-class Body {
-  @Expose()
-  @Transform(({ value }) => transformTime(value))
-  @IsValidDate({ message: 'A valid start time must be present' })
-  @IsNotEmpty({ message: 'A start time must be present' })
-  startTime: Date
-
-  @Expose()
-  @Transform(({ value }) => transformTime(value))
-  @IsValidDate({ message: 'A valid end time must be present' })
-  @IsNotEmpty({ message: 'A end time must be present' })
-  endTime: Date
-
-  @Expose()
-  @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookACourtHearing.preLocationCode)
-  @IsValidDate({ message: 'A valid pre-court start time must be present' })
-  @IsNotEmpty({ message: 'A pre-court start time must be present' })
-  preStart: Date
-
-  @Expose()
-  @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookACourtHearing.preLocationCode)
-  @IsValidDate({ message: 'A valid pre-court end time must be present' })
-  @IsNotEmpty({ message: 'A pre-court end time must be present' })
-  preEnd: Date
-
-  @Expose()
-  @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookACourtHearing.postLocationCode)
-  @IsValidDate({ message: 'A valid post-court start time must be present' })
-  @IsNotEmpty({ message: 'A post-court start time must be present' })
-  postStart: Date
-
-  @Expose()
-  @Transform(({ value }) => transformTime(value))
-  @ValidateIf(o => o.journey.bookACourtHearing.postLocationCode)
-  @IsValidDate({ message: 'A valid post-court end time must be present' })
-  @IsNotEmpty({ message: 'A post-court end time must be present' })
-  postEnd: Date
-}
+import CourtsService from '../../../../../services/courtsService'
+import PrisonerService from '../../../../../services/prisonerService'
+import { formatDate } from '../../../../../utils/utils'
 
 export default class BookingNotAvailableHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_NOT_AVAILABLE_PAGE
 
-  public BODY = Body
-
-  constructor(private readonly courtBookingService: CourtBookingService) {}
+  constructor(
+    private readonly courtsService: CourtsService,
+    private readonly prisonerService: PrisonerService,
+  ) {}
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { bookACourtHearing } = req.session.journey
+    const { mode } = req.params
 
-    const { availabilityOk, alternatives } = await this.courtBookingService.checkAvailability(bookACourtHearing, user)
+    const journey = req.session.journey.bookACourtHearing
 
-    if (availabilityOk) {
-      return res.redirect('check-booking')
-    }
+    const offender = journey?.prisoner
+    const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
+    const courts = await this.courtsService.getUserPreferences(user)
+    const prisoner =
+      mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
-    return res.render('pages/bookAVideoLink/court/notAvailable', { alternatives })
+    const preReq = journey?.preHearingStartTime !== undefined
+    const postReq = journey?.postHearingStartTime !== undefined
+
+    const preTimes = preReq ? this.formatTimes(journey.preHearingStartTime, journey.preHearingEndTime) : undefined
+    const mainTimes = this.formatTimes(journey.startTime, journey.endTime)
+    const postTimes = postReq ? this.formatTimes(journey.postHearingStartTime, journey.postHearingEndTime) : undefined
+
+    res.render('pages/bookAVideoLink/court/notAvailable', {
+      prisoner: {
+        firstName: prisoner.firstName,
+        lastName: prisoner.lastName,
+        dateOfBirth: prisoner.dateOfBirth,
+        prisonerNumber: prisoner.prisonerNumber,
+        prisonName: prisoner.prisonName,
+      },
+      courts,
+      mainTimes,
+      preTimes,
+      postTimes,
+      fromReview: req.get('Referrer')?.endsWith('check-booking'),
+    })
   }
 
   public POST = async (req: Request, res: Response) => {
-    const { startTime, endTime, preStart, preEnd, postStart, postEnd } = req.body
-
+    // Remove rooms from the session object - need to alter times and select new
     req.session.journey.bookACourtHearing = {
       ...req.session.journey.bookACourtHearing,
-      startTime: startTime.toISOString(),
-      endTime: endTime.toISOString(),
-      preHearingStartTime: preStart?.toISOString(),
-      preHearingEndTime: preEnd?.toISOString(),
-      postHearingStartTime: postStart?.toISOString(),
-      postHearingEndTime: postEnd?.toISOString(),
+      locationCode: undefined,
+      preLocationCode: undefined,
+      postLocationCode: undefined,
     }
+    return res.redirect('../video-link-booking')
+  }
 
-    res.redirect('check-booking')
+  // Should be utils..
+  private formatTimes = (startTime: string, endTime: string): string => {
+    return `${formatDate(startTime, 'HH:mm')} to ${formatDate(endTime, 'HH:mm')}`
   }
 }

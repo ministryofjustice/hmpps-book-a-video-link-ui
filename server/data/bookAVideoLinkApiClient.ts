@@ -106,7 +106,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.post({ path: '/availability/by-time-slot', data: request }, user)
   }
 
-  public availableLocationsByDateAndTime(
+  public fetchAvailableLocationsByDateAndTime(
     request: DateTimeAvailabilityRequest,
     user: Express.User,
   ): Promise<AvailableLocationsResponse> {

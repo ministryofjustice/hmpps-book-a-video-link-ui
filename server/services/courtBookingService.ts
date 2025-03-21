@@ -26,7 +26,7 @@ export default class CourtBookingService {
     user: Express.User,
   ) {
     const request = this.buildAvailabilityByDateTimeRequest(journey, startTime, endTime)
-    return this.bookAVideoLinkApiClient.availableLocationsByDateAndTime(request, user)
+    return this.bookAVideoLinkApiClient.fetchAvailableLocationsByDateAndTime(request, user)
   }
 
   public createVideoLinkBooking(journey: BookACourtHearingJourney, user: Express.User) {

@@ -28,43 +28,43 @@
                     rows: [
                         {
                             key: {
-                            text: "Name"
-                        },
+                                text: "Name"
+                            },
                             value: {
-                            text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
-                        }
+                                text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
+                            }
                         },
                         {
                             key: {
-                            text: "Date of birth"
-                        },
+                                text: "Date of birth"
+                            },
                             value: {
-                            text: prisoner.dateOfBirth | formatDate
-                        }
+                                text: prisoner.dateOfBirth | formatDate
+                            }
                         } if mode == 'request',
                         {
                             key: {
-                            text: "Prison"
-                        },
+                                text: "Prison"
+                            },
                             value: {
-                            text: prisoner.prisonName
-                        }
+                                text: prisoner.prisonName
+                            }
                         },
                         {
                             key: {
-                            text: "Court"
-                        },
+                                text: "Court"
+                            },
                             value: {
-                            text: courts[0].description
-                        }
+                                text: courts[0].description
+                            }
                         } if courts.length == 1,
                         {
                             key: {
-                            text: "Court"
-                        },
+                                text: "Court"
+                            },
                             value: {
-                            text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
-                        }
+                                text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
+                            }
                         } if mode == 'amend' and courts.length > 1
                     ]
                 }) }}
@@ -148,14 +148,14 @@
                             text: "Yes",
                             checked: formResponses.cvpRequired == 'yes' or session.journey.bookACourtHearing.videoLinkUrl,
                             conditional: {
-                            html: courtHearingLinkHtml
-                        }
+                                html: courtHearingLinkHtml
+                            }
                         },
                         {
                             value: 'no',
                             text: "No",
                             checked: formResponses.cvpRequired == 'no' or (not session.journey.bookACourtHearing.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
-                        }
+                            }
                     ]
                 }) }}
 

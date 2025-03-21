@@ -22,8 +22,6 @@
         <div class="govuk-grid-column-three-quarters">
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-                <input type="hidden" name="preRequired" value="{{ preTimes !== undefined }}" />
-                <input type="hidden" name="postRequired" value="{{ postTimes !== undefined }}" />
 
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
@@ -33,7 +31,7 @@
                                 text: "Name"
                             },
                             value: {
-                                text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
+                                text: ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) + ((' (' + session.journey.bookACourtHearing.prisoner.prisonerNumber + ')') if session.journey.bookACourtHearing.prisoner.prisonerNumber)
                             }
                         },
                         {
@@ -41,7 +39,7 @@
                                 text: "Prison"
                             },
                             value: {
-                                text: prisoner.prisonName
+                                text: session.journey.bookACourtHearing.prisoner.prisonName
                             }
                         },
                         {
@@ -70,28 +68,28 @@
                         },
                         {
                             key: {
-                                text: "Hearing time"
-                            },
-                            value: {
-                                text: mainTimes
-                            }
-                        },
-                        {
-                            key: {
                                 text: "Pre-court briefing time"
                             },
                             value: {
-                                text: preTimes
+                                text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
                             }
-                        } if preTimes,
+                        } if session.journey.bookACourtHearing.preHearingStartTime,
+                        {
+                            key: {
+                                text: "Hearing time"
+                            },
+                            value: {
+                                text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
+                            }
+                        },
                         {
                             key: {
                                 text: "Post-court briefing time"
                             },
                             value: {
-                                text: postTimes
+                                text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
                             }
-                        } if postTimes
+                        } if session.journey.bookACourtHearing.postHearingStartTime
                     ]
                 }) }}
 
@@ -116,7 +114,7 @@
                     classes: "govuk-!-width-two-thirds"
                 }) }}
 
-                {% if preTimes  %}
+                {% if session.journey.bookACourtHearing.preHearingStartTime  %}
                     {% set items = [] %}
                     {% for room in preLocations %}
                         {% set items = (items.push({
@@ -139,7 +137,7 @@
                     }) }}
                 {% endif %}
 
-                {% if postTimes %}
+                {% if session.journey.bookACourtHearing.postHearingStartTime %}
                     {% set items = [] %}
                     {% for room in postLocations %}
                         {% set items = (items.push({

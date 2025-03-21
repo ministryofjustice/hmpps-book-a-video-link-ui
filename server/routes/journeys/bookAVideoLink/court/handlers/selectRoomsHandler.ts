@@ -8,7 +8,6 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonerService from '../../../../../services/prisonerService'
 import CourtBookingService from '../../../../../services/courtBookingService'
-import { formatDate } from '../../../../../utils/utils'
 
 class Body {
   @Expose()
@@ -16,23 +15,17 @@ class Body {
   location: string
 
   @Expose()
-  preRequired: string
-
-  @Expose()
-  @ValidateIf(o => o.preRequired === 'true')
+  @ValidateIf(({ journey }) => journey.bookACourtHearing.preHearingStartTime)
   @IsNotEmpty({ message: 'Select a prison room for the pre-court hearing' })
   preLocation: string
 
   @Expose()
-  postRequired: string
-
-  @Expose()
-  @ValidateIf(o => o.postRequired === 'true')
+  @ValidateIf(({ journey }) => journey.bookACourtHearing.postHearingStartTime)
   @IsNotEmpty({ message: 'Select a prison room for the post-court hearing' })
   postLocation: string
 }
 
-export default class V2SelectRoomsHandler implements PageHandler {
+export default class SelectRoomsHandler implements PageHandler {
   public PAGE_NAME = Page.SELECT_ROOMS_PAGE
 
   public BODY = Body
@@ -45,73 +38,47 @@ export default class V2SelectRoomsHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { mode } = req.params
 
     const journey = req.session.journey.bookACourtHearing
 
-    const offender = journey?.prisoner
-    const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
-    const prisoner =
-      mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
     const courts = await this.courtsService.getUserPreferences(user)
 
-    const preReq = journey?.preHearingStartTime !== undefined
-    const postReq = journey?.postHearingStartTime !== undefined
+    const preRequired = journey.preHearingStartTime !== undefined
+    const postRequired = journey.postHearingStartTime !== undefined
 
     const [preLocations, mainLocations, postLocations] = await Promise.all([
-      preReq
+      preRequired
         ? this.courtBookingService.roomsAvailableByDateAndTime(
             journey,
             journey.preHearingStartTime,
             journey.preHearingEndTime,
             user,
           )
-        : Promise.resolve(null),
+        : undefined,
       this.courtBookingService.roomsAvailableByDateAndTime(journey, journey.startTime, journey.endTime, user),
-      postReq
+      postRequired
         ? this.courtBookingService.roomsAvailableByDateAndTime(
             journey,
             journey.postHearingStartTime,
             journey.postHearingEndTime,
             user,
           )
-        : Promise.resolve(null),
+        : undefined,
     ])
 
-    /**
-    logger.info(`PRE rooms ${JSON.stringify(preLocations, null, 2)}`)
-    logger.info(`MAIN rooms ${JSON.stringify(mainLocations, null, 2)}`)
-    logger.info(`POST rooms ${JSON.stringify(postLocations, null, 2)}`)
-    */
-
     if (
-      (preReq && isEmpty(preLocations.locations)) ||
-      (postReq && isEmpty(postLocations.locations)) ||
+      (preRequired && isEmpty(preLocations.locations)) ||
+      (postRequired && isEmpty(postLocations.locations)) ||
       isEmpty(mainLocations.locations)
     ) {
-      // One of the required lists is empty so we cannot support the meeting at this time.
-      res.redirect('no-rooms')
+      // One of the required lists is empty, so we cannot support the meeting at this time.
+      res.redirect('not-available')
     } else {
-      // At least one room is available for each of the hearings - offer the choice
-      const preTimes = preReq ? this.formatTimes(journey.preHearingStartTime, journey.preHearingEndTime) : undefined
-      const mainTimes = this.formatTimes(journey.startTime, journey.endTime)
-      const postTimes = postReq ? this.formatTimes(journey.postHearingStartTime, journey.postHearingEndTime) : undefined
-
-      res.render('pages/bookAVideoLink/court/v2SelectRooms', {
-        prisoner: {
-          firstName: prisoner.firstName,
-          lastName: prisoner.lastName,
-          dateOfBirth: prisoner.dateOfBirth,
-          prisonerNumber: prisoner.prisonerNumber,
-          prisonName: prisoner.prisonName,
-        },
+      res.render('pages/bookAVideoLink/court/selectRooms', {
         courts,
         preLocations: preLocations?.locations,
         mainLocations: mainLocations.locations,
         postLocations: postLocations?.locations,
-        preTimes,
-        mainTimes,
-        postTimes,
         fromReview: req.get('Referrer')?.endsWith('check-booking'),
       })
     }
@@ -127,10 +94,5 @@ export default class V2SelectRoomsHandler implements PageHandler {
       postLocationCode: postLocation,
     }
     return res.redirect('check-booking')
-  }
-
-  // Shared utils.
-  private formatTimes = (startTime: string, endTime: string): string => {
-    return `${formatDate(startTime, 'HH:mm')} to ${formatDate(endTime, 'HH:mm')}`
   }
 }

@@ -4,11 +4,11 @@ import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
-import NewBookingHandler from './handlers/newBookingHandler'
+import DeprecatedNewBookingHandler from './handlers/deprecatedNewBookingHandler'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
-import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
+import DeprecatedBookingNotAvailableHandler from './handlers/deprecatedBookingNotAvailableHandler'
 import CommentsHandler from './handlers/commentsHandler'
 
 export default function AmendRoutes({
@@ -42,9 +42,15 @@ export default function AmendRoutes({
 
   route(
     '/video-link-booking',
-    new NewBookingHandler(courtsService, prisonService, prisonerService, referenceDataService, videoLinkService),
+    new DeprecatedNewBookingHandler(
+      courtsService,
+      prisonService,
+      prisonerService,
+      referenceDataService,
+      videoLinkService,
+    ),
   )
-  route('/video-link-booking/not-available', new BookingNotAvailableHandler(courtBookingService))
+  route('/video-link-booking/not-available', new DeprecatedBookingNotAvailableHandler(courtBookingService))
   route('/video-link-booking/comments', new CommentsHandler())
   route(
     '/video-link-booking/check-booking',

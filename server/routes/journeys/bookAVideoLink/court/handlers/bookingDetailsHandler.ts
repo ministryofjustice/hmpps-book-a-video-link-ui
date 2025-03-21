@@ -71,7 +71,7 @@ class Body {
   postRequired: YesNo
 }
 
-export default class V2NewBookingHandler implements PageHandler {
+export default class BookingDetailsHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_DETAILS_PAGE
 
   public BODY = Body
@@ -91,10 +91,11 @@ export default class V2NewBookingHandler implements PageHandler {
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
+
     const courts = await this.courtsService.getUserPreferences(user)
     const hearingTypes = await this.referenceDataService.getCourtHearingTypes(user)
 
-    res.render('pages/bookAVideoLink/court/v2NewBooking', {
+    res.render('pages/bookAVideoLink/court/bookingDetails', {
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,

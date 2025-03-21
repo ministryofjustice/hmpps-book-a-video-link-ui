@@ -9,6 +9,10 @@ import DeprecatedNewBookingHandler from './handlers/deprecatedNewBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import DeprecatedBookingNotAvailableHandler from './handlers/deprecatedBookingNotAvailableHandler'
 import BookingRequestedHandler from './handlers/bookingRequestedHandler'
+import config from '../../../../config'
+import BookingDetailsHandler from './handlers/bookingDetailsHandler'
+import SelectRoomsHandler from './handlers/selectRoomsHandler'
+import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function RequestRoutes({
   auditService,
@@ -34,21 +38,34 @@ export default function RequestRoutes({
     return next()
   })
 
-  route(
-    '/prisoner/video-link-booking',
-    new DeprecatedNewBookingHandler(
-      courtsService,
-      prisonService,
-      prisonerService,
-      referenceDataService,
-      videoLinkService,
-    ),
-  )
+  if (config.featureToggles.alteredCourtJourneyEnabled) {
+    route(
+      `/prisoner/video-link-booking`,
+      new BookingDetailsHandler(courtsService, prisonerService, referenceDataService),
+    )
+    route(
+      `/prisoner/video-link-booking/select-rooms`,
+      new SelectRoomsHandler(courtsService, courtBookingService, prisonerService),
+    )
+    route(`prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, prisonerService))
+  } else {
+    route(
+      `/prisoner/video-link-booking`,
+      new DeprecatedNewBookingHandler(
+        courtsService,
+        prisonService,
+        prisonerService,
+        referenceDataService,
+        videoLinkService,
+      ),
+    )
+    route(`/prisoner/video-link-booking/not-available`, new DeprecatedBookingNotAvailableHandler(courtBookingService))
+  }
+
   route(
     `/prisoner/video-link-booking/check-booking`,
     new CheckBookingHandler(courtBookingService, courtsService, prisonService, referenceDataService, videoLinkService),
   )
-  route(`/prisoner/video-link-booking/not-available`, new DeprecatedBookingNotAvailableHandler(courtBookingService))
 
   return router
 }

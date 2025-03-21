@@ -93,27 +93,6 @@
                     ]
                 }) }}
 
-                {% set items = [] %}
-                {% for room in mainLocations %}
-                    {% set items = (items.push({
-                        value: room.dpsLocationKey,
-                        text: room.name,
-                        selected: formResponses.location == room.dpsLocationKey or session.journey.bookACourtHearing.locationCode == room.dpsLocationKey
-                    }), items) %}
-                {% endfor %}
-
-                {{ govukSelect({
-                    name: "location",
-                    id: "location",
-                    label: {
-                        text: "Select room for court hearing",
-                        classes: 'govuk-label--s'
-                    },
-                    items: items,
-                    errorMessage: validationErrors | findError("location"),
-                    classes: "govuk-!-width-two-thirds"
-                }) }}
-
                 {% if session.journey.bookACourtHearing.preHearingStartTime  %}
                     {% set items = [] %}
                     {% for room in preLocations %}
@@ -136,6 +115,27 @@
                         classes: "govuk-!-width-two-thirds"
                     }) }}
                 {% endif %}
+
+                {% set items = [] %}
+                {% for room in mainLocations %}
+                    {% set items = (items.push({
+                        value: room.dpsLocationKey,
+                        text: room.name,
+                        selected: formResponses.location == room.dpsLocationKey or session.journey.bookACourtHearing.locationCode == room.dpsLocationKey
+                    }), items) %}
+                {% endfor %}
+
+                {{ govukSelect({
+                    name: "location",
+                    id: "location",
+                    label: {
+                        text: "Select room for court hearing",
+                        classes: 'govuk-label--s'
+                    },
+                    items: items,
+                    errorMessage: validationErrors | findError("location"),
+                    classes: "govuk-!-width-two-thirds"
+                }) }}
 
                 {% if session.journey.bookACourtHearing.postHearingStartTime %}
                     {% set items = [] %}

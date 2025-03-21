@@ -16,6 +16,7 @@ import {
   Location,
   RequestVideoBookingRequest,
   RoomSchedule,
+  DateTimeAvailabilityRequest,
 } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -206,6 +207,23 @@ describe('bookAVideoLinkApiClient', () => {
 
       const output = await bookAVideoLinkApiClient.fetchAvailableLocations(
         { bookingType: 'COURT' } as TimeSlotAvailabilityRequest,
+        user,
+      )
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('fetchAvailableLocationsByDateAndTime', () => {
+    it('should post the correct data', async () => {
+      const response = { data: 'data' }
+
+      fakeBookAVideoLinkApiClient
+        .post('/availability/by-date-and-time', { bookingType: 'COURT' })
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.fetchAvailableLocationsByDateAndTime(
+        { bookingType: 'COURT' } as DateTimeAvailabilityRequest,
         user,
       )
       expect(output).toEqual(response)

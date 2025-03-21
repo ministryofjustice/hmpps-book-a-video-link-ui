@@ -96,7 +96,7 @@ class Body {
   videoLinkUrl: string
 }
 
-export default class NewBookingHandler implements PageHandler {
+export default class DeprecatedNewBookingHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_DETAILS_PAGE
 
   public BODY = Body
@@ -125,7 +125,7 @@ export default class NewBookingHandler implements PageHandler {
 
     const hearingTypes = await this.referenceDataService.getCourtHearingTypes(user)
 
-    res.render('pages/bookAVideoLink/court/newBooking', {
+    res.render('pages/bookAVideoLink/court/newBookingDeprecated', {
       prisoner: {
         firstName: prisoner.firstName,
         lastName: prisoner.lastName,

@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByLabel, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
+import { existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -95,7 +95,7 @@ describe('Booking details handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Enter video link booking details')
+          expect(heading).toEqual("Select a date and time for Joe Smith's court hearings")
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -106,8 +106,8 @@ describe('Booking details handler', () => {
           expect(referenceDataService.getCourtHearingTypes).toHaveBeenCalledWith(user)
           expect(courtsService.getUserPreferences).toHaveBeenCalledWith(user)
 
-          expect(existsByLabel($, 'Which court is the hearing for?')).toBe(true)
-          expect(existsByLabel($, 'Which type of hearing is this?')).toBe(true)
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(true)
+          expect(existsByLabel($, 'Select the court hearing type')).toBe(true)
         })
     })
 
@@ -131,11 +131,9 @@ describe('Booking details handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Enter video link booking details')
+          expect(heading).toEqual("Select a date and time for Joe Smith's court hearings")
 
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenCalled()
-          expect(getValueByKey($, 'Name')).toEqual('Joe Smith')
-          expect(getValueByKey($, 'Date of birth')).toEqual('1 January 1970')
         })
     })
 
@@ -147,8 +145,8 @@ describe('Booking details handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
 
-          expect(heading).toEqual('Change video link booking')
-          expect(existsByLabel($, 'Which court is the hearing for?')).toBe(false)
+          expect(heading).toEqual("Change Joe Smith's video link booking")
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(false)
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -346,7 +344,7 @@ describe('Booking details handler', () => {
         })
     })
 
-    it('should save the posted fields in session', () => {
+    it('should save the posted fields in session', async () => {
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({ ...validForm, preRequired: 'yes', postRequired: 'yes' })
@@ -379,7 +377,7 @@ describe('Booking details handler', () => {
         )
     })
 
-    it('should save the posted fields in session during the amend journey with existing booking data', () => {
+    it('should save the posted fields in session during the amend journey with existing booking data', async () => {
       return request(app)
         .post(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
         .send(validForm)
@@ -411,7 +409,7 @@ describe('Booking details handler', () => {
         )
     })
 
-    it('should get the prisoner information from the session for the request journey', () => {
+    it('should get the prisoner information from the session for the request journey', async () => {
       appSetup({
         bookACourtHearing: {
           prisoner: {

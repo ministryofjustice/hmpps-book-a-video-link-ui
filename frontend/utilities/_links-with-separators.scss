@@ -1,0 +1,11 @@
+.links-with-separators {
+  display:flex;
+  justify-content: space-evenly;
+}
+.links-col {
+  padding: 5px;
+  flex-basis: 45%;
+}
+.links-col:first-child {
+  border-right: 1px solid lightgray;
+}

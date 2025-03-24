@@ -25,7 +25,7 @@
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
             <div class="govuk-!-margin-bottom-6">
                {% if room.extraAttributes %}
-                   {{ locationUsageTag("Customised", "govuk-tag--green") }}
+                   {{ locationUsageTag("Customised", "govuk-tag--turquoise") }}
                {% else %}
                    {{ locationUsageTag("Default", "govuk-tag--grey") }}
                {% endif %}
@@ -50,7 +50,7 @@
                         }
                     },
                     hint: {
-                        text: "Select out of use if the room is not available for any bookings"
+                        text: "Select 'out of use' if the room is not available for any bookings"
                     },
                     items: [
                         {
@@ -60,7 +60,7 @@
                         },
                         {
                             value: "inactive",
-                            text: "Out of service",
+                            text: "Out of use",
                             checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE"
                         }
                     ],
@@ -136,16 +136,22 @@
                     errorMessage: validationErrors | findError('permission')
                 }) }}
 
-                {{ govukCharacterCount({
-                    name: "notes",
-                    id: "notes",
-                    label: {
-                        text: "Comments (optional)",
-                        classes: 'govuk-fieldset__legend--m'
-                    },
-                    maxlength: 100,
-                    value: formResponses.notes or room.extraAttributes.notes
-                }) }}
+
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-three-quarters-from-desktop">
+                        {{ govukCharacterCount({
+                            name: "notes",
+                            id: "notes",
+                            label: {
+                                text: "Comments (optional)",
+                                classes: 'govuk-fieldset__legend--m'
+                            },
+                            maxlength: 400,
+                            rows: 6,
+                            value: formResponses.notes or room.extraAttributes.notes
+                        }) }}
+                    </div>
+                </div>
 
                 <div class="govuk-button-group">
                     {{ govukButton({
@@ -154,11 +160,10 @@
                         type: "submit"
                     }) }}
 
-                    {{ govukButton({
-                        text: "Cancel",
-                        classes: "govuk-button--secondary",
-                        href: "/admin/view-prison-locations/" + prison.code
-                    }) }}
+                    <a href="/admin/view-prison-locations/{{ prison.code }}"
+                       class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">
+                       Cancel
+                    </a>
                 </div>
             </form>
         </div>

@@ -79,7 +79,6 @@ export default class SelectRoomsHandler implements PageHandler {
         preLocations: preLocations?.locations,
         mainLocations: mainLocations.locations,
         postLocations: postLocations?.locations,
-        fromReview: req.get('Referrer')?.endsWith('check-booking'),
       })
     }
   }

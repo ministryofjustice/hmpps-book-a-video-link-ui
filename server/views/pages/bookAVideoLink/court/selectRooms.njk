@@ -9,7 +9,8 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set mode = session.req.params.mode %}
-{% set pageTitle = 'Select available rooms for this booking' %}
+{% set prisonerName = ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) %}
+{% set pageTitle = "Select rooms for " + prisonerName + "'s court hearings" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -26,14 +27,6 @@
                 {{ govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
-                        {
-                            key: {
-                                text: "Name"
-                            },
-                            value: {
-                                text: ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) + ((' (' + session.journey.bookACourtHearing.prisoner.prisonerNumber + ')') if session.journey.bookACourtHearing.prisoner.prisonerNumber)
-                            }
-                        },
                         {
                             key: {
                                 text: "Prison"
@@ -68,7 +61,7 @@
                         },
                         {
                             key: {
-                                text: "Pre-court briefing time"
+                                text: "Pre-court hearing briefing time"
                             },
                             value: {
                                 text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
@@ -84,7 +77,7 @@
                         },
                         {
                             key: {
-                                text: "Post-court briefing time"
+                                text: "Post-court hearing briefing time"
                             },
                             value: {
                                 text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
@@ -92,6 +85,10 @@
                         } if session.journey.bookACourtHearing.postHearingStartTime
                     ]
                 }) }}
+
+                <div class="govuk-!-margin-top-0 govuk-!-margin-bottom-6">
+                    <a href="../video-link-booking" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change</a>
+                </div>
 
                 {% if session.journey.bookACourtHearing.preHearingStartTime  %}
                     {% set items = [] %}
@@ -166,9 +163,7 @@
                 }) }}
             </form>
 
-            {% if mode == 'create' or mode == 'request' %}
-                <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
-            {% else %}
+            {% if mode == 'amend' %}
                 <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>

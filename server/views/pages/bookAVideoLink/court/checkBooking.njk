@@ -93,14 +93,6 @@
                     },
                     {
                         key: {
-                            text: "Prison room for court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
-                        }
-                    },
-                    {
-                        key: {
                             text: "Date"
                         },
                         value: {
@@ -109,44 +101,76 @@
                     },
                     {
                         key: {
-                            text: "Hearing start time"
+                            text: "Pre-court hearing time"
                         },
                         value: {
-                            text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm')
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Hearing end time"
-                        },
-                        value: {
-                            text: session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Pre-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).description + " - " +  session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
+                            text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
                         }
                     } if session.journey.bookACourtHearing.preLocationCode,
                     {
                         key: {
-                            text: "Post-court hearing"
+                            text: "Pre-court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).description + " - " +  session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
+                            text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).description
                         }
-                    } if session.journey.bookACourtHearing.postLocationCode,
+                    } if session.journey.bookACourtHearing.preLocationCode,
                     {
                         key: {
-                            text: "Court hearing link"
+                            text: "Pre-court hearing link (PVL)"
+                        },
+                        value: {
+                            text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).extraAttributes.prisonVideoUrl or "Not yet known"
+                        }
+                    } if session.journey.bookACourtHearing.preLocationCode,
+                    {
+                        key: {
+                            text: "Court hearing time"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court hearing room"
+                        },
+                        value: {
+                            text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court hearing link (CVP)"
                         },
                         value: {
                             text: session.journey.bookACourtHearing.videoLinkUrl or "Not yet known"
                         }
-                    }
+                    },
+                    {
+                        key: {
+                            text: "Post-court hearing time"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookACourtHearing.postLocationCode,
+                    {
+                        key: {
+                            text: "Post-court hearing room"
+                        },
+                        value: {
+                            text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).description
+                        }
+                    } if session.journey.bookACourtHearing.postLocationCode,
+                    {
+                        key: {
+                            text: "Post-court hearing link (PVL)"
+                        },
+                        value: {
+                            text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).extraAttributes.prisonVideoUrl or "Not yet known"
+                        }
+                    } if session.journey.bookACourtHearing.postLocationCode
                 ]
             }) }}
 
@@ -168,9 +192,6 @@
                     maxlength: 400,
                     label: {
                         text: "Comments (optional)"
-                    },
-                    hint: {
-                        text: "This might include case number, co-defendant details if this is a multi-handed case, or whether you have borrowed another court’s room."
                     },
                     formGroup: {
                         classes: 'govuk-!-width-two-thirds'
@@ -199,9 +220,7 @@
                     <a href='../video-link-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">{{ 'Change request' if mode == 'request' else 'Change booking' }}</a>
                 </div>
 
-                {% if mode == 'create' or mode == 'request' %}
-                    <a href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
-                {% else %}
+                {% if mode == 'amend' %}
                     <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 {% endif %}
             </form>

@@ -9,7 +9,8 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set mode = session.req.params.mode %}
-{% set pageTitle = "Change video link booking" if mode == 'amend' else 'Enter video link booking details' %}
+{% set prisonerName = ((prisoner.firstName + ' ' + prisoner.lastName) | convertToTitleCase) %}
+{% set pageTitle = "Change " + prisonerName + "'s video link booking" if mode == 'amend' else "Select a date and time for " + prisonerName +"'s court hearings" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -33,7 +34,7 @@
                             value: {
                                 text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
                             }
-                        },
+                        } if mode == 'request',
                         {
                             key: {
                                 text: "Date of birth"
@@ -49,7 +50,7 @@
                             value: {
                                 text: prisoner.prisonName
                             }
-                        },
+                        } if mode == 'request',
                         {
                             key: {
                                 text: "Court"
@@ -88,7 +89,7 @@
                         name: "courtCode",
                         id: "courtCode",
                         label: {
-                            text: "Which court is the hearing for?",
+                            text: "Select the court the hearing is for",
                             classes: 'govuk-label--s'
                         },
                         items: items,
@@ -110,7 +111,7 @@
                     name: "hearingTypeCode",
                     id: "hearingTypeCode",
                     label: {
-                        text: "Which type of hearing is this?",
+                        text: "Select the court hearing type",
                         classes: 'govuk-label--s'
                     },
                     items: items,
@@ -167,7 +168,7 @@
                         classes: 'govuk-label--s'
                     },
                     hint: {
-                        text: 'Enter the date, for example ' + exampleDatePickerDate() + ', or select the calendar to pick a date'
+                        text: 'Date example, ' + exampleDatePickerDate()
                     },
                     errorMessage: validationErrors | findError('date'),
                     value: formResponses.date or session.journey.bookACourtHearing.date | formatDate('dd/MM/yyyy')
@@ -249,9 +250,7 @@
                 }) }}
             </form>
 
-            {% if mode == 'create' or mode == 'request' %}
-                <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
-            {% else %}
+            {% if mode == 'amend' %}
                 <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>

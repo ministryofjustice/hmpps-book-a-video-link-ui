@@ -1,3 +1,4 @@
+import { parse } from 'date-fns'
 import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import CourtBookingService from './courtBookingService'
@@ -145,6 +146,40 @@ describe('Court booking service', () => {
             prisonLocKey: 'POST_LOC',
             interval: { start: '14:30', end: '14:45' },
           },
+        },
+        user,
+      )
+    })
+  })
+
+  describe('roomsAvailableByDateAndTime', () => {
+    it('should request availability for a date and time for a specific journey', async () => {
+      const journey = {
+        prisoner: {
+          prisonId: 'MDI',
+          prisonerNumber: 'ABC123',
+          prisonName: 'Moorland',
+          firstName: 'Joe',
+          lastName: 'Bloggs',
+        },
+        date: '2022-03-20T00:00:00Z',
+        locationCode: 'LOCATION_CODE',
+        courtCode: 'AGENCY_CODE',
+      } as BookACourtHearingJourney
+
+      const startTime = parse('13:00', 'HH:mm', new Date(0)).toISOString()
+      const endTime = parse('14:30', 'HH:mm', new Date(0)).toISOString()
+
+      await courtBookingService.roomsAvailableByDateAndTime(journey, startTime, endTime, user)
+
+      expect(bookAVideoLinkClient.fetchAvailableLocationsByDateAndTime).toHaveBeenLastCalledWith(
+        {
+          bookingType: 'COURT',
+          courtCode: 'AGENCY_CODE',
+          date: '2022-03-20',
+          endTime: '14:30',
+          prisonCode: 'MDI',
+          startTime: '13:00',
         },
         user,
       )

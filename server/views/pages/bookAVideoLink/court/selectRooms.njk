@@ -9,17 +9,13 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set mode = session.req.params.mode %}
-{% set pageTitle = 'No bookings available for your selected time' %}
+{% set pageTitle = 'Select available rooms for this booking' %}
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
-            <p>
-                There may be available bookings at other times on the selected date. Please change the date or time.
-            </p>
         </div>
-
     </div>
 
     <div class="govuk-grid-row">
@@ -97,21 +93,77 @@
                     ]
                 }) }}
 
-                <div class="govuk-button-group">
-                    {{ govukButton({
-                        text: "Change times",
-                        preventDoubleClick: true,
-                        type: "submit"
-                    }) }}
+                {% if session.journey.bookACourtHearing.preHearingStartTime  %}
+                    {% set items = [] %}
+                    {% for room in preLocations %}
+                        {% set items = (items.push({
+                            value: room.dpsLocationKey,
+                            text: room.name,
+                            selected: formResponses.preLocation == room.dpsLocationKey or session.journey.bookACourtHearing.preLocationCode == room.dpsLocationKey
+                        }), items) %}
+                    {% endfor %}
 
-                    {{ govukButton({
-                        text: "Cancel",
-                        classes: "govuk-button--secondary",
-                        preventDoubleClick: true,
-                        href: "/"
+                    {{ govukSelect({
+                        name: "preLocation",
+                        id: "preLocation",
+                        label: {
+                            text: "Select room for pre-court hearing briefing",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("preLocation"),
+                        classes: "govuk-!-width-two-thirds"
                     }) }}
-                </div>
+                {% endif %}
 
+                {% set items = [] %}
+                {% for room in mainLocations %}
+                    {% set items = (items.push({
+                        value: room.dpsLocationKey,
+                        text: room.name,
+                        selected: formResponses.location == room.dpsLocationKey or session.journey.bookACourtHearing.locationCode == room.dpsLocationKey
+                    }), items) %}
+                {% endfor %}
+
+                {{ govukSelect({
+                    name: "location",
+                    id: "location",
+                    label: {
+                        text: "Select room for court hearing",
+                        classes: 'govuk-label--s'
+                    },
+                    items: items,
+                    errorMessage: validationErrors | findError("location"),
+                    classes: "govuk-!-width-two-thirds"
+                }) }}
+
+                {% if session.journey.bookACourtHearing.postHearingStartTime %}
+                    {% set items = [] %}
+                    {% for room in postLocations %}
+                        {% set items = (items.push({
+                            value: room.dpsLocationKey,
+                            text: room.name,
+                            selected: formResponses.postLocation == room.dpsLocationKey or session.journey.bookACourtHearing.postLocationCode == room.dpsLocationKey
+                        }), items) %}
+                    {% endfor %}
+
+                    {{ govukSelect({
+                        name: "postLocation",
+                        id: "postLocation",
+                        label: {
+                            text:  "Select room for post-court hearing briefing",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("postLocation"),
+                        classes: "govuk-!-width-two-thirds"
+                    }) }}
+                {% endif %}
+
+                {{ govukButton({
+                    text: "Continue",
+                    type: "submit"
+                }) }}
             </form>
 
             {% if mode == 'create' or mode == 'request' %}

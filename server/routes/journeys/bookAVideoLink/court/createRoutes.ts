@@ -4,9 +4,13 @@ import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
-import NewBookingHandler from './handlers/newBookingHandler'
+import DeprecatedNewBookingHandler from './handlers/deprecatedNewBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
+import DeprecatedBookingNotAvailableHandler from './handlers/deprecatedBookingNotAvailableHandler'
+import config from '../../../../config'
+import BookingDetailsHandler from './handlers/bookingDetailsHandler'
+import SelectRoomsHandler from './handlers/selectRoomsHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 
 export default function CreateRoutes({
@@ -25,10 +29,24 @@ export default function CreateRoutes({
     router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
-  route(
-    `${basePath}/video-link-booking`,
-    new NewBookingHandler(courtsService, prisonService, prisonerService, referenceDataService, videoLinkService),
-  )
+  if (config.featureToggles.alteredCourtJourneyEnabled) {
+    route(
+      `${basePath}/video-link-booking`,
+      new BookingDetailsHandler(courtsService, prisonerService, referenceDataService),
+    )
+  } else {
+    route(
+      `${basePath}/video-link-booking`,
+      new DeprecatedNewBookingHandler(
+        courtsService,
+        prisonService,
+        prisonerService,
+        referenceDataService,
+        videoLinkService,
+      ),
+    )
+  }
+
   route(
     `${basePath}/video-link-booking/confirmation/:bookingId`,
     new ConfirmationHandler(videoLinkService, prisonerService, prisonService),
@@ -40,11 +58,23 @@ export default function CreateRoutes({
     return next()
   })
 
+  if (config.featureToggles.alteredCourtJourneyEnabled) {
+    route(
+      `${basePath}/video-link-booking/select-rooms`,
+      new SelectRoomsHandler(courtsService, courtBookingService, prisonerService),
+    )
+    route(
+      `${basePath}/video-link-booking/not-available`,
+      new BookingNotAvailableHandler(courtsService, prisonerService),
+    )
+  } else {
+    route(`${basePath}/video-link-booking/not-available`, new DeprecatedBookingNotAvailableHandler(courtBookingService))
+  }
+
   route(
     `${basePath}/video-link-booking/check-booking`,
     new CheckBookingHandler(courtBookingService, courtsService, prisonService, referenceDataService, videoLinkService),
   )
-  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(courtBookingService))
 
   return router
 }

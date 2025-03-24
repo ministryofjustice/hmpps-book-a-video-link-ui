@@ -4,21 +4,15 @@ import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import {
-  dropdownOptions,
-  existsByLabel,
-  existsByName,
-  getPageHeader,
-  getValueByKey,
-} from '../../../../testutils/cheerio'
+import { existsByLabel, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../../utils/utils'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
-import { Court, Location, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import { Court, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import config from '../../../../../config'

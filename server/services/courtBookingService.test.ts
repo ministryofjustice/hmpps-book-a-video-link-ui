@@ -3,7 +3,6 @@ import createUser from '../testutils/createUser'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import CourtBookingService from './courtBookingService'
 import { BookACourtHearingJourney } from '../routes/journeys/bookAVideoLink/court/journey'
-import { dateAtTime } from '../utils/utils'
 
 jest.mock('../data/bookAVideoLinkApiClient')
 

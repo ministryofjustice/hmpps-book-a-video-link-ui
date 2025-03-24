@@ -20,13 +20,15 @@
     {% for schedule in room.extraAttributes.schedule %}
 
         {% set editLinksHtml %}
-            <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
-               class="govuk-link govuk-link--no-visited-state govuk-!-margin-right-2">Delete
-            </a>
+            <div class="links-with-separators">
+                <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                   class="govuk-link govuk-link--no-visited-state links-col">Delete
+                </a>
 
-            <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
-               class="govuk-link govuk-link--no-visited-state">Edit
-            </a>
+                <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                   class="govuk-link govuk-link--no-visited-state links-col">Edit
+                </a>
+            </div>
         {% endset %}
 
         {% set usageHtml %}

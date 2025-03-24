@@ -23,7 +23,7 @@
                 {% for result in locationList %}
                     {% set roomSetupHtml %}
                         {% if result.extraAttributes %}
-                            {{ locationUsageTag("Customised", "govuk-tag--green") }}
+                            {{ locationUsageTag("Customised", "govuk-tag--turquoise") }}
                         {% else %}
                             {{ locationUsageTag("Default", "govuk-tag--grey") }}
                         {% endif %}

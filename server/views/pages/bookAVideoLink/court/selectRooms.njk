@@ -40,17 +40,9 @@
                                 text: "Court"
                             },
                             value: {
-                                text: courts[0].description
-                            }
-                        } if courts.length == 1,
-                        {
-                            key: {
-                                text: "Court"
-                            },
-                            value: {
                                 text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
                             }
-                        } if courts.length > 1,
+                        },
                         {
                             key: {
                                 text: "Date"

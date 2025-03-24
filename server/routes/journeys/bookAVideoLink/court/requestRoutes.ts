@@ -43,11 +43,8 @@ export default function RequestRoutes({
       `/prisoner/video-link-booking`,
       new BookingDetailsHandler(courtsService, prisonerService, referenceDataService),
     )
-    route(
-      `/prisoner/video-link-booking/select-rooms`,
-      new SelectRoomsHandler(courtsService, courtBookingService, prisonerService),
-    )
-    route(`prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, prisonerService))
+    route(`/prisoner/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
+    route(`prisoner/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
   } else {
     route(
       `/prisoner/video-link-booking`,

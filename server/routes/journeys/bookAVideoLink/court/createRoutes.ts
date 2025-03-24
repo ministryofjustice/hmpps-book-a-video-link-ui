@@ -59,14 +59,8 @@ export default function CreateRoutes({
   })
 
   if (config.featureToggles.alteredCourtJourneyEnabled) {
-    route(
-      `${basePath}/video-link-booking/select-rooms`,
-      new SelectRoomsHandler(courtsService, courtBookingService, prisonerService),
-    )
-    route(
-      `${basePath}/video-link-booking/not-available`,
-      new BookingNotAvailableHandler(courtsService, prisonerService),
-    )
+    route(`${basePath}/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
+    route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
   } else {
     route(`${basePath}/video-link-booking/not-available`, new DeprecatedBookingNotAvailableHandler(courtBookingService))
   }

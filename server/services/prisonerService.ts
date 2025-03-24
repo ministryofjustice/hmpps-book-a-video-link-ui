@@ -7,6 +7,9 @@ import {
 } from '../@types/prisonerOffenderSearchApi/types'
 import { PrisonerSearchJourney } from '../routes/journeys/bookAVideoLink/prisonerSearch/journey'
 
+// Holding prison - people here should not be displayed in search results
+const GHOST_PRISON = 'ZZGHI'
+
 export default class PrisonerService {
   constructor(private readonly prisonerOffenderSearchApiClient: PrisonerOffenderSearchApiClient) {}
 
@@ -46,6 +49,7 @@ export default class PrisonerService {
             createStringMatcher('lastName', 'CONTAINS', criteria.lastName),
             createDateMatcher('dateOfBirth', criteria.dateOfBirth),
             createStringMatcher('prisonId', 'IS', criteria.prison),
+            createStringMatcher('prisonId', 'IS_NOT', GHOST_PRISON),
             createStringMatcher('prisonerNumber', 'IS', criteria.prisonerNumber),
             createPncMatcher(criteria.pncNumber),
           ].filter(Boolean),

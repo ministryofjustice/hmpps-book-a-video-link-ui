@@ -63,6 +63,7 @@ describe('Prisoner service', () => {
                 { attribute: 'lastName', condition: 'CONTAINS', searchTerm: 'Doe', type: 'String' },
                 { attribute: 'dateOfBirth', maxValue: '1990-01-01', minValue: '1990-01-01', type: 'Date' },
                 { attribute: 'prisonId', condition: 'IS', searchTerm: 'XYZ', type: 'String' },
+                { attribute: 'prisonId', condition: 'IS_NOT', searchTerm: 'ZZGHI', type: 'String' },
                 { attribute: 'prisonerNumber', condition: 'IS', searchTerm: 'A12345', type: 'String' },
                 { pncNumber: 'PNC123', type: 'PNC' },
               ],
@@ -100,7 +101,10 @@ describe('Prisoner service', () => {
             },
             {
               joinType: 'AND',
-              matchers: [{ attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'Jane', type: 'String' }],
+              matchers: [
+                { attribute: 'firstName', condition: 'CONTAINS', searchTerm: 'Jane', type: 'String' },
+                { attribute: 'prisonId', condition: 'IS_NOT', searchTerm: 'ZZGHI', type: 'String' },
+              ],
             },
           ],
         }),

@@ -338,7 +338,7 @@ describe('Booking details handler', () => {
             {
               fieldId: 'endTime',
               href: '#endTime',
-              text: 'Select a end time that is after the start time',
+              text: 'Select an end time that is after the start time',
             },
           ])
         })

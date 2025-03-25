@@ -86,7 +86,7 @@ class Body {
   @Transform(({ value }) => simpleTimeToDate(value))
   @ValidateIf(o => o.mode === 'request')
   @Validator((endTime, { startTime }) => (isValid(startTime) ? endTime > startTime : true), {
-    message: 'Select a end time that is after the start time',
+    message: 'Select an end time that is after the start time',
   })
   @IsValidDate({ message: 'Enter a valid end time' })
   @IsNotEmpty({ message: 'Enter an end time' })

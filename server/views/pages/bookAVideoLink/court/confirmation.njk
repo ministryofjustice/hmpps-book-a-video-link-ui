@@ -52,14 +52,6 @@
                     },
                     {
                         key: {
-                            text: "Prison room"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
-                        }
-                    },
-                    {
-                        key: {
                             text: "Date"
                         },
                         value: {
@@ -68,44 +60,76 @@
                     },
                     {
                         key: {
-                            text: "Hearing start time"
+                            text: "Pre-court hearing time"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Hearing end time"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
-                        }
-                    },
-                    {
-                        key: {
-                            text: "Pre-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
                     {
                         key: {
-                            text: "Post-court hearing"
+                            text: "Pre-court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description
                         }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
                     {
                         key: {
-                            text: "Court hearing link"
+                            text: "Pre-court hearing link (PVL)"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
+                    {
+                        key: {
+                            text: "Court hearing time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court hearing room"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court hearing link (CVP)"
                         },
                         value: {
                             text: booking.videoLinkUrl or "Not yet known"
                         }
-                    }
+                    },
+                    {
+                        key: {
+                            text: "Post-court hearing time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    {
+                        key: {
+                            text: "Post-court hearing room"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    {
+                        key: {
+                            text: "Post-court hearing link (PVL)"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet entered"
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')
                 ]
             }) }}
 

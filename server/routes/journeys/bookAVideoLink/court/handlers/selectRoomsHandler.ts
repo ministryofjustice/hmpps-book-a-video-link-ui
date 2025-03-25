@@ -6,18 +6,17 @@ import { isEmpty } from 'lodash'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
-import PrisonerService from '../../../../../services/prisonerService'
 import CourtBookingService from '../../../../../services/courtBookingService'
 
 class Body {
   @Expose()
-  @IsNotEmpty({ message: 'Select a prison room for the main court hearing' })
-  location: string
-
-  @Expose()
   @ValidateIf(({ journey }) => journey.bookACourtHearing.preHearingStartTime)
   @IsNotEmpty({ message: 'Select a prison room for the pre-court hearing' })
   preLocation: string
+
+  @Expose()
+  @IsNotEmpty({ message: 'Select a prison room for the main court hearing' })
+  location: string
 
   @Expose()
   @ValidateIf(({ journey }) => journey.bookACourtHearing.postHearingStartTime)
@@ -33,7 +32,6 @@ export default class SelectRoomsHandler implements PageHandler {
   constructor(
     private readonly courtsService: CourtsService,
     private readonly courtBookingService: CourtBookingService,
-    private readonly prisonerService: PrisonerService,
   ) {}
 
   public GET = async (req: Request, res: Response) => {

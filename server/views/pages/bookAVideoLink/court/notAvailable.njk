@@ -24,98 +24,83 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <form method='POST'>
-                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+            {{ govukSummaryList({
+                classes: "govuk-summary-list--no-border",
+                rows: [
+                    {
+                        key: {
+                            text: "Name"
+                        },
+                        value: {
+                            text: ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) + ((' (' + session.journey.bookACourtHearing.prisoner.prisonerNumber + ')') if session.journey.bookACourtHearing.prisoner.prisonerNumber)
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Prison"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.prisoner.prisonName
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Court"
+                        },
+                        value: {
+                            text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.date | formatDate('dd/MM/yyyy')
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Pre-court briefing time"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookACourtHearing.preHearingStartTime,
+                    {
+                        key: {
+                            text: "Hearing time"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
+                        }
+                    },
+                    {
+                        key: {
+                            text: "Post-court briefing time"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookACourtHearing.postHearingStartTime
+                ]
+            }) }}
 
-                {{ govukSummaryList({
-                    classes: "govuk-summary-list--no-border",
-                    rows: [
-                        {
-                            key: {
-                                text: "Name"
-                            },
-                            value: {
-                                text: ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) + ((' (' + session.journey.bookACourtHearing.prisoner.prisonerNumber + ')') if session.journey.bookACourtHearing.prisoner.prisonerNumber)
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Prison"
-                            },
-                            value: {
-                                text: session.journey.bookACourtHearing.prisoner.prisonName
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Court"
-                            },
-                            value: {
-                                text: courts[0].description
-                            }
-                        } if courts.length == 1,
-                        {
-                            key: {
-                                text: "Court"
-                            },
-                            value: {
-                                text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
-                            }
-                        } if courts.length > 1,
-                        {
-                            key: {
-                                text: "Date"
-                            },
-                            value: {
-                                text: session.journey.bookACourtHearing.date | formatDate('dd/MM/yyyy')
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Pre-court briefing time"
-                            },
-                            value: {
-                                text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
-                            }
-                        } if session.journey.bookACourtHearing.preHearingStartTime,
-                        {
-                            key: {
-                                text: "Hearing time"
-                            },
-                            value: {
-                                text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
-                            }
-                        },
-                        {
-                            key: {
-                                text: "Post-court briefing time"
-                            },
-                            value: {
-                                text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
-                            }
-                        } if session.journey.bookACourtHearing.postHearingStartTime
-                    ]
+            <div class="govuk-button-group">
+                {{ govukButton({
+                    text: "Change times",
+                    href: "../video-link-booking"
                 }) }}
 
-                <div class="govuk-button-group">
-                    {{ govukButton({
-                        text: "Change times",
-                        preventDoubleClick: true,
-                        type: "submit"
-                    }) }}
-
-                    {{ govukButton({
-                        text: "Cancel",
-                        classes: "govuk-button--secondary",
-                        preventDoubleClick: true,
-                        href: "/"
-                    }) }}
-                </div>
-
-            </form>
+                {{ govukButton({
+                    text: "Cancel",
+                    classes: "govuk-button--secondary",
+                    href: "/"
+                }) }}
+            </div>
 
             {% if mode == 'create' or mode == 'request' %}
-                <a href="../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+                <a href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
                 <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}

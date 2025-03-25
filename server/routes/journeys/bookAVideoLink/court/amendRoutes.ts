@@ -46,11 +46,8 @@ export default function AmendRoutes({
 
   if (config.featureToggles.alteredCourtJourneyEnabled) {
     route('/video-link-booking', new BookingDetailsHandler(courtsService, prisonerService, referenceDataService))
-    route(
-      `/video-link-booking/select-rooms`,
-      new SelectRoomsHandler(courtsService, courtBookingService, prisonerService),
-    )
-    route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, prisonerService))
+    route(`/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
+    route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
   } else {
     route(
       '/video-link-booking',

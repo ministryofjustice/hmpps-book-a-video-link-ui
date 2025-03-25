@@ -217,7 +217,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    } if enhancedProbationJourneyEnabled and mode != 'request',
                     {
                         key: {
                             text: "Time period"
@@ -235,7 +235,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    } if enhancedProbationJourneyEnabled and mode != 'request',
                     {
                         key: {
                             text: "Meeting time"
@@ -246,7 +246,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "availability" if enhancedProbationJourneyEnabled else "../video-link-booking#startTime",
+                                    href: "availability" if enhancedProbationJourneyEnabled and mode != 'request' else "../video-link-booking#startTime",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
                                     visuallyHiddenText: "meeting time"
@@ -271,7 +271,7 @@
                                 }
                             ]
                         } if not enhancedProbationJourneyEnabled
-                    },
+                    } if not enhancedProbationJourneyEnabled or mode != 'request',
                     {
                         key: {
                             text: "Prison video link (PVL)"
@@ -279,7 +279,7 @@
                         value: {
                             text: room.extraAttributes.prisonVideoUrl or "None entered"
                         }
-                    } if enhancedProbationJourneyEnabled
+                    } if enhancedProbationJourneyEnabled and mode != 'request'
                 ]
             }) }}
 

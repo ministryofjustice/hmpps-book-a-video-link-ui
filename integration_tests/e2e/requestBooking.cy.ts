@@ -12,7 +12,6 @@ import PrisonerDetailsPage from '../pages/bookAVideoLink/prisonerDetails'
 import CheckRequestPage from '../pages/bookAVideoLink/checkRequest'
 import BookingRequestedPage from '../pages/bookAVideoLink/bookingRequested'
 import BookingDetailsPage from '../pages/bookAVideoLink/bookingDetails'
-import LocationAvailabilityPage from '../pages/bookAVideoLink/locationAvailability'
 import nottinghamLocationAvailability from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocationAvailability.json'
 
 context('Request a booking', () => {
@@ -160,13 +159,9 @@ context('Request a booking', () => {
       bookingDetailsPage.enterProbationOfficerEmail('akey@justice.gov.uk')
       bookingDetailsPage.selectMeetingType('Recall report')
       bookingDetailsPage.selectDate(new Date(2050, 0, 1))
-      bookingDetailsPage.selectDuration('1 hour')
-      bookingDetailsPage.selectTimePeriods(['Morning', 'Afternoon'])
+      bookingDetailsPage.selectStartTime(15, 0)
+      bookingDetailsPage.selectEndTime(16, 0)
       bookingDetailsPage.continue().click()
-
-      const locationAvailabilityPage = Page.verifyOnPage(LocationAvailabilityPage)
-      locationAvailabilityPage.selectSlot('08:00 to 09:00')
-      locationAvailabilityPage.continue().click()
 
       const checkRequestPage = Page.verifyOnPage(CheckRequestPage)
       checkRequestPage.requestVideoLink().click()

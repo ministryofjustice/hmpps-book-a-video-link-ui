@@ -141,6 +141,8 @@ export default class BookingDetailsHandler implements PageHandler {
       videoLinkUrl,
     }
 
-    return res.redirect('video-link-booking/select-rooms')
+    return mode === 'request'
+      ? res.redirect('video-link-booking/check-booking')
+      : res.redirect('video-link-booking/select-rooms')
   }
 }

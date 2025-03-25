@@ -7,7 +7,7 @@ import AuditService, { Page } from '../../../../../services/auditService'
 import { getPageHeader } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonerService from '../../../../../services/prisonerService'
-import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import { formatDate } from '../../../../../utils/utils'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
@@ -137,7 +137,13 @@ describe('Booking details handler', () => {
     })
 
     it('should redirect to to view the booking if the booking is not amendable', async () => {
-      // TODO
+      videoLinkService.bookingIsAmendable.mockReturnValue(false)
+
+      return request(app)
+        .get(`/probation/booking/amend/1/${journeyId()}/video-link-booking`)
+        .expect(302)
+        .expect('location', '/probation/view-booking/1')
+        .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
     })
   })
 
@@ -283,6 +289,42 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should validate that the start and end times are provided on the request journey', () => {
+      appSetup({
+        bookAProbationMeeting: {
+          prisoner: {
+            prisonId: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Bloggs',
+            dateOfBirth: '1970-01-01',
+            prisonName: 'Moorland',
+          },
+        },
+      })
+
+      return request(app)
+        .post(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking`)
+        .send({
+          ...validForm,
+          startTime: undefined,
+          endTime: undefined,
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'startTime',
+              href: '#startTime',
+              text: 'Enter a start time',
+            },
+            {
+              fieldId: 'endTime',
+              href: '#endTime',
+              text: 'Enter an end time',
+            },
+          ])
+        })
+    })
+
     it('should save the posted fields in session', () => {
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
@@ -410,9 +452,16 @@ describe('Booking details handler', () => {
 
       return request(app)
         .post(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking`)
-        .send({ ...validForm })
+        .send({
+          ...validForm,
+          duration: undefined,
+          timePeriods: undefined,
+          startTime: { hour: 15, minute: 30 },
+          endTime: { hour: 16, minute: 30 },
+        })
+        .expect(() => expectNoErrorMessages())
         .expect(302)
-        .expect('location', 'video-link-booking/availability')
+        .expect('location', 'video-link-booking/check-booking')
         .expect(() => {
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenLastCalledWith('A1234AA', user)
         })
@@ -434,8 +483,8 @@ describe('Booking details handler', () => {
               email: 'jbing@gmail.com',
               telephone: '07892 398108',
             },
-            duration: 120,
-            timePeriods: ['AM'],
+            startTime: '1970-01-01T15:30:00.000Z',
+            endTime: '1970-01-01T16:30:00.000Z',
           }),
         )
     })

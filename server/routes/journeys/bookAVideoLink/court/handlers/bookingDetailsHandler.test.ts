@@ -426,7 +426,7 @@ describe('Booking details handler', () => {
         .post(`/court/booking/request/${journeyId()}/prisoner/video-link-booking`)
         .send(validForm)
         .expect(302)
-        .expect('location', 'video-link-booking/select-rooms')
+        .expect('location', 'video-link-booking/check-booking')
         .expect(() => {
           expect(prisonerService.getPrisonerByPrisonerNumber).not.toHaveBeenLastCalledWith('A1234AA', user)
         })

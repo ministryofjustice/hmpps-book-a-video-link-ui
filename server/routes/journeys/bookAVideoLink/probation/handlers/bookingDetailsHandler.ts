@@ -2,12 +2,12 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { ArrayNotEmpty, Equals, IsEmail, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator'
-import { startOfToday } from 'date-fns'
+import { isValid, startOfToday } from 'date-fns'
 import { parsePhoneNumberWithError } from 'libphonenumber-js'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
-import { parseDatePickerDate } from '../../../../../utils/utils'
+import { dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../../utils/utils'
 import IsValidDate from '../../../../validators/isValidDate'
 import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -62,13 +62,35 @@ class Body {
   date: Date
 
   @Expose()
+  @ValidateIf(o => o.mode !== 'request')
   @IsNotEmpty({ message: 'Select a meeting duration' })
   duration: string
 
   @Expose()
   @Transform(({ value }) => (value ? [value].flat() : []))
+  @ValidateIf(o => o.mode !== 'request')
   @ArrayNotEmpty({ message: `Select at least one time period` })
   timePeriods: string[]
+
+  @Expose()
+  @Transform(({ value }) => simpleTimeToDate(value))
+  @ValidateIf(o => o.mode === 'request')
+  @Validator((startTime, { date }) => date < startOfToday() || dateAtTime(date, startTime) > new Date(), {
+    message: 'Enter a time which is in the future',
+  })
+  @IsValidDate({ message: 'Enter a valid start time' })
+  @IsNotEmpty({ message: 'Enter a start time' })
+  startTime: Date
+
+  @Expose()
+  @Transform(({ value }) => simpleTimeToDate(value))
+  @ValidateIf(o => o.mode === 'request')
+  @Validator((endTime, { startTime }) => (isValid(startTime) ? endTime > startTime : true), {
+    message: 'Select a end time that is after the start time',
+  })
+  @IsValidDate({ message: 'Enter a valid end time' })
+  @IsNotEmpty({ message: 'Enter an end time' })
+  endTime: Date
 }
 
 export default class BookingDetailsHandler implements PageHandler {
@@ -124,6 +146,8 @@ export default class BookingDetailsHandler implements PageHandler {
       date,
       duration,
       timePeriods,
+      startTime,
+      endTime,
     } = req.body
 
     const prisoner =
@@ -152,10 +176,22 @@ export default class BookingDetailsHandler implements PageHandler {
           },
       meetingTypeCode,
       date: date.toISOString(),
-      duration: +duration,
-      timePeriods,
     }
 
-    return res.redirect('video-link-booking/availability')
+    if (mode === 'request') {
+      req.session.journey.bookAProbationMeeting = {
+        ...req.session.journey.bookAProbationMeeting,
+        startTime,
+        endTime,
+      }
+    } else {
+      req.session.journey.bookAProbationMeeting = {
+        ...req.session.journey.bookAProbationMeeting,
+        duration: +duration,
+        timePeriods,
+      }
+    }
+
+    return res.redirect(mode === 'request' ? 'video-link-booking/check-booking' : 'video-link-booking/availability')
   }
 }

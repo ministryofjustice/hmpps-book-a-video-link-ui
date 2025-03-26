@@ -16,7 +16,7 @@
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
             <p>
-                There may be available bookings at other times on the selected date. Please change the date or time.
+                Change the time to view available bookings on your selected date.
             </p>
         </div>
 
@@ -27,14 +27,6 @@
             {{ govukSummaryList({
                 classes: "govuk-summary-list--no-border",
                 rows: [
-                    {
-                        key: {
-                            text: "Name"
-                        },
-                        value: {
-                            text: ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) + ((' (' + session.journey.bookACourtHearing.prisoner.prisonerNumber + ')') if session.journey.bookACourtHearing.prisoner.prisonerNumber)
-                        }
-                    },
                     {
                         key: {
                             text: "Prison"
@@ -61,7 +53,7 @@
                     },
                     {
                         key: {
-                            text: "Pre-court briefing time"
+                            text: "Pre-court hearing briefing time"
                         },
                         value: {
                             text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
@@ -77,7 +69,7 @@
                     },
                     {
                         key: {
-                            text: "Post-court briefing time"
+                            text: "Post-court hearing briefing time"
                         },
                         value: {
                             text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
@@ -88,14 +80,9 @@
 
             <div class="govuk-button-group">
                 {{ govukButton({
+                    classes: 'govuk-button--blue',
                     text: "Change times",
                     href: "../video-link-booking"
-                }) }}
-
-                {{ govukButton({
-                    text: "Cancel",
-                    classes: "govuk-button--secondary",
-                    href: "/"
                 }) }}
             </div>
 

@@ -38,7 +38,7 @@ afterEach(() => {
 })
 
 describe('GET', () => {
-  it('should render the correct view page', () => {
+  it('should render the correct view page', async () => {
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
     prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
       firstName: 'Joe',
@@ -49,7 +49,7 @@ describe('GET', () => {
     prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
-    return request(app)
+    await request(app)
       .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -71,10 +71,10 @@ describe('GET', () => {
         expect(getValueByKey($, 'Name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
       })
-      .then(() => expectJourneySession(app, 'bookACourtHearing', null))
+    return expectJourneySession(app, 'bookACourtHearing', null)
   })
 
-  it('should render the correct page in amend mode', () => {
+  it('should render the correct page in amend mode', async () => {
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
     videoLinkService.getVideoLinkBookingById.mockResolvedValue(getCourtBooking('AA1234A'))
     prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
@@ -85,7 +85,7 @@ describe('GET', () => {
     } as Prisoner)
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
-    return request(app)
+    await request(app)
       .get(`/court/booking/amend/1/${journeyId()}/video-link-booking/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -103,7 +103,7 @@ describe('GET', () => {
 
         expect(heading).toEqual('The video link booking has been updated')
       })
-      .then(() => expectJourneySession(app, 'bookACourtHearing', null))
+    return expectJourneySession(app, 'bookACourtHearing', null)
   })
 })
 

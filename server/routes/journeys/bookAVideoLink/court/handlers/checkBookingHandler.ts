@@ -37,10 +37,12 @@ export default class CheckBookingHandler implements PageHandler {
     const { bookACourtHearing } = req.session.journey
     const { prisoner, date, preHearingStartTime, startTime } = bookACourtHearing
 
-    const { availabilityOk } = await this.courtBookingService.checkAvailability(bookACourtHearing, user)
+    if (mode !== 'request') {
+      const { availabilityOk } = await this.courtBookingService.checkAvailability(bookACourtHearing, user)
 
-    if (!availabilityOk) {
-      return res.redirect('not-available')
+      if (!availabilityOk) {
+        return res.redirect('not-available')
+      }
     }
 
     const courts = await this.courtsService.getUserPreferences(user)
@@ -72,12 +74,14 @@ export default class CheckBookingHandler implements PageHandler {
       comments: body.comments,
     }
 
-    const { availabilityOk } = await this.courtBookingService.checkAvailability(
-      req.session.journey.bookACourtHearing,
-      user,
-    )
-    if (!availabilityOk) {
-      return res.redirect('not-available')
+    if (mode !== 'request') {
+      const { availabilityOk } = await this.courtBookingService.checkAvailability(
+        req.session.journey.bookACourtHearing,
+        user,
+      )
+      if (!availabilityOk) {
+        return res.redirect('not-available')
+      }
     }
 
     if (mode === 'create') {

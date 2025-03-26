@@ -106,7 +106,7 @@
                         value: {
                             text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookACourtHearing.preLocationCode,
+                    } if session.journey.bookACourtHearing.preHearingStartTime,
                     {
                         key: {
                             text: "Pre-court hearing room"
@@ -138,7 +138,7 @@
                         value: {
                             text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
                         }
-                    },
+                    } if not alteredCourtJourneyEnabled or mode != 'request',
                     {
                         key: {
                             text: "Court hearing link (CVP)"
@@ -154,7 +154,7 @@
                         value: {
                             text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookACourtHearing.postLocationCode,
+                    } if session.journey.bookACourtHearing.postHearingStartTime,
                     {
                         key: {
                             text: "Post-court hearing room"

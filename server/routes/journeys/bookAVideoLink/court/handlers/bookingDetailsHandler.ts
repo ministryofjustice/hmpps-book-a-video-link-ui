@@ -56,7 +56,7 @@ class Body {
   @Expose()
   @Transform(({ value }) => simpleTimeToDate(value))
   @Validator((endTime, { startTime }) => (isValid(startTime) ? endTime > startTime : true), {
-    message: 'Select a end time that is after the start time',
+    message: 'Select an end time that is after the start time',
   })
   @IsValidDate({ message: 'Enter a valid end time' })
   @IsNotEmpty({ message: 'Enter an end time' })
@@ -141,6 +141,8 @@ export default class BookingDetailsHandler implements PageHandler {
       videoLinkUrl,
     }
 
-    return res.redirect('video-link-booking/select-rooms')
+    return mode === 'request'
+      ? res.redirect('video-link-booking/check-booking')
+      : res.redirect('video-link-booking/select-rooms')
   }
 }

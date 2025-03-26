@@ -115,6 +115,7 @@ describe('Check Booking handler', () => {
           expect(existsByDataQa($, 'discuss-before-proceeding')).toBe(false)
 
           expect(videoLinkService.prisonShouldBeWarnedOfBooking).not.toHaveBeenCalled()
+          expect(courtBookingService.checkAvailability).not.toHaveBeenCalled()
         })
     })
 
@@ -125,6 +126,7 @@ describe('Check Booking handler', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect(existsByDataQa($, 'pending-prison-approval')).toBe(true)
+          expect(courtBookingService.checkAvailability).not.toHaveBeenCalled()
         })
     })
 
@@ -218,6 +220,26 @@ describe('Check Booking handler', () => {
             { ...bookACourtHearing, comments: 'comment' },
             user,
           )
+        })
+    })
+
+    it('should request a booking using the posted fields', () => {
+      appSetup({ bookACourtHearing: { type: 'COURT' } })
+
+      return request(app)
+        .post(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .send({ comments: 'comment' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .expect(() => {
+          expect(courtBookingService.requestVideoLinkBooking).toHaveBeenCalledWith(
+            {
+              comments: 'comment',
+              type: 'COURT',
+            },
+            user,
+          )
+          expect(courtBookingService.checkAvailability).not.toHaveBeenCalled()
         })
     })
   })

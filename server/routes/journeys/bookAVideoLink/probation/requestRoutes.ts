@@ -11,7 +11,6 @@ import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 import BookingRequestedHandler from './handlers/bookingRequestedHandler'
 import config from '../../../../config'
 import BookingDetailsHandler from './handlers/bookingDetailsHandler'
-import BookingAvailabilityHandler from './handlers/bookingAvailabilityHandler'
 
 export default function RequestRoutes({
   auditService,
@@ -42,7 +41,6 @@ export default function RequestRoutes({
       `/prisoner/video-link-booking`,
       new BookingDetailsHandler(probationTeamsService, prisonerService, referenceDataService),
     )
-    route(`/prisoner/video-link-booking/availability`, new BookingAvailabilityHandler(probationBookingService))
   } else {
     route(
       `/prisoner/video-link-booking`,

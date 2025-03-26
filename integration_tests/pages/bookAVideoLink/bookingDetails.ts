@@ -31,5 +31,9 @@ export default class BookingDetailsPage extends Page {
       .parent()
       .within(() => timePeriods.forEach(p => this.getByLabel(p).click()))
 
+  selectStartTime = (hour, minute) => this.selectTimePickerTime('Start time', hour, minute)
+
+  selectEndTime = (hour, minute) => this.selectTimePickerTime('End time', hour, minute)
+
   continue = (): PageElement => this.getButton('Continue')
 }

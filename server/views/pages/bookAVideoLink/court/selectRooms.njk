@@ -83,7 +83,7 @@
                 </div>
 
                 {% if session.journey.bookACourtHearing.preHearingStartTime  %}
-                    {% set items = [] %}
+                    {% set items = [{ text: '', value: '' }] %}
                     {% for room in preLocations %}
                         {% set items = (items.push({
                             value: room.dpsLocationKey,
@@ -105,7 +105,7 @@
                     }) }}
                 {% endif %}
 
-                {% set items = [] %}
+                {% set items = [{ text: '', value: '' }] %}
                 {% for room in mainLocations %}
                     {% set items = (items.push({
                         value: room.dpsLocationKey,
@@ -127,7 +127,7 @@
                 }) }}
 
                 {% if session.journey.bookACourtHearing.postHearingStartTime %}
-                    {% set items = [] %}
+                    {% set items = [{ text: '', value: '' }] %}
                     {% for room in postLocations %}
                         {% set items = (items.push({
                             value: room.dpsLocationKey,

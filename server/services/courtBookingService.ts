@@ -113,7 +113,7 @@ export default class CourtBookingService {
 
   private mapSessionToAppointments(journey: BookACourtHearingJourney) {
     const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
-      locationCode
+      startTime
         ? {
             type,
             locationKey: locationCode,

@@ -38,10 +38,12 @@ export default class CheckBookingHandler implements PageHandler {
     const { bookAProbationMeeting } = req.session.journey
     const { prisoner, date, startTime } = bookAProbationMeeting
 
-    const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAProbationMeeting, user)
+    if (mode !== 'request') {
+      const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAProbationMeeting, user)
 
-    if (!availabilityOk) {
-      return res.redirect(config.featureToggles.enhancedProbationJourneyEnabled ? 'availability' : 'not-available')
+      if (!availabilityOk) {
+        return res.redirect(config.featureToggles.enhancedProbationJourneyEnabled ? 'availability' : 'not-available')
+      }
     }
 
     const probationTeams = await this.probationTeamsService.getUserPreferences(user)
@@ -72,12 +74,14 @@ export default class CheckBookingHandler implements PageHandler {
       comments: body.comments,
     }
 
-    const { availabilityOk } = await this.probationBookingService.checkAvailability(
-      req.session.journey.bookAProbationMeeting,
-      user,
-    )
-    if (!availabilityOk) {
-      return res.redirect(config.featureToggles.enhancedProbationJourneyEnabled ? 'availability' : 'not-available')
+    if (mode !== 'request') {
+      const { availabilityOk } = await this.probationBookingService.checkAvailability(
+        req.session.journey.bookAProbationMeeting,
+        user,
+      )
+      if (!availabilityOk) {
+        return res.redirect(config.featureToggles.enhancedProbationJourneyEnabled ? 'availability' : 'not-available')
+      }
     }
 
     if (mode === 'create') {

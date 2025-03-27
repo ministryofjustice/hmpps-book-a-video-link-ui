@@ -70,8 +70,6 @@ active, but the external users can't book.
 When no prisons are on `grey release` then the environment variable should be set to null or not
 set at all.
 
-`FEATURE_GREY_RELEASE_PRISONS=""`
-
 This environment variable can be set in a variety of ways:
  - The local .env file - for local running.
  - The values-xxx.yaml files - for deployment into other environments.

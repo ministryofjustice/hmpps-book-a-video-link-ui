@@ -83,7 +83,7 @@ describe('Prisoner search results handler', () => {
     })
 
     it('should not offer booking links for grey release prisons in config', async () => {
-      config.featureToggles.greyReleasePrisons = 'BXI'
+      config.featureToggles.greyReleasePrisons = 'BXI,BMI'
 
       // Two enabled prisons
       prisonService.getPrisons.mockResolvedValue([

@@ -55,6 +55,27 @@ Access the service in a browser locally on
 
 `http://localhost:3000/`
 
+### Feature switches
+
+The service includes some optional features for new prisons to be enabled early but to disallow bookings for them.
+This is so the room decoration features have access to the active prison's locations to configure permissions
+and schedules prior to the go-live.
+
+`FEATURE_GREY_RELEASE_PRISONS="BXI,FDI"`
+
+Would prevent any courts or probation teams booking into either prison, but would allow these prisons to be 
+set to active in the prisons table, and allow room decoration features to be used. The prison can be considered
+active, but the external users can't book. 
+
+When no prisons are on `grey release` then the environment variable should be set to null or not
+set at all.
+
+This environment variable can be set in a variety of ways:
+ - The local .env file - for local running.
+ - The values-xxx.yaml files - for deployment into other environments.
+ - (The preferred way) in the Kubernetes secret `feature-toggles` which exists in all environments.
+
+Other feature switches can exist, for temporarily enabling or disabling features under development.
 
 ### Dependencies
 

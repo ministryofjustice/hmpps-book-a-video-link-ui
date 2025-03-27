@@ -127,7 +127,7 @@
                             text: "Post-court hearing link (PVL)"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet entered"
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')
                 ]

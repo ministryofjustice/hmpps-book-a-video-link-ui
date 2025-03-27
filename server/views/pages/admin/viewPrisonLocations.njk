@@ -58,7 +58,7 @@
                     {% set rows = (rows.push([
                         { text: result.description },
                         { text: result.key },
-                        { text: (result.extraAttributes.prisonVideoUrl | upper) or "None entered" },
+                        { text: result.extraAttributes.prisonVideoUrl or "None entered" },
                         { html: roomSetupHtml },
                         { html: roomStatusHtml },
                         { html: permissionsHtml },

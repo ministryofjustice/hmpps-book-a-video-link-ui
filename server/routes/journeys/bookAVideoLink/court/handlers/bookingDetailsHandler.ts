@@ -105,7 +105,6 @@ export default class BookingDetailsHandler implements PageHandler {
       },
       courts,
       hearingTypes,
-      fromReview: req.get('Referrer')?.endsWith('check-booking'),
     })
   }
 
@@ -114,7 +113,17 @@ export default class BookingDetailsHandler implements PageHandler {
     const { mode } = req.params
 
     const offender = req.session.journey.bookACourtHearing?.prisoner
-    const { courtCode, hearingTypeCode, videoLinkUrl, date, startTime, endTime, preRequired, postRequired } = req.body
+    const {
+      courtCode,
+      hearingTypeCode,
+      cvpRequired,
+      videoLinkUrl,
+      date,
+      startTime,
+      endTime,
+      preRequired,
+      postRequired,
+    } = req.body
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
@@ -138,6 +147,7 @@ export default class BookingDetailsHandler implements PageHandler {
       preHearingEndTime: preRequired === YesNo.YES ? startTime.toISOString() : undefined,
       postHearingStartTime: postRequired === YesNo.YES ? endTime.toISOString() : undefined,
       postHearingEndTime: postRequired === YesNo.YES ? addMinutes(endTime, 15).toISOString() : undefined,
+      cvpRequired: cvpRequired === YesNo.YES,
       videoLinkUrl,
     }
 

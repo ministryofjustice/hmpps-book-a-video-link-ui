@@ -105,7 +105,7 @@
                     }) }}
                 {% endif %}
 
-                {% set items = [{ text: '', value: '' }] %}
+                {% set items = [{ text: '-', value: '' }] %}
                 {% for room in mainLocations %}
                     {% set items = (items.push({
                         value: room.dpsLocationKey,

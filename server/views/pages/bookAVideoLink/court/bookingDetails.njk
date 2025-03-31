@@ -155,7 +155,7 @@
                         {
                             value: 'no',
                             text: "No",
-                            checked: formResponses.cvpRequired == 'no' or (not session.journey.bookACourtHearing.videoLinkUrl and (mode == 'amend' or fromReview) and not formResponses)
+                            checked: formResponses.cvpRequired == 'no' or (session.journey.bookACourtHearing.cvpRequired == false and not formResponses)
                         }
                     ]
                 }) }}

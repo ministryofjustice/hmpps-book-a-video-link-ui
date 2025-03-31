@@ -169,6 +169,7 @@ describe('Booking details handler', () => {
               prisonerNumber: 'A1234AA',
               prisonId: 'MDI',
             },
+            cvpRequired: true,
             videoLinkUrl: 'http://example.com',
             comments: 'test',
           }),
@@ -372,6 +373,7 @@ describe('Booking details handler', () => {
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
+            cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )
@@ -403,6 +405,7 @@ describe('Booking details handler', () => {
               prisonerNumber: 'A1234AA',
             },
             startTime: '1970-01-01T15:30:00.000Z',
+            cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
             comments: 'test',
           }),
@@ -444,6 +447,7 @@ describe('Booking details handler', () => {
               prisonName: 'Moorland',
             },
             startTime: '1970-01-01T15:30:00.000Z',
+            cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )

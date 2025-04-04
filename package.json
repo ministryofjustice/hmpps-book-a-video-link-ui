@@ -173,11 +173,12 @@
     "sass": "^1.84.0",
     "sinon": "^19.0.2",
     "supertest": "^7.0.0",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.3.1",
     "typescript": "^5.7.3",
     "wiremock": "^3.11.0"
   },
   "overrides": {
-    "undici": "^6.21.1"
+    "undici": "^6.21.1",
+    "@babel/helpers": "^7.26.10"
   }
 }

@@ -170,7 +170,7 @@ describe('Court booking service', () => {
       const startTime = parse('13:00', 'HH:mm', new Date(0)).toISOString()
       const endTime = parse('14:30', 'HH:mm', new Date(0)).toISOString()
 
-      await courtBookingService.roomsAvailableByDateAndTime(journey, startTime, endTime, user)
+      await courtBookingService.roomsAvailableByDateAndTime(journey, 1, startTime, endTime, user)
 
       expect(bookAVideoLinkClient.fetchAvailableLocationsByDateAndTime).toHaveBeenLastCalledWith(
         {
@@ -180,6 +180,7 @@ describe('Court booking service', () => {
           endTime: '14:30',
           prisonCode: 'MDI',
           startTime: '13:00',
+          appointmentToExclude: 1,
         },
         user,
       )

@@ -1,5 +1,8 @@
 export type BookACourtHearingJourney = {
   bookingId?: number
+  preHearingAppointmentId?: number
+  mainHearingAppointmentId?: number
+  postHearingAppointmentId?: number
   bookingStatus?: string
   prisoner?: {
     firstName: string

@@ -48,15 +48,23 @@ export default class SelectRoomsHandler implements PageHandler {
       preRequired
         ? this.courtBookingService.roomsAvailableByDateAndTime(
             journey,
+            journey.preHearingAppointmentId,
             journey.preHearingStartTime,
             journey.preHearingEndTime,
             user,
           )
         : undefined,
-      this.courtBookingService.roomsAvailableByDateAndTime(journey, journey.startTime, journey.endTime, user),
+      this.courtBookingService.roomsAvailableByDateAndTime(
+        journey,
+        journey.mainHearingAppointmentId,
+        journey.startTime,
+        journey.endTime,
+        user,
+      ),
       postRequired
         ? this.courtBookingService.roomsAvailableByDateAndTime(
             journey,
+            journey.postHearingAppointmentId,
             journey.postHearingStartTime,
             journey.postHearingEndTime,
             user,

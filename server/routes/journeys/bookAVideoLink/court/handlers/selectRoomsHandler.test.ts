@@ -1,22 +1,30 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { parse } from 'date-fns'
+import { parse, startOfTomorrow } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import { existsByName, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
-import { AvailableLocationsResponse, Court } from '../../../../../@types/bookAVideoLinkApi/types'
+import { AvailableLocationsResponse, Court, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import config from '../../../../../config'
 import CourtBookingService from '../../../../../services/courtBookingService'
+import { formatDate } from '../../../../../utils/utils'
+import VideoLinkService from '../../../../../services/videoLinkService'
+import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
+import PrisonerService from '../../../../../services/prisonerService'
 
 jest.mock('../../../../../services/auditService')
+jest.mock('../../../../../services/videoLinkService')
+jest.mock('../../../../../services/prisonerService')
 jest.mock('../../../../../services/courtsService')
 jest.mock('../../../../../services/courtBookingService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
+const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
+const prisonerService = new PrisonerService(null) as jest.Mocked<PrisonerService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 const courtBookingService = new CourtBookingService(null) as jest.Mocked<CourtBookingService>
 
@@ -37,7 +45,7 @@ const journey = {
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, courtsService, courtBookingService },
+    services: { auditService, videoLinkService, prisonerService, courtsService, courtBookingService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -58,6 +66,36 @@ beforeEach(() => {
   courtBookingService.roomsAvailableByDateAndTime.mockResolvedValue({
     locations: [{ name: 'Video Link', startTime: '13:00', endTime: '14:00' }],
   } as AvailableLocationsResponse)
+
+  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+    prisonId: 'MDI',
+    firstName: 'Joe',
+    lastName: 'Smith',
+    dateOfBirth: '1970-01-01',
+    prisonName: 'Moorland',
+    prisonerNumber: 'A1234AA',
+  } as Prisoner)
+
+  videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+    bookingType: 'COURT',
+    prisonAppointments: [
+      {
+        prisonAppointmentId: 1,
+        prisonerNumber: 'A1234AA',
+        appointmentType: 'VLB_COURT_MAIN',
+        appointmentDate: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
+        startTime: '08:00',
+        endTime: '09:00',
+        prisonLocKey: 'LOCATION_CODE',
+      },
+    ],
+    courtCode: 'COURT_CODE',
+    courtHearingType: 'APPEAL',
+    videoLinkUrl: 'http://example.com',
+    comments: 'test',
+  } as VideoLinkBooking)
+
+  videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
 afterEach(() => {
@@ -85,6 +123,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             1,
             expect.anything(),
+            undefined,
             parse('12:45', 'HH:mm', new Date(0)).toISOString(),
             parse('13:00', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -92,6 +131,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             2,
             expect.anything(),
+            undefined,
             parse('13:00', 'HH:mm', new Date(0)).toISOString(),
             parse('14:00', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -99,6 +139,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             3,
             expect.anything(),
+            undefined,
             parse('14:00', 'HH:mm', new Date(0)).toISOString(),
             parse('14:15', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -137,6 +178,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             1,
             expect.anything(),
+            undefined,
             parse('12:45', 'HH:mm', new Date(0)).toISOString(),
             parse('13:00', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -144,6 +186,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             2,
             expect.anything(),
+            undefined,
             parse('13:00', 'HH:mm', new Date(0)).toISOString(),
             parse('14:00', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -182,6 +225,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             1,
             expect.anything(),
+            undefined,
             parse('13:00', 'HH:mm', new Date(0)).toISOString(),
             parse('14:00', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -189,6 +233,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
             2,
             expect.anything(),
+            undefined,
             parse('14:00', 'HH:mm', new Date(0)).toISOString(),
             parse('14:15', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -228,6 +273,7 @@ describe('Select rooms handler', () => {
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenCalledTimes(1)
           expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenCalledWith(
             expect.anything(),
+            undefined,
             parse('13:00', 'HH:mm', new Date(0)).toISOString(),
             parse('14:00', 'HH:mm', new Date(0)).toISOString(),
             user,
@@ -248,6 +294,37 @@ describe('Select rooms handler', () => {
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-rooms`)
         .expect(302)
         .expect('location', 'not-available')
+    })
+
+    it("should exclude this booking's appointments from the availability check during amend", () => {
+      return request(app)
+        .get(`/court/booking/amend/1/${journeyId()}/video-link-booking/select-rooms`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual("Select rooms for Joe Smith's court hearings")
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ROOMS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(courtsService.getUserPreferences).toHaveBeenCalledWith(user)
+          expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenCalledTimes(1)
+          expect(courtBookingService.roomsAvailableByDateAndTime).toHaveBeenNthCalledWith(
+            1,
+            expect.anything(),
+            1,
+            parse('08:00', 'HH:mm', new Date(0)).toISOString(),
+            parse('09:00', 'HH:mm', new Date(0)).toISOString(),
+            user,
+          )
+
+          expect(existsByName($, 'preLocation')).toBe(false)
+          expect(existsByName($, 'location')).toBe(true)
+          expect(existsByName($, 'postLocation ')).toBe(false)
+        })
     })
   })
 

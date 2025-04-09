@@ -24,6 +24,9 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
 
     req.session.journey.bookACourtHearing = {
       bookingId: Number(bookingId),
+      preHearingAppointmentId: preAppointment?.prisonAppointmentId,
+      mainHearingAppointmentId: mainAppointment.prisonAppointmentId,
+      postHearingAppointmentId: postAppointment?.prisonAppointmentId,
       bookingStatus: booking.statusCode,
       prisoner: {
         firstName: prisoner.firstName,

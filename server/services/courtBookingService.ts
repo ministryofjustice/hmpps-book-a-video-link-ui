@@ -21,11 +21,12 @@ export default class CourtBookingService {
 
   public roomsAvailableByDateAndTime(
     journey: BookACourtHearingJourney,
+    appointmentIdToExclude: number,
     startTime: string,
     endTime: string,
     user: Express.User,
   ) {
-    const request = this.buildAvailabilityByDateTimeRequest(journey, startTime, endTime)
+    const request = this.buildAvailabilityByDateTimeRequest(journey, appointmentIdToExclude, startTime, endTime)
     return this.bookAVideoLinkApiClient.fetchAvailableLocationsByDateAndTime(request, user)
   }
 
@@ -77,6 +78,7 @@ export default class CourtBookingService {
 
   private buildAvailabilityByDateTimeRequest(
     journey: BookACourtHearingJourney,
+    appointmentToExclude: number,
     startTime: string,
     endTime: string,
   ): DateTimeAvailabilityRequest {
@@ -87,7 +89,7 @@ export default class CourtBookingService {
       date: formatDate(journey.date, 'yyyy-MM-dd'),
       startTime: formatDate(startTime, 'HH:mm'),
       endTime: formatDate(endTime, 'HH:mm'),
-      vlbIdToExclude: journey.bookingId,
+      appointmentToExclude,
     } as DateTimeAvailabilityRequest
   }
 

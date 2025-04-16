@@ -18,6 +18,13 @@ generic-service:
     BOOK_A_VIDEO_LINK_API_URL: "https://book-a-video-link-api-dev.prison.service.justice.gov.uk"
     PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
 
+  allowlist:
+    user-vision-office: 5.181.59.114
+    groups:
+      - prisons
+      - moj_cloud_platform
+      - digital_staff_and_mojo
+
 generic-prometheus-alerts:
   businessHoursOnly: true
   alertSeverity: hmpps-book-a-video-link-dev

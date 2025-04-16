@@ -49,7 +49,7 @@
                         value: {
                             text: booking.additionalBookingDetails.contactName or "Not yet known"
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "Email address"
@@ -57,7 +57,7 @@
                         value: {
                             text: booking.additionalBookingDetails.contactEmail or "Not yet known"
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "UK phone number"
@@ -65,7 +65,7 @@
                         value: {
                             text: booking.additionalBookingDetails.contactNumber or ("None entered" if booking.additionalBookingDetails.contactName else "Not yet known")
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "Meeting type"
@@ -105,7 +105,7 @@
                         value: {
                             text: booking.videoLinkUrl or "None entered"
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "Comments"

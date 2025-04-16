@@ -127,7 +127,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "Email address"
@@ -145,7 +145,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "UK phone number"
@@ -163,7 +163,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled,
+                    },
                     {
                         key: {
                             text: "Meeting type"
@@ -217,7 +217,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled and mode != 'request',
+                    } if mode != 'request',
                     {
                         key: {
                             text: "Time period"
@@ -235,7 +235,7 @@
                                 }
                             ]
                         }
-                    } if enhancedProbationJourneyEnabled and mode != 'request',
+                    } if mode != 'request',
                     {
                         key: {
                             text: "Meeting time"
@@ -246,7 +246,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "availability" if enhancedProbationJourneyEnabled and mode != 'request' else "../video-link-booking#startTime",
+                                    href: "availability" if mode != 'request' else "../video-link-booking#startTime",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
                                     visuallyHiddenText: "meeting time"
@@ -260,18 +260,8 @@
                         },
                         value: {
                             text: room.description
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: "../video-link-booking#location",
-                                    text: "Change",
-                                    classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "meeting room"
-                                }
-                            ]
-                        } if not enhancedProbationJourneyEnabled
-                    } if not enhancedProbationJourneyEnabled or mode != 'request',
+                        }
+                    } if mode != 'request',
                     {
                         key: {
                             text: "Prison video link (PVL)"
@@ -279,7 +269,7 @@
                         value: {
                             text: room.extraAttributes.prisonVideoUrl or "None entered"
                         }
-                    } if enhancedProbationJourneyEnabled and mode != 'request'
+                    } if mode != 'request'
                 ]
             }) }}
 
@@ -303,7 +293,7 @@
                         text: "Comments (optional)"
                     },
                     hint: {
-                        text: "This can include any other additional information" if enhancedProbationJourneyEnabled else "This should include probation officer’s full name and any other relevant details."
+                        text: "This can include any other additional information"
                     },
                     formGroup: {
                         classes: 'govuk-!-width-two-thirds'

@@ -65,7 +65,7 @@
                         value: {
                             text: booking.additionalBookingDetails.contactName or "Not yet known"
                         }
-                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    } if booking.bookingType == 'PROBATION',
                     {
                         key: {
                             text: "Email address"
@@ -73,7 +73,7 @@
                         value: {
                             text: booking.additionalBookingDetails.contactEmail or "Not yet known"
                         }
-                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    } if booking.bookingType == 'PROBATION',
                     {
                         key: {
                             text: "UK phone number"
@@ -81,7 +81,7 @@
                         value: {
                             text: booking.additionalBookingDetails.contactNumber or ("Not yet known" if not booking.additionalBookingDetails.contactName else "None entered")
                         }
-                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    } if booking.bookingType == 'PROBATION',
                     {
                         key: {
                             text: "Hearing type"
@@ -186,7 +186,7 @@
                         value: {
                             text: booking.videoLinkUrl or "None entered"
                         }
-                    } if booking.bookingType == 'PROBATION' and enhancedProbationJourneyEnabled,
+                    } if booking.bookingType == 'PROBATION',
                     {
                         key: {
                             text: "Comments"

@@ -9,7 +9,6 @@ import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
-import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -24,8 +23,6 @@ const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 let app: Express
 
 const appSetup = (journeySession = {}) => {
-  config.featureToggles.enhancedProbationJourneyEnabled = true
-
   app = appWithAllRoutes({
     services: { auditService, videoLinkService, prisonerService, prisonService },
     userSupplier: () => user,

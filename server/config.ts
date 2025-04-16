@@ -142,7 +142,6 @@ export default {
     endDateTime: get('MAINTENANCE_END_DATETIME', null),
   },
   featureToggles: {
-    enhancedProbationJourneyEnabled: get('FEATURE_ENHANCED_PROBATION_JOURNEY', 'false') === 'true',
     alteredCourtJourneyEnabled: get('FEATURE_ALTERED_COURT_JOURNEY', 'false') === 'true',
     greyReleasePrisons: get('FEATURE_GREY_RELEASE_PRISONS', null),
   },

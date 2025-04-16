@@ -78,6 +78,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('TimePeriod', TimePeriod)
 
   // Feature toggles
-  njkEnv.addGlobal('enhancedProbationJourneyEnabled', config.featureToggles.enhancedProbationJourneyEnabled)
   njkEnv.addGlobal('alteredCourtJourneyEnabled', config.featureToggles.alteredCourtJourneyEnabled)
 }

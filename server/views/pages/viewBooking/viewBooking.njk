@@ -4,7 +4,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + "’s video link details" %}
+{% set pageTitle = "Video link details" %}
+{% set pageHeading = ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + "’s video link details" %}
 
 {% block content %}
     <div class="govuk-grid-row">
@@ -18,7 +19,7 @@
                 {{ govukNotificationBanner({ html: html, attributes: {"data-qa": 'cancelled-banner'} }) }}
             {% endif %}
 
-            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+            <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
         </div>
     </div>
 

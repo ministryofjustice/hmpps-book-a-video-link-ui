@@ -10,12 +10,13 @@
 
 {% set mode = session.req.params.mode %}
 {% set prisonerName = ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) %}
-{% set pageTitle = "Select rooms for " + prisonerName + "'s court hearings" %}
+{% set pageTitle = "Select rooms for court hearings" %}
+{% set pageHeading = "Select rooms for " + prisonerName + "'s court hearings" %}
 
 {% block content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
-            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+            <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
         </div>
     </div>
 

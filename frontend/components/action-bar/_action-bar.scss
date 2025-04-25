@@ -1,0 +1,59 @@
+.hmpps-action-bar {
+  margin-left: auto;
+  order: 2;
+
+  .hmpps-last-updated {
+    @extend .govuk-button-group;
+    @extend .govuk-body;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+
+    button {
+      font-size: 1rem;
+      margin: 5px 0 !important;
+    }
+  }
+
+  .hmpps-print-and-export {
+    @extend .govuk-button-group;
+    margin: 0 0 0 auto;
+    justify-content: space-between;
+
+    button {
+      @extend .govuk-link;
+      margin: 0;
+      background-size: 20px 18px;
+      padding: 12px 12px 12px 38px;
+      border: 0;
+      color: $govuk-brand-colour;
+      cursor: pointer;
+      text-decoration: underline;
+
+      &:hover {
+        color: rgba(11, 12, 12, .99);
+      }
+
+      &:focus {
+        outline: 3px solid transparent;
+        color: #0b0c0c;
+        background-color: #fd0 !important;
+        box-shadow: 0 -2px #fd0, 0 4px #0b0c0c !important;
+        text-decoration: none;
+        box-decoration-break: clone;
+        border-color: transparent;
+      }
+
+      &.hmpps-print-and-export--export {
+        background: url("/assets/images/icon-document.png") no-repeat 10px 50%;
+      }
+
+      &.hmpps-print-and-export--print {
+        background: url("/assets/images/icon-print.png") no-repeat 10px 50%;
+        padding-right: 0;
+      }
+    }
+  }
+}
+
+

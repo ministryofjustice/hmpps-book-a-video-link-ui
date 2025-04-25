@@ -3,6 +3,7 @@ import BackLink from './components/back-link/back-link'
 import Card from './components/card/card'
 import FormSpinner from './components/form-spinner/form-spinner'
 import MojAddAnother from './components/moj-add-another/moj-add-another'
+import { ExportButton } from './components/action-bar/print-and-export'
 
 function initAll() {
   var $backLinks = document.querySelectorAll('.govuk-back-link')
@@ -23,6 +24,11 @@ function initAll() {
   const $spinnerForms = document.querySelectorAll('[data-module="form-spinner"]')
   nodeListForEach($spinnerForms, function ($spinnerForm) {
     new FormSpinner($spinnerForm)
+  })
+
+  var $exportButtons = document.querySelectorAll('[class*=hmpps-print-and-export--export]')
+  nodeListForEach($exportButtons, function ($exportButton) {
+    new ExportButton($exportButton)
   })
 }
 

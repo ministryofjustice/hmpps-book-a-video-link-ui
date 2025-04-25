@@ -18,7 +18,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <form method='GET' class='horizontal-form govuk-!-margin-bottom-6'>
+            <form method='GET' class='horizontal-form'>
 
                 {{ mojDatePicker({
                     id: 'date',
@@ -44,6 +44,14 @@
                 }) }}
 
                 {{ govukButton({ text: "Update results", type: "submit" }) }}
+
+                {% if session.req.params.type == BavlJourneyType.COURT %}
+                <div class="hmpps-action-bar govuk-!-display-none-print">
+                    <div class="hmpps-print-and-export govuk-!-margin-top-6">
+                       <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
+                    </div>
+                </div>
+                {% endif %}
             </form>
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" aria-hidden="true">

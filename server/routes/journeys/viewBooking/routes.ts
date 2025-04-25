@@ -6,6 +6,7 @@ import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 import ViewBookingHandler from './handlers/viewBookingHandler'
+import DownloadCsvHandler from './handlers/downloadCsvHandler'
 
 export default function Index({
   auditService,
@@ -22,6 +23,7 @@ export default function Index({
     router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+  route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))
   route('/:bookingId', new ViewBookingHandler(videoLinkService, prisonerService, prisonService))
 
   return router

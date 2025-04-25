@@ -107,6 +107,7 @@
     "govuk-frontend": "^5.9.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.0",
+    "json-2-csv": "^5.5.9",
     "jwt-decode": "^4.0.0",
     "libphonenumber-js": "^1.12.7",
     "lodash": "^4.17.21",

@@ -6,7 +6,7 @@ import AuditService, { Page } from '../../../../services/auditService'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import VideoLinkService from '../../../../services/videoLinkService'
-import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
+import { Court, ProbationTeam, ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -19,8 +19,6 @@ const probationTeamsService = new ProbationTeamsService(null) as jest.Mocked<Pro
 const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLinkService>
 
 let app: Express
-const expectedCsv =
-  'Appointment Start Time,Appointment End Time,Prison,Prisoner name,Prisoner Number,Hearing Type,Court Hearing Link,Room Hearing Link\n12:45,13:15,HMP Moorland,John Doe,A1234AA,APPEAL,https://video.link.url,'
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
@@ -37,45 +35,11 @@ beforeEach(() => {
     { code: 'C1', description: 'Court 1' },
     { code: 'C2', description: 'Court 2' },
   ] as Court[])
+
   probationTeamsService.getUserPreferences.mockResolvedValue([
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
   ] as ProbationTeam[])
-
-  videoLinkService.getVideoLinkSchedule.mockResolvedValue([
-    {
-      videoBookingId: 123,
-      prisonAppointmentId: 123,
-      bookingType: 'COURT',
-      statusCode: 'ACTIVE',
-      videoUrl: 'https://video.link.url',
-      bookingComments: 'Free text comment',
-      createdByPrison: 'false',
-      courtId: 1234,
-      courtCode: 'DRBYMC',
-      courtDescription: 'Derby Magistrates',
-      hearingType: 'APPEAL',
-      hearingTypeDescription: 'Appeal hearing',
-      prisonCode: 'MDI',
-      prisonName: 'HMP Moorland',
-      prisonerNumber: 'A1234AA',
-      appointmentType: 'VLB_COURT_MAIN',
-      appointmentTypeDescription: 'Court - main hearing',
-      appointmentComments: 'This is a free text comment',
-      prisonLocKey: 'MDI-VCC-1',
-      prisonLocDesc: 'VCC-crown-conference-room-1',
-      dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
-      appointmentDate: '2024-10-03',
-      startTime: '12:45',
-      endTime: '13:15',
-      createdTime: '2024-10-01 14:45',
-      createdBy: 'creator@email.com',
-      updatedTime: '2024-10-02 14:45',
-      updatedBy: 'amender@email.com',
-      prisonerName: 'john doe',
-      prisonLocationDescription: 'Location description',
-    },
-  ])
 })
 
 afterEach(() => {
@@ -84,6 +48,11 @@ afterEach(() => {
 
 describe('GET', () => {
   it('should download court csv for today', () => {
+    const expectedCsv =
+      'Appointment Start Time,Appointment End Time,Prison,Prisoner name,Prisoner Number,Hearing Type,Court Hearing Link,Room Hearing Link\n12:45,13:15,HMP Moorland,John Doe,A1234AA,APPEAL,https://video.link.url,'
+
+    videoLinkService.getVideoLinkSchedule.mockResolvedValue([getCourtBooking()])
+
     return request(app)
       .get('/court/view-booking/download-csv')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
@@ -107,4 +76,36 @@ describe('GET', () => {
         )
       })
   })
+})
+
+const getCourtBooking = (): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => ({
+  videoBookingId: 1,
+  prisonAppointmentId: 1,
+  bookingType: 'COURT',
+  statusCode: 'ACTIVE',
+  videoUrl: 'https://video.link.url',
+  bookingComments: 'Free text comment',
+  createdByPrison: 'false',
+  courtId: 1,
+  courtCode: 'C1',
+  courtDescription: 'Court 1',
+  hearingType: 'APPEAL',
+  hearingTypeDescription: 'Appeal hearing',
+  prisonCode: 'MDI',
+  prisonName: 'HMP Moorland',
+  prisonerNumber: 'A1234AA',
+  appointmentType: 'VLB_COURT_MAIN',
+  appointmentTypeDescription: 'Court - main hearing',
+  appointmentComments: 'This is a free text comment',
+  prisonLocKey: 'MDI-VCC-1',
+  prisonLocDesc: 'VCC-crown-conference-room-1',
+  dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
+  appointmentDate: '2024-10-03',
+  startTime: '12:45',
+  endTime: '13:15',
+  createdTime: '2024-10-01 14:45',
+  createdBy: 'creator@email.com',
+  updatedTime: '2024-10-02 14:45',
+  prisonerName: 'john doe',
+  prisonLocationDescription: 'Location description',
 })

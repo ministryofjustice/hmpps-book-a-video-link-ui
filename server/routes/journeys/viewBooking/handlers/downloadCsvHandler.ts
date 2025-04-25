@@ -34,13 +34,13 @@ export default class DownloadCsvHandler implements PageHandler {
     const agency = agencies.find(a => a.code === agencyCode)
     const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
 
-    const csv = converter.json2csv(this.convertAppointmentsToCsvRows(appointments))
+    const csv = converter.json2csv(this.convertCourtAppointmentsToCsvRows(appointments))
     res.header('Content-Type', 'text/csv')
     res.attachment(`VideoLinkBookings-${formatDate(date, 'yyyy-MM-dd')}-${agency.description.split(' ').join('_')}.csv`)
     res.send(csv)
   }
 
-  private convertAppointmentsToCsvRows = (
+  private convertCourtAppointmentsToCsvRows = (
     items: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[],
   ) => {
     return items.map(a => ({

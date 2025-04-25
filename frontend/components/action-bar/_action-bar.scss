@@ -1,8 +1,6 @@
 .hmpps-action-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  margin-left: auto;
+  order: 2;
 
   .hmpps-last-updated {
     @extend .govuk-button-group;
@@ -20,6 +18,7 @@
   .hmpps-print-and-export {
     @extend .govuk-button-group;
     margin: 0 0 0 auto;
+    justify-content: space-between;
 
     button {
       @extend .govuk-link;

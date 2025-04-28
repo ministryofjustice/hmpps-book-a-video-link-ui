@@ -34,24 +34,40 @@ export default class DownloadCsvHandler implements PageHandler {
     const agency = agencies.find(a => a.code === agencyCode)
     const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
 
-    const csv = converter.json2csv(this.convertCourtAppointmentsToCsvRows(appointments))
+    const csv =
+      type === BavlJourneyType.COURT
+        ? converter.json2csv(this.court(appointments))
+        : converter.json2csv(this.probationTeam(appointments))
+
     res.header('Content-Type', 'text/csv')
     res.attachment(`VideoLinkBookings-${formatDate(date, 'yyyy-MM-dd')}-${agency.description.split(' ').join('_')}.csv`)
     res.send(csv)
   }
 
-  private convertCourtAppointmentsToCsvRows = (
-    items: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[],
-  ) => {
+  private court = (items: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]) => {
     return items.map(a => ({
       'Appointment Start Time': a.startTime,
       'Appointment End Time': a.endTime,
       Prison: a.prisonName,
-      'Prisoner name': convertToTitleCase(`${a.prisonerName}`),
+      'Prisoner Name': convertToTitleCase(`${a.prisonerName}`),
       'Prisoner Number': a.prisonerNumber,
-      'Hearing Type': a.hearingType,
+      'Hearing Type': a.hearingTypeDescription,
       'Court Hearing Link': a.appointmentType === 'VLB_COURT_MAIN' && a.videoUrl ? a.videoUrl : '',
       'Room Hearing Link': a.appointmentType !== 'VLB_COURT_MAIN' && a.videoUrl ? a.videoUrl : '',
+    }))
+  }
+
+  private probationTeam = (items: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]) => {
+    return items.map(a => ({
+      'Appointment Start Time': a.startTime,
+      'Appointment End Time': a.endTime,
+      Prison: a.prisonName,
+      'Prisoner Name': convertToTitleCase(`${a.prisonerName}`),
+      'Prisoner Number': a.prisonerNumber,
+      'Meeting Type': a.probationMeetingTypeDescription,
+      'Room Hearing Link': a.videoUrl ? a.videoUrl : '',
+      'Probation Officer Name': a.probationOfficerName ? a.probationOfficerName : '',
+      'Email Address': a.probationOfficerEmailAddress ? a.probationOfficerEmailAddress : '',
     }))
   }
 }

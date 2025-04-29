@@ -21,7 +21,6 @@ export default class ViewDailyBookingsHandler implements PageHandler {
     const type = req.params.type as BavlJourneyType
     const { user, validationErrors } = res.locals
     const date = parseDatePickerDate(req.query.date as string)
-    const agencyCode = req.query.agencyCode as string
 
     if (date && !isValid(date) && !validationErrors) {
       return res.validationFailed(`An invalid date was entered: ${req.query.date}`, 'date')
@@ -32,13 +31,11 @@ export default class ViewDailyBookingsHandler implements PageHandler {
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const appointments = await this.videoLinkService.getVideoLinkSchedule(
-      type,
-      agencyCode || agencies[0].code,
-      date,
-      user,
-    )
+    const agencyCode = (req.query.agencyCode as string) || agencies[0].code
+    const agency = agencies.find(a => a.code === agencyCode)
 
-    return res.render('pages/viewBooking/viewDailyBookings', { agencies, appointments })
+    const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
+
+    return res.render('pages/viewBooking/viewDailyBookings', { agency, agencies, appointments })
   }
 }

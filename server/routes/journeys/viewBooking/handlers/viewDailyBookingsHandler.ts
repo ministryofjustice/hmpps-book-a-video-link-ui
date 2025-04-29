@@ -33,7 +33,6 @@ export default class ViewDailyBookingsHandler implements PageHandler {
 
     const agencyCode = (req.query.agencyCode as string) || agencies[0].code
     const agency = agencies.find(a => a.code === agencyCode)
-
     const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
 
     return res.render('pages/viewBooking/viewDailyBookings', { agency, agencies, appointments })

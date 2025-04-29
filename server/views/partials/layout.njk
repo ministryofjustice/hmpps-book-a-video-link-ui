@@ -21,6 +21,7 @@
 {% endblock %}
 
 {% block footer %}
+  <div class="govuk-!-display-none-print">
   {{ govukFooter({
     meta: {
       items: [
@@ -39,6 +40,7 @@
       ]
     }
   }) }}
+  </div>
 {% endblock %}
 
 {% block bodyEnd %}

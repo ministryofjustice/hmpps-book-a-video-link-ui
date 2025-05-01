@@ -4,6 +4,7 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set availableBookings = requestedSlots.length > 0 %}
 {% set otherBookingsAvailableOnly = (not availableBookings) and otherSlots.length > 0 %}
@@ -35,7 +36,7 @@
                     variant: "information",
                     title: "No bookings available",
                     dismissible: false,
-                    text: 'There are no bookings available on the date you selected. You will need to change the date.'
+                    text: 'There are no more bookings available for probation meetings on the date you selected. You will need to change the date.'
                 }) }}
             </div>
         </div>
@@ -82,6 +83,12 @@
                 href: '../video-link-booking' + ('#date' if noBookings else "#timePeriods"),
                 classes: 'govuk-button--blue'
             }) }}
+
+            {% if availableBookings or otherBookingsAvailableOnly %}
+              {{ govukInsetText({
+                text: "Some rooms and times are allocated to court users only. The bookings shown below are the only times available for probation meetings."
+              }) }}
+            {% endif %}
         </div>
     </div>
 

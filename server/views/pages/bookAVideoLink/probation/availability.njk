@@ -86,6 +86,7 @@
 
             {% if availableBookings or otherBookingsAvailableOnly %}
               {{ govukInsetText({
+                id: "probation-rooms-available",
                 text: "Some rooms and times are allocated to court users only. The bookings shown below are the only times available for probation meetings."
               }) }}
             {% endif %}

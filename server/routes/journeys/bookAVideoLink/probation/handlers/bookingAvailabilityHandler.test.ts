@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfTomorrow } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { getPageHeader, radioOptions } from '../../../../testutils/cheerio'
+import { getTextById, getPageHeader, radioOptions, getPageAlert } from '../../../../testutils/cheerio'
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { AvailableLocationsResponse } from '../../../../../@types/bookAVideoLinkApi/types'
@@ -91,8 +91,13 @@ describe('Booking availability handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
           const radios = radioOptions($, 'option')
+          const roomsAvailableText = getTextById($, 'probation-rooms-available')
 
           expect(heading).toEqual('Available bookings')
+          expect(roomsAvailableText).toEqual(
+            'Some rooms and times are allocated to court users only. The bookings shown below are the only times available for probation meetings.',
+          )
+
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_AVAILABILITY_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -130,10 +135,14 @@ describe('Booking availability handler', () => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
           const radios = radioOptions($, 'option')
+          const roomsAvailableText = getTextById($, 'probation-rooms-available')
 
           expect(heading).toEqual('No bookings available for your selected time periods')
           expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
           expect(radios).toEqual(['13:00///14:00///VIDEO_1///PM', '15:00///16:00///VIDEO_2///PM'])
+          expect(roomsAvailableText).toEqual(
+            'Some rooms and times are allocated to court users only. The bookings shown below are the only times available for probation meetings.',
+          )
         })
     })
 
@@ -148,8 +157,12 @@ describe('Booking availability handler', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
+          const noRoomsAvailablePageAlert = getPageAlert($)
 
           expect(heading).toEqual('No bookings available')
+          expect(noRoomsAvailablePageAlert).toEqual(
+            'There are no more bookings available for probation meetings on the date you selected. You will need to change the date.',
+          )
           expect(probationBookingService.getAvailableLocations).toHaveBeenCalled()
         })
     })

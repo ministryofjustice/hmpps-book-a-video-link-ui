@@ -4,7 +4,9 @@ export const getPageHeader = ($: Root) => $('h1').text().trim()
 export const getByDataQa = ($: Root, dataQa: string) => $(`[data-qa=${dataQa}]`)
 export const existsByDataQa = ($: Root, dataQa: string) => getByDataQa($, dataQa).length > 0
 export const getByName = ($: Root, name: string) => $(`[name=${name}]`)
+export const getTextById = ($: Root, id: string) => $(`[id=${id}]`).text().trim()
 export const existsByName = ($: Root, name: string) => getByName($, name).length > 0
+export const getPageAlert = ($: Root) => $('div.moj-alert__content').text().trim()
 
 export const getByLabel = ($: Root, label: string) => {
   const lbl = $(`label:contains("${label}")`)

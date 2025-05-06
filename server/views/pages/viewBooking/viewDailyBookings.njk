@@ -13,8 +13,10 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-l govuk-!-display-none-print">{{ pageTitle }}</h1>
-            <h2 class="print-only">{{ pageTitle }}: {{ agency.description }}</h2>
-            <span class="govuk-body print-only">{{ printDate }}</span>
+            <div class="print-only">
+              <span class="govuk-caption-l">{{ pageTitle }}: {{ agency.description }}</span>
+              <span class="govuk-caption-m govuk-!-padding-bottom-2">{{ printDate }}</span>
+            </div>
             <p class='govuk-body govuk-!-display-none-print'>You can view and change video link bookings for all the {{ 'courts' if type == 'court' else 'probation teams' }} you have selected in the "Manage your list of {{ 'courts' if type == 'court' else 'probation teams' }}" section.</p>
         </div>
     </div>
@@ -60,8 +62,9 @@
                 </div>
             </form>
 
-            <span class="govuk-body print-only">{{ appointments.length }}</span>
-            <span class="govuk-body print-only"> Appointment{{ "s" if appointments.length > 1 else '' }} listed</span>
+            <div class="govuk-!-padding-bottom-2 print-only">
+                <p class="govuk-body govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">{{ appointments.length }}</span> Appointment{{ "s" if appointments.length > 1 else '' }} listed</p>
+            </div>
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-display-none-print" aria-hidden="true">
 
@@ -120,7 +123,7 @@
                         { text: "Name" },
                         { text: "Prison location" },
                         { text: "Hearing type" if type == 'court' else 'Meeting type' },
-                        { text: "Meeting link"}
+                        { text: "Meeting link" }
                     ],
                     rows: printRows
                 }) }}

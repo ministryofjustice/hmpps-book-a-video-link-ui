@@ -14,8 +14,8 @@
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-l govuk-!-display-none-print">{{ pageTitle }}</h1>
             <div class="print-only">
-              <span class="govuk-caption-l">{{ pageTitle }}: {{ agency.description }}</span>
-              <span class="govuk-caption-m govuk-!-padding-bottom-2">{{ printDate }}</span>
+              <span class="govuk-heading-l">{{ pageTitle }}: {{ agency.description }}</span>
+              <span class="govuk-caption-m govuk-!-padding-bottom-3">{{ printDate }}</span>
             </div>
             <p class='govuk-body govuk-!-display-none-print'>You can view and change video link bookings for all the {{ 'courts' if type == 'court' else 'probation teams' }} you have selected in the "Manage your list of {{ 'courts' if type == 'court' else 'probation teams' }}" section.</p>
         </div>

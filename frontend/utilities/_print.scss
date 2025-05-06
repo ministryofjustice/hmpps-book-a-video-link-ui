@@ -44,6 +44,15 @@
     td, th {
       page-break-inside: avoid;
     }
+
+    th:last-child {
+      width: 15%;
+    }
+
+    td:last-child {
+      width: 15%;
+      word-break: break-all;
+    }
   }
 
   .govuk-link {
@@ -74,12 +83,6 @@
 
   .govuk-heading-s {
     font-size: 13pt;
-  }
-
-  .govuk-caption-l {
-    font-size: 11pt;
-    line-height: 1.1;
-    color: govuk-colour('black')
   }
 
   .govuk-\!-font-size-16 {

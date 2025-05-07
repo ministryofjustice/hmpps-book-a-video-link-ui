@@ -75,7 +75,8 @@
                             text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
                         }
                     } if session.journey.bookACourtHearing.postHearingStartTime
-                ]
+                ],
+                attributes: { 'data-qa': 'booking-details' }
             }) }}
 
             <div class="govuk-button-group">

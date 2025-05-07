@@ -110,6 +110,14 @@ export default abstract class Page {
 
   protected getLink = (text: string): PageElement => cy.get('a').contains(text)
 
+  protected assertSummaryListValue = (listIdentifier: string, heading: string, expectedValue: string) =>
+    cy
+      .get(`[data-qa=${listIdentifier}] > .govuk-summary-list__row > .govuk-summary-list__key`)
+      .contains(heading)
+      .parent()
+      .find('.govuk-summary-list__value')
+      .should('contain.text', expectedValue)
+
   private terminalLog(violations: axe.Result[]) {
     const violationData = violations.map(({ id, impact, help, helpUrl, nodes }) => ({
       id,

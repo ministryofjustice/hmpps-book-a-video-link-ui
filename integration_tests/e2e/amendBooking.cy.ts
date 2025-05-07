@@ -11,12 +11,14 @@ import AddCommentsPage from '../pages/bookAVideoLink/addComments'
 import UpdateConfirmationPage from '../pages/bookAVideoLink/updateConfirmation'
 import CheckBookingPage from '../pages/bookAVideoLink/checkBooking'
 import ChangeVideoLinkBookingPage from '../pages/bookAVideoLink/changeVideoLinkBooking'
-import BookingNotAvailablePage from '../pages/bookAVideoLink/bookingNotAvailable'
-import courtBookingNotAvailable from '../mockApis/fixtures/bookAVideoLinkApi/courtBookingNotAvailable.json'
+import nottinghamSelectRoomsByDateTime from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamSelectRoomsByDateTime.json'
 import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
 import ChangeProbationBookingPage from '../pages/bookAVideoLink/changeProbationBooking'
 import LocationAvailabilityPage from '../pages/bookAVideoLink/locationAvailability'
 import nottinghamLocationAvailability from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocationAvailability.json'
+import SelectRoomsPage from '../pages/bookAVideoLink/selectRoomsPage'
+import NoRoomsAvailablePage from '../pages/bookAVideoLink/noRoomsAvailablePage'
+import nottinghamSelectRoomsByDateTimeEmpty from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamSelectRoomsByDateTimeEmpty.json'
 
 context('Amend a booking', () => {
   beforeEach(() => {
@@ -38,6 +40,7 @@ context('Amend a booking', () => {
       cy.task('stubCourtHearingTypes')
       cy.task('stubGetCourtSchedule')
       cy.task('stubGetBooking', bobSmithCourtBooking)
+      cy.task('stubPostRoomsByDateAndTime', nottinghamSelectRoomsByDateTime as unknown as JSON)
       cy.signIn()
     })
 
@@ -62,62 +65,80 @@ context('Amend a booking', () => {
       Page.verifyOnPage(UpdateConfirmationPage)
     })
 
-    it('Can change the rooms for a court video link booking', () => {
+    it('Can change the hearing link for a court video link booking', () => {
+      // Home page
       const home = Page.verifyOnPage(HomePage)
       home.viewAndChangeVideoLinks().click()
 
       cy.task('stubGetCourtSchedule', { courtCode: 'ABERFC', date: '2050-01-01', response: courtBookingsForDay })
+
+      // Search for existing video link bookings
       const searchBookingsPage = Page.verifyOnPage(SearchBookingsPage)
       searchBookingsPage.selectDate(new Date(2050, 0, 1))
       searchBookingsPage.selectCourt('Aberystwyth Family')
       searchBookingsPage.updateResults().click()
       searchBookingsPage.viewOrEdit().click()
 
+      // View the video link booking page
       const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
       viewBookingPage.changeBookingDetails().click()
 
+      // Display and change the hearing link on booking details page
       const changeVideoLinkBookingPage = Page.verifyOnPage(ChangeVideoLinkBookingPage)
-      changeVideoLinkBookingPage.selectRoomForMainHearing('Legal Visits Room 1 - Magistrates Conf')
-      changeVideoLinkBookingPage.selectRoomForPreHearing('Legal Visits Room 1 - Magistrates Conf')
-      changeVideoLinkBookingPage.selectRoomForPostHearing('Legal Visits Room 1 - Magistrates Conf')
+      changeVideoLinkBookingPage.selectCvpKnown('Yes')
+      changeVideoLinkBookingPage.enterHearingLink('test link')
       changeVideoLinkBookingPage.continue().click()
 
+      // Confirm the same rooms
+      const selectRoomsPage = Page.verifyOnPage(SelectRoomsPage)
+      selectRoomsPage.continue().click()
+
+      // Check the details of the booking page
       const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
+      checkBookingPage.assertCourt('Aberystwyth Family')
+      checkBookingPage.assertHearingTime('15:00 to 16:00')
+      checkBookingPage.assertPrison('Nottingham (HMP)')
+      checkBookingPage.assertHearingType('Civil')
+      checkBookingPage.assertHearingLink('test link')
       checkBookingPage.updateBooking().click()
 
+      // Confirmation page
       Page.verifyOnPage(UpdateConfirmationPage)
     })
 
-    it('Can change the rooms for a court video link booking with an alternative time suggested', () => {
-      cy.task('stubAvailabilityCheck', courtBookingNotAvailable)
+    it('Can change rooms for a court video link booking - no rooms available', () => {
+      // Stub for no rooms available
+      cy.task('stubPostRoomsByDateAndTime', nottinghamSelectRoomsByDateTimeEmpty as unknown as JSON)
 
+      // Home page
       const home = Page.verifyOnPage(HomePage)
       home.viewAndChangeVideoLinks().click()
 
       cy.task('stubGetCourtSchedule', { courtCode: 'ABERFC', date: '2050-01-01', response: courtBookingsForDay })
+
+      // Search for existing bookings on a date
       const searchBookingsPage = Page.verifyOnPage(SearchBookingsPage)
       searchBookingsPage.selectDate(new Date(2050, 0, 1))
       searchBookingsPage.selectCourt('Aberystwyth Family')
       searchBookingsPage.updateResults().click()
       searchBookingsPage.viewOrEdit().click()
 
+      // View a booking
       const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
       viewBookingPage.changeBookingDetails().click()
 
+      // Change the booking details page
       const changeVideoLinkBookingPage = Page.verifyOnPage(ChangeVideoLinkBookingPage)
-      changeVideoLinkBookingPage.selectRoomForMainHearing('Legal Visits Room 1 - Magistrates Conf')
-      changeVideoLinkBookingPage.selectRoomForPreHearing('Legal Visits Room 1 - Magistrates Conf')
-      changeVideoLinkBookingPage.selectRoomForPostHearing('Legal Visits Room 1 - Magistrates Conf')
       changeVideoLinkBookingPage.continue().click()
 
-      cy.task('stubAvailabilityCheck')
-      const bookingNotAvailablePage = Page.verifyOnPage(BookingNotAvailablePage)
-      bookingNotAvailablePage.optionNumber(2).click()
-
-      const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
-      checkBookingPage.updateBooking().click()
-
-      Page.verifyOnPage(UpdateConfirmationPage)
+      // No rooms available
+      const noRoomsAvailablePage = Page.verifyOnPage(NoRoomsAvailablePage)
+      noRoomsAvailablePage.assertCourt('Aberystwyth Family')
+      noRoomsAvailablePage.assertPrison('Nottingham (HMP)')
+      noRoomsAvailablePage.assertDate('01/01/2050')
+      noRoomsAvailablePage.assertPreHearingTime('14:45 to 15:00')
+      noRoomsAvailablePage.assertHearingTime('15:00 to 16:00')
+      noRoomsAvailablePage.assertPostHearingTime('16:00 to 16:15')
     })
   })
 

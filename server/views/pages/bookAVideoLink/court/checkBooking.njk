@@ -171,7 +171,8 @@
                             text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
                     } if session.journey.bookACourtHearing.postLocationCode
-                ]
+                ],
+                attributes:{ 'data-qa': 'booking-details' }
             }) }}
 
             {% set spinnerText %}

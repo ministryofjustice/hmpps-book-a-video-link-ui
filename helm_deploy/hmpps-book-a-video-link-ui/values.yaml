@@ -61,7 +61,6 @@ generic-service:
       MAINTENANCE_START_DATETIME: "maintenance_start_datetime?"
       MAINTENANCE_END_DATETIME: "maintenance_end_datetime?"
     feature-toggles:
-      FEATURE_ALTERED_COURT_JOURNEY: "FEATURE_ALTERED_COURT_JOURNEY"
       FEATURE_GREY_RELEASE_PRISONS: "FEATURE_GREY_RELEASE_PRISONS?"
 
   allowlist:

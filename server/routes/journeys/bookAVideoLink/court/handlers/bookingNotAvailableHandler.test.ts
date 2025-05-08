@@ -5,7 +5,6 @@ import { parse } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import { getPageHeader } from '../../../../testutils/cheerio'
-import config from '../../../../../config'
 import CourtsService from '../../../../../services/courtsService'
 import { Court } from '../../../../../@types/bookAVideoLinkApi/types'
 
@@ -18,8 +17,6 @@ const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
 let app: Express
 
 const appSetup = (journeySession = {}) => {
-  config.featureToggles.alteredCourtJourneyEnabled = true
-
   app = appWithAllRoutes({
     services: { auditService, courtsService },
     userSupplier: () => user,

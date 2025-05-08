@@ -145,7 +145,7 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should redirect to select alternatives if the selected room is not available - toggle %s', () => {
+    it('should redirect to select alternatives if the selected room is not available', () => {
       probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)

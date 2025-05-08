@@ -5,11 +5,8 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
 import PrisonerDetailsHandler from './handlers/prisonerDetailsHandler'
-import DeprecatedNewBookingHandler from './handlers/deprecatedNewBookingHandler'
 import CheckBookingHandler from './handlers/checkBookingHandler'
-import DeprecatedBookingNotAvailableHandler from './handlers/deprecatedBookingNotAvailableHandler'
 import BookingRequestedHandler from './handlers/bookingRequestedHandler'
-import config from '../../../../config'
 import BookingDetailsHandler from './handlers/bookingDetailsHandler'
 
 export default function RequestRoutes({
@@ -36,24 +33,7 @@ export default function RequestRoutes({
     return next()
   })
 
-  if (config.featureToggles.alteredCourtJourneyEnabled) {
-    route(
-      `/prisoner/video-link-booking`,
-      new BookingDetailsHandler(courtsService, prisonerService, referenceDataService),
-    )
-  } else {
-    route(
-      `/prisoner/video-link-booking`,
-      new DeprecatedNewBookingHandler(
-        courtsService,
-        prisonService,
-        prisonerService,
-        referenceDataService,
-        videoLinkService,
-      ),
-    )
-    route(`/prisoner/video-link-booking/not-available`, new DeprecatedBookingNotAvailableHandler(courtBookingService))
-  }
+  route(`/prisoner/video-link-booking`, new BookingDetailsHandler(courtsService, prisonerService, referenceDataService))
 
   route(
     `/prisoner/video-link-booking/check-booking`,

@@ -3,7 +3,6 @@ import { parse } from 'date-fns'
 import { Services } from '../../../../../services'
 import asyncMiddleware from '../../../../../middleware/asyncMiddleware'
 import { extractPrisonAppointmentsFromBooking } from '../../../../../utils/utils'
-import config from '../../../../../config'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
   return asyncMiddleware(async (req, res, next) => {
@@ -49,7 +48,7 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       preLocationCode: preAppointment?.prisonLocKey,
       postLocationCode: postAppointment?.prisonLocKey,
       comments: booking.comments,
-      cvpRequired: config.featureToggles.alteredCourtJourneyEnabled ? !!booking.videoLinkUrl : undefined,
+      cvpRequired: !!booking.videoLinkUrl,
       videoLinkUrl: booking.videoLinkUrl,
     }
 

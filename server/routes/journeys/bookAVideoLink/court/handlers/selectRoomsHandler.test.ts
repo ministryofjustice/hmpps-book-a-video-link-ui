@@ -9,7 +9,6 @@ import CourtsService from '../../../../../services/courtsService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { AvailableLocationsResponse, Court, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
-import config from '../../../../../config'
 import CourtBookingService from '../../../../../services/courtBookingService'
 import { formatDate } from '../../../../../utils/utils'
 import VideoLinkService from '../../../../../services/videoLinkService'
@@ -52,8 +51,6 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.alteredCourtJourneyEnabled = true
-
   appSetup({
     bookACourtHearing: journey,
   })

@@ -4,13 +4,10 @@ import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
-import DeprecatedNewBookingHandler from './handlers/deprecatedNewBookingHandler'
 import validationMiddleware from '../../../../middleware/validationMiddleware'
 import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
-import DeprecatedBookingNotAvailableHandler from './handlers/deprecatedBookingNotAvailableHandler'
 import CommentsHandler from './handlers/commentsHandler'
-import config from '../../../../config'
 import SelectRoomsHandler from './handlers/selectRoomsHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 import BookingDetailsHandler from './handlers/bookingDetailsHandler'
@@ -41,27 +38,13 @@ export default function AmendRoutes({
       req.session.journey.bookACourtHearing = null
       return res.redirect(`/court/view-booking/${bookingId}`)
     }
+
     return next()
   })
 
-  if (config.featureToggles.alteredCourtJourneyEnabled) {
-    route('/video-link-booking', new BookingDetailsHandler(courtsService, prisonerService, referenceDataService))
-    route(`/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
-    route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
-  } else {
-    route(
-      '/video-link-booking',
-      new DeprecatedNewBookingHandler(
-        courtsService,
-        prisonService,
-        prisonerService,
-        referenceDataService,
-        videoLinkService,
-      ),
-    )
-    route('/video-link-booking/not-available', new DeprecatedBookingNotAvailableHandler(courtBookingService))
-  }
-
+  route('/video-link-booking', new BookingDetailsHandler(courtsService, prisonerService, referenceDataService))
+  route(`/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
+  route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
   route('/video-link-booking/comments', new CommentsHandler())
   route(
     '/video-link-booking/check-booking',

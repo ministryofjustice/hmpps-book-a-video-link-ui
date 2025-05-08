@@ -15,7 +15,6 @@ import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Court, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtsService')
@@ -42,8 +41,6 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.alteredCourtJourneyEnabled = true
-
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([

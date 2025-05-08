@@ -138,7 +138,7 @@
                         value: {
                             text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
                         }
-                    } if not alteredCourtJourneyEnabled or mode != 'request',
+                    } if mode != 'request',
                     {
                         key: {
                             text: "Court hearing link (CVP)"

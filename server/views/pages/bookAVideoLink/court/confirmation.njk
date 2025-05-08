@@ -130,7 +130,8 @@
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')
-                ]
+                ],
+                attributes: { 'data-qa': 'confirmation-details' }
             }) }}
 
             <div class="govuk-button-group">

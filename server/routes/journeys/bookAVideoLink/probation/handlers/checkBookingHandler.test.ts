@@ -16,7 +16,6 @@ import {
 } from '../../../../../@types/bookAVideoLinkApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ProbationBookingService from '../../../../../services/probationBookingService'
-import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/probationBookingService')
@@ -146,21 +145,14 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it.each([
-      [false, 'not-available'],
-      [true, 'availability'],
-    ])(
-      'should redirect to select alternatives if the selected room is not available - toggle %s',
-      (featureToggle, redirect) => {
-        config.featureToggles.enhancedProbationJourneyEnabled = featureToggle
-        probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
+    it('should redirect to select alternatives if the selected room is not available - toggle %s', () => {
+      probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
-        return request(app)
-          .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-          .expect(302)
-          .expect('location', redirect)
-      },
-    )
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .expect(302)
+        .expect('location', 'availability')
+    })
   })
 
   describe('POST', () => {
@@ -202,22 +194,15 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it.each([
-      [false, 'not-available'],
-      [true, 'availability'],
-    ])(
-      'should redirect to select alternatives if the selected room is not available - toggle %s',
-      (featureToggle, redirect) => {
-        config.featureToggles.enhancedProbationJourneyEnabled = featureToggle
-        probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
+    it('should redirect to select alternatives if the selected room is not available', () => {
+      probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
-        return request(app)
-          .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-          .send({ comments: 'comment' })
-          .expect(302)
-          .expect('location', redirect)
-      },
-    )
+      return request(app)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ comments: 'comment' })
+        .expect(302)
+        .expect('location', 'availability')
+    })
 
     it('should amend the posted fields', () => {
       const bookAProbationMeeting = {

@@ -32,19 +32,24 @@ context('Request a booking', () => {
     })
 
     it('Can request a video link booking for a court', () => {
+      // Home page
       const home = Page.verifyOnPage(HomePage)
       home.bookVideoLink().click()
 
+      // Search for a prisoner page
       const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
       searchPrisonerPage.enterLastName('Smith')
       searchPrisonerPage.search().click()
 
+      // Prisoner search results page
       const searchPrisonerResultsPage = Page.verifyOnPage(SearchPrisonerResultsPage)
       searchPrisonerResultsPage.prisonerNotListed().click()
 
+      // Prisoner not listed page
       const prisonerNotListedPage = Page.verifyOnPage(PrisonerNotListedPage)
       prisonerNotListedPage.continue().click()
 
+      // Enter prisoner details page
       const prisonerDetailsPage = Page.verifyOnPage(PrisonerDetailsPage)
       prisonerDetailsPage.enterFirstName('John')
       prisonerDetailsPage.enterLastName('Smith')
@@ -52,18 +57,16 @@ context('Request a booking', () => {
       prisonerDetailsPage.selectPrison('Nottingham (HMP & YOI)')
       prisonerDetailsPage.continue().click()
 
+      // New booking page - in REQUEST mode
       const newBookingPage = Page.verifyOnPage(NewBookingPage)
       newBookingPage.selectCourt('Aberystwyth Family')
       newBookingPage.selectHearingType('Civil')
+      newBookingPage.selectCvpKnown('No')
       newBookingPage.selectDate(new Date(2050, 0, 1))
       newBookingPage.selectStartTime(15, 0)
       newBookingPage.selectEndTime(16, 0)
-      newBookingPage.selectRoomForMainHearing('Closed Visits Cubicle 6 - Crown Ct')
       newBookingPage.selectPreHearingRequired('Yes')
-      newBookingPage.selectRoomForPreHearing('Closed Visits Cubicle 6 - Crown Ct')
       newBookingPage.selectPostHearingRequired('Yes')
-      newBookingPage.selectRoomForPostHearing('Closed Visits Cubicle 6 - Crown Ct')
-      newBookingPage.selectCvpKnown('No')
       newBookingPage.continue().click()
 
       const checkRequestPage = Page.verifyOnPage(CheckRequestPage)
@@ -83,19 +86,24 @@ context('Request a booking', () => {
     })
 
     it('Can request a video link booking for a probation team', () => {
+      // Home page
       const home = Page.verifyOnPage(HomePage)
       home.bookVideoLink().click()
 
+      // Search prisoners page
       const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
       searchPrisonerPage.enterLastName('Smith')
       searchPrisonerPage.search().click()
 
+      // Search results page
       const searchPrisonerResultsPage = Page.verifyOnPage(SearchPrisonerResultsPage)
       searchPrisonerResultsPage.prisonerNotListed().click()
 
+      // Prisoner not listed page
       const prisonerNotListedPage = Page.verifyOnPage(PrisonerNotListedPage)
       prisonerNotListedPage.continue().click()
 
+      // Enter prisoner details manually page
       const prisonerDetailsPage = Page.verifyOnPage(PrisonerDetailsPage)
       prisonerDetailsPage.enterFirstName('John')
       prisonerDetailsPage.enterLastName('Smith')
@@ -103,6 +111,7 @@ context('Request a booking', () => {
       prisonerDetailsPage.selectPrison('Nottingham (HMP & YOI)')
       prisonerDetailsPage.continue().click()
 
+      // Enter booking in request mode (will not ask for rooms)
       const bookingDetailsPage = Page.verifyOnPage(BookingDetailsPage)
       bookingDetailsPage.selectProbationTeam('Blackpool MC (PPOC)')
       bookingDetailsPage.enterProbationOfficerName('Alan Key')
@@ -113,9 +122,11 @@ context('Request a booking', () => {
       bookingDetailsPage.selectEndTime(16, 0)
       bookingDetailsPage.continue().click()
 
+      // Check request page
       const checkRequestPage = Page.verifyOnPage(CheckRequestPage)
       checkRequestPage.requestVideoLink().click()
 
+      // Confirm the requested booking
       Page.verifyOnPage(BookingRequestedPage)
     })
   })

@@ -10,7 +10,6 @@ import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ProbationBookingService from '../../../../../services/probationBookingService'
-import config from '../../../../../config'
 
 class Body {
   @Expose()
@@ -42,7 +41,7 @@ export default class CheckBookingHandler implements PageHandler {
       const { availabilityOk } = await this.probationBookingService.checkAvailability(bookAProbationMeeting, user)
 
       if (!availabilityOk) {
-        return res.redirect(config.featureToggles.enhancedProbationJourneyEnabled ? 'availability' : 'not-available')
+        return res.redirect('availability')
       }
     }
 
@@ -80,7 +79,7 @@ export default class CheckBookingHandler implements PageHandler {
         user,
       )
       if (!availabilityOk) {
-        return res.redirect(config.featureToggles.enhancedProbationJourneyEnabled ? 'availability' : 'not-available')
+        return res.redirect('availability')
       }
     }
 

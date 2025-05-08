@@ -1,7 +1,6 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import config from '../../../../config'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { AmendRoomScheduleRequest } from '../../../../@types/bookAVideoLinkApi/types'
@@ -36,9 +35,6 @@ const dpsLocationId = 'aaaa-bbbb-cccc-dddd'
 let app: Express
 
 beforeEach(() => {
-  // Feature toggled
-  config.featureToggles.adminLocationDecorationEnabled = true
-
   app = appWithAllRoutes({
     services: { prisonService, courtsService, probationTeamsService, adminService },
     userSupplier: () => user,

@@ -13,7 +13,6 @@ import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import config from '../../../../../config'
 import VideoLinkService from '../../../../../services/videoLinkService'
 
 jest.mock('../../../../../services/auditService')
@@ -31,8 +30,6 @@ const videoLinkService = new VideoLinkService(null, null) as jest.Mocked<VideoLi
 let app: Express
 
 const appSetup = (journeySession = {}) => {
-  config.featureToggles.enhancedProbationJourneyEnabled = true
-
   app = appWithAllRoutes({
     services: {
       auditService,

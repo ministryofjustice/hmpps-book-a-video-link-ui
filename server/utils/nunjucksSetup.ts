@@ -24,7 +24,6 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.feedbackUrl = config.feedbackUrl
   app.locals.reportAFaultUrl = config.reportAFaultUrl
-  app.locals.adminLocationDecorationEnabled = config.featureToggles.adminLocationDecorationEnabled
 
   app.use((req, res, next) => {
     res.locals.session = req.session
@@ -79,7 +78,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('TimePeriod', TimePeriod)
 
   // Feature toggles
-  njkEnv.addGlobal('enhancedProbationJourneyEnabled', config.featureToggles.enhancedProbationJourneyEnabled)
-  njkEnv.addGlobal('adminLocationDecorationEnabled', config.featureToggles.adminLocationDecorationEnabled)
   njkEnv.addGlobal('alteredCourtJourneyEnabled', config.featureToggles.alteredCourtJourneyEnabled)
 }

@@ -2,15 +2,18 @@ import Page, { PageElement } from '../page'
 
 export default class ChangeVideoLinkBookingPage extends Page {
   constructor() {
-    super('Change video link booking')
+    super('Change')
   }
 
-  selectRoomForMainHearing = (room: string) => this.getByLabel('Prison room for court hearing').select(room)
+  selectHearingType = (type: string) => this.getByLabel('Select the court hearing type').select(type)
 
-  selectRoomForPreHearing = (room: string) => this.getByLabel('Prison room for pre-court hearing briefing').select(room)
+  selectCvpKnown = (yesOrNo: string) =>
+    cy
+      .contains('legend', 'Do you know the link for this video link hearing?')
+      .parent()
+      .within(() => this.getByLabel(yesOrNo).click())
 
-  selectRoomForPostHearing = (room: string) =>
-    this.getByLabel('Prison room for post-court hearing briefing').select(room)
+  enterHearingLink = (link: string) => this.getByLabel('Court hearing link').type(link)
 
   continue = (): PageElement => this.getButton('Continue')
 }

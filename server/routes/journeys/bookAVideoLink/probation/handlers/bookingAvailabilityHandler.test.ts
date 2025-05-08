@@ -8,7 +8,6 @@ import { getTextById, getPageHeader, radioOptions, getPageAlert } from '../../..
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { AvailableLocationsResponse } from '../../../../../@types/bookAVideoLinkApi/types'
-import config from '../../../../../config'
 import ProbationBookingService from '../../../../../services/probationBookingService'
 
 jest.mock('../../../../../services/auditService')
@@ -20,8 +19,6 @@ const probationBookingService = new ProbationBookingService(null) as jest.Mocked
 let app: Express
 
 const appSetup = (journeySession = {}) => {
-  config.featureToggles.enhancedProbationJourneyEnabled = true
-
   app = appWithAllRoutes({
     services: {
       auditService,

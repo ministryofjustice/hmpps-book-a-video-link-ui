@@ -5,6 +5,29 @@ export default class CheckBookingPage extends Page {
     super('Check and confirm your booking')
   }
 
+  assertPrison = (prison: string) => this.assertSummaryListValue('booking-details', 'Prison', prison)
+
+  assertCourt = (court: string) => this.assertSummaryListValue('booking-details', 'Court', court)
+
+  assertDate = (date: string) => this.assertSummaryListValue('booking-details', 'Date', date)
+
+  assertHearingLink = (link: string) => this.assertSummaryListValue('booking-details', 'Court hearing link (CVP)', link)
+
+  assertHearingType = (hearingType: string) =>
+    this.assertSummaryListValue('booking-details', 'Hearing type', hearingType)
+
+  assertPreHearingTime = (hearingTime: string) =>
+    this.assertSummaryListValue('booking-details', 'Pre-court hearing time', hearingTime)
+
+  assertHearingTime = (hearingTime: string) =>
+    this.assertSummaryListValue('booking-details', 'Court hearing time', hearingTime)
+
+  assertHearingRoom = (hearingRoom: string) =>
+    this.assertSummaryListValue('booking-details', 'Court hearing room', hearingRoom)
+
+  assertPostHearingTime = (hearingTime: string) =>
+    this.assertSummaryListValue('booking-details', 'Post-court hearing time', hearingTime)
+
   bookVideoLink = (): PageElement => this.getButton('Book video link')
 
   updateBooking = (): PageElement => this.getButton('Update booking')

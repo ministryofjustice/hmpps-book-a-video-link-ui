@@ -117,7 +117,31 @@
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Hearing time"
+                            text: "Pre-court hearing time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
+                    {
+                        key: {
+                            text: "Pre-court hearing room"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
+                    {
+                        key: {
+                            text: "Pre-court hearing link (PVL)"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
+                    {
+                        key: {
+                            text: "Court hearing time"
                         },
                         value: {
                             text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
@@ -125,47 +149,15 @@
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
-                            text: "Meeting time"
-                        },
-                        value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
-                        }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Prison room"
+                            text: "Court hearing room"
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
                         }
-                    } if booking.bookingType == 'COURT',
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN'),
                     {
                         key: {
-                            text: "Meeting room"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
-                        }
-                    } if booking.bookingType == 'PROBATION',
-                    {
-                        key: {
-                            text: "Pre-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).endTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
-                    {
-                        key: {
-                            text: "Post-court hearing"
-                        },
-                        value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description + " - " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime + " to " + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
-                        }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
-                    {
-                        key: {
-                            text: "Court hearing link"
+                            text: "Court hearing link (CVP)"
                         },
                         value: {
                             text: booking.videoLinkUrl or "Not yet known"
@@ -180,6 +172,46 @@
                             ]
                         } if isAmendable
                     } if booking.bookingType == 'COURT',
+                    {
+                        key: {
+                            text: "Post-court hearing time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).endTime
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    {
+                        key: {
+                            text: "Post-court hearing room"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    {
+                        key: {
+                            text: "Post-court hearing link (PVL)"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
+                        }
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    {
+                        key: {
+                            text: "Meeting time"
+                        },
+                        value: {
+                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).endTime
+                        }
+                    } if booking.bookingType == 'PROBATION',
+                    {
+                        key: {
+                            text: "Meeting room"
+                        },
+                        value: {
+                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
+                        }
+                    } if booking.bookingType == 'PROBATION',
                     {
                         key: {
                             text: "Prison video link (PVL)"

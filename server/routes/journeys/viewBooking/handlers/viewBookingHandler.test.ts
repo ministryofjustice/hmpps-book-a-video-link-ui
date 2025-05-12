@@ -90,10 +90,15 @@ describe('GET', () => {
         const courtFields = [
           'Court',
           'Hearing type',
-          'Hearing time',
-          'Pre-court hearing',
-          'Post-court hearing',
-          'Court hearing link',
+          'Pre-court hearing time',
+          'Pre-court hearing room',
+          'Pre-court hearing link (PVL)',
+          'Court hearing time',
+          'Court hearing room',
+          'Court hearing link (CVP)',
+          'Post-court hearing time',
+          'Post-court hearing room',
+          'Post-court hearing link (PVL)',
         ]
 
         const probationFields = [

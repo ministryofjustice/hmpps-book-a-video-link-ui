@@ -49,7 +49,7 @@ afterEach(() => {
 describe('GET', () => {
   it('should download court csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Hearing Type,Court Hearing Link,Room Hearing Link\n12:45,13:15,HMP Moorland,John Doe,A1234AA,Appeal hearing,https://court.link.url,'
+      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n12:45,13:15,HMP Moorland,John Doe,A1234AA,Court hearing,Appeal hearing,https://court.link.url,'
 
     videoLinkService.getVideoLinkSchedule.mockResolvedValue([getCourtBooking()])
 

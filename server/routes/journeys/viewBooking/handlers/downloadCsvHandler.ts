@@ -51,10 +51,23 @@ export default class DownloadCsvHandler implements PageHandler {
       Prison: a.prisonName,
       'Prisoner Name': convertToTitleCase(`${a.prisonerName}`),
       'Prisoner Number': a.prisonerNumber,
+      'Appointment Type': this.courtAppointmentType(a.appointmentType),
       'Hearing Type': a.hearingTypeDescription,
       'Court Hearing Link': a.appointmentType === 'VLB_COURT_MAIN' && a.videoUrl ? a.videoUrl : '',
       'Room Hearing Link': a.appointmentType !== 'VLB_COURT_MAIN' && a.videoUrl ? a.videoUrl : '',
     }))
+  }
+
+  private courtAppointmentType(appointmentType: string) {
+    if (appointmentType === 'VLB_COURT_MAIN') {
+      return 'Court hearing'
+    }
+
+    if (appointmentType === 'VLB_COURT_PRE') {
+      return 'Pre-hearing'
+    }
+
+    return 'Post-hearing'
   }
 
   private probationTeam = (items: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]) => {

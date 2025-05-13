@@ -1,6 +1,8 @@
 import * as converter from 'json-2-csv'
 import { Request, Response } from 'express'
-import { startOfDay, isValid } from 'date-fns'
+import { startOfDay, isValid, parse } from 'date-fns'
+import _ from 'lodash'
+import { enGB } from 'date-fns/locale'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import VideoLinkService from '../../../../services/videoLinkService'
@@ -36,13 +38,33 @@ export default class DownloadCsvHandler implements PageHandler {
 
     const csv =
       type === BavlJourneyType.COURT
-        ? converter.json2csv(this.court(appointments))
+        ? converter.json2csv(this.court(this.sorted(appointments)))
         : converter.json2csv(this.probationTeam(appointments))
 
     res.header('Content-Type', 'text/csv')
     res.attachment(`VideoLinkBookings-${formatDate(date, 'yyyy-MM-dd')}-${agency.description.split(' ').join('_')}.csv`)
     res.send(csv)
   }
+
+  // Appointments need to first be grouped by booking ID and then sorted by (canonical) start time + prisoner name
+  private sorted(appointments: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]) {
+    // This groups the appointments by booking ID, sorts them by start time and keys them by start time and prisoner name
+    const groupedAppointments = _.chain(appointments)
+      .groupBy(item => item.videoBookingId)
+      .sortBy(groups => this.canonicalDateTime(groups[0].startTime))
+      .keyBy(a => this.canonicalDateTime(a[0].startTime) + a[0].prisonerName)
+      .value()
+
+    // This sorts the grouped appointments by their keys and then pulls them out in sorted bucket order. This ensures
+    // appointments with the same starting time are grouped and ordered correctly.
+    return _.keysIn(groupedAppointments)
+      .sort()
+      .map(canonicalKey => groupedAppointments[canonicalKey].flatMap(ga => ga))
+      .flatMap(a => a)
+  }
+
+  private canonicalDateTime = (time: string): string =>
+    (time ? parse(time, 'HH:mm', new Date(0), { locale: enGB }) : null).toISOString()
 
   private court = (items: (ScheduleItem & { prisonerName: string; prisonLocationDescription: string })[]) => {
     return items.map(a => ({

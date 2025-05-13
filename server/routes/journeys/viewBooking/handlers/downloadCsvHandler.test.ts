@@ -77,6 +77,59 @@ describe('GET', () => {
       })
   })
 
+  it('should download sorted court csv for today', () => {
+    const expectedCsv =
+      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '8:45,9:00,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:00,9:30,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:30,9:45,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '8:45,9:00,HMP Moorland,Jenny,P3,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:00,9:30,HMP Moorland,Jenny,P3,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:30,9:45,HMP Moorland,Jenny,P3,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '8:45,9:00,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:00,9:30,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:30,9:45,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '9:45,10:00,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '10:00,10:45,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,'
+
+    videoLinkService.getVideoLinkSchedule.mockResolvedValue([
+      getCourtBooking(1, '8:45', '9:00', 'john', 'P1'),
+      getCourtBooking(1, '9:00', '9:30', 'john', 'P1'),
+      getCourtBooking(1, '9:30', '9:45', 'john', 'P1'),
+      getCourtBooking(2, '8:45', '9:00', 'jane', 'P2'),
+      getCourtBooking(2, '9:00', '9:30', 'jane', 'P2'),
+      getCourtBooking(2, '9:30', '9:45', 'jane', 'P2'),
+      getCourtBooking(3, '8:45', '9:00', 'jenny', 'P3'),
+      getCourtBooking(3, '9:00', '9:30', 'jenny', 'P3'),
+      getCourtBooking(3, '9:30', '9:45', 'jenny', 'P3'),
+      getCourtBooking(4, '9:45', '10:00', 'jane', 'P2'),
+      getCourtBooking(4, '10:00', '10:45', 'jane', 'P2'),
+    ])
+
+    return request(app)
+      .get('/court/view-booking/download-csv')
+      .expect('Content-Type', /text\/csv; charset=utf-8/)
+      .expect(
+        'Content-Disposition',
+        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv"`,
+      )
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(res.text).toEqual(expectedCsv)
+
+        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenLastCalledWith(
+          'court',
+          'C1',
+          startOfDay(new Date()),
+          user,
+        )
+      })
+  })
+
   it('should download probation team csv for today', () => {
     const expectedCsv =
       'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n12:45,13:15,HMP Moorland,Jane Doe,A1234AA,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com'
@@ -108,9 +161,15 @@ describe('GET', () => {
   })
 })
 
-const getCourtBooking = (): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => ({
-  videoBookingId: 1,
-  prisonAppointmentId: 1,
+const getCourtBooking = (
+  bookingId: number = 1,
+  start: string = '12:45',
+  end: string = '13:15',
+  name: string = 'john doe',
+  prisNumber: string = 'A1234AA',
+): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => ({
+  videoBookingId: bookingId,
+  prisonAppointmentId: bookingId,
   bookingType: 'COURT',
   statusCode: 'ACTIVE',
   videoUrl: 'https://court.link.url',
@@ -122,18 +181,18 @@ const getCourtBooking = (): ScheduleItem & { prisonerName: string; prisonLocatio
   hearingTypeDescription: 'Appeal hearing',
   prisonCode: 'MDI',
   prisonName: 'HMP Moorland',
-  prisonerNumber: 'A1234AA',
+  prisonerNumber: prisNumber,
   appointmentType: 'VLB_COURT_MAIN',
   appointmentTypeDescription: 'Court - main hearing',
   prisonLocKey: 'MDI-VCC-1',
   prisonLocDesc: 'VCC-crown-conference-room-1',
   dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
   appointmentDate: '2024-10-03',
-  startTime: '12:45',
-  endTime: '13:15',
+  startTime: start,
+  endTime: end,
   createdTime: '2024-10-01 14:45',
   createdBy: 'creator@email.com',
-  prisonerName: 'john doe',
+  prisonerName: name,
   prisonLocationDescription: 'Location description',
 })
 

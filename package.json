@@ -179,7 +179,7 @@
     "wiremock": "^3.12.1"
   },
   "overrides": {
-    "undici": "^6.21.1",
+    "undici": "^6.21.3",
     "@babel/helpers": "^7.26.10"
   }
 }

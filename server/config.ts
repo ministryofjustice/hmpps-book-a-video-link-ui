@@ -143,5 +143,6 @@ export default {
   },
   featureToggles: {
     greyReleasePrisons: get('FEATURE_GREY_RELEASE_PRISONS', null),
+    masterPublicPrivateNotes: get('FEATURE_MASTER_PUBLIC_PRIVATE_NOTES', 'false') === 'true',
   },
 }

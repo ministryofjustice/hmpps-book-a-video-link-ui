@@ -62,6 +62,7 @@ generic-service:
       MAINTENANCE_END_DATETIME: "maintenance_end_datetime?"
     feature-toggles:
       FEATURE_GREY_RELEASE_PRISONS: "FEATURE_GREY_RELEASE_PRISONS?"
+      FEATURE_MASTER_PUBLIC_PRIVATE_NOTES: "FEATURE_MASTER_PUBLIC_PRIVATE_NOTES"
 
   allowlist:
     groups:

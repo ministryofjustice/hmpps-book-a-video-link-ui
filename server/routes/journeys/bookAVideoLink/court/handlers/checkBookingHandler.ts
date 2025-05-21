@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose } from 'class-transformer'
-import { IsOptional, MaxLength } from 'class-validator'
+import { IsOptional, MaxLength, ValidateIf } from 'class-validator'
 import { parseISO } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
@@ -10,9 +10,11 @@ import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import CourtBookingService from '../../../../../services/courtBookingService'
+import config from '../../../../../config'
 
 class Body {
   @Expose()
+  @ValidateIf(o => o.comments && !config.featureToggles.masterPublicPrivateNotes)
   @IsOptional()
   @MaxLength(400, { message: 'Comments must be $constraint1 characters or less' })
   comments: string
@@ -71,7 +73,7 @@ export default class CheckBookingHandler implements PageHandler {
 
     req.session.journey.bookACourtHearing = {
       ...req.session.journey.bookACourtHearing,
-      comments: body.comments,
+      comments: !config.featureToggles.masterPublicPrivateNotes ? body.comments : null,
     }
 
     if (mode !== 'request') {

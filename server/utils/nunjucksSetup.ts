@@ -76,4 +76,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   // Enums
   njkEnv.addGlobal('BavlJourneyType', BavlJourneyType)
   njkEnv.addGlobal('TimePeriod', TimePeriod)
+
+  // Feature toggles
+  njkEnv.addGlobal('masterPublicPrivateNotes', config.featureToggles.masterPublicPrivateNotes)
 }

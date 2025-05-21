@@ -15,6 +15,7 @@ import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Court, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtsService')
@@ -41,6 +42,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
+  config.featureToggles.masterPublicPrivateNotes = false
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
@@ -57,6 +59,7 @@ beforeEach(() => {
     prisonerNumber: 'A1234AA',
   } as Prisoner)
 
+  // Used in amend routes only - initialiseJourney
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
     bookingType: 'COURT',
     prisonAppointments: [
@@ -72,9 +75,11 @@ beforeEach(() => {
     courtCode: 'COURT_CODE',
     courtHearingType: 'APPEAL',
     videoLinkUrl: 'http://example.com',
+    notesForStaff: 'staff notes',
     comments: 'test',
   } as VideoLinkBooking)
 
+  // Used in amend routes only - initialiseJourney
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
@@ -105,6 +110,36 @@ describe('Booking details handler', () => {
 
           expect(existsByLabel($, 'Select the court the hearing is for')).toBe(true)
           expect(existsByLabel($, 'Select the court hearing type')).toBe(true)
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(false)
+        })
+    })
+
+    it('should render the correct view page - with notes for staff (feature toggled)', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          // const html = $.html().valueOf()
+
+          expect(heading).toEqual("Select a date and time for Joe Smith's court hearings")
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(referenceDataService.getCourtHearingTypes).toHaveBeenCalledWith(user)
+          expect(courtsService.getUserPreferences).toHaveBeenCalledWith(user)
+
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(true)
+          expect(existsByLabel($, 'Select the court hearing type')).toBe(true)
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
         })
     })
 
@@ -144,6 +179,8 @@ describe('Booking details handler', () => {
 
           expect(heading).toEqual("Change Joe Smith's video link booking")
           expect(existsByLabel($, 'Select the court the hearing is for')).toBe(false)
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(false)
+
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -168,6 +205,55 @@ describe('Booking details handler', () => {
             },
             cvpRequired: true,
             videoLinkUrl: 'http://example.com',
+            notesForStaff: 'staff notes',
+            comments: 'test',
+          }),
+        )
+
+      expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+      expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+    })
+
+    it('should populate the session with existing booking - and display notes for staff', async () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      await request(app)
+        .get(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual("Change Joe Smith's video link booking")
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(false)
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookACourtHearing', {
+            courtCode: 'COURT_CODE',
+            bookingId: 1,
+            date: startOfTomorrow().toISOString(),
+            startTime: '1970-01-01T08:00:00.000Z',
+            endTime: '1970-01-01T09:00:00.000Z',
+            hearingTypeCode: 'APPEAL',
+            locationCode: 'LOCATION_CODE',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
+              prisonId: 'MDI',
+            },
+            cvpRequired: true,
+            videoLinkUrl: 'http://example.com',
+            notesForStaff: 'staff notes',
             comments: 'test',
           }),
         )
@@ -286,6 +372,27 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should validate staff notes with feature toggle on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({
+          ...validForm,
+          notesForStaff: 'a'.repeat(401),
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'notesForStaff',
+              href: '#notesForStaff',
+              text: 'Notes for staff must be 400 characters or less',
+            },
+          ])
+        })
+    })
+
     it('should validate that the date is on or after today', () => {
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
@@ -372,6 +479,44 @@ describe('Booking details handler', () => {
             startTime: '1970-01-01T15:30:00.000Z',
             cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
+          }),
+        )
+    })
+
+    it('should save the posted fields in session - feature toggled staff notes', async () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({ ...validForm, preRequired: 'yes', postRequired: 'yes', notesForStaff: 'staff notes' })
+        .expect(302)
+        .expect('location', 'video-link-booking/select-rooms')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookACourtHearing', {
+            courtCode: 'CODE',
+            date: startOfTomorrow().toISOString(),
+            endTime: '1970-01-01T16:30:00.000Z',
+            hearingTypeCode: 'APPEAL',
+            postHearingEndTime: '1970-01-01T16:45:00.000Z',
+            postHearingStartTime: '1970-01-01T16:30:00.000Z',
+            preHearingEndTime: '1970-01-01T15:30:00.000Z',
+            preHearingStartTime: '1970-01-01T15:15:00.000Z',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonId: 'MDI',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
+            },
+            startTime: '1970-01-01T15:30:00.000Z',
+            cvpRequired: true,
+            videoLinkUrl: 'https://www.google.co.uk',
+            notesForStaff: 'staff notes',
           }),
         )
     })

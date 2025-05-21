@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'
 import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
@@ -12,6 +12,7 @@ import IsValidDate from '../../../../validators/isValidDate'
 import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
+import config from '../../../../../config'
 
 class Body {
   @Expose()
@@ -69,6 +70,12 @@ class Body {
   @Expose()
   @IsEnum(YesNo, { message: 'Select if a post-court hearing should be added' })
   postRequired: YesNo
+
+  @Expose()
+  @ValidateIf(o => o.notesForStaff && config.featureToggles.masterPublicPrivateNotes)
+  @IsOptional()
+  @MaxLength(400, { message: 'Notes for staff must be $constraint1 characters or less' })
+  notesForStaff: string
 }
 
 export default class BookingDetailsHandler implements PageHandler {
@@ -123,6 +130,7 @@ export default class BookingDetailsHandler implements PageHandler {
       endTime,
       preRequired,
       postRequired,
+      notesForStaff,
     } = req.body
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const prisoner =
@@ -149,6 +157,7 @@ export default class BookingDetailsHandler implements PageHandler {
       postHearingEndTime: postRequired === YesNo.YES ? addMinutes(endTime, 15).toISOString() : undefined,
       cvpRequired: cvpRequired === YesNo.YES,
       videoLinkUrl,
+      notesForStaff,
     }
 
     return mode === 'request'

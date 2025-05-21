@@ -48,6 +48,7 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       preLocationCode: preAppointment?.prisonLocKey,
       postLocationCode: postAppointment?.prisonLocKey,
       comments: booking.comments,
+      notesForStaff: booking.notesForStaff,
       cvpRequired: !!booking.videoLinkUrl,
       videoLinkUrl: booking.videoLinkUrl,
     }

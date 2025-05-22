@@ -33,5 +33,8 @@ export default class NewBookingPage extends Page {
       .parent()
       .within(() => this.getByLabel(yesOrNo).click())
 
+  enterNotesForStaff = (notesForStaff: string) =>
+    this.getByLabel('Notes for prison staff (optional)').type(notesForStaff)
+
   continue = (): PageElement => this.getButton('Continue')
 }

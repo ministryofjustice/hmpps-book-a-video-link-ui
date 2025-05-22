@@ -19,6 +19,7 @@ import nottinghamLocationAvailability from '../mockApis/fixtures/bookAVideoLinkA
 import SelectRoomsPage from '../pages/bookAVideoLink/selectRoomsPage'
 import NoRoomsAvailablePage from '../pages/bookAVideoLink/noRoomsAvailablePage'
 import nottinghamSelectRoomsByDateTimeEmpty from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamSelectRoomsByDateTimeEmpty.json'
+import NotesForStaffPage from '../pages/bookAVideoLink/notesForStaff'
 
 context('Amend a booking', () => {
   beforeEach(() => {
@@ -44,7 +45,7 @@ context('Amend a booking', () => {
       cy.signIn()
     })
 
-    it('Can add comments to a video link booking for a court', () => {
+    it('Can add notes for staff to a video link booking for a court', () => {
       const home = Page.verifyOnPage(HomePage)
       home.viewAndChangeVideoLinks().click()
 
@@ -56,11 +57,11 @@ context('Amend a booking', () => {
       searchBookingsPage.viewOrEdit().click()
 
       const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
-      viewBookingPage.addComments().click()
+      viewBookingPage.changeNotes().click()
 
-      const addCommentsPage = Page.verifyOnPage(AddCommentsPage)
-      addCommentsPage.enterComments('Test comment')
-      addCommentsPage.continue().click()
+      const notesForStaffPage = Page.verifyOnPage(NotesForStaffPage)
+      notesForStaffPage.enterNotesForStaff('Test notes')
+      notesForStaffPage.continue().click()
 
       Page.verifyOnPage(UpdateConfirmationPage)
     })

@@ -71,9 +71,18 @@ export default class CheckBookingHandler implements PageHandler {
     const { body } = req
     const { mode } = req.params
 
-    req.session.journey.bookACourtHearing = {
-      ...req.session.journey.bookACourtHearing,
-      comments: !config.featureToggles.masterPublicPrivateNotes ? body.comments : null,
+    // There are two forms which submit to here - create/amend booking and update comments/staff notes
+    // They will contain different body values depending on the feature toggle for mastering notes for staff.
+    if (config.featureToggles.masterPublicPrivateNotes) {
+      req.session.journey.bookACourtHearing = {
+        ...req.session.journey.bookACourtHearing,
+        notesForStaff: body?.notesForStaff ? body.notesForStaff : req.session.journey.bookACourtHearing.notesForStaff,
+      }
+    } else {
+      req.session.journey.bookACourtHearing = {
+        ...req.session.journey.bookACourtHearing,
+        comments: body?.comments ? body.comments : req.session.journey.bookACourtHearing.comments,
+      }
     }
 
     if (mode !== 'request') {

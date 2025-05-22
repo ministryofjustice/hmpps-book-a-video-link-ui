@@ -41,7 +41,7 @@ context('Create a booking', () => {
       cy.signIn()
     })
 
-    it('Can create a video link booking for a court', () => {
+    it('Create a court booking - with public/private comments switched on', () => {
       const home = Page.verifyOnPage(HomePage)
       home.bookVideoLink().click()
 
@@ -64,6 +64,7 @@ context('Create a booking', () => {
       newBookingPage.selectEndTime(16, 0)
       newBookingPage.selectPreHearingRequired('Yes')
       newBookingPage.selectPostHearingRequired('Yes')
+      newBookingPage.enterNotesForStaff('staff notes')
       newBookingPage.continue().click()
 
       // Select from available rooms page - the times will all reflect the main hearing time
@@ -84,10 +85,12 @@ context('Create a booking', () => {
       checkBookingPage.assertHearingTime('15:00 to 16:00')
       checkBookingPage.assertPostHearingTime('16:00 to 16:15')
       checkBookingPage.assertHearingRoom('Closed Visits Cubicle 6 - Crown Ct')
+      checkBookingPage.assertNotesForStaff('staff notes')
       checkBookingPage.bookVideoLink().click()
 
       // Confirmation of booking page
-      Page.verifyOnPage(ConfirmationPage)
+      const confirmationPage = Page.verifyOnPage(ConfirmationPage)
+      confirmationPage.assertNotesForStaff('staff notes')
     })
 
     it('Can handle no rooms available for a court booking', () => {

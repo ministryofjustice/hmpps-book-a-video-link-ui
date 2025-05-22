@@ -225,20 +225,21 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should save no comment field when staff note feature is toggled on', () => {
+    it('should not save any comments when staff notes feature is toggled on', () => {
       config.featureToggles.masterPublicPrivateNotes = true
       appSetup({ bookACourtHearing: { type: 'COURT' } })
       courtBookingService.createVideoLinkBooking.mockResolvedValue(1)
 
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ comments: 'should be cleared' })
+        .send({ comments: 'comment', notesForStaff: 'notes' })
         .expect(302)
         .expect('location', 'confirmation/1')
         .expect(() => {
           expect(courtBookingService.createVideoLinkBooking).toHaveBeenCalledWith(
             {
-              comments: null,
+              comments: undefined,
+              notesForStaff: 'notes',
               type: 'COURT',
             },
             user,
@@ -246,7 +247,7 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should redirect to select alternatives if the selected room is not available', () => {
+    it('should redirect to not available if the selected room is not available', () => {
       courtBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
@@ -275,6 +276,32 @@ describe('Check Booking handler', () => {
         .expect(() => {
           expect(courtBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
             { ...bookACourtHearing, comments: 'comment' },
+            user,
+          )
+        })
+    })
+
+    it('should amend the posted notes for staff when toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+
+      const bookACourtHearing = {
+        bookingId: 1,
+        date: '2024-06-27',
+        startTime: '15:00',
+      }
+
+      appSetup({
+        bookACourtHearing,
+      })
+
+      return request(app)
+        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .expect(() => {
+          expect(courtBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
+            { ...bookACourtHearing, notesForStaff: 'notes' },
             user,
           )
         })

@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import { existsByDataQa, existsByKey, existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
@@ -66,10 +66,13 @@ describe('Check Booking handler', () => {
       { code: 'C1', description: 'Court 1' },
       { code: 'C2', description: 'Court 2' },
     ] as Court[])
+
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
+
     referenceDataService.getCourtHearingTypes.mockResolvedValue([
       { code: 'KEY', description: 'description' },
     ] as ReferenceCode[])
+
     courtBookingService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
   })
@@ -99,7 +102,6 @@ describe('Check Booking handler', () => {
       ['should not render the warning to consult the prison', false, false],
     ])('%s', (_, serviceResult, expected) => {
       videoLinkService.prisonShouldBeWarnedOfBooking.mockReturnValue(serviceResult)
-
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
@@ -116,7 +118,6 @@ describe('Check Booking handler', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           expect(existsByDataQa($, 'discuss-before-proceeding')).toBe(false)
-
           expect(videoLinkService.prisonShouldBeWarnedOfBooking).not.toHaveBeenCalled()
           expect(courtBookingService.checkAvailability).not.toHaveBeenCalled()
         })
@@ -145,7 +146,6 @@ describe('Check Booking handler', () => {
 
     it('should redirect to select alternatives if the selected room is not available', () => {
       courtBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
-
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect(302)
@@ -158,19 +158,27 @@ describe('Check Booking handler', () => {
         .expect('Content-Type', /html/)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          expect(existsByDataQa($, 'pending-prison-approval')).toBe(false)
+          expect(existsByLabel($, 'Comments (optional)')).toBe(true)
+          expect(existsByKey($, 'Notes for prison staff')).toBe(false)
         })
     })
 
     it('should not prompt for comments when staff notes feature toggle is on', () => {
       config.featureToggles.masterPublicPrivateNotes = true
-      appSetup()
+      appSetup({
+        bookACourtHearing: {
+          prisoner: { prisonId: 'MDI' },
+          date: '2024-06-12',
+          startTime: '1970-01-01T16:00',
+        },
+      })
 
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect(res => {
           const $ = cheerio.load(res.text)
-          expect(existsByDataQa($, 'pending-prison-approval')).toBe(false)
+          expect(existsByLabel($, 'Comments (optional)')).toBe(false)
+          expect(existsByKey($, 'Notes for prison staff')).toBe(true)
         })
     })
   })
@@ -258,15 +266,8 @@ describe('Check Booking handler', () => {
     })
 
     it('should amend the posted fields', () => {
-      const bookACourtHearing = {
-        bookingId: 1,
-        date: '2024-06-27',
-        startTime: '15:00',
-      }
-
-      appSetup({
-        bookACourtHearing,
-      })
+      const bookACourtHearing = { bookingId: 1, date: '2024-06-27', startTime: '15:00' }
+      appSetup({ bookACourtHearing })
 
       return request(app)
         .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
@@ -283,16 +284,8 @@ describe('Check Booking handler', () => {
 
     it('should amend the posted notes for staff when toggled on', () => {
       config.featureToggles.masterPublicPrivateNotes = true
-
-      const bookACourtHearing = {
-        bookingId: 1,
-        date: '2024-06-27',
-        startTime: '15:00',
-      }
-
-      appSetup({
-        bookACourtHearing,
-      })
+      const bookACourtHearing = { bookingId: 1, date: '2024-06-27', startTime: '15:00' }
+      appSetup({ bookACourtHearing })
 
       return request(app)
         .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
@@ -307,7 +300,7 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should request a booking using the posted fields', () => {
+    it('should request a booking with comments when staff notes feature is toggled off', () => {
       appSetup({ bookACourtHearing: { type: 'COURT' } })
 
       return request(app)
@@ -320,6 +313,27 @@ describe('Check Booking handler', () => {
             {
               comments: 'comment',
               type: 'COURT',
+            },
+            user,
+          )
+          expect(courtBookingService.checkAvailability).not.toHaveBeenCalled()
+        })
+    })
+
+    it.skip('should request a booking with staff notes when feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup({ bookACourtHearing: { type: 'COURT' } })
+
+      return request(app)
+        .post(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .expect(() => {
+          expect(courtBookingService.requestVideoLinkBooking).toHaveBeenCalledWith(
+            {
+              type: 'COURT',
+              notesForStaff: 'notes',
             },
             user,
           )

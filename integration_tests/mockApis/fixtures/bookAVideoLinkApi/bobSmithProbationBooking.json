@@ -25,6 +25,7 @@
   "probationMeetingType": "RR",
   "probationMeetingTypeDescription": "Recall report",
   "comments": null,
+  "notesForStaff": "staff notes",
   "videoLinkUrl": null,
   "createdByPrison": false,
   "createdBy": "testuser@justice.gov.uk",

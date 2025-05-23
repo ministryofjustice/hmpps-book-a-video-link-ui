@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose } from 'class-transformer'
-import { IsOptional, MaxLength } from 'class-validator'
+import { IsOptional, MaxLength, ValidateIf } from 'class-validator'
 import { parseISO } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
@@ -10,9 +10,11 @@ import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ProbationBookingService from '../../../../../services/probationBookingService'
+import config from '../../../../../config'
 
 class Body {
   @Expose()
+  @ValidateIf(o => o.comments && !config.featureToggles.masterPublicPrivateNotes)
   @IsOptional()
   @MaxLength(400, { message: 'Comments must be $constraint1 characters or less' })
   comments: string
@@ -68,9 +70,20 @@ export default class CheckBookingHandler implements PageHandler {
     const { body } = req
     const { mode } = req.params
 
-    req.session.journey.bookAProbationMeeting = {
-      ...req.session.journey.bookAProbationMeeting,
-      comments: body.comments,
+    // There are two forms which submit to here - create/amend booking and update comments/staff notes
+    // They will contain different body values depending on the feature toggle for mastering notes for staff.
+    if (config.featureToggles.masterPublicPrivateNotes) {
+      req.session.journey.bookAProbationMeeting = {
+        ...req.session.journey.bookAProbationMeeting,
+        notesForStaff: body?.notesForStaff
+          ? body.notesForStaff
+          : req.session.journey.bookAProbationMeeting.notesForStaff,
+      }
+    } else {
+      req.session.journey.bookAProbationMeeting = {
+        ...req.session.journey.bookAProbationMeeting,
+        comments: body?.comments ? body.comments : req.session.journey.bookAProbationMeeting.comments,
+      }
     }
 
     if (mode !== 'request') {

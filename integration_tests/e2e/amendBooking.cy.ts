@@ -7,7 +7,6 @@ import courtBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/courtBoo
 import probationBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/probationBookingsForDay.json'
 import SearchBookingsPage from '../pages/bookAVideoLink/searchBookings'
 import ViewBookingPage from '../pages/bookAVideoLink/viewBooking'
-import AddCommentsPage from '../pages/bookAVideoLink/addComments'
 import UpdateConfirmationPage from '../pages/bookAVideoLink/updateConfirmation'
 import CheckBookingPage from '../pages/bookAVideoLink/checkBooking'
 import ChangeVideoLinkBookingPage from '../pages/bookAVideoLink/changeVideoLinkBooking'
@@ -154,7 +153,7 @@ context('Amend a booking', () => {
       cy.signIn()
     })
 
-    it('Can add comments to a video link booking for a probation team', () => {
+    it('Can add notes to a video link booking for a probation team', () => {
       const home = Page.verifyOnPage(HomePage)
       home.viewAndChangeVideoLinks().click()
 
@@ -163,6 +162,7 @@ context('Amend a booking', () => {
         date: '2050-01-01',
         response: probationBookingsForDay,
       })
+
       const searchBookingsPage = Page.verifyOnPage(SearchBookingsPage)
       searchBookingsPage.selectDate(new Date(2050, 0, 1))
       searchBookingsPage.selectProbationTeam('Blackpool MC (PPOC)')
@@ -170,11 +170,11 @@ context('Amend a booking', () => {
       searchBookingsPage.viewOrEdit().click()
 
       const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
-      viewBookingPage.addComments().click()
+      viewBookingPage.changeNotes().click()
 
-      const addCommentsPage = Page.verifyOnPage(AddCommentsPage)
-      addCommentsPage.enterComments('Test comment')
-      addCommentsPage.continue().click()
+      const notesForStaffPage = Page.verifyOnPage(NotesForStaffPage)
+      notesForStaffPage.enterNotesForStaff('Test notes')
+      notesForStaffPage.continue().click()
 
       Page.verifyOnPage(UpdateConfirmationPage)
     })
@@ -188,6 +188,7 @@ context('Amend a booking', () => {
         date: '2050-01-01',
         response: probationBookingsForDay,
       })
+
       const searchBookingsPage = Page.verifyOnPage(SearchBookingsPage)
       searchBookingsPage.selectDate(new Date(2050, 0, 1))
       searchBookingsPage.selectProbationTeam('Blackpool MC (PPOC)')

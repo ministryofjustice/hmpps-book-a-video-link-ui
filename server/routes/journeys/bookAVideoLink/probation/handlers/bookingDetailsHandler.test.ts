@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { getPageHeader } from '../../../../testutils/cheerio'
+import { existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonerService from '../../../../../services/prisonerService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
@@ -14,6 +14,7 @@ import { ProbationTeam, VideoLinkBooking } from '../../../../../@types/bookAVide
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import VideoLinkService from '../../../../../services/videoLinkService'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/probationTeamsService')
@@ -44,6 +45,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
+  config.featureToggles.masterPublicPrivateNotes = false
   appSetup()
 
   probationTeamsService.getUserPreferences.mockResolvedValue([
@@ -76,8 +78,10 @@ beforeEach(() => {
     probationTeamCode: 'PROBATION_CODE',
     probationMeetingType: 'PSR',
     comments: 'test',
+    notesForStaff: 'staff notes',
   } as VideoLinkBooking)
 
+  // Used in amend routes only - initialiseJourney
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
 })
 
@@ -87,7 +91,7 @@ afterEach(() => {
 
 describe('Booking details handler', () => {
   describe('GET', () => {
-    it('should render the correct view page', () => {
+    it('should render the correct view - with staff notes toggled off', () => {
       return request(app)
         .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect('Content-Type', /html/)
@@ -96,6 +100,33 @@ describe('Booking details handler', () => {
           const heading = getPageHeader($)
 
           expect(heading).toEqual('Enter probation video link booking details for Joe Smith')
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(false)
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+        })
+    })
+
+    it('should render the correct view - with staff notes toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Enter probation video link booking details for Joe Smith')
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
+
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -268,6 +299,27 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should validate staff notes if feature toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({
+          ...validForm,
+          notesForStaff: 'a'.repeat(401),
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'notesForStaff',
+              href: '#notesForStaff',
+              text: 'Notes for staff must be 400 characters or less',
+            },
+          ])
+        })
+    })
+
     it('should validate that the date is on or after today', () => {
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
@@ -322,7 +374,7 @@ describe('Booking details handler', () => {
         })
     })
 
-    it('should save the posted fields in session', () => {
+    it('should save the posted fields in session - staff notes feature toggled off', () => {
       return request(app)
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
@@ -354,6 +406,47 @@ describe('Booking details handler', () => {
             },
             duration: 120,
             timePeriods: ['AM'],
+          }),
+        )
+    })
+
+    it('should save the posted fields in session - staff notes feature toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({
+          ...validForm,
+          notesForStaff: 'notes',
+        })
+        .expect(302)
+        .expect('location', 'video-link-booking/availability')
+        .expect(() => {
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+        })
+        .then(() =>
+          expectJourneySession(app, 'bookAProbationMeeting', {
+            probationTeamCode: 'CODE',
+            date: startOfTomorrow().toISOString(),
+            meetingTypeCode: 'PSR',
+            prisoner: {
+              firstName: 'Joe',
+              lastName: 'Smith',
+              dateOfBirth: '1970-01-01',
+              prisonId: 'MDI',
+              prisonName: 'Moorland',
+              prisonerNumber: 'A1234AA',
+            },
+            officerDetailsNotKnown: false,
+            officer: {
+              fullName: 'John Bing',
+              email: 'jbing@gmail.com',
+              telephone: '07892 398108',
+            },
+            duration: 120,
+            timePeriods: ['AM'],
+            notesForStaff: 'notes',
           }),
         )
     })

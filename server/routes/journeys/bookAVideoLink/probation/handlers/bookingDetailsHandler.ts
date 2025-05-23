@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { ArrayNotEmpty, Equals, IsEmail, IsNotEmpty, IsOptional, ValidateIf } from 'class-validator'
+import { ArrayNotEmpty, Equals, IsEmail, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'
 import { isValid, startOfToday } from 'date-fns'
 import { parsePhoneNumberWithError } from 'libphonenumber-js'
 import { Page } from '../../../../../services/auditService'
@@ -13,6 +13,7 @@ import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import IsValidUkPhoneNumber from '../../../../validators/isValidUkPhoneNumber'
+import config from '../../../../../config'
 
 class Body {
   @Expose()
@@ -91,6 +92,12 @@ class Body {
   @IsValidDate({ message: 'Enter a valid end time' })
   @IsNotEmpty({ message: 'Enter an end time' })
   endTime: Date
+
+  @Expose()
+  @ValidateIf(o => o.notesForStaff && config.featureToggles.masterPublicPrivateNotes)
+  @IsOptional()
+  @MaxLength(400, { message: 'Notes for staff must be $constraint1 characters or less' })
+  notesForStaff: string
 }
 
 export default class BookingDetailsHandler implements PageHandler {
@@ -148,6 +155,7 @@ export default class BookingDetailsHandler implements PageHandler {
       timePeriods,
       startTime,
       endTime,
+      notesForStaff,
     } = req.body
 
     const prisoner =
@@ -176,6 +184,7 @@ export default class BookingDetailsHandler implements PageHandler {
           },
       meetingTypeCode,
       date: date.toISOString(),
+      notesForStaff,
     }
 
     if (mode === 'request') {

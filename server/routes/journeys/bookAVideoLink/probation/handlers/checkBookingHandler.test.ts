@@ -342,14 +342,14 @@ describe('Check Booking handler', () => {
 
       return request(app)
         .post(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
-        .send({ staffNotes: 'notes' })
+        .send({ notesForStaff: 'notes' })
         .expect(302)
         .expect('location', 'confirmation')
         .expect(() => {
           expect(probationBookingService.requestVideoLinkBooking).toHaveBeenCalledWith(
             {
               type: 'PROBATION',
-              staffNotes: 'notes',
+              notesForStaff: 'notes',
             },
             user,
           )

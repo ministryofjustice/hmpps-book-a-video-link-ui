@@ -112,6 +112,7 @@ describe('Probation booking service', () => {
       probationTeamCode: 'PROBATION_TEAM',
       meetingTypeCode: 'PSR',
       comments: 'comments',
+      notesForStaff: 'staff notes',
     } as BookAProbationMeetingJourney
 
     it('Posts a request to create a probation meeting booking', async () => {
@@ -142,6 +143,7 @@ describe('Probation booking service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
+        notesForStaff: 'staff notes',
       }
 
       const result = await probationBookingService.createVideoLinkBooking(journey, user)
@@ -173,6 +175,7 @@ describe('Probation booking service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
+        notesForStaff: 'staff notes',
       }
 
       const result = await probationBookingService.createVideoLinkBooking({ ...journey, officer: undefined }, user)
@@ -204,6 +207,7 @@ describe('Probation booking service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         meetingTypeCode: 'PSR',
         comments: 'comments',
+        notesForStaff: 'staff notes',
       }
 
       const expectedBody = {
@@ -233,6 +237,7 @@ describe('Probation booking service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
+        notesForStaff: 'staff notes',
       }
 
       await probationBookingService.requestVideoLinkBooking(journey, user)
@@ -262,6 +267,7 @@ describe('Probation booking service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         meetingTypeCode: 'PSR',
         comments: 'comments',
+        notesForStaff: 'staff notes',
       } as BookAProbationMeetingJourney
 
       const expectedBody = {
@@ -289,6 +295,7 @@ describe('Probation booking service', () => {
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
         comments: 'comments',
+        notesForStaff: 'staff notes',
       }
 
       await probationBookingService.amendVideoLinkBooking(journey, user)

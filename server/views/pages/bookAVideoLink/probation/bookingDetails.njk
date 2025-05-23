@@ -7,6 +7,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
 {% set mode = session.req.params.mode %}
 {% set pageTitle = ("Change" if mode == 'amend' else "Enter") + ' probation video link booking details' %}
@@ -251,6 +252,25 @@
                         ],
                         errorMessage: validationErrors | findError("timePeriods"),
                         classes: "govuk-!-width-one-third"
+                    }) }}
+                {% endif %}
+
+                {# Optional notes for staff - feature switched #}
+                {% if masterPublicPrivateNotes %}
+                    {{ govukCharacterCount({
+                        name: "notesForStaff",
+                        id: "notesForStaff",
+                        maxlength: 400,
+                        label: {
+                            text: "Notes for prison staff (optional)",
+                            classes: 'govuk-fieldset__legend--s'
+                        },
+                        hint: { text: "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details." },
+                        formGroup: {
+                            classes: 'govuk-!-width-two-thirds'
+                        },
+                        errorMessage: validationErrors | findError('notesForStaff'),
+                        value: formResponses.notesForStaff or session.journey.bookAProbationMeeting.notesForStaff
                     }) }}
                 {% endif %}
 

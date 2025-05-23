@@ -171,6 +171,7 @@ context('Create a booking', () => {
       bookingDetailsPage.selectDate(new Date(2050, 0, 1))
       bookingDetailsPage.selectDuration('1 hour')
       bookingDetailsPage.selectTimePeriods(['Morning', 'Afternoon'])
+      bookingDetailsPage.enterNotesForStaff('staff notes')
       bookingDetailsPage.continue().click()
 
       // Location choices page
@@ -183,7 +184,8 @@ context('Create a booking', () => {
       checkBookingPage.bookVideoLink().click()
 
       // Confirmation of booking page
-      Page.verifyOnPage(ConfirmationPage)
+      const confirmationPage = Page.verifyOnPage(ConfirmationPage)
+      confirmationPage.assertNotesForStaff('staff notes')
     })
   })
 })

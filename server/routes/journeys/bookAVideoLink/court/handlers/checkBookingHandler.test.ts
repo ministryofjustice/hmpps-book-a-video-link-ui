@@ -7,10 +7,11 @@ import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import { AvailabilityResponse, Court, Location, ReferenceCode } from '../../../../../@types/bookAVideoLinkApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import CourtBookingService from '../../../../../services/courtBookingService'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtBookingService')
@@ -44,6 +45,8 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
+  config.featureToggles.masterPublicPrivateNotes = false
+
   appSetup({
     bookACourtHearing: {
       prisoner: { prisonId: 'MDI' },
@@ -148,10 +151,32 @@ describe('Check Booking handler', () => {
         .expect(302)
         .expect('location', 'not-available')
     })
+
+    it('should prompt for comments when staff notes feature toggle is off', () => {
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(existsByDataQa($, 'pending-prison-approval')).toBe(false)
+        })
+    })
+
+    it('should not prompt for comments when staff notes feature toggle is on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup()
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          expect(existsByDataQa($, 'pending-prison-approval')).toBe(false)
+        })
+    })
   })
 
   describe('POST', () => {
-    it('should validate the comment being too long', () => {
+    it('should validate the comment length when staff note feature is toggled off', () => {
       appSetup({ bookACourtHearing: { type: 'COURT' } })
 
       return request(app)
@@ -168,9 +193,20 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should save the posted fields', () => {
+    it('should not validate comments when staff note feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
       appSetup({ bookACourtHearing: { type: 'COURT' } })
 
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ comments: 'a'.repeat(401) })
+        .expect(() => {
+          expectNoErrorMessages()
+        })
+    })
+
+    it('should save the posted fields when staff note feature is toggled off', () => {
+      appSetup({ bookACourtHearing: { type: 'COURT' } })
       courtBookingService.createVideoLinkBooking.mockResolvedValue(1)
 
       return request(app)
@@ -189,7 +225,29 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should redirect to select alternatives if the selected room is not available', () => {
+    it('should not save any comments when staff notes feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup({ bookACourtHearing: { type: 'COURT' } })
+      courtBookingService.createVideoLinkBooking.mockResolvedValue(1)
+
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ comments: 'comment', notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation/1')
+        .expect(() => {
+          expect(courtBookingService.createVideoLinkBooking).toHaveBeenCalledWith(
+            {
+              comments: undefined,
+              notesForStaff: 'notes',
+              type: 'COURT',
+            },
+            user,
+          )
+        })
+    })
+
+    it('should redirect to not available if the selected room is not available', () => {
       courtBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
@@ -218,6 +276,32 @@ describe('Check Booking handler', () => {
         .expect(() => {
           expect(courtBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
             { ...bookACourtHearing, comments: 'comment' },
+            user,
+          )
+        })
+    })
+
+    it('should amend the posted notes for staff when toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+
+      const bookACourtHearing = {
+        bookingId: 1,
+        date: '2024-06-27',
+        startTime: '15:00',
+      }
+
+      appSetup({
+        bookACourtHearing,
+      })
+
+      return request(app)
+        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .expect(() => {
+          expect(courtBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
+            { ...bookACourtHearing, notesForStaff: 'notes' },
             user,
           )
         })

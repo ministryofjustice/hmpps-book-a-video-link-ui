@@ -129,7 +129,15 @@
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
-                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')
+                    } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
+                    {
+                        key: {
+                            text: "Notes for prison staff"
+                        },
+                        value: {
+                            text: booking.notesForStaff or "None entered"
+                        }
+                    } if masterPublicPrivateNotes
                 ],
                 attributes: { 'data-qa': 'confirmation-details' }
             }) }}

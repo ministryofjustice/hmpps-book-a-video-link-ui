@@ -7,6 +7,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
 {% set mode = session.req.params.mode %}
 {% set prisonerName = ((prisoner.firstName + ' ' + prisoner.lastName) | convertToTitleCase) %}
@@ -245,10 +246,30 @@
                     ]
                 }) }}
 
+                {# Optional notes for staff - feature switched #}
+                {% if masterPublicPrivateNotes %}
+                    {{ govukCharacterCount({
+                        name: "notesForStaff",
+                        id: "notesForStaff",
+                        maxlength: 400,
+                        label: {
+                            text: "Notes for prison staff (optional)",
+                            classes: 'govuk-fieldset__legend--s'
+                        },
+                        hint: { text: "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details." },
+                        formGroup: {
+                            classes: 'govuk-!-width-two-thirds'
+                        },
+                        errorMessage: validationErrors | findError('notesForStaff'),
+                        value: formResponses.notesForStaff or session.journey.bookACourtHearing.notesForStaff
+                    }) }}
+                {% endif %}
+
                 {{ govukButton({
                     text: "Continue",
                     type: "submit"
                 }) }}
+
             </form>
 
             {% if mode == 'amend' %}

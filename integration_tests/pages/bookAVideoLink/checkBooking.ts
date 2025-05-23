@@ -28,6 +28,9 @@ export default class CheckBookingPage extends Page {
   assertPostHearingTime = (hearingTime: string) =>
     this.assertSummaryListValue('booking-details', 'Post-court hearing time', hearingTime)
 
+  assertNotesForStaff = (notesForStaff: string) =>
+    this.assertSummaryListValue('booking-details', 'Notes for prison staff', notesForStaff)
+
   bookVideoLink = (): PageElement => this.getButton('Book video link')
 
   updateBooking = (): PageElement => this.getButton('Update booking')

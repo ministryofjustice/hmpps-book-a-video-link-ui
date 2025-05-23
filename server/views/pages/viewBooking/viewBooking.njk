@@ -236,7 +236,24 @@
                                 }
                             ]
                         } if isAmendable
-                    }
+                    } if booking.bookingType == 'PROBATION' or masterPublicPrivateNotes != true,
+                    {
+                        key: {
+                            text: "Notes for prison staff"
+                        },
+                        value: {
+                            text: booking.notesForStaff or "None entered"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/comments',
+                                    text: "Change notes" if booking.notesForStaff else "Add notes",
+                                    classes: "govuk-link--no-visited-state"
+                                }
+                            ]
+                        } if isAmendable
+                    } if masterPublicPrivateNotes and booking.bookingType == 'COURT'
                 ]
             }) }}
 

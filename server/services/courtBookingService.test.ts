@@ -204,6 +204,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       } as BookACourtHearingJourney
 
@@ -227,6 +228,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         courtHearingType: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -258,6 +260,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       } as BookACourtHearingJourney
 
@@ -295,6 +298,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         courtHearingType: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -322,6 +326,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -347,6 +352,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         courtHearingType: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -377,6 +383,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -416,6 +423,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         courtHearingType: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -441,6 +449,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       } as BookACourtHearingJourney
 
@@ -464,6 +473,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         courtHearingType: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 
@@ -493,6 +503,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         hearingTypeCode: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       } as BookACourtHearingJourney
 
@@ -530,6 +541,7 @@ describe('Court booking service', () => {
         courtCode: 'COURT_HOUSE',
         courtHearingType: 'APPEAL',
         comments: 'comments',
+        notesForStaff: 'staff notes',
         videoLinkUrl: 'videoLinkUrl',
       }
 

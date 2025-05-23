@@ -49,6 +49,7 @@
   "probationMeetingType": null,
   "probationMeetingTypeDescription": null,
   "comments": null,
+  "notesForStaff": "staff notes",
   "videoLinkUrl": null,
   "createdByPrison": false,
   "createdBy": "testuser@justice.gov.uk",

@@ -236,7 +236,7 @@
                                 }
                             ]
                         } if isAmendable
-                    } if booking.bookingType == 'PROBATION' or masterPublicPrivateNotes != true,
+                    } if masterPublicPrivateNotes != true,
                     {
                         key: {
                             text: "Notes for prison staff"
@@ -253,7 +253,7 @@
                                 }
                             ]
                         } if isAmendable
-                    } if masterPublicPrivateNotes and booking.bookingType == 'COURT'
+                    } if masterPublicPrivateNotes
                 ]
             }) }}
 

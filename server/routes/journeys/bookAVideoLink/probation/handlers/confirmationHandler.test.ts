@@ -10,6 +10,7 @@ import PrisonService from '../../../../../services/prisonService'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/videoLinkService')
@@ -31,24 +32,29 @@ const appSetup = (journeySession = {}) => {
   })
 }
 
-beforeEach(() => appSetup())
+beforeEach(() => {
+  prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+    firstName: 'Joe',
+    lastName: 'Bloggs',
+    prisonId: 'MDI',
+    prisonerNumber: 'AA1234A',
+  } as Prisoner)
+
+  videoLinkService.getVideoLinkBookingById.mockResolvedValue(getProbationBooking('AA1234A'))
+  prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
+  prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
+
+  config.featureToggles.masterPublicPrivateNotes = false
+
+  appSetup()
+})
 
 afterEach(() => {
   jest.resetAllMocks()
 })
 
 describe('GET', () => {
-  it('should render the correct view page', () => {
-    videoLinkService.getVideoLinkBookingById.mockResolvedValue(getProbationBooking('AA1234A'))
-    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      prisonId: 'MDI',
-      prisonerNumber: 'AA1234A',
-    } as Prisoner)
-    prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
-
+  it('should render the correct view page - staff notes toggled off', () => {
     return request(app)
       .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
@@ -57,6 +63,7 @@ describe('GET', () => {
           who: user.username,
           correlationId: expect.any(String),
         })
+
         expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
         expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
         expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
@@ -70,20 +77,45 @@ describe('GET', () => {
 
         expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
+        expect(getValueByKey($, 'Notes for prison staff')).toBeFalsy()
+        expect(getValueByKey($, 'Comments')).toEqual('comment')
+      })
+      .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
+  })
+
+  it('should render the correct view page - staff notes toggled on', () => {
+    config.featureToggles.masterPublicPrivateNotes = true
+    appSetup()
+
+    return request(app)
+      .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
+        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
+
+        expect(heading).toEqual('The video link has been booked')
+        expect(bookAnotherLink).toEqual(`/probation/prisoner-search/search`)
+
+        expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
+        expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
+        expect(getValueByKey($, 'Notes for prison staff')).toEqual('staff notes')
       })
       .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
   })
 
   it('should render the correct page in amend mode', () => {
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
-    videoLinkService.getVideoLinkBookingById.mockResolvedValue(getProbationBooking('AA1234A'))
-    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      prisonId: 'MDI',
-      prisonerNumber: 'AA1234A',
-    } as Prisoner)
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
 
     return request(app)
       .get(`/probation/booking/amend/1/${journeyId()}/video-link-booking/confirmation`)
@@ -124,4 +156,6 @@ const getProbationBooking = (prisonerNumber: string) =>
     probationTeamDescription: 'Barnet PPOC',
     probationMeetingTypeDescription: 'Pre-sentence report',
     videoLinkUrl: 'https://video.here.com',
+    comments: 'comment',
+    notesForStaff: 'staff notes',
   }) as VideoLinkBooking

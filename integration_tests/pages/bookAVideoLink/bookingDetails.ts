@@ -35,5 +35,8 @@ export default class BookingDetailsPage extends Page {
 
   selectEndTime = (hour, minute) => this.selectTimePickerTime('End time', hour, minute)
 
+  enterNotesForStaff = (notesForStaff: string) =>
+    this.getByLabel('Notes for prison staff (optional)').type(notesForStaff)
+
   continue = (): PageElement => this.getButton('Continue')
 }

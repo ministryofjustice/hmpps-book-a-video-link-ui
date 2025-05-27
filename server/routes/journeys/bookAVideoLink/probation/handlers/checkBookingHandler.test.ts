@@ -3,11 +3,11 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import { existsByDataQa, existsByKey, existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import {
   AvailabilityResponse,
   Location,
@@ -16,6 +16,7 @@ import {
 } from '../../../../../@types/bookAVideoLinkApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ProbationBookingService from '../../../../../services/probationBookingService'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/probationBookingService')
@@ -49,6 +50,8 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
+  config.featureToggles.masterPublicPrivateNotes = false
+
   appSetup({
     bookAProbationMeeting: {
       prisoner: { prisonId: 'MDI' },
@@ -68,16 +71,21 @@ describe('Check Booking handler', () => {
       { code: 'P1', description: 'Probation 1' },
       { code: 'P2', description: 'Probation 2' },
     ] as ProbationTeam[])
+
     prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
+
     referenceDataService.getProbationMeetingTypes.mockResolvedValue([
       { code: 'KEY', description: 'description' },
     ] as ReferenceCode[])
+
     probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: true } as AvailabilityResponse)
+
+    // Used in amend routes only
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
   })
 
   describe('GET', () => {
-    it('should render the correct view page', () => {
+    it('should render the correct view page - with notes for staff toggled off', () => {
       return request(app)
         .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
         .expect('Content-Type', /html/)
@@ -86,6 +94,41 @@ describe('Check Booking handler', () => {
           const heading = getPageHeader($)
 
           expect(heading).toEqual('Check and confirm your booking')
+          expect(existsByLabel($, 'Comments (optional)')).toBe(true)
+          expect(existsByKey($, 'Notes for prison staff')).toBe(false)
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHECK_BOOKING_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+        })
+    })
+
+    it('should render the correct view page - with notes for staff toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+
+      appSetup({
+        bookAProbationMeeting: {
+          prisoner: { prisonId: 'MDI' },
+          date: '2024-06-12',
+          startTime: '1970-01-01T16:00',
+        },
+      })
+
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Check and confirm your booking')
+          expect(existsByLabel($, 'Comments (optional)')).toBe(false)
+          expect(existsByKey($, 'Notes for prison staff')).toBe(true)
+
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHECK_BOOKING_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
@@ -156,7 +199,7 @@ describe('Check Booking handler', () => {
   })
 
   describe('POST', () => {
-    it('should validate the comment being too long', () => {
+    it('should validate the comment being too long when staff notes feature is toggled off', () => {
       appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
 
       return request(app)
@@ -173,9 +216,20 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should save the posted fields', () => {
+    it('should not validate comments when staff note feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
       appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
 
+      return request(app)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ comments: 'a'.repeat(401) })
+        .expect(() => {
+          expectNoErrorMessages()
+        })
+    })
+
+    it('should save the posted fields when staff note feature is toggled off', () => {
+      appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
       probationBookingService.createVideoLinkBooking.mockResolvedValue(1)
 
       return request(app)
@@ -194,6 +248,28 @@ describe('Check Booking handler', () => {
         })
     })
 
+    it('should not save any comments when staff note feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
+      probationBookingService.createVideoLinkBooking.mockResolvedValue(1)
+
+      return request(app)
+        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ comments: 'comment', notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation/1')
+        .expect(() => {
+          expect(probationBookingService.createVideoLinkBooking).toHaveBeenCalledWith(
+            {
+              comments: undefined,
+              notesForStaff: 'notes',
+              type: 'PROBATION',
+            },
+            user,
+          )
+        })
+    })
+
     it('should redirect to select alternatives if the selected room is not available', () => {
       probationBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
@@ -204,16 +280,9 @@ describe('Check Booking handler', () => {
         .expect('location', 'availability')
     })
 
-    it('should amend the posted fields', () => {
-      const bookAProbationMeeting = {
-        bookingId: 1,
-        date: '2024-06-27',
-        startTime: '15:00',
-      }
-
-      appSetup({
-        bookAProbationMeeting,
-      })
+    it('should amend the posted comments when notes for staff is toggled off', () => {
+      const bookAProbationMeeting = { bookingId: 1, date: '2024-06-27', startTime: '15:00' }
+      appSetup({ bookAProbationMeeting })
 
       return request(app)
         .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
@@ -228,7 +297,25 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should request a booking using the posted fields', () => {
+    it('should amend the posted notes for staff when feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      const bookAProbationMeeting = { bookingId: 1, date: '2024-06-27', startTime: '15:00' }
+      appSetup({ bookAProbationMeeting })
+
+      return request(app)
+        .post(`/probation/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .expect(() => {
+          expect(probationBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
+            { ...bookAProbationMeeting, notesForStaff: 'notes', comments: undefined },
+            user,
+          )
+        })
+    })
+
+    it('should request a booking with comments - when staff notes feature is toggled off', () => {
       appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
 
       return request(app)
@@ -241,6 +328,28 @@ describe('Check Booking handler', () => {
             {
               comments: 'comment',
               type: 'PROBATION',
+            },
+            user,
+          )
+
+          expect(probationBookingService.checkAvailability).not.toHaveBeenCalled()
+        })
+    })
+
+    it.skip('should request a booking with staff notes when feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
+
+      return request(app)
+        .post(`/probation/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'notes' })
+        .expect(302)
+        .expect('location', 'confirmation')
+        .expect(() => {
+          expect(probationBookingService.requestVideoLinkBooking).toHaveBeenCalledWith(
+            {
+              type: 'PROBATION',
+              notesForStaff: 'notes',
             },
             user,
           )

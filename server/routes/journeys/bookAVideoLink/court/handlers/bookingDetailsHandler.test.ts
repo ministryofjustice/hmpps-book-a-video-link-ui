@@ -89,7 +89,7 @@ afterEach(() => {
 
 describe('Booking details handler', () => {
   describe('GET', () => {
-    it('should render the correct view page', () => {
+    it('should render the correct view with notes for staff toggled off', () => {
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .expect('Content-Type', /html/)
@@ -114,7 +114,7 @@ describe('Booking details handler', () => {
         })
     })
 
-    it('should render the correct view page - with notes for staff (feature toggled)', () => {
+    it('should render the correct view with notes for staff toggled on', () => {
       config.featureToggles.masterPublicPrivateNotes = true
       appSetup()
 
@@ -124,7 +124,6 @@ describe('Booking details handler', () => {
         .expect(res => {
           const $ = cheerio.load(res.text)
           const heading = getPageHeader($)
-          // const html = $.html().valueOf()
 
           expect(heading).toEqual("Select a date and time for Joe Smith's court hearings")
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {

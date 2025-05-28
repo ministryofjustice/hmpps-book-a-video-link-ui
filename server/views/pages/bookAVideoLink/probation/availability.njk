@@ -43,13 +43,13 @@
     {% endif %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-two-thirds" id="available-bookings-summary-list">
             {% set periods = [] %}
             {% for period in session.journey.bookAProbationMeeting.timePeriods %}
                 {% set periods = (periods.push(TimePeriod[period]), periods) %}
             {% endfor %}
             {{ govukSummaryList({
-                classes: "govuk-summary-list--no-border govuk-!-margin-bottom-3",
+                classes: "govuk-summary-list--no-border govuk-!-padding-bottom-1 govuk-!-padding-top-1",
                 rows: [
                     {
                         key: {
@@ -101,7 +101,7 @@
             {% for period, options in options | groupBy('timeSlot') %}
                 <div class="govuk-grid-row govuk-!-margin-top-6">
                     <div class="govuk-grid-column-two-thirds">
-                        <h2 class="govuk-heading-m">Available {{ TimePeriod[period] }} bookings</h2>
+                        <h2 class="govuk-heading-m">Available {{ TimePeriod[period] | lower }} bookings</h2>
 
                         {% set items = [] %}
                         {% for option in options %}

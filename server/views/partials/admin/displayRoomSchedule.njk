@@ -36,6 +36,7 @@
         {% endset %}
 
         {% set allocationsHtml %}
+            {%  if schedule.allowedParties.length > 0 %}
             {% for party in schedule.allowedParties %}
                 <div>
                     {% if schedule.locationUsage === 'COURT' %}
@@ -45,6 +46,9 @@
                     {% endif %}
                 </div>
             {% endfor %}
+            {%  else %}
+                <div>None entered</div>
+            {% endif %}
         {% endset %}
 
         {% set rows = (rows.push([

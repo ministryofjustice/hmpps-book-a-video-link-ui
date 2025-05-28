@@ -11,12 +11,12 @@
 
 {% set mode = session.req.params.mode %}
 {% set prisonerName = ((prisoner.firstName + ' ' + prisoner.lastName) | convertToTitleCase) %}
-{% set pageTitle = "Change video link booking" if mode == 'amend' else "Select a date and time for these court hearings" %}
-{% set pageHeading = "Change " + prisonerName + "'s video link booking" if mode == 'amend' else "Select a date and time for " + prisonerName +"'s court hearings" %}
+{% set pageTitle = "Change video link booking" if mode == 'amend' else "Select a date and time for the court video link hearing" %}
+{% set pageHeading = "Change " + prisonerName + "'s video link booking" if mode == 'amend' else "Select a date and time for " + prisonerName +"'s court video link hearing" %}
 
 {% block content %}
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters">
+        <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
         </div>
     </div>
@@ -176,12 +176,15 @@
                     value: formResponses.date or session.journey.bookACourtHearing.date | formatDate('dd/MM/yyyy')
                 }) }}
 
+                <div class="govuk-grid-row govuk-body govuk-label--s">
+                    <span class="govuk-grid-column-three-quarters">Select meeting times</span>
+                </div>
+
                 {{ hmppsTimePicker({
                     id: 'startTime',
                     name: 'startTime',
                     label: {
-                        text: 'Start time',
-                        classes: 'govuk-fieldset__legend--s'
+                        text: 'Start time'
                     },
                     errorMessage: validationErrors | findError('startTime'),
                     formResponses: formResponses.startTime or session.journey.bookACourtHearing.startTime
@@ -191,8 +194,7 @@
                     id: 'endTime',
                     name: 'endTime',
                     label: {
-                        text: 'End time',
-                        classes: 'govuk-fieldset__legend--s'
+                        text: 'End time'
                     },
                     errorMessage: validationErrors | findError('endTime'),
                     formResponses: formResponses.endTime or session.journey.bookACourtHearing.endTime

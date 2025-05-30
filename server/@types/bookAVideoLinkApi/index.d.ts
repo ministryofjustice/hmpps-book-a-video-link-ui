@@ -876,13 +876,13 @@ export interface components {
        *            */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
       /**
-       * @description Private free text notes for the booking. These notes are are only visible to external users.
+       * @description Private free text notes for the booking.
        * @example Legal representation details ...
        */
       notesForStaff?: string
       /**
        * @description Public free text notes for the booking. These notes are visible outside of the service, care should be taken what is entered.
-       * @example Waiting to hear on legal representation ...
+       * @example Please arrive 10 minutes early
        */
       notesForPrisoners?: string
     }
@@ -897,7 +897,7 @@ export interface components {
        * @description The location key for the appointment
        * @example PVI-A-1-001
        */
-      locationKey?: string
+      locationKey: string
       /**
        * Format: date
        * @description The future date for which the appointment will start
@@ -920,12 +920,12 @@ export interface components {
        * @description The prison code for the prisoner
        * @example PVI
        */
-      prisonCode?: string
+      prisonCode: string
       /**
        * @description The prisoner number (NOMIS ID)
        * @example A1234AA
        */
-      prisonerNumber?: string
+      prisonerNumber: string
       /** @description
        *           The appointment or appointments associated with the prisoner.
        *
@@ -1230,13 +1230,13 @@ export interface components {
        */
       comments?: string
       /**
-       * @description Private free text notes for the booking. These notes are are only visible to external users.
+       * @description Private free text notes for the booking.
        * @example Some notes that will not be visible outside of the service
        */
       notesForStaff?: string
       /**
        * @description Public free text notes for the booking. These notes are visible outside of the service, care should be taken what is entered.
-       * @example Some notes that will be visible outside of the service
+       * @example Please arrive 10 minutes early
        */
       notesForPrisoners?: string
     }
@@ -1246,12 +1246,12 @@ export interface components {
        * @description The prisoner number (NOMIS ID)
        * @example A1234AA
        */
-      prisonerNumber?: string
+      prisonerNumber: string
       /**
        * @description The location key for the appointment
        * @example PVI-A-1-001
        */
-      locationKey?: string
+      locationKey: string
       /**
        * Format: date
        * @description The date for which the appointment starts
@@ -1324,6 +1324,11 @@ export interface components {
        * @example 12:30
        */
       endTime: string
+      /**
+       * @description Public free text notes for the booking.
+       * @example Please arrive 10 minutes early
+       */
+      notesForPrisoners?: string
       /**
        * @description The time slot the appointment falls into
        * @example PM
@@ -1460,13 +1465,13 @@ export interface components {
       /** @description Additional details for the booking if there are any. */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
       /**
-       * @description Private free text notes for the booking. These notes are are only visible to external users.
+       * @description Private free text notes for the booking.
        * @example Legal representation details ...
        */
       notesForStaff?: string
       /**
        * @description Public free text notes for the booking. These notes are visible outside of the service, care should be taken what is entered.
-       * @example Waiting to hear on legal representation ...
+       * @example Please arrive 10 minutes early
        */
       notesForPrisoners?: string
     }
@@ -1543,6 +1548,11 @@ export interface components {
        *           be ignored if not a probation booking.
        *            */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
+      /**
+       * @description Private free text notes for the booking.
+       * @example Some notes that will not be visible outside of the service
+       */
+      notesForStaff?: string
     }
     RequestedAppointment: {
       /**
@@ -1573,17 +1583,17 @@ export interface components {
        * @description The prison code for the prison which the prisoner is due to arrive
        * @example PVI
        */
-      prisonCode?: string
+      prisonCode: string
       /**
        * @description The prisoner's first name
        * @example Joe
        */
-      firstName?: string
+      firstName: string
       /**
        * @description The prisoner's last name
        * @example Bloggs
        */
-      lastName?: string
+      lastName: string
       /**
        * Format: date
        * @description The prisoner's date of birth
@@ -1612,7 +1622,7 @@ export interface components {
        *       2
        *     ]
        */
-      identifiers?: number[]
+      identifiers: number[]
     }
     /** @description The request with the new decoration details */
     CreateDecoratedRoomRequest: {
@@ -2140,6 +2150,16 @@ export interface components {
        * @example jane.doe@somewhere.com
        */
       probationOfficerEmailAddress?: string
+      /**
+       * @description Private free text notes for the booking.
+       * @example Legal representation details ...
+       */
+      notesForStaff?: string
+      /**
+       * @description Public free text notes for the booking.
+       * @example Please arrive 10 minutes early
+       */
+      notesForPrisoners?: string
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
@@ -2172,7 +2192,7 @@ export interface components {
     }
     DlqMessage: {
       body: {
-        [key: string]: Record<string, never>
+        [key: string]: unknown
       }
       messageId: string
     }

@@ -336,7 +336,7 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it.skip('should request a booking with staff notes when feature is toggled on', () => {
+    it('should request a booking with staff notes when feature is toggled on', () => {
       config.featureToggles.masterPublicPrivateNotes = true
       appSetup({ bookAProbationMeeting: { type: 'PROBATION' } })
 

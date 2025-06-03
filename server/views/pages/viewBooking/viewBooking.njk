@@ -166,8 +166,9 @@
                             items: [
                                 {
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#cvpRequired',
-                                    text: "Change link" if booking.videoLinkUrl else "Add link",
-                                    classes: "govuk-link--no-visited-state"
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-cvp-link'}
                                 }
                             ]
                         } if isAmendable
@@ -248,8 +249,9 @@
                             items: [
                                 {
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/comments',
-                                    text: "Change notes" if booking.notesForStaff else "Add notes",
-                                    classes: "govuk-link--no-visited-state"
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-notes'}
                                 }
                             ]
                         } if isAmendable

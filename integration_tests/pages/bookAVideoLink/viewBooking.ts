@@ -7,7 +7,7 @@ export default class ViewBookingPage extends Page {
 
   addComments = (): PageElement => this.getLink('Add comments')
 
-  changeNotes = (): PageElement => this.getLink('Change notes')
+  changeNotes = (): PageElement => cy.get(`[data-qa="change-notes"]`)
 
   changeBookingDetails = (): PageElement => this.getButton('Change booking details')
 

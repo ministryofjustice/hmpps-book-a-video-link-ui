@@ -232,8 +232,9 @@
                             items: [
                                 {
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/comments',
-                                    text: "Change comments" if booking.comments else "Add comments",
-                                    classes: "govuk-link--no-visited-state"
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-comments'}
                                 }
                             ]
                         } if isAmendable

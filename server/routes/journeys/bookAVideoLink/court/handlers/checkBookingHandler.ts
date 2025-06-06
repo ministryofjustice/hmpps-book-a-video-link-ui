@@ -18,6 +18,12 @@ class Body {
   @IsOptional()
   @MaxLength(400, { message: 'Comments must be $constraint1 characters or less' })
   comments: string
+
+  @Expose()
+  @ValidateIf(o => o.notesForStaff && config.featureToggles.masterPublicPrivateNotes)
+  @IsOptional()
+  @MaxLength(400, { message: 'Notes for prison staff must be $constraint1 characters or less' })
+  notesForStaff: string
 }
 
 export default class CheckBookingHandler implements PageHandler {

@@ -21,8 +21,9 @@
                     name: "comments",
                     id: "comments",
                     maxlength: 400,
+                    errorMessage: validationErrors | findError("comments"),
                     label: { text: "Comments (optional)" },
-                    value: session.journey.bookAProbationMeeting.comments
+                    value: formResponses.comments or session.journey.bookAProbationMeeting.comments
                 }) }}
 
                 {{ govukButton({

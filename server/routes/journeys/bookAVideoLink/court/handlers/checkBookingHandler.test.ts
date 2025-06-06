@@ -213,6 +213,36 @@ describe('Check Booking handler', () => {
         })
     })
 
+    it('should not validate notes for staff when staff note feature is toggled off', () => {
+      config.featureToggles.masterPublicPrivateNotes = false
+      appSetup({ bookACourtHearing: { type: 'COURT' } })
+
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'a'.repeat(401) })
+        .expect(() => {
+          expectNoErrorMessages()
+        })
+    })
+
+    it('should validate the notes for staff length when staff note feature is toggled on', () => {
+      config.featureToggles.masterPublicPrivateNotes = true
+      appSetup({ bookACourtHearing: { type: 'COURT' } })
+
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .send({ notesForStaff: 'a'.repeat(401) })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'notesForStaff',
+              href: '#notesForStaff',
+              text: 'Notes for prison staff must be 400 characters or less',
+            },
+          ])
+        })
+    })
+
     it('should save the posted fields when staff note feature is toggled off', () => {
       appSetup({ bookACourtHearing: { type: 'COURT' } })
       courtBookingService.createVideoLinkBooking.mockResolvedValue(1)

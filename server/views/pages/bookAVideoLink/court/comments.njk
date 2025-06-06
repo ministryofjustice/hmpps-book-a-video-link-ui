@@ -21,9 +21,10 @@
                     name: "comments",
                     id: "comments",
                     maxlength: 400,
+                    errorMessage: validationErrors | findError("comments"),
                     label: { text: "Comments (optional)" },
                     hint: { text: "This might include case number, co-defendant details if this is a multi-handed case, or whether you have borrowed another court’s room." },
-                    value: session.journey.bookACourtHearing.comments
+                    value: formResponses.comments or session.journey.bookACourtHearing.comments
                 }) }}
 
                 {{ govukButton({

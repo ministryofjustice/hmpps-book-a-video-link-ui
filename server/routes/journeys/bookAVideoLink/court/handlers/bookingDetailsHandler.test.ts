@@ -386,7 +386,7 @@ describe('Booking details handler', () => {
             {
               fieldId: 'notesForStaff',
               href: '#notesForStaff',
-              text: 'Notes for staff must be 400 characters or less',
+              text: 'Notes for prison staff must be 400 characters or less',
             },
           ])
         })

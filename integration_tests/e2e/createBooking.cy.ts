@@ -136,6 +136,84 @@ context('Create a booking', () => {
       // Check navigation back to the booking page to re-enter times
       Page.verifyOnPage(NewBookingPage)
     })
+
+    it('Responds to change links and navigates to appropriate pages', () => {
+      const home = Page.verifyOnPage(HomePage)
+      home.bookVideoLink().click()
+
+      // Prisoner search page
+      const searchPrisonerPage = Page.verifyOnPage(SearchPrisonerPage)
+      searchPrisonerPage.enterLastName('Smith')
+      searchPrisonerPage.search().click()
+
+      // Prisoner search results page
+      const searchPrisonerResultsPage = Page.verifyOnPage(SearchPrisonerResultsPage)
+      searchPrisonerResultsPage.bookVideoLinkForPrisoner('A0171DZ').click()
+
+      // Enter booking details (court) page
+      const newBookingPage = Page.verifyOnPage(NewBookingPage)
+      newBookingPage.selectCourt('Aberystwyth Family')
+      newBookingPage.selectHearingType('Civil')
+      newBookingPage.selectCvpKnown('No')
+      newBookingPage.selectDate(new Date(2050, 0, 1))
+      newBookingPage.selectStartTime(15, 0)
+      newBookingPage.selectEndTime(16, 0)
+      newBookingPage.selectPreHearingRequired('Yes')
+      newBookingPage.selectPostHearingRequired('Yes')
+      newBookingPage.enterNotesForStaff('staff notes')
+      newBookingPage.continue().click()
+
+      // Select from available rooms page - the times will all reflect the main hearing time
+      // (because wiremock cannot return different, multiple responses to the same POST endpoint, one per hearing)
+      const selectRoomsPage = Page.verifyOnPage(SelectRoomsPage)
+      selectRoomsPage.selectRoomForMainHearing('Closed Visits Cubicle 6 - Crown Ct')
+      selectRoomsPage.selectRoomForPreHearing('Closed Visits Cubicle 6 - Crown Ct')
+      selectRoomsPage.selectRoomForPostHearing('Closed Visits Cubicle 6 - Crown Ct')
+      selectRoomsPage.continue().click()
+
+      const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
+
+      // Verify change links navigate to the relevant pages
+      checkBookingPage.changeLinkFor('Name').click()
+      Page.verifyOnPage(SearchPrisonerPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Court').click()
+      Page.verifyOnPage(NewBookingPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Hearing type').click()
+      Page.verifyOnPage(NewBookingPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Date').click()
+      Page.verifyOnPage(NewBookingPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Pre-court hearing room').click()
+      Page.verifyOnPage(SelectRoomsPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Court hearing time').click()
+      Page.verifyOnPage(NewBookingPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Court hearing room').click()
+      Page.verifyOnPage(SelectRoomsPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Court hearing link (CVP)').click()
+      Page.verifyOnPage(NewBookingPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Post-court hearing room').click()
+      Page.verifyOnPage(SelectRoomsPage)
+      cy.go('back')
+
+      checkBookingPage.changeLinkFor('Notes for prison staff').click()
+      Page.verifyOnPage(NewBookingPage)
+      cy.go('back')
+    })
   })
 
   describe('Probation', () => {

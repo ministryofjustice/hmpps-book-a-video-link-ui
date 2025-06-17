@@ -1,8 +1,9 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
-import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'
 import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
+import { Expose, Transform } from 'class-transformer'
+import { IsEnum, IsNotEmpty, IsNumberString, IsOptional, MaxLength, ValidateIf } from 'class-validator'
+import { MutuallyExclusive } from '../../../../../validators/mutallyExclusive'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
@@ -13,7 +14,6 @@ import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import config from '../../../../../config'
-import logger from '../../../../../../logger'
 
 class Body {
   @Expose()
@@ -30,20 +30,19 @@ class Body {
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(
-    o =>
-      (o.cvpRequired === YesNo.YES && !config.featureToggles.hmctsLinkAndGuestPin) ||
-      (o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin && !o.hmctsNumber),
-  )
+  @ValidateIf(o => o.cvpRequired === YesNo.YES)
+  @MutuallyExclusive({ message: 'Provide either a full web address or a CVP number' }, 'cvp-link')
   @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
-  @IsNotEmpty({ message: 'Enter the court hearing link' })
+  @IsNotEmpty({ message: 'Enter a video link address' })
   videoLinkUrl: string
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin && !o.videoLinkUrl)
-  @MaxLength(8, { message: 'Enter up to $constraint1 characters' })
-  @IsNotEmpty({ message: 'Enter the court hearing link' })
+  @ValidateIf(o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
+  @MutuallyExclusive({ message: 'Provide either a CVP number or a full web address' }, 'cvp-link')
+  @MaxLength(8, { message: 'Enter up to $constraint1 digits' })
+  @IsNumberString({ no_symbols: true }, { message: 'Only enter numbers from the CVP address' })
+  @IsNotEmpty({ message: 'Enter a video link address' })
   hmctsNumber: string
 
   @Expose()
@@ -55,6 +54,7 @@ class Body {
   @Transform(({ value, obj }) => (obj.guestPinRequired === YesNo.YES ? value : undefined))
   @ValidateIf(o => o.guestPinRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
   @MaxLength(8, { message: 'Enter up to $constraint1 characters' })
+  @IsNumberString({ no_symbols: true }, { message: 'Only enter numbers in the guest pin' })
   @IsNotEmpty({ message: 'Enter the guest pin' })
   guestPin: string
 
@@ -159,7 +159,6 @@ export default class BookingDetailsHandler implements PageHandler {
       postRequired,
       notesForStaff,
     } = req.body
-    logger.info(`POST booking details: ${JSON.stringify(req.body, null, 2)}`)
 
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const prisoner =

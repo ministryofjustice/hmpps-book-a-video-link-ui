@@ -15,6 +15,12 @@ export default class NewBookingPage extends Page {
       .parent()
       .within(() => this.getByLabel(yesOrNo).click())
 
+  selectGuestPinKnown = (yesOrNo: string) =>
+    cy
+      .contains('legend', 'Is a guest pin required for this video link hearing?')
+      .parent()
+      .within(() => this.getByLabel(yesOrNo).click())
+
   selectDate = (date: Date) => this.selectDatePickerDate('Date', date)
 
   selectStartTime = (hour, minute) => this.selectTimePickerTime('Start time', hour, minute)

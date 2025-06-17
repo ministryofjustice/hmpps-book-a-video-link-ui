@@ -1,8 +1,10 @@
 import { RequestHandler } from 'express'
 import { parse } from 'date-fns'
+import { isNotEmpty } from 'class-validator'
 import { Services } from '../../../../../services'
 import asyncMiddleware from '../../../../../middleware/asyncMiddleware'
 import { extractPrisonAppointmentsFromBooking } from '../../../../../utils/utils'
+import config from '../../../../../config'
 
 export default ({ videoLinkService, prisonerService }: Services): RequestHandler => {
   return asyncMiddleware(async (req, res, next) => {
@@ -16,6 +18,13 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
     const parseTimeToISOString = (time: string) => (time ? parse(time, 'HH:mm', new Date(0)).toISOString() : undefined)
     const parseDateToISOString = (date: string) =>
       date ? parse(date, 'yyyy-MM-dd', new Date()).toISOString() : undefined
+
+    // Feature toggle related values
+    const toggle = config.featureToggles.hmctsLinkAndGuestPin
+    const guestPinRequired = () => toggle && isNotEmpty(booking.guestPin)
+    const getGuestPinValue = () => (toggle ? booking.guestPin : undefined)
+    const cvpLinkRequired = () => (toggle && isNotEmpty(booking.hmctsNumber)) || isNotEmpty(booking.videoLinkUrl)
+    const getHmctsNumberValue = () => (toggle ? booking.hmctsNumber : undefined)
 
     const { preAppointment, mainAppointment, postAppointment } = extractPrisonAppointmentsFromBooking(booking)
 
@@ -49,8 +58,11 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       postLocationCode: postAppointment?.prisonLocKey,
       comments: booking.comments,
       notesForStaff: booking.notesForStaff,
-      cvpRequired: !!booking.videoLinkUrl,
+      cvpRequired: cvpLinkRequired(),
+      hmctsNumber: getHmctsNumberValue(),
+      guestPinRequired: guestPinRequired(),
       videoLinkUrl: booking.videoLinkUrl,
+      guestPin: getGuestPinValue(),
     }
 
     return next()

@@ -51,6 +51,8 @@
   "comments": null,
   "notesForStaff": "staff notes",
   "videoLinkUrl": null,
+  "guestPin": null,
+  "hmctsNumber": null,
   "createdByPrison": false,
   "createdBy": "testuser@justice.gov.uk",
   "createdAt": "2024-06-27T20:15:16.08034",

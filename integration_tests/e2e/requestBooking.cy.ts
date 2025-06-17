@@ -62,6 +62,7 @@ context('Request a booking', () => {
       newBookingPage.selectCourt('Aberystwyth Family')
       newBookingPage.selectHearingType('Civil')
       newBookingPage.selectCvpKnown('No')
+      newBookingPage.selectGuestPinKnown('No')
       newBookingPage.selectDate(new Date(2050, 0, 1))
       newBookingPage.selectStartTime(15, 0)
       newBookingPage.selectEndTime(16, 0)

@@ -43,6 +43,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   config.featureToggles.masterPublicPrivateNotes = false
+  config.featureToggles.hmctsLinkAndGuestPin = false
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
@@ -477,6 +478,7 @@ describe('Booking details handler', () => {
             },
             startTime: '1970-01-01T15:30:00.000Z',
             cvpRequired: true,
+            guestPinRequired: false,
             videoLinkUrl: 'https://www.google.co.uk',
           }),
         )
@@ -515,6 +517,7 @@ describe('Booking details handler', () => {
             startTime: '1970-01-01T15:30:00.000Z',
             cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
+            guestPinRequired: false,
             notesForStaff: 'staff notes',
           }),
         )
@@ -548,6 +551,7 @@ describe('Booking details handler', () => {
             startTime: '1970-01-01T15:30:00.000Z',
             cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
+            guestPinRequired: false,
             comments: 'test',
           }),
         )
@@ -590,6 +594,7 @@ describe('Booking details handler', () => {
             startTime: '1970-01-01T15:30:00.000Z',
             cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
+            guestPinRequired: false,
           }),
         )
     })

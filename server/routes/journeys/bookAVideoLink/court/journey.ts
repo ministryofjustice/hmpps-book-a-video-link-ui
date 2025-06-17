@@ -28,4 +28,7 @@ export type BookACourtHearingJourney = {
   notesForStaff?: string
   cvpRequired?: boolean
   videoLinkUrl?: string
+  hmctsNumber?: string
+  guestPinRequired?: boolean
+  guestPin?: string
 }

@@ -13,6 +13,7 @@ import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import config from '../../../../../config'
+import logger from '../../../../../../logger'
 
 class Body {
   @Expose()
@@ -29,10 +30,33 @@ class Body {
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.cvpRequired === YesNo.YES)
+  @ValidateIf(
+    o =>
+      (o.cvpRequired === YesNo.YES && !config.featureToggles.hmctsLinkAndGuestPin) ||
+      (o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin && !o.hmctsNumber),
+  )
   @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
   @IsNotEmpty({ message: 'Enter the court hearing link' })
   videoLinkUrl: string
+
+  @Expose()
+  @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
+  @ValidateIf(o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin && !o.videoLinkUrl)
+  @MaxLength(8, { message: 'Enter up to $constraint1 characters' })
+  @IsNotEmpty({ message: 'Enter the court hearing link' })
+  hmctsNumber: string
+
+  @Expose()
+  @ValidateIf(() => config.featureToggles.hmctsLinkAndGuestPin)
+  @IsEnum(YesNo, { message: 'Select if you know the guest pin' })
+  guestPinRequired: string
+
+  @Expose()
+  @Transform(({ value, obj }) => (obj.guestPinRequired === YesNo.YES ? value : undefined))
+  @ValidateIf(o => o.guestPinRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
+  @MaxLength(8, { message: 'Enter up to $constraint1 characters' })
+  @IsNotEmpty({ message: 'Enter the guest pin' })
+  guestPin: string
 
   @Expose()
   @Transform(({ value }) => parseDatePickerDate(value))
@@ -125,6 +149,9 @@ export default class BookingDetailsHandler implements PageHandler {
       hearingTypeCode,
       cvpRequired,
       videoLinkUrl,
+      hmctsNumber,
+      guestPinRequired,
+      guestPin,
       date,
       startTime,
       endTime,
@@ -132,6 +159,8 @@ export default class BookingDetailsHandler implements PageHandler {
       postRequired,
       notesForStaff,
     } = req.body
+    logger.info(`POST booking details: ${JSON.stringify(req.body, null, 2)}`)
+
     const prisonerNumber = req.params.prisonerNumber || offender.prisonerNumber
     const prisoner =
       mode === 'request' ? offender : await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
@@ -157,6 +186,9 @@ export default class BookingDetailsHandler implements PageHandler {
       postHearingEndTime: postRequired === YesNo.YES ? addMinutes(endTime, 15).toISOString() : undefined,
       cvpRequired: cvpRequired === YesNo.YES,
       videoLinkUrl,
+      hmctsNumber,
+      guestPinRequired: guestPinRequired === YesNo.YES,
+      guestPin,
       notesForStaff,
     }
 

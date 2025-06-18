@@ -17,7 +17,7 @@ export default class NewBookingPage extends Page {
 
   selectGuestPinKnown = (yesOrNo: string) =>
     cy
-      .contains('legend', 'Is a guest pin required for this video link hearing?')
+      .contains('legend', 'Is a guest pin required?')
       .parent()
       .within(() => this.getByLabel(yesOrNo).click())
 

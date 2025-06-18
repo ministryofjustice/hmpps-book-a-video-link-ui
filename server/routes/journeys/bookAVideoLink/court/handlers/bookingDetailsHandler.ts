@@ -31,18 +31,18 @@ class Body {
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
   @ValidateIf(o => o.cvpRequired === YesNo.YES)
-  @MutuallyExclusive({ message: 'Provide either a full web address or a CVP number' }, 'cvp-link')
+  @MutuallyExclusive({ message: 'Enter court hearing link (URL) or number from CVP address' }, 'cvp-link')
   @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
-  @IsNotEmpty({ message: 'Enter a video link address' })
+  @IsNotEmpty({ message: 'Enter court hearing link' })
   videoLinkUrl: string
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
   @ValidateIf(o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
-  @MutuallyExclusive({ message: 'Provide either a CVP number or a full web address' }, 'cvp-link')
-  @MaxLength(8, { message: 'Enter up to $constraint1 digits' })
-  @IsNumberString({ no_symbols: true }, { message: 'Only enter numbers from the CVP address' })
-  @IsNotEmpty({ message: 'Enter a video link address' })
+  @MutuallyExclusive({ message: 'Enter number from CVP address or the court hearing link (URL)' }, 'cvp-link')
+  @MaxLength(8, { message: 'Number from CVP address must be $constraint1 characters or less' })
+  @IsNumberString({ no_symbols: true }, { message: 'Number from CVP address must be a number, like 3457' })
+  @IsNotEmpty({ message: 'Enter number from CVP address' })
   hmctsNumber: string
 
   @Expose()
@@ -53,8 +53,8 @@ class Body {
   @Expose()
   @Transform(({ value, obj }) => (obj.guestPinRequired === YesNo.YES ? value : undefined))
   @ValidateIf(o => o.guestPinRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
-  @MaxLength(8, { message: 'Enter up to $constraint1 characters' })
-  @IsNumberString({ no_symbols: true }, { message: 'Only enter numbers in the guest pin' })
+  @MaxLength(8, { message: 'Guest pin must be $constraint1 characters or less' })
+  @IsNumberString({ no_symbols: true }, { message: 'Guest pin must be a number, like 1344' })
   @IsNotEmpty({ message: 'Enter the guest pin' })
   guestPin: string
 

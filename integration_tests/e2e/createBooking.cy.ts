@@ -178,10 +178,6 @@ context('Create a booking', () => {
       Page.verifyOnPage(SearchPrisonerPage)
       cy.go('back')
 
-      checkBookingPage.changeLinkFor('Court').click()
-      Page.verifyOnPage(NewBookingPage)
-      cy.go('back')
-
       checkBookingPage.changeLinkFor('Hearing type').click()
       Page.verifyOnPage(NewBookingPage)
       cy.go('back')

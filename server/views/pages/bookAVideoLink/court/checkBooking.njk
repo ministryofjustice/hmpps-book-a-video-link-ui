@@ -90,15 +90,6 @@
                         },
                         value: {
                             text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: "../video-link-booking",
-                                    classes: 'govuk-link--no-visited-state',
-                                    text: "Change"
-                                }
-                            ]
                         }
                     },
                     {
@@ -262,7 +253,7 @@
                         actions: {
                             items: [
                                 {
-                                    href: "../video-link-booking",
+                                    href: "../video-link-booking#notesForStaff",
                                     classes: 'govuk-link--no-visited-state',
                                     text: "Change"
                                 }

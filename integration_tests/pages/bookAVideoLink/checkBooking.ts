@@ -11,7 +11,8 @@ export default class CheckBookingPage extends Page {
 
   assertDate = (date: string) => this.assertSummaryListValue('booking-details', 'Date', date)
 
-  assertHearingLink = (link: string) => this.assertSummaryListValue('booking-details', 'Court hearing link (CVP)', link)
+  assertHearingLink = (link: string) =>
+    this.assertSummaryListValue('booking-details', 'Court hearing link (CVP)', link.trim())
 
   assertHearingType = (hearingType: string) =>
     this.assertSummaryListValue('booking-details', 'Hearing type', hearingType)

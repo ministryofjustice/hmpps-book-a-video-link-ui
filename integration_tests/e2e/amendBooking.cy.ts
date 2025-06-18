@@ -86,8 +86,16 @@ context('Amend a booking', () => {
       // Display and change the hearing link on booking details page
       const changeVideoLinkBookingPage = Page.verifyOnPage(ChangeVideoLinkBookingPage)
       changeVideoLinkBookingPage.selectCvpKnown('Yes')
-      changeVideoLinkBookingPage.enterHearingLink('test link')
+      changeVideoLinkBookingPage.enterHearingLink('1234')
+      changeVideoLinkBookingPage.enterFullWebAddress('https://hmcts1234.meet.video.justice.gov.uk')
       changeVideoLinkBookingPage.continue().click()
+
+      // Error - entered both link types - so correct it
+      const changeVideoLinkBookingPage2 = Page.verifyOnPage(ChangeVideoLinkBookingPage)
+      changeVideoLinkBookingPage2.selectCvpKnown('Yes')
+      changeVideoLinkBookingPage2.enterHearingLink('1234')
+      changeVideoLinkBookingPage.clearFullWebAddress()
+      changeVideoLinkBookingPage2.continue().click()
 
       // Confirm the same rooms
       const selectRoomsPage = Page.verifyOnPage(SelectRoomsPage)
@@ -99,7 +107,7 @@ context('Amend a booking', () => {
       checkBookingPage.assertHearingTime('15:00 to 16:00')
       checkBookingPage.assertPrison('Nottingham (HMP)')
       checkBookingPage.assertHearingType('Civil')
-      checkBookingPage.assertHearingLink('test link')
+      checkBookingPage.assertHearingLink('HMCTS1234@meet.video.justice.gov.uk')
       checkBookingPage.updateBooking().click()
 
       // Confirmation page

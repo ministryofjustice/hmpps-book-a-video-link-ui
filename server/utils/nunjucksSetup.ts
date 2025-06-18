@@ -5,7 +5,15 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import { flatten, groupBy, map, startsWith, uniq } from 'lodash'
 import { addYears } from 'date-fns'
-import { convertToTitleCase, dateAtTime, formatDate, initialiseName, parseDate, toDuration } from './utils'
+import {
+  convertToTitleCase,
+  dateAtTime,
+  formatDate,
+  initialiseName,
+  parseDate,
+  toDuration,
+  toFullCourtLink,
+} from './utils'
 import { ApplicationInfo } from '../applicationInfo'
 import config from '../config'
 import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
@@ -69,6 +77,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('dateAtTime', dateAtTime)
   njkEnv.addFilter('unique', uniq)
   njkEnv.addFilter('toDuration', toDuration)
+  njkEnv.addFilter('toFullCourtLink', toFullCourtLink)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
   njkEnv.addGlobal('now', () => new Date())
@@ -77,6 +86,10 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('BavlJourneyType', BavlJourneyType)
   njkEnv.addGlobal('TimePeriod', TimePeriod)
 
+  // Default base URLs for court meeting links
+  njkEnv.addGlobal('defaultCourtVideoUrl', config.defaultCourtVideoUrl)
+
   // Feature toggles
   njkEnv.addGlobal('masterPublicPrivateNotes', config.featureToggles.masterPublicPrivateNotes)
+  njkEnv.addGlobal('hmctsLinkAndGuestPin', config.featureToggles.hmctsLinkAndGuestPin)
 }

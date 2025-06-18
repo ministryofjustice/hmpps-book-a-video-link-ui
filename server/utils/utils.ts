@@ -11,6 +11,7 @@ import {
 } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
+import config from '../config'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -112,4 +113,11 @@ export const getDaysOfWeek = () => {
   const start = startOfWeek(new Date(), { weekStartsOn: 1 }) // Monday as the first day
   const end = endOfWeek(new Date(), { weekStartsOn: 1 })
   return eachDayOfInterval({ start, end }).map(date => format(date, 'EEEE').toUpperCase())
+}
+
+export const toFullCourtLink = (hmctsNumber: string) => {
+  if (!hmctsNumber || hmctsNumber.length < 1) {
+    return undefined
+  }
+  return `HMCTS${hmctsNumber}@${config.defaultCourtVideoUrl}`
 }

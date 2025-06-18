@@ -111,6 +111,8 @@ export default class CourtBookingService {
       comments: journey.comments,
       notesForStaff: journey.notesForStaff,
       videoLinkUrl: journey.videoLinkUrl,
+      hmctsNumber: journey.hmctsNumber,
+      guestPin: journey.guestPin,
     } as unknown as T
   }
 

@@ -3,6 +3,7 @@
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/formatCvpLink.njk" import formatCvpLink %}
 
 {% set pageTitle = "Video link details" %}
 {% set pageHeading = ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + "’s video link details" %}
@@ -160,7 +161,7 @@
                             text: "Court hearing link (CVP)"
                         },
                         value: {
-                            text: booking.videoLinkUrl or "Not yet known"
+                            text: formatCvpLink(booking.hmctsNumber, booking.videoLinkUrl, hmctsLinkAndGuestPin)
                         },
                         actions: {
                             items: [
@@ -173,6 +174,14 @@
                             ]
                         } if isAmendable
                     } if booking.bookingType == 'COURT',
+                    {
+                        key: {
+                            text: "Guest pin"
+                        },
+                        value: {
+                            text: booking.guestPin or "None entered"
+                        }
+                    } if booking.bookingType == 'COURT' and hmctsLinkAndGuestPin,
                     {
                         key: {
                             text: "Post-court hearing time"

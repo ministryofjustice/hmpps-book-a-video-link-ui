@@ -3,6 +3,7 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/formatCvpLink.njk" import formatCvpLink %}
 
 {% set mode = session.req.params.mode %}
 {% set pageTitle = "The video link has been booked" if mode == 'create' else 'The video link booking has been updated' %}
@@ -103,9 +104,17 @@
                             text: "Court hearing link (CVP)"
                         },
                         value: {
-                            text: booking.videoLinkUrl or "Not yet known"
+                            text: formatCvpLink(booking.hmctsNumber, booking.videoLinkUrl, hmctsLinkAndGuestPin)
                         }
                     },
+                    {
+                        key: {
+                            text: "Guest pin"
+                        },
+                        value: {
+                            text: booking.guestPin or "Not required"
+                        }
+                    } if hmctsLinkAndGuestPin,
                     {
                         key: {
                             text: "Post-court hearing time"

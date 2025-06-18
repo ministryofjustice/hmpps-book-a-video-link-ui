@@ -866,10 +866,20 @@ export interface components {
        */
       comments?: string
       /**
-       * @description The video link for the appointment.
+       * @description he video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
        */
       videoLinkUrl?: string
+      /**
+       * @description The HMCTS number for the appointment. When this is provided the video link must be null. Ignored for non-court bookings.
+       * @example 12345678
+       */
+      hmctsNumber?: string
+      /**
+       * @description The guest PIN to access the video booking. Ignored for non-court bookings.
+       * @example 46385765
+       */
+      guestPin?: string
       /** @description
        *           The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
        *           be ignored if not a probation booking.
@@ -1214,10 +1224,20 @@ export interface components {
        */
       probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
       /**
-       * @description The video link for the appointment.
+       * @description The video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
        */
       videoLinkUrl?: string
+      /**
+       * @description The HMCTS number for the video booking. When this is provided the video link must be null. Ignored for non-court bookings.
+       * @example 12345678
+       */
+      hmctsNumber?: string
+      /**
+       * @description The guest PIN to access the video booking. Ignored for non-court bookings.
+       * @example 46385765
+       */
+      guestPin?: string
       /** @description
        *           The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
        *           be ignored if not a probation booking.
@@ -1431,10 +1451,20 @@ export interface components {
        */
       comments?: string
       /**
-       * @description The video link for the appointment. Must be a valid URL
+       * @description The video link for the video booking. Must be a valid URL. When this is provided the HMCTS number will be null.
        * @example https://video.here.com
        */
       videoLinkUrl?: string
+      /**
+       * @description The HMCTS number for the video booking. When this is provided the video link will be null.
+       * @example 12345678
+       */
+      hmctsNumber?: string
+      /**
+       * @description The guest PIN to access the video booking.
+       * @example 46385765
+       */
+      guestPin?: string
       /**
        * @description True if the booking was made by a prison user.
        * @example false
@@ -2160,6 +2190,16 @@ export interface components {
        * @example Please arrive 10 minutes early
        */
       notesForPrisoners?: string
+      /**
+       * @description The HMCTS number for the video booking. When this is provided the video link will be null.
+       * @example 12345678
+       */
+      hmctsNumber?: string
+      /**
+       * @description The guest PIN to access the video booking.
+       * @example 46385765
+       */
+      guestPin?: string
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {

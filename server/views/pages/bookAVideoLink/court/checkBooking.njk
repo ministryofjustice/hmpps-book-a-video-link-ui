@@ -57,6 +57,15 @@
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "/court/prisoner-search/search",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     },
                     {
@@ -89,6 +98,15 @@
                         },
                         value: {
                             text: (hearingTypes | find('code', session.journey.bookACourtHearing.hearingTypeCode)).description
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#hearingTypeCode",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     },
                     {
@@ -97,6 +115,15 @@
                         },
                         value: {
                             text: session.journey.bookACourtHearing.date | formatDate
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#date",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     },
                     {
@@ -113,6 +140,15 @@
                         },
                         value: {
                             text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).description
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking/select-rooms#preLocation",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     } if session.journey.bookACourtHearing.preLocationCode,
                     {
@@ -129,6 +165,15 @@
                         },
                         value: {
                             text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + " to " + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#startTime",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     },
                     {
@@ -137,6 +182,15 @@
                         },
                         value: {
                             text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking/select-rooms#location",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     } if mode != 'request',
                     {
@@ -145,6 +199,15 @@
                         },
                         value: {
                             text: session.journey.bookACourtHearing.videoLinkUrl or "Not yet known"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#videoLinkUrl",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     },
                     {
@@ -161,6 +224,15 @@
                         },
                         value: {
                             text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).description
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking/select-rooms#postLocation",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     } if session.journey.bookACourtHearing.postLocationCode,
                     {
@@ -177,6 +249,15 @@
                         },
                         value: {
                             text: session.journey.bookACourtHearing.notesForStaff or "None entered"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#notesForStaff",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     } if masterPublicPrivateNotes
                 ],

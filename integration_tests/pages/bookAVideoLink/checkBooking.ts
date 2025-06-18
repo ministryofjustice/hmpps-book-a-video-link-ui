@@ -34,4 +34,11 @@ export default class CheckBookingPage extends Page {
   bookVideoLink = (): PageElement => this.getButton('Book video link')
 
   updateBooking = (): PageElement => this.getButton('Update booking')
+
+  changeLinkFor = (key: string): PageElement =>
+    cy
+      .get('.govuk-summary-list__row')
+      .contains('.govuk-summary-list__key', key)
+      .parent()
+      .find('.govuk-summary-list__actions .govuk-link')
 }

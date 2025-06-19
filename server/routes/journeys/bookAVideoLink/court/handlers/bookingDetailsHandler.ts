@@ -35,7 +35,7 @@ class Body {
 
   @Expose()
   @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
-  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', 'cvpRequired', config.featureToggles.hmctsLinkAndGuestPin, {
+  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', config.featureToggles.hmctsLinkAndGuestPin, {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     message: (args: ValidationArguments) => {
       if (config.featureToggles.hmctsLinkAndGuestPin) {

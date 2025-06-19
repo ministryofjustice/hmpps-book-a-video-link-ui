@@ -1,11 +1,9 @@
 import { isNotEmpty, registerDecorator, ValidationArguments, ValidationOptions } from 'class-validator'
 import { isEmpty } from 'lodash'
-// import logger from '../../logger'
 
 export default function CustomOneOrTheOther(
   property: string,
   otherProperty: string,
-  checkProperty: string,
   featureToggle: boolean,
   validationOptions?: ValidationOptions,
 ) {
@@ -14,34 +12,34 @@ export default function CustomOneOrTheOther(
       name: 'customOneOrTheOther',
       target: object.constructor,
       propertyName,
-      constraints: [property, otherProperty, checkProperty, featureToggle],
+      constraints: [property, otherProperty, featureToggle],
       options: validationOptions,
       validator: {
         validate(value: string, args: ValidationArguments) {
-          const thisProperty: string = args.constraints[0]
-          const thatProperty: string = args.constraints[1]
-          const checkReqProperty: boolean = args.constraints[2]
-          const feature: boolean = args.constraints[3]
+          const thisProperty: never = args.constraints[0] as never
+          const thatProperty: never = args.constraints[1] as never
+          const feature: boolean = args.constraints[2]
 
-          if (args.object[checkReqProperty as keyof object] !== 'yes') {
-            // logger.info(`Pass: value of check ${args.object[checkReqProperty as keyof object]}`)
+          // Utility function to access keys of the unknown object type
+          const getKeyValue = <T extends object, U extends keyof T>(obj: T, key: U) => {
+            return obj[key]
+          }
+
+          // Value contains the conditional trigger to validate (e.g. cvpRequired) must be a yes/no string
+          if (value !== 'yes') {
             return true
           }
 
           if (feature) {
-            // logger.info(`Feature is ON on - pass if one or other`)
-            // logger.info(`This property ${args.object[thisProperty as keyof object]}`)
-            // logger.info(`That property ${args.object[thatProperty as keyof object]}`)
+            // When the feature is on check that one or other, but not both, values are not empty
             return (
-              (isNotEmpty(args.object[thisProperty as keyof object]) &&
-                isEmpty(args.object[thatProperty as keyof object])) ||
-              (isNotEmpty(args.object[thatProperty as keyof object]) &&
-                isEmpty(args.object[thisProperty as keyof object]))
+              (isNotEmpty(getKeyValue(args.object, thisProperty)) && isEmpty(getKeyValue(args.object, thatProperty))) ||
+              (isNotEmpty(getKeyValue(args.object, thatProperty)) && isEmpty(getKeyValue(args.object, thisProperty)))
             )
           }
 
-          // logger.info(`Feature is OFF - Pass if this is not empty ${args.object[thisProperty as keyof object]}`)
-          return isNotEmpty(args.object[thisProperty as keyof object])
+          // Without the feature switch only check that the first value `thisProperty` is not empty
+          return isNotEmpty(getKeyValue(args.object, thisProperty))
         },
       },
     })

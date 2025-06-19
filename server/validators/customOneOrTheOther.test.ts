@@ -7,7 +7,7 @@ import YesNo from '../routes/enumerator/yesNo'
 class BodyWithFeatureOn {
   @Expose()
   @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
-  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', 'cvpRequired', true, {
+  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', true, {
     message: 'Enter one or the other',
   })
   cvpRequired: string
@@ -35,7 +35,7 @@ class BodyWithFeatureOn {
 class BodyWithFeatureOff {
   @Expose()
   @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
-  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', 'cvpRequired', false, {
+  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', false, {
     message: 'Enter one or the other',
   })
   cvpRequired: string
@@ -86,7 +86,7 @@ describe('Custom one or the other validator', () => {
       expect(result).toHaveLength(0)
     })
 
-    it('Pass validation - CVP is not required and no values provided', async () => {
+    it('Pass validation - CVP is not required and no values are provided', async () => {
       const passTest = new BodyWithFeatureOn({
         cvpRequired: YesNo.NO,
         videoLinkUrl: undefined,

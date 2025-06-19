@@ -2,8 +2,17 @@
 import { Request, Response } from 'express'
 import { addMinutes, isValid, startOfToday, subMinutes } from 'date-fns'
 import { Expose, Transform } from 'class-transformer'
-import { IsEnum, IsNotEmpty, IsNumberString, IsOptional, MaxLength, ValidateIf } from 'class-validator'
-import { MutuallyExclusive } from '../../../../../validators/mutallyExclusive'
+import {
+  IsEnum,
+  isNotEmpty,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  MaxLength,
+  ValidateIf,
+  ValidationArguments,
+} from 'class-validator'
+import CustomOneOrTheOther from '../../../../../validators/customOneOrTheOther'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
@@ -26,23 +35,30 @@ class Body {
 
   @Expose()
   @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
+  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', config.featureToggles.hmctsLinkAndGuestPin, {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    message: (args: ValidationArguments) => {
+      if (config.featureToggles.hmctsLinkAndGuestPin) {
+        return 'Enter number from CVP address or enter full web address (URL)'
+      }
+      return 'Enter court hearing link'
+    },
+  })
   cvpRequired: string
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.cvpRequired === YesNo.YES)
-  @MutuallyExclusive({ message: 'Enter court hearing link (URL) or number from CVP address' }, 'cvp-link')
+  @ValidateIf(o => o.cvpRequired === YesNo.YES && isNotEmpty(o.videoLinkUrl))
   @MaxLength(120, { message: 'Court hearing link must be $constraint1 characters or less' })
-  @IsNotEmpty({ message: 'Enter court hearing link' })
   videoLinkUrl: string
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
-  @MutuallyExclusive({ message: 'Enter number from CVP address or the court hearing link (URL)' }, 'cvp-link')
+  @ValidateIf(
+    o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin && isNotEmpty(o.hmctsNumber),
+  )
   @MaxLength(8, { message: 'Number from CVP address must be $constraint1 characters or less' })
   @IsNumberString({ no_symbols: true }, { message: 'Number from CVP address must be a number, like 3457' })
-  @IsNotEmpty({ message: 'Enter number from CVP address' })
   hmctsNumber: string
 
   @Expose()

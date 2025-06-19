@@ -12,4 +12,11 @@ export default class ViewBookingPage extends Page {
   changeBookingDetails = (): PageElement => this.getButton('Change booking details')
 
   cancelVideoLink = (): PageElement => this.getButton('Cancel video link')
+
+  changeLinkFor = (key: string): PageElement =>
+    cy
+      .get('.govuk-summary-list__row')
+      .contains('.govuk-summary-list__key', key)
+      .parent()
+      .find('.govuk-summary-list__actions .govuk-link')
 }

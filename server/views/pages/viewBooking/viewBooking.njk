@@ -34,7 +34,17 @@
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ' (' + prisoner.prisonerNumber + ')'
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/court/prisoner-search/search',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-prisoner'}
+                                }
+                            ]
+                        } if isAmendable
                     },
                     {
                         key: {
@@ -90,7 +100,17 @@
                         },
                         value: {
                             text: booking.courtHearingTypeDescription
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#hearingTypeCode',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-hearing-type'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
@@ -106,7 +126,17 @@
                         },
                         value: {
                             text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).appointmentDate | formatDate
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#date',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-court-date'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
@@ -130,7 +160,17 @@
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/select-rooms#preLocation',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-pre-location'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
                     {
                         key: {
@@ -146,7 +186,17 @@
                         },
                         value: {
                             text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).startTime + ' to ' + (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).endTime
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#startTime',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-court-time'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.bookingType == 'COURT',
                     {
                         key: {
@@ -154,7 +204,17 @@
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/select-rooms#location',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-location'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN'),
                     {
                         key: {
@@ -166,10 +226,10 @@
                         actions: {
                             items: [
                                 {
-                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#cvpRequired',
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#videoLinkUrl',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-cvp-link'}
+                                    attributes: {"data-qa": 'change-video-url'}
                                 }
                             ]
                         } if isAmendable
@@ -196,7 +256,17 @@
                         },
                         value: {
                             text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/select-rooms#postLocation',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-post-location'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
                     {
                         key: {

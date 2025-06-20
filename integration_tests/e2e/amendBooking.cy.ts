@@ -19,6 +19,7 @@ import SelectRoomsPage from '../pages/bookAVideoLink/selectRoomsPage'
 import NoRoomsAvailablePage from '../pages/bookAVideoLink/noRoomsAvailablePage'
 import nottinghamSelectRoomsByDateTimeEmpty from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamSelectRoomsByDateTimeEmpty.json'
 import NotesForStaffPage from '../pages/bookAVideoLink/notesForStaff'
+import SearchPrisonerPage from '../pages/bookAVideoLink/searchPrisoner'
 
 context('Amend a booking', () => {
   beforeEach(() => {
@@ -148,6 +149,37 @@ context('Amend a booking', () => {
       noRoomsAvailablePage.assertHearingTime('15:00 to 16:00')
       noRoomsAvailablePage.assertPostHearingTime('16:00 to 16:15')
     })
+
+    it('Responds to change links and navigates to appropriate pages', () => {
+      const home = Page.verifyOnPage(HomePage)
+      home.viewAndChangeVideoLinks().click()
+
+      cy.task('stubGetCourtSchedule', { courtCode: 'ABERFC', date: '2050-01-01', response: courtBookingsForDay })
+      const searchBookingsPage = Page.verifyOnPage(SearchBookingsPage)
+      searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      searchBookingsPage.selectCourt('Aberystwyth Family')
+      searchBookingsPage.updateResults().click()
+      searchBookingsPage.viewOrEdit().click()
+
+      const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
+
+      const pageMappings: CourtNavigationTest[] = [
+        { summaryListKey: 'Prisoner name', expectedPage: SearchPrisonerPage },
+        { summaryListKey: 'Hearing type', expectedPage: ChangeVideoLinkBookingPage },
+        { summaryListKey: 'Date', expectedPage: ChangeVideoLinkBookingPage },
+        { summaryListKey: 'Pre-court hearing room', expectedPage: SelectRoomsPage },
+        { summaryListKey: 'Court hearing time', expectedPage: ChangeVideoLinkBookingPage },
+        { summaryListKey: 'Court hearing room', expectedPage: SelectRoomsPage },
+        { summaryListKey: 'Court hearing link (CVP)', expectedPage: ChangeVideoLinkBookingPage },
+        { summaryListKey: 'Post-court hearing room', expectedPage: SelectRoomsPage },
+      ]
+
+      pageMappings.forEach(({ summaryListKey, expectedPage }) => {
+        viewBookingPage.changeLinkFor(summaryListKey).click()
+        Page.verifyOnPage(expectedPage)
+        cy.go('back')
+      })
+    })
   })
 
   describe('Probation', () => {
@@ -220,3 +252,10 @@ context('Amend a booking', () => {
     })
   })
 })
+
+type PageConstructor = new () => Page
+
+interface CourtNavigationTest {
+  summaryListKey: string
+  expectedPage: PageConstructor
+}

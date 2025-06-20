@@ -240,7 +240,17 @@
                         },
                         value: {
                             text: booking.guestPin or "None entered"
-                        }
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#guestPin',
+                                    text: "Change",
+                                    classes: "govuk-link--no-visited-state",
+                                    attributes: {"data-qa": 'change-guest-pin'}
+                                }
+                            ]
+                        } if isAmendable
                     } if booking.bookingType == 'COURT' and hmctsLinkAndGuestPin,
                     {
                         key: {

@@ -129,3 +129,4 @@ integration_tests/mappings/
 **/Chart.lock
 /.run/
 **/.DS_Store
+wiremock.jar

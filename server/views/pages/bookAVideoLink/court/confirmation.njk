@@ -153,7 +153,7 @@
 
             <div class="govuk-button-group">
                 {% if mode == 'create' %}
-                    {{ govukButton({ text: "Exit", href: '/' }) }}
+                    {{ govukButton({ text: "Exit to main menu", href: '/' }) }}
                     <a href='/court/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
                 {% else %}
                     {{ govukButton({ text: "Return to booking", href: '/court/view-booking/' + booking.videoLinkBookingId }) }}

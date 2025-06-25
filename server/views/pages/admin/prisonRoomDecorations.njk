@@ -76,7 +76,10 @@
                     },
                     errorMessage: validationErrors | findError('videoUrl'),
                     classes: 'govuk-!-width-three-quarters',
-                    value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
+                    value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl,
+                    attributes: {
+                        'aria-label': 'Room link for ' + prison.name + ': ' + room.description
+                    }
                 }) }}
 
                 {% set courtHtml %}

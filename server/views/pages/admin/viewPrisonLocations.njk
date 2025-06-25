@@ -51,7 +51,8 @@
 
                     {% set actionHtml %}
                         <a href="/admin/view-prison-room/{{ prison.code }}/{{ result.dpsLocationId }}"
-                           class="govuk-link govuk-link--no-visited-state">View or edit
+                           class="govuk-link govuk-link--no-visited-state"
+                           aria-label="View or edit room {{ result.description }}">View or edit
                         </a>
                     {% endset %}
 

@@ -9,7 +9,10 @@
                 showTitleAsHeading: true,
                 dismissible: false,
                 text: successMessage.message,
-                classes: 'govuk-!-margin-bottom-0'
+                classes: 'govuk-!-margin-bottom-0',
+                attributes: {
+                    'aria-live': 'polite'
+                }
             }) }}
         </div>
     </div>

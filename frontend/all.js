@@ -4,6 +4,7 @@ import Card from './components/card/card'
 import FormSpinner from './components/form-spinner/form-spinner'
 import MojAddAnother from './components/moj-add-another/moj-add-another'
 import { ExportButton, PrintButton } from './components/action-bar/print-and-export'
+import overrideSkipLink from './components/skip-link/skip-link'
 
 function initAll() {
   var $backLinks = document.querySelectorAll('.govuk-back-link')
@@ -35,6 +36,8 @@ function initAll() {
   nodeListForEach($printButtons, function ($printButton) {
     new PrintButton($printButton)
   })
+
+  overrideSkipLink()
 }
 
 export { initAll }

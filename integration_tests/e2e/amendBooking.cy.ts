@@ -19,7 +19,6 @@ import SelectRoomsPage from '../pages/bookAVideoLink/selectRoomsPage'
 import NoRoomsAvailablePage from '../pages/bookAVideoLink/noRoomsAvailablePage'
 import nottinghamSelectRoomsByDateTimeEmpty from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamSelectRoomsByDateTimeEmpty.json'
 import NotesForStaffPage from '../pages/bookAVideoLink/notesForStaff'
-import SearchPrisonerPage from '../pages/bookAVideoLink/searchPrisoner'
 
 context('Amend a booking', () => {
   beforeEach(() => {
@@ -164,7 +163,6 @@ context('Amend a booking', () => {
       const viewBookingPage = Page.verifyOnPage(ViewBookingPage)
 
       const pageMappings: CourtNavigationTest[] = [
-        { summaryListKey: 'Prisoner name', expectedPage: SearchPrisonerPage },
         { summaryListKey: 'Hearing type', expectedPage: ChangeVideoLinkBookingPage },
         { summaryListKey: 'Date', expectedPage: ChangeVideoLinkBookingPage },
         { summaryListKey: 'Pre-court hearing room', expectedPage: SelectRoomsPage },

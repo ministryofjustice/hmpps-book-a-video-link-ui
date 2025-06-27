@@ -34,17 +34,7 @@
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ' (' + prisoner.prisonerNumber + ')'
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: '/court/prisoner-search/search',
-                                    text: "Change",
-                                    classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-prisoner'}
-                                }
-                            ]
-                        } if isAmendable
+                        }
                     },
                     {
                         key: {

@@ -94,7 +94,7 @@
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
                                     ('<span class="govuk-body ">Pre-court hearing</span>' if item.appointmentType == 'VLB_COURT_PRE') +
                                     ('<span class="govuk-body ">Post-court hearing</span>' if item.appointmentType == 'VLB_COURT_POST') },
-                            { text: item.videoUrl if item.videoUrl else 'None entered'}
+                            { text: (item.videoUrl or item.hmctsNumber | toFullCourtLink) if item.videoUrl or item.hmctsNumber else 'None entered'}
                         ]
                     ), printRows) %}
                 {% endfor %}

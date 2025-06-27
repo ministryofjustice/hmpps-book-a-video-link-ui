@@ -7,6 +7,7 @@ import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { Court, ProbationTeam, ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -40,6 +41,8 @@ beforeEach(() => {
     { code: 'P1', description: 'Probation 1' },
     { code: 'P2', description: 'Probation 2' },
   ] as ProbationTeam[])
+
+  config.defaultCourtVideoUrl = 'meet.video.justice.gov.uk'
 })
 
 afterEach(() => {
@@ -89,8 +92,8 @@ describe('GET', () => {
       '8:45,9:00,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
       '9:00,9:30,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
       '9:30,9:45,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:45,10:00,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '10:00,10:45,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,'
+      '9:45,10:00,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,HMCTS45643@meet.video.justice.gov.uk,\n' +
+      '10:00,10:45,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,HMCTS54321@meet.video.justice.gov.uk,'
 
     videoLinkService.getVideoLinkSchedule.mockResolvedValue([
       getCourtBooking(1, '8:45', '9:00', 'john', 'P1'),
@@ -102,8 +105,8 @@ describe('GET', () => {
       getCourtBooking(3, '8:45', '9:00', 'jenny', 'P3'),
       getCourtBooking(3, '9:00', '9:30', 'jenny', 'P3'),
       getCourtBooking(3, '9:30', '9:45', 'jenny', 'P3'),
-      getCourtBooking(4, '9:45', '10:00', 'jane', 'P2'),
-      getCourtBooking(4, '10:00', '10:45', 'jane', 'P2'),
+      getCourtBooking(4, '9:45', '10:00', 'jane', 'P2', '45643'),
+      getCourtBooking(4, '10:00', '10:45', 'jane', 'P2', '54321'),
     ])
 
     return request(app)
@@ -167,34 +170,40 @@ const getCourtBooking = (
   end: string = '13:15',
   name: string = 'john doe',
   prisNumber: string = 'A1234AA',
-): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => ({
-  videoBookingId: bookingId,
-  prisonAppointmentId: bookingId,
-  bookingType: 'COURT',
-  statusCode: 'ACTIVE',
-  videoUrl: 'https://court.link.url',
-  createdByPrison: 'false',
-  courtId: 1,
-  courtCode: 'C1',
-  courtDescription: 'Court 1',
-  hearingType: 'APPEAL',
-  hearingTypeDescription: 'Appeal hearing',
-  prisonCode: 'MDI',
-  prisonName: 'HMP Moorland',
-  prisonerNumber: prisNumber,
-  appointmentType: 'VLB_COURT_MAIN',
-  appointmentTypeDescription: 'Court - main hearing',
-  prisonLocKey: 'MDI-VCC-1',
-  prisonLocDesc: 'VCC-crown-conference-room-1',
-  dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
-  appointmentDate: '2024-10-03',
-  startTime: start,
-  endTime: end,
-  createdTime: '2024-10-01 14:45',
-  createdBy: 'creator@email.com',
-  prisonerName: name,
-  prisonLocationDescription: 'Location description',
-})
+  hmctsNumber: string = undefined,
+): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => {
+  const videoUrl = hmctsNumber ? undefined : 'https://court.link.url'
+
+  return {
+    videoBookingId: bookingId,
+    prisonAppointmentId: bookingId,
+    bookingType: 'COURT',
+    statusCode: 'ACTIVE',
+    videoUrl,
+    createdByPrison: 'false',
+    courtId: 1,
+    courtCode: 'C1',
+    courtDescription: 'Court 1',
+    hearingType: 'APPEAL',
+    hearingTypeDescription: 'Appeal hearing',
+    prisonCode: 'MDI',
+    prisonName: 'HMP Moorland',
+    prisonerNumber: prisNumber,
+    appointmentType: 'VLB_COURT_MAIN',
+    appointmentTypeDescription: 'Court - main hearing',
+    prisonLocKey: 'MDI-VCC-1',
+    prisonLocDesc: 'VCC-crown-conference-room-1',
+    dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
+    appointmentDate: '2024-10-03',
+    startTime: start,
+    endTime: end,
+    createdTime: '2024-10-01 14:45',
+    createdBy: 'creator@email.com',
+    prisonerName: name,
+    prisonLocationDescription: 'Location description',
+    hmctsNumber,
+  }
+}
 
 const getProbationTeamBooking = (): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => ({
   videoBookingId: 2,

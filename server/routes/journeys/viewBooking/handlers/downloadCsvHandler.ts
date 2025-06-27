@@ -7,7 +7,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
-import { convertToTitleCase, formatDate, parseDatePickerDate } from '../../../../utils/utils'
+import { convertToTitleCase, formatDate, parseDatePickerDate, toFullCourtLink } from '../../../../utils/utils'
 import { ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
@@ -75,7 +75,7 @@ export default class DownloadCsvHandler implements PageHandler {
       'Prisoner Number': a.prisonerNumber,
       'Appointment Type': this.courtAppointmentType(a.appointmentType),
       'Hearing Type': a.hearingTypeDescription,
-      'Court Hearing Link': a.appointmentType === 'VLB_COURT_MAIN' && a.videoUrl ? a.videoUrl : '',
+      'Court Hearing Link': this.courtLinkFor(a) || '',
       'Room Hearing Link': a.appointmentType !== 'VLB_COURT_MAIN' && a.videoUrl ? a.videoUrl : '',
     }))
   }
@@ -104,5 +104,18 @@ export default class DownloadCsvHandler implements PageHandler {
       'Probation Officer Name': a.probationOfficerName ? a.probationOfficerName : '',
       'Email Address': a.probationOfficerEmailAddress ? a.probationOfficerEmailAddress : '',
     }))
+  }
+
+  private courtLinkFor = (item: ScheduleItem & { prisonerName: string; prisonLocationDescription: string }) => {
+    if (item.appointmentType === 'VLB_COURT_MAIN') {
+      if (item.videoUrl) {
+        return item.videoUrl
+      }
+      if (item.hmctsNumber) {
+        return toFullCourtLink(item.hmctsNumber)
+      }
+    }
+
+    return undefined
   }
 }

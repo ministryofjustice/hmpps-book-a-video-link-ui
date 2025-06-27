@@ -169,6 +169,7 @@ context('Amend a booking', () => {
         { summaryListKey: 'Court hearing time', expectedPage: ChangeVideoLinkBookingPage },
         { summaryListKey: 'Court hearing room', expectedPage: SelectRoomsPage },
         { summaryListKey: 'Court hearing link (CVP)', expectedPage: ChangeVideoLinkBookingPage },
+        { summaryListKey: 'Guest pin', expectedPage: ChangeVideoLinkBookingPage },
         { summaryListKey: 'Post-court hearing room', expectedPage: SelectRoomsPage },
       ]
 

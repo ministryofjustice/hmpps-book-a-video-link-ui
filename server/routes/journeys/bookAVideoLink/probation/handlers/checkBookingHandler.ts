@@ -10,17 +10,10 @@ import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import ProbationBookingService from '../../../../../services/probationBookingService'
-import config from '../../../../../config'
 
 class Body {
   @Expose()
-  @ValidateIf(o => o.comments && !config.featureToggles.masterPublicPrivateNotes)
-  @IsOptional()
-  @MaxLength(400, { message: 'Comments must be $constraint1 characters or less' })
-  comments: string
-
-  @Expose()
-  @ValidateIf(o => o.notesForStaff && config.featureToggles.masterPublicPrivateNotes)
+  @ValidateIf(o => o.notesForStaff)
   @IsOptional()
   @MaxLength(400, { message: 'Notes for prison staff must be $constraint1 characters or less' })
   notesForStaff: string
@@ -76,20 +69,9 @@ export default class CheckBookingHandler implements PageHandler {
     const { body } = req
     const { mode } = req.params
 
-    // There are two forms which submit to here - create/amend booking and update comments/staff notes
-    // They will contain different body values depending on the feature toggle for mastering notes for staff.
-    if (config.featureToggles.masterPublicPrivateNotes) {
-      req.session.journey.bookAProbationMeeting = {
-        ...req.session.journey.bookAProbationMeeting,
-        notesForStaff: body?.notesForStaff
-          ? body.notesForStaff
-          : req.session.journey.bookAProbationMeeting.notesForStaff,
-      }
-    } else {
-      req.session.journey.bookAProbationMeeting = {
-        ...req.session.journey.bookAProbationMeeting,
-        comments: body?.comments ? body.comments : req.session.journey.bookAProbationMeeting.comments,
-      }
+    req.session.journey.bookAProbationMeeting = {
+      ...req.session.journey.bookAProbationMeeting,
+      notesForStaff: body?.notesForStaff ? body.notesForStaff : req.session.journey.bookAProbationMeeting.notesForStaff,
     }
 
     if (mode !== 'request') {

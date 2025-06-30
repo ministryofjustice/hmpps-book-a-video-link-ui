@@ -5,7 +5,6 @@ import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetu
 import AuditService, { Page } from '../../../../../services/auditService'
 import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/videoLinkService')
@@ -24,13 +23,11 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.masterPublicPrivateNotes = false
   appSetup({
     bookAProbationMeeting: {
       bookingId: 1001,
       date: '2024-06-12',
       startTime: '1970-01-01T16:00',
-      comments: 'Test comment',
       notesForStaff: 'notes',
     },
   })
@@ -42,34 +39,14 @@ afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('Comments or staff notes handler', () => {
+describe('Comments handler', () => {
   describe('GET', () => {
-    it('should render the correct page for comments', () => {
-      return request(app)
-        .get(`/probation/booking/amend/1001/${journeyId()}/video-link-booking/comments`)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          const heading = getPageHeader($)
-          const cancelLink = getByDataQa($, 'cancel-link').attr('href')
-
-          expect(heading).toEqual('Change comments on this booking')
-          expect(cancelLink).toEqual(`/probation/view-booking/1001`)
-          expect(auditService.logPageView).toHaveBeenCalledWith(Page.COMMENTS_PAGE, {
-            who: user.username,
-            correlationId: expect.any(String),
-          })
-        })
-    })
-
     it('should render the correct page for staff notes', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
       appSetup({
         bookAProbationMeeting: {
           bookingId: 1001,
           date: '2024-06-12',
           startTime: '1970-01-01T16:00',
-          comments: 'Test comment',
           notesForStaff: 'notes',
         },
       })

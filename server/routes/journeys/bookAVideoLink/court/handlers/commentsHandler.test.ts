@@ -28,7 +28,7 @@ beforeEach(() => {
       bookingId: 1001,
       date: '2024-06-12',
       startTime: '1970-01-01T16:00',
-      comments: 'Test comment',
+      notesForStaff: 'note',
     },
   })
 
@@ -50,7 +50,7 @@ describe('Comments handler', () => {
           const heading = getPageHeader($)
           const cancelLink = getByDataQa($, 'cancel-link').attr('href')
 
-          expect(heading).toEqual('Change comments on this booking')
+          expect(heading).toEqual('Change notes on this booking')
           expect(cancelLink).toEqual(`/court/view-booking/1001`)
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.COMMENTS_PAGE, {
             who: user.username,

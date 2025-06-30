@@ -302,24 +302,6 @@
                     } if booking.bookingType == 'PROBATION',
                     {
                         key: {
-                            text: "Comments"
-                        },
-                        value: {
-                            text: booking.comments or "None entered"
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/comments',
-                                    text: "Change",
-                                    classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-comments'}
-                                }
-                            ]
-                        } if isAmendable
-                    } if masterPublicPrivateNotes != true,
-                    {
-                        key: {
                             text: "Notes for prison staff"
                         },
                         value: {
@@ -335,7 +317,7 @@
                                 }
                             ]
                         } if isAmendable
-                    } if masterPublicPrivateNotes
+                    }
                 ]
             }) }}
 

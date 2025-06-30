@@ -24,7 +24,6 @@ const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 let app: Express
 
 const appSetup = (journeySession = {}) => {
-  config.featureToggles.masterPublicPrivateNotes = true
   config.featureToggles.hmctsLinkAndGuestPin = true
 
   app = appWithAllRoutes({

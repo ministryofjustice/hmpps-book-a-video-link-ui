@@ -9,6 +9,7 @@ import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/videoLinkService')
@@ -23,6 +24,9 @@ const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
 let app: Express
 
 const appSetup = (journeySession = {}) => {
+  config.featureToggles.masterPublicPrivateNotes = true
+  config.featureToggles.hmctsLinkAndGuestPin = true
+
   app = appWithAllRoutes({
     services: { auditService, videoLinkService, prisonerService, prisonService },
     userSupplier: () => user,
@@ -136,6 +140,70 @@ describe('GET', () => {
         expect(existsByDataQa($, 'cancelled-banner')).toBe(true)
       })
   })
+
+  it("Options to change the court booking are not available when it's no longer amendable", () => {
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+      ...getCourtBooking('AA1234A'),
+    })
+    videoLinkService.bookingIsAmendable.mockReturnValue(false)
+
+    return request(app)
+      .get(`/court/view-booking/1`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        const changeLink = getByDataQa($, 'change-link').attr('href')
+        const changeHearingType = getByDataQa($, 'change-hearing-type').attr('href')
+        const changeCourtDate = getByDataQa($, 'change-court-date').attr('href')
+        const changeGuestPin = getByDataQa($, 'change-guest-pin').attr('href')
+        const changePreLocation = getByDataQa($, 'change-pre-location').attr('href')
+        const changeCourtTime = getByDataQa($, 'change-court-time').attr('href')
+        const changeLocation = getByDataQa($, 'change-location').attr('href')
+        const changeVideoUrl = getByDataQa($, 'change-video-url').attr('href')
+        const changePostLocation = getByDataQa($, 'change-post-location').attr('href')
+        const changeNotes = getByDataQa($, 'change-notes').attr('href')
+
+        expect(heading).toEqual('Joe Bloggs’s video link details')
+        expect(changeLink).toBeUndefined()
+        expect(changeHearingType).toBeUndefined()
+        expect(changeCourtDate).toBeUndefined()
+        expect(changePreLocation).toBeUndefined()
+        expect(changeCourtTime).toBeUndefined()
+        expect(changeLocation).toBeUndefined()
+        expect(changeVideoUrl).toBeUndefined()
+        expect(changePostLocation).toBeUndefined()
+        expect(changeNotes).toBeUndefined()
+        expect(changeGuestPin).toBeUndefined()
+      })
+  })
+
+  it("Options to change the court booking are available when it's amendable", () => {
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+      ...getCourtBooking('AA1234A'),
+    })
+    videoLinkService.bookingIsAmendable.mockReturnValue(true)
+
+    return request(app)
+      .get(`/court/view-booking/1`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+
+        expect(heading).toEqual('Joe Bloggs’s video link details')
+        expect(existsByDataQa($, 'change-link')).toBe(true)
+        expect(existsByDataQa($, 'change-hearing-type')).toBe(true)
+        expect(existsByDataQa($, 'change-court-date')).toBe(true)
+        expect(existsByDataQa($, 'change-guest-pin')).toBe(true)
+        expect(existsByDataQa($, 'change-pre-location')).toBe(true)
+        expect(existsByDataQa($, 'change-court-time')).toBe(true)
+        expect(existsByDataQa($, 'change-location')).toBe(true)
+        expect(existsByDataQa($, 'change-video-url')).toBe(true)
+        expect(existsByDataQa($, 'change-post-location')).toBe(true)
+        expect(existsByDataQa($, 'change-notes')).toBe(true)
+      })
+  })
 })
 
 const getCourtBooking = (prisonerNumber: string) =>
@@ -174,6 +242,7 @@ const getCourtBooking = (prisonerNumber: string) =>
     courtDescription: 'Derby Justice Centre',
     courtHearingTypeDescription: 'Appeal hearing',
     videoLinkUrl: 'https://video.here.com',
+    notesForStaff: 'notes',
   }) as VideoLinkBooking
 
 const getProbationBooking = (prisonerNumber: string) =>

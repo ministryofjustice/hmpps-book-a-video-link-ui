@@ -4,6 +4,10 @@ import HomePage from '../pages/home'
 import AdministrationPage from '../pages/administration/administration'
 import ExtractDataByBookingDatePage from '../pages/administration/extractDataByBookingDate'
 import ExtractDataByHearingDatePage from '../pages/administration/extractDataByHearingDate'
+import ManagePrisonVideoRoomsPage from '../pages/administration/managePrisonVideoRooms'
+import ViewRoomsPage from '../pages/administration/viewRooms'
+import berwynLocations from '../mockApis/fixtures/bookAVideoLinkApi/berwynLocations.json'
+import EditRoomPage from '../pages/administration/editRoom'
 
 context('Administration', () => {
   beforeEach(() => {
@@ -89,5 +93,96 @@ context('Administration', () => {
     extractDataByHearingDatePage.extractData().click()
 
     cy.readFile('cypress/downloads/probationDataExtractByMeetingDate.csv').should('exist')
+  })
+
+  it('Admin user can manage a room', () => {
+    cy.task('stubAllPrisons')
+    cy.task('stubEnabledPrisons')
+    cy.task('stubPrisonLocations', berwynLocations)
+    cy.task('stubGetEnabledCourts')
+    cy.task('stubGetEnabledProbationTeams')
+    cy.task('stubGetRoomDetails', {
+      key: 'BWI-VIDEOLINK-VCC-01',
+      prisonCode: 'BWI',
+      description: 'Video Room 01',
+      enabled: true,
+      dpsLocationId: 'f1c78dca-733b-43cc-b03f-6c870941a2c7',
+      extraAttributes: {
+        attributeId: 56,
+        locationStatus: 'INACTIVE',
+        statusMessage: null,
+        expectedActiveDate: null,
+        locationUsage: 'COURT',
+        allowedParties: ['ABERCV'],
+        prisonVideoUrl: null,
+        notes: null,
+        schedule: [
+          {
+            scheduleId: 54,
+            startDayOfWeek: 'MONDAY',
+            endDayOfWeek: 'MONDAY',
+            startTime: '08:00',
+            endTime: '18:00',
+            locationUsage: 'COURT',
+            allowedParties: ['ABERCV'],
+          },
+        ],
+      },
+    })
+    cy.signIn()
+
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
+
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.managePrisonVideoRooms().click()
+
+    const managePrisonRoomPage = Page.verifyOnPage(ManagePrisonVideoRoomsPage)
+    managePrisonRoomPage.manageRoomsLink().click()
+
+    const viewRoomsPage = Page.verifyOnPage(ViewRoomsPage)
+    viewRoomsPage.viewOrEditLink().click()
+
+    const editRoomPage = Page.verifyOnPage(EditRoomPage)
+    editRoomPage.selectRoomStatus('active')
+    editRoomPage.roomLink().type('https://prison-room-link')
+    editRoomPage.comments().type('This is a comment')
+
+    cy.task('stubUpdateRoomDetails')
+    cy.task('stubGetRoomDetails', {
+      key: 'BWI-VIDEOLINK-VCC-01',
+      prisonCode: 'BWI',
+      description: 'Video Room 01',
+      enabled: true,
+      dpsLocationId: 'f1c78dca-733b-43cc-b03f-6c870941a2c7',
+      extraAttributes: {
+        attributeId: 56,
+        locationStatus: 'ACTIVE',
+        statusMessage: null,
+        expectedActiveDate: null,
+        locationUsage: 'COURT',
+        allowedParties: ['ABERCV'],
+        prisonVideoUrl: 'https://prison-room-link',
+        notes: 'This is a comment',
+        schedule: [
+          {
+            scheduleId: 54,
+            startDayOfWeek: 'MONDAY',
+            endDayOfWeek: 'MONDAY',
+            startTime: '08:00',
+            endTime: '18:00',
+            locationUsage: 'COURT',
+            allowedParties: ['ABERCV'],
+          },
+        ],
+      },
+    })
+    editRoomPage.save().click()
+
+    cy.get(`.moj-alert__content`).should('have.text', 'Room changes have been saved')
+    editRoomPage.getSelectedRoomStatus().should('eq', 'active')
+    editRoomPage.roomLink().should('have.value', 'https://prison-room-link')
+    editRoomPage.getSelectedRoomPermission().should('eq', 'court')
+    editRoomPage.comments().should('have.value', 'This is a comment')
   })
 })

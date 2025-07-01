@@ -117,4 +117,6 @@ export default {
   stubCourtDataExtractByHearingDate,
   stubProbationDataExtractByBookingDate,
   stubProbationDataExtractByMeetingDate,
+  stubGetRoomDetails: response => stubGet('/book-a-video-link-api/room-admin/(.)*', response),
+  stubUpdateRoomDetails: () => stubPut('/book-a-video-link-api/room-admin/(.)*'),
 }

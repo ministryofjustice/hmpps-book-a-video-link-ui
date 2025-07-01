@@ -1,0 +1,282 @@
+[
+  {
+    "key": "BWI-VIDEOLINK-VCC-01",
+    "prisonCode": "BWI",
+    "description": "Video Room 01",
+    "enabled": true,
+    "dpsLocationId": "f1c78dca-733b-43cc-b03f-6c870941a2c7",
+    "extraAttributes": {
+      "attributeId": 56,
+      "locationStatus": "INACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "COURT",
+      "allowedParties": [
+        "ABERCV"
+      ],
+      "prisonVideoUrl": null,
+      "notes": null,
+      "schedule": [
+        {
+          "scheduleId": 54,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "MONDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": [
+            "ABERCV"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-02",
+    "prisonCode": "BWI",
+    "description": "Video Room 02",
+    "enabled": true,
+    "dpsLocationId": "e9be3182-4c75-4ad0-9568-84bc865f8d2d",
+    "extraAttributes": {
+      "attributeId": 21,
+      "locationStatus": "ACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "SHARED",
+      "allowedParties": [],
+      "prisonVideoUrl": "vcc-room-link",
+      "notes": null,
+      "schedule": [
+        {
+          "scheduleId": 69,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "MONDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": []
+        },
+        {
+          "scheduleId": 70,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "MONDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "PROBATION",
+          "allowedParties": []
+        },
+        {
+          "scheduleId": 77,
+          "startDayOfWeek": "TUESDAY",
+          "endDayOfWeek": "THURSDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "BLOCKED",
+          "allowedParties": []
+        }
+      ]
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-03",
+    "prisonCode": "BWI",
+    "description": "Video Room 03",
+    "enabled": true,
+    "dpsLocationId": "da2c8e56-9d5c-431e-beaa-5125ff7ad8ad",
+    "extraAttributes": {
+      "attributeId": 19,
+      "locationStatus": "ACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "COURT",
+      "allowedParties": [
+        "AYLSCC"
+      ],
+      "prisonVideoUrl": null,
+      "notes": "Test comment",
+      "schedule": [
+        {
+          "scheduleId": 139,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "FRIDAY",
+          "startTime": "10:00",
+          "endTime": "17:00",
+          "locationUsage": "COURT",
+          "allowedParties": [
+            "ALDRMC"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-04",
+    "prisonCode": "BWI",
+    "description": "Video Room 04",
+    "enabled": true,
+    "dpsLocationId": "b48a43fb-b53c-4bd4-8dea-225e172bb774",
+    "extraAttributes": {
+      "attributeId": 57,
+      "locationStatus": "INACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "COURT",
+      "allowedParties": [],
+      "prisonVideoUrl": null,
+      "notes": null,
+      "schedule": [
+        {
+          "scheduleId": 78,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "SATURDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": []
+        },
+        {
+          "scheduleId": 55,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "MONDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": [
+            "ABERCV"
+          ]
+        },
+        {
+          "scheduleId": 57,
+          "startDayOfWeek": "THURSDAY",
+          "endDayOfWeek": "THURSDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "BLOCKED",
+          "allowedParties": []
+        },
+        {
+          "scheduleId": 58,
+          "startDayOfWeek": "FRIDAY",
+          "endDayOfWeek": "FRIDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": []
+        }
+      ]
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-05",
+    "prisonCode": "BWI",
+    "description": "Video Room 05",
+    "enabled": true,
+    "dpsLocationId": "7e8f4b00-aa26-4ba5-89de-243b9bc56716",
+    "extraAttributes": {
+      "attributeId": 58,
+      "locationStatus": "ACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "SHARED",
+      "allowedParties": [],
+      "prisonVideoUrl": null,
+      "notes": null,
+      "schedule": []
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-06",
+    "prisonCode": "BWI",
+    "description": "Video Room 06",
+    "enabled": true,
+    "dpsLocationId": "8b9bbe22-f297-47f7-a48e-b1548dbc8664",
+    "extraAttributes": {
+      "attributeId": 60,
+      "locationStatus": "ACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "COURT",
+      "allowedParties": [],
+      "prisonVideoUrl": null,
+      "notes": null,
+      "schedule": [
+        {
+          "scheduleId": 65,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "MONDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": []
+        }
+      ]
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-07",
+    "prisonCode": "BWI",
+    "description": "Video Room 07",
+    "enabled": true,
+    "dpsLocationId": "6b23c9b8-765f-4f98-af18-73c5bb57ecbb",
+    "extraAttributes": {
+      "attributeId": 61,
+      "locationStatus": "ACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "COURT",
+      "allowedParties": [],
+      "prisonVideoUrl": null,
+      "notes": null,
+      "schedule": [
+        {
+          "scheduleId": 66,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "MONDAY",
+          "startTime": "08:00",
+          "endTime": "18:00",
+          "locationUsage": "COURT",
+          "allowedParties": []
+        }
+      ]
+    }
+  },
+  {
+    "key": "BWI-VIDEOLINK-VCC-08",
+    "prisonCode": "BWI",
+    "description": "Video Room 08",
+    "enabled": true,
+    "dpsLocationId": "870d36be-14c9-47b2-abb6-2aa826c7a552",
+    "extraAttributes": {
+      "attributeId": 59,
+      "locationStatus": "ACTIVE",
+      "statusMessage": null,
+      "expectedActiveDate": null,
+      "locationUsage": "SCHEDULE",
+      "allowedParties": [],
+      "prisonVideoUrl": "HMCI12345",
+      "notes": null,
+      "schedule": [
+        {
+          "scheduleId": 63,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "FRIDAY",
+          "startTime": "08:00",
+          "endTime": "17:00",
+          "locationUsage": "COURT",
+          "allowedParties": [
+            "CRT027"
+          ]
+        },
+        {
+          "scheduleId": 134,
+          "startDayOfWeek": "MONDAY",
+          "endDayOfWeek": "FRIDAY",
+          "startTime": "16:00",
+          "endTime": "19:00",
+          "locationUsage": "PROBATION",
+          "allowedParties": []
+        }
+      ]
+    }
+  }
+]

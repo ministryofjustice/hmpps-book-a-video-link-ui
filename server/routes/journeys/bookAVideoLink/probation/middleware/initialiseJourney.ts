@@ -49,7 +49,6 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       startTime: parseTimeToISOString(mainAppointment.startTime),
       endTime: parseTimeToISOString(mainAppointment.endTime),
       locationCode: mainAppointment?.prisonLocKey,
-      comments: booking.comments,
       notesForStaff: booking.notesForStaff,
     }
 

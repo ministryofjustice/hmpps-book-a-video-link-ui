@@ -13,7 +13,6 @@ import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import IsValidUkPhoneNumber from '../../../../validators/isValidUkPhoneNumber'
-import config from '../../../../../config'
 
 class Body {
   @Expose()
@@ -94,7 +93,7 @@ class Body {
   endTime: Date
 
   @Expose()
-  @ValidateIf(o => o.notesForStaff && config.featureToggles.masterPublicPrivateNotes)
+  @ValidateIf(o => o.notesForStaff)
   @IsOptional()
   @MaxLength(400, { message: 'Notes for prison staff must be $constraint1 characters or less' })
   notesForStaff: string

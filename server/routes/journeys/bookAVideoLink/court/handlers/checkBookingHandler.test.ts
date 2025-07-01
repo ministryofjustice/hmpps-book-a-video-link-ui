@@ -3,15 +3,14 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByDataQa, existsByKey, existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
+import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
-import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
+import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import { AvailabilityResponse, Court, Location, ReferenceCode } from '../../../../../@types/bookAVideoLinkApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import CourtBookingService from '../../../../../services/courtBookingService'
-import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtBookingService')
@@ -45,8 +44,6 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.masterPublicPrivateNotes = false
-
   appSetup({
     bookACourtHearing: {
       prisoner: { prisonId: 'MDI' },
@@ -152,81 +149,7 @@ describe('Check Booking handler', () => {
         .expect('location', 'not-available')
     })
 
-    it('should prompt for comments when staff notes feature toggle is off', () => {
-      return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .expect('Content-Type', /html/)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          expect(existsByLabel($, 'Comments (optional)')).toBe(true)
-          expect(existsByKey($, 'Notes for prison staff')).toBe(false)
-        })
-    })
-
-    it('should not prompt for comments when staff notes feature toggle is on', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
-      appSetup({
-        bookACourtHearing: {
-          prisoner: { prisonId: 'MDI' },
-          date: '2024-06-12',
-          startTime: '1970-01-01T16:00',
-        },
-      })
-
-      return request(app)
-        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .expect(res => {
-          const $ = cheerio.load(res.text)
-          expect(existsByLabel($, 'Comments (optional)')).toBe(false)
-          expect(existsByKey($, 'Notes for prison staff')).toBe(true)
-        })
-    })
-  })
-
-  describe('POST', () => {
-    it('should validate the comment length when staff note feature is toggled off', () => {
-      appSetup({ bookACourtHearing: { type: 'COURT' } })
-
-      return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ comments: 'a'.repeat(401) })
-        .expect(() => {
-          expectErrorMessages([
-            {
-              fieldId: 'comments',
-              href: '#comments',
-              text: 'Comments must be 400 characters or less',
-            },
-          ])
-        })
-    })
-
-    it('should not validate comments when staff note feature is toggled on', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
-      appSetup({ bookACourtHearing: { type: 'COURT' } })
-
-      return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ comments: 'a'.repeat(401) })
-        .expect(() => {
-          expectNoErrorMessages()
-        })
-    })
-
-    it('should not validate notes for staff when staff note feature is toggled off', () => {
-      config.featureToggles.masterPublicPrivateNotes = false
-      appSetup({ bookACourtHearing: { type: 'COURT' } })
-
-      return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ notesForStaff: 'a'.repeat(401) })
-        .expect(() => {
-          expectNoErrorMessages()
-        })
-    })
-
-    it('should validate the notes for staff length when staff note feature is toggled on', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
+    it('should validate the notes for staff length', () => {
       appSetup({ bookACourtHearing: { type: 'COURT' } })
 
       return request(app)
@@ -243,77 +166,17 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should save the posted fields when staff note feature is toggled off', () => {
-      appSetup({ bookACourtHearing: { type: 'COURT' } })
-      courtBookingService.createVideoLinkBooking.mockResolvedValue(1)
-
-      return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ comments: 'comment' })
-        .expect(302)
-        .expect('location', 'confirmation/1')
-        .expect(() => {
-          expect(courtBookingService.createVideoLinkBooking).toHaveBeenCalledWith(
-            {
-              comments: 'comment',
-              type: 'COURT',
-            },
-            user,
-          )
-        })
-    })
-
-    it('should not save any comments when staff notes feature is toggled on', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
-      appSetup({ bookACourtHearing: { type: 'COURT' } })
-      courtBookingService.createVideoLinkBooking.mockResolvedValue(1)
-
-      return request(app)
-        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ comments: 'comment', notesForStaff: 'notes' })
-        .expect(302)
-        .expect('location', 'confirmation/1')
-        .expect(() => {
-          expect(courtBookingService.createVideoLinkBooking).toHaveBeenCalledWith(
-            {
-              comments: undefined,
-              notesForStaff: 'notes',
-              type: 'COURT',
-            },
-            user,
-          )
-        })
-    })
-
     it('should redirect to not available if the selected room is not available', () => {
       courtBookingService.checkAvailability.mockResolvedValue({ availabilityOk: false } as AvailabilityResponse)
 
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
-        .send({ comments: 'comment' })
+        .send({ notesForStaff: 'notes' })
         .expect(302)
         .expect('location', 'not-available')
     })
 
     it('should amend the posted fields', () => {
-      const bookACourtHearing = { bookingId: 1, date: '2024-06-27', startTime: '15:00' }
-      appSetup({ bookACourtHearing })
-
-      return request(app)
-        .post(`/court/booking/amend/1/${journeyId()}/video-link-booking/check-booking`)
-        .send({ comments: 'comment' })
-        .expect(302)
-        .expect('location', 'confirmation')
-        .expect(() => {
-          expect(courtBookingService.amendVideoLinkBooking).toHaveBeenCalledWith(
-            { ...bookACourtHearing, comments: 'comment' },
-            user,
-          )
-        })
-    })
-
-    it('should amend the posted notes for staff when toggled on', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
       const bookACourtHearing = { bookingId: 1, date: '2024-06-27', startTime: '15:00' }
       appSetup({ bookACourtHearing })
 
@@ -330,28 +193,7 @@ describe('Check Booking handler', () => {
         })
     })
 
-    it('should request a booking with comments when staff notes feature is toggled off', () => {
-      appSetup({ bookACourtHearing: { type: 'COURT' } })
-
-      return request(app)
-        .post(`/court/booking/request/${journeyId()}/prisoner/video-link-booking/check-booking`)
-        .send({ comments: 'comment' })
-        .expect(302)
-        .expect('location', 'confirmation')
-        .expect(() => {
-          expect(courtBookingService.requestVideoLinkBooking).toHaveBeenCalledWith(
-            {
-              comments: 'comment',
-              type: 'COURT',
-            },
-            user,
-          )
-          expect(courtBookingService.checkAvailability).not.toHaveBeenCalled()
-        })
-    })
-
-    it('should request a booking with staff notes when feature is toggled on', () => {
-      config.featureToggles.masterPublicPrivateNotes = true
+    it('should request a booking with staff notes', () => {
       appSetup({ bookACourtHearing: { type: 'COURT' } })
 
       return request(app)

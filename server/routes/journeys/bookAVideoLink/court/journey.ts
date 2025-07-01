@@ -24,7 +24,6 @@ export type BookACourtHearingJourney = {
   locationCode?: string
   preLocationCode?: string
   postLocationCode?: string
-  comments?: string
   notesForStaff?: string
   cvpRequired?: boolean
   videoLinkUrl?: string

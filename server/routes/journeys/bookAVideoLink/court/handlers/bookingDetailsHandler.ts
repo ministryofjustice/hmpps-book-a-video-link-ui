@@ -112,7 +112,7 @@ class Body {
   postRequired: YesNo
 
   @Expose()
-  @ValidateIf(o => o.notesForStaff && config.featureToggles.masterPublicPrivateNotes)
+  @ValidateIf(o => o.notesForStaff)
   @IsOptional()
   @MaxLength(400, { message: 'Notes for prison staff must be $constraint1 characters or less' })
   notesForStaff: string

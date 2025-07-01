@@ -111,7 +111,6 @@ describe('Probation booking service', () => {
       endTime: '1970-01-01T14:30:00Z',
       probationTeamCode: 'PROBATION_TEAM',
       meetingTypeCode: 'PSR',
-      comments: 'comments',
       notesForStaff: 'staff notes',
     } as BookAProbationMeetingJourney
 
@@ -142,7 +141,6 @@ describe('Probation booking service', () => {
         },
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
-        comments: 'comments',
         notesForStaff: 'staff notes',
       }
 
@@ -174,7 +172,6 @@ describe('Probation booking service', () => {
         ],
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
-        comments: 'comments',
         notesForStaff: 'staff notes',
       }
 
@@ -206,7 +203,6 @@ describe('Probation booking service', () => {
         endTime: '1970-01-01T14:30:00Z',
         probationTeamCode: 'PROBATION_TEAM',
         meetingTypeCode: 'PSR',
-        comments: 'comments',
         notesForStaff: 'staff notes',
       }
 
@@ -236,7 +232,6 @@ describe('Probation booking service', () => {
         },
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
-        comments: 'comments',
         notesForStaff: 'staff notes',
       }
 
@@ -266,7 +261,6 @@ describe('Probation booking service', () => {
         endTime: '1970-01-01T14:30:00Z',
         probationTeamCode: 'PROBATION_TEAM',
         meetingTypeCode: 'PSR',
-        comments: 'comments',
         notesForStaff: 'staff notes',
       } as BookAProbationMeetingJourney
 
@@ -294,7 +288,6 @@ describe('Probation booking service', () => {
         },
         probationTeamCode: 'PROBATION_TEAM',
         probationMeetingType: 'PSR',
-        comments: 'comments',
         notesForStaff: 'staff notes',
       }
 

@@ -41,7 +41,7 @@ context('Create a booking', () => {
       cy.signIn()
     })
 
-    it('Create a court booking - with public/private comments switched on', () => {
+    it('Create a court booking', () => {
       const home = Page.verifyOnPage(HomePage)
       home.bookVideoLink().click()
 

@@ -277,7 +277,7 @@
                                 }
                             ]
                         }
-                    } if masterPublicPrivateNotes
+                    }
                 ],
                 attributes:{ 'data-qa': 'booking-details' }
             }) }}
@@ -294,23 +294,6 @@
 
             <form method="POST" class="govuk-!-margin-top-6" data-module="form-spinner" data-loading-text="{{ spinnerText }}">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
-
-                {# Optional comments - feature switched #}
-                {% if not masterPublicPrivateNotes %}
-                    {{ govukCharacterCount({
-                        name: "comments",
-                        id: "comments",
-                        maxlength: 400,
-                        label: {
-                            text: "Comments (optional)"
-                        },
-                        formGroup: {
-                            classes: 'govuk-!-width-two-thirds'
-                        },
-                        errorMessage: validationErrors | findError('comments'),
-                        value: formResponses.comments or session.journey.bookACourtHearing.comments
-                    }) }}
-                {% endif %}
 
                 {% set callToActionText %}
                     {% if mode == 'create' %}

@@ -90,6 +90,5 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addGlobal('defaultCourtVideoUrl', config.defaultCourtVideoUrl)
 
   // Feature toggles
-  njkEnv.addGlobal('masterPublicPrivateNotes', config.featureToggles.masterPublicPrivateNotes)
   njkEnv.addGlobal('hmctsLinkAndGuestPin', config.featureToggles.hmctsLinkAndGuestPin)
 }

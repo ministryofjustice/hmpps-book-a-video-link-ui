@@ -330,24 +330,21 @@
                     ]
                 }) }}
 
-                {# Optional notes for staff - feature switched #}
-                {% if masterPublicPrivateNotes %}
-                    {{ govukCharacterCount({
-                        name: "notesForStaff",
-                        id: "notesForStaff",
-                        maxlength: 400,
-                        label: {
-                            text: "Notes for prison staff (optional)",
-                            classes: 'govuk-fieldset__legend--s'
-                        },
-                        hint: { text: "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details." },
-                        formGroup: {
-                            classes: 'govuk-!-width-two-thirds'
-                        },
-                        errorMessage: validationErrors | findError('notesForStaff'),
-                        value: formResponses.notesForStaff or session.journey.bookACourtHearing.notesForStaff
-                    }) }}
-                {% endif %}
+                {{ govukCharacterCount({
+                    name: "notesForStaff",
+                    id: "notesForStaff",
+                    maxlength: 400,
+                    label: {
+                        text: "Notes for prison staff (optional)",
+                        classes: 'govuk-fieldset__legend--s'
+                    },
+                    hint: { text: "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details." },
+                    formGroup: {
+                        classes: 'govuk-!-width-two-thirds'
+                    },
+                    errorMessage: validationErrors | findError('notesForStaff'),
+                    value: formResponses.notesForStaff or session.journey.bookACourtHearing.notesForStaff
+                }) }}
 
                 {{ govukButton({
                     text: "Continue",

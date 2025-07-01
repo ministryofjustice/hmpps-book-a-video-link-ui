@@ -108,20 +108,12 @@
                     },
                     {
                         key: {
-                            text: "Comments"
+                            text: "Notes for prison staff"
                         },
                         value: {
-                            text: booking.comments or "None entered"
+                            text: booking.notesForStaff or "None entered"
                         }
-                    } if not masterPublicPrivateNotes,
-                    {
-                        key: {
-                        text: "Notes for prison staff"
-                    },
-                        value: {
-                        text: booking.notesForStaff or "None entered"
                     }
-                    } if masterPublicPrivateNotes
                 ],
                 attributes: { 'data-qa': 'confirmation-details' }
             }) }}

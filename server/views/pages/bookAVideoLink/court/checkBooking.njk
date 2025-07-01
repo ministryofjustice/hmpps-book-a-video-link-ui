@@ -58,15 +58,6 @@
                         },
                         value: {
                             text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
-                        },
-                        actions: {
-                            items: [
-                                {
-                                    href: "/court/prisoner-search/search",
-                                    classes: 'govuk-link--no-visited-state',
-                                    text: "Change"
-                                }
-                            ]
                         }
                     },
                     {

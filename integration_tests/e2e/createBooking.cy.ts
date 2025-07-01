@@ -177,10 +177,6 @@ context('Create a booking', () => {
       const checkBookingPage = Page.verifyOnPage(CheckBookingPage)
 
       // Verify change links navigate to the relevant pages
-      checkBookingPage.changeLinkFor('Name').click()
-      Page.verifyOnPage(SearchPrisonerPage)
-      cy.go('back')
-
       checkBookingPage.changeLinkFor('Hearing type').click()
       Page.verifyOnPage(NewBookingPage)
       cy.go('back')

@@ -11,13 +11,20 @@ export default class EditRoomPage extends Page {
 
   save = (): PageElement => this.getButton('Save')
 
+  getSelectedRoomStatus(): Cypress.Chainable<string> {
+    return cy
+      .get('input[name="roomStatus"]:checked')
+      .invoke('val')
+      .then(value => value as string)
+  }
+
   selectRoomStatus(status: 'active' | 'inactive'): PageElement {
     return cy.get(`input[name="roomStatus"][value="${status}"]`).check()
   }
 
-  getSelectedRoomStatus(): Cypress.Chainable<string> {
+  getSelectedRoomPermission(): Cypress.Chainable<string> {
     return cy
-      .get('input[name="roomStatus"]:checked')
+      .get('input[name="permission"]:checked')
       .invoke('val')
       .then(value => value as string)
   }

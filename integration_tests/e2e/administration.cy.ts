@@ -145,7 +145,7 @@ context('Administration', () => {
 
     const editRoomPage = Page.verifyOnPage(EditRoomPage)
     editRoomPage.selectRoomStatus('active')
-    editRoomPage.roomLink().type('BWI-VIDEOLINK-VCC-34')
+    editRoomPage.roomLink().type('https://prison-room-link')
     editRoomPage.comments().type('This is a comment')
 
     cy.task('stubUpdateRoomDetails')
@@ -162,7 +162,7 @@ context('Administration', () => {
         expectedActiveDate: null,
         locationUsage: 'COURT',
         allowedParties: ['ABERCV'],
-        prisonVideoUrl: 'BWI-VIDEOLINK-VCC-34',
+        prisonVideoUrl: 'https://prison-room-link',
         notes: 'This is a comment',
         schedule: [
           {
@@ -181,7 +181,8 @@ context('Administration', () => {
 
     cy.get(`.moj-alert__content`).should('have.text', 'Room changes have been saved')
     editRoomPage.getSelectedRoomStatus().should('eq', 'active')
-    editRoomPage.roomLink().should('have.value', 'BWI-VIDEOLINK-VCC-34')
+    editRoomPage.roomLink().should('have.value', 'https://prison-room-link')
+    editRoomPage.getSelectedRoomPermission().should('eq', 'court')
     editRoomPage.comments().should('have.value', 'This is a comment')
   })
 })

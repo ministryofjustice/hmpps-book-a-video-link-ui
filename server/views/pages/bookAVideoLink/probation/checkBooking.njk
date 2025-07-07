@@ -112,7 +112,7 @@
                     },
                     {
                         key: {
-                            text: "Probation officer's full name"
+                            text: "Name of probation officer"
                         },
                         value: {
                             text: session.journey.bookAProbationMeeting.officer.fullName or "Not yet known"
@@ -130,7 +130,7 @@
                     },
                     {
                         key: {
-                            text: "Email address"
+                            text: "Email (probation officer)"
                         },
                         value: {
                             text: session.journey.bookAProbationMeeting.officer.email or "Not yet known"
@@ -148,7 +148,7 @@
                     },
                     {
                         key: {
-                            text: "UK phone number"
+                            text: "Phone number (probation officer)"
                         },
                         value: {
                             text: session.journey.bookAProbationMeeting.officer.telephone or ("Not yet known" if session.journey.bookAProbationMeeting.officerDetailsNotKnown else "None entered")

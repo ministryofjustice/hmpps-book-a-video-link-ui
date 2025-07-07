@@ -44,7 +44,7 @@
                     },
                     {
                         key: {
-                            text: "Probation officer's full name"
+                            text: "Name of probation officer"
                         },
                         value: {
                             text: booking.additionalBookingDetails.contactName or "Not yet known"
@@ -52,7 +52,7 @@
                     },
                     {
                         key: {
-                            text: "Email address"
+                            text: "Email (probation officer)"
                         },
                         value: {
                             text: booking.additionalBookingDetails.contactEmail or "Not yet known"
@@ -60,7 +60,7 @@
                     },
                     {
                         key: {
-                            text: "UK phone number"
+                            text: "Phone number (probation officer)"
                         },
                         value: {
                             text: booking.additionalBookingDetails.contactNumber or ("None entered" if booking.additionalBookingDetails.contactName else "Not yet known")

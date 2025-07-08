@@ -9,7 +9,7 @@ export default class ChangeVideoLinkBookingPage extends Page {
 
   selectCvpKnown = (yesOrNo: string) =>
     cy
-      .contains('legend', 'Do you know the link for this video link hearing?')
+      .contains('legend', 'Do you know the video link for this hearing?')
       .parent()
       .within(() => this.getByLabel(yesOrNo).click())
 

@@ -276,6 +276,15 @@
                         },
                         value: {
                             text: session.journey.bookAProbationMeeting.notesForStaff or "None entered"
+                        },
+                        actions: {
+                            items: [
+                                {
+                                    href: "../video-link-booking#notesForStaff",
+                                    classes: 'govuk-link--no-visited-state',
+                                    text: "Change"
+                                }
+                            ]
                         }
                     }
                 ]

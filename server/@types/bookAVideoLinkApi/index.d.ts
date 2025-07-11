@@ -792,9 +792,7 @@ export interface paths {
     trace?: never
   }
 }
-
 export type webhooks = Record<string, never>
-
 export interface components {
   schemas: {
     AdditionalBookingDetails: {
@@ -860,13 +858,7 @@ export interface components {
        */
       probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
       /**
-       * @deprecated
-       * @description Free text comments for the video link booking
-       * @example Waiting to hear on legal representation
-       */
-      comments?: string
-      /**
-       * @description he video link for the video booking. When this is provided the HMCTS number must be null.
+       * @description The video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
        */
       videoLinkUrl?: string
@@ -1244,12 +1236,6 @@ export interface components {
        *            */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
       /**
-       * @deprecated
-       * @description Free text comments for the video link booking
-       * @example Waiting to hear on legal representation
-       */
-      comments?: string
-      /**
        * @description Private free text notes for the booking.
        * @example Some notes that will not be visible outside of the service
        */
@@ -1319,11 +1305,6 @@ export interface components {
        */
       appointmentType: string
       /**
-       * @description The comments for this appointment
-       * @example Please be on time
-       */
-      comments?: string
-      /**
        * @description The location of the appointment at the prison
        * @example VCC-ROOM-1
        */
@@ -1349,6 +1330,11 @@ export interface components {
        * @example Please arrive 10 minutes early
        */
       notesForPrisoners?: string
+      /**
+       * @description Private free text notes for the booking.
+       * @example Legal representation details ...
+       */
+      notesForStaff?: string
       /**
        * @description The time slot the appointment falls into
        * @example PM
@@ -1445,11 +1431,6 @@ export interface components {
        * @example Pre-sentence report
        */
       probationMeetingTypeDescription?: string
-      /**
-       * @description Free text comments for the video link booking
-       * @example Waiting to hear on legal representation
-       */
-      comments?: string
       /**
        * @description The video link for the video booking. Must be a valid URL. When this is provided the HMCTS number will be null.
        * @example https://video.here.com
@@ -1563,11 +1544,6 @@ export interface components {
        * @enum {string}
        */
       probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
-      /**
-       * @description Free text comments for the video link booking
-       * @example Waiting to hear on legal representation
-       */
-      comments?: string
       /**
        * @description The video link for the appointment.
        * @example https://video.here.com
@@ -1995,11 +1971,6 @@ export interface components {
        */
       videoUrl?: string
       /**
-       * @description The comments provided for the booking
-       * @example Free text comment
-       */
-      bookingComments?: string
-      /**
        * @description True if the booking was made by a prison user
        * @example false
        * @enum {boolean}
@@ -2111,11 +2082,6 @@ export interface components {
        * @example Court - main hearing
        */
       appointmentTypeDescription?: string
-      /**
-       * @description The appointment comments
-       * @example This is a free text comment
-       */
-      appointmentComments?: string
       /**
        * @description The location key for the room where the appointment will take place in the prison.
        * @example MDI-VCC-1
@@ -2381,7 +2347,7 @@ export interface components {
   headers: never
   pathItems: never
 }
-
+export type $defs = Record<string, never>
 export interface operations {
   getVideoLinkBookingById: {
     parameters: {

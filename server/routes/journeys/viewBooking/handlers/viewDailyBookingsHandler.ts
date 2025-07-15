@@ -7,6 +7,7 @@ import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import { parseDatePickerDate } from '../../../../utils/utils'
 import VideoLinkService from '../../../../services/videoLinkService'
+import config from '../../../../config'
 
 export default class ViewDailyBookingsHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_DAILY_BOOKINGS_PAGE
@@ -33,7 +34,15 @@ export default class ViewDailyBookingsHandler implements PageHandler {
 
     const agencyCode = (req.query.agencyCode as string) || agencies[0].code
     const agency = agencies.find(a => a.code === agencyCode)
-    const appointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
+    const allAppointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
+
+    // Filter out any scheduled appointments for court bookings where the prison is present in the probation-only prisons list
+    const appointments =
+      type === BavlJourneyType.COURT && config.featureToggles.probationOnlyPrisons
+        ? allAppointments.filter(
+            appointment => !config.featureToggles.probationOnlyPrisons?.split(',').includes(appointment.prisonCode),
+          )
+        : allAppointments
 
     return res.render('pages/viewBooking/viewDailyBookings', { agency, agencies, appointments })
   }

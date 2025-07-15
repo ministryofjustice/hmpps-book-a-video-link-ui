@@ -22,9 +22,17 @@ export default class PrisonerSearchResultsHandler implements PageHandler {
     const allEnabledPrisons = await this.prisonService.getPrisons(true, user)
 
     // Filter any grey release prisons from the enabled list to disallow booking links for them
-    const enabledPrisons = config.featureToggles.greyReleasePrisons
+    const enabledMinusGreyReleasePrisons = config.featureToggles.greyReleasePrisons
       ? allEnabledPrisons.filter(prison => !config.featureToggles.greyReleasePrisons?.split(',').includes(prison.code))
       : allEnabledPrisons
+
+    // Filter any probation-only prisons from the list if the current journey is a court booking for a court user
+    const enabledPrisons =
+      res.locals.user.isCourtUser && req.params.type === 'court' && config.featureToggles.probationOnlyPrisons
+        ? enabledMinusGreyReleasePrisons.filter(
+            prison => !config.featureToggles.probationOnlyPrisons?.split(',').includes(prison.code),
+          )
+        : enabledMinusGreyReleasePrisons
 
     res.render('pages/bookAVideoLink/prisonerSearch/prisonerSearchResults', { results, enabledPrisons })
   }

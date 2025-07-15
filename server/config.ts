@@ -144,6 +144,7 @@ export default {
   featureToggles: {
     greyReleasePrisons: get('FEATURE_GREY_RELEASE_PRISONS', null),
     hmctsLinkAndGuestPin: get('FEATURE_HMCTS_LINK_GUEST_PIN', 'false') === 'true',
+    probationOnlyPrisons: get('FEATURE_PROBATION_ONLY_PRISONS', null),
   },
   defaultCourtVideoUrl: get('DEFAULT_COURT_VIDEO_URL', 'meet.video.justice.gov.uk'),
 }

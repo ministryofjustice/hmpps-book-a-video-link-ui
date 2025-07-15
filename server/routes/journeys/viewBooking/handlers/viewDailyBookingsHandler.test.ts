@@ -8,7 +8,8 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import { parseDatePickerDate } from '../../../../utils/utils'
-import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
+import { Court, ProbationTeam, ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../config'
 
 jest.mock('../../../../services/auditService')
 jest.mock('../../../../services/courtsService')
@@ -31,6 +32,7 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
+  config.featureToggles.probationOnlyPrisons = undefined
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
@@ -93,4 +95,87 @@ describe('GET', () => {
         )
       })
   })
+
+  it('should filter court bookings for prisons appearing in the PROBATION ONLY PRISONS list', () => {
+    // New hall as a probation only prison
+    config.featureToggles.probationOnlyPrisons = 'NHI'
+    appSetup()
+
+    // Mock a result with 2 bookings
+    videoLinkService.getVideoLinkSchedule.mockResolvedValue(videoLinkSchedule)
+
+    return request(app)
+      .get(`/court/view-booking?date=20/04/2024&agencyCode=ABERCV`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        expect(heading).toEqual('Video link bookings')
+        expect(res.text).toContain('HMP Hewell')
+        expect(res.text).not.toContain('HMP New Hall')
+        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenCalledWith(
+          'court',
+          'ABERCV',
+          parseDatePickerDate('20/04/2024'),
+          user,
+        )
+      })
+  })
+
+  const videoLinkSchedule = [
+    {
+      videoBookingId: 1,
+      prisonAppointmentId: 1,
+      bookingType: 'COURT',
+      statusCode: 'ACTIVE',
+      createdByPrison: 'false',
+      courtId: 1,
+      courtCode: 'ABECV',
+      courtDescription: 'Aberystwyth Crown',
+      hearingType: 'APPEAL',
+      hearingTypeDescription: 'Appeal Hearing',
+      prisonCode: 'HEI',
+      prisonName: 'HMP Hewell',
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_COURT_MAIN',
+      appointmentTypeDescription: 'Video link - Court hearing',
+      prisonLocKey: 'LOC-1',
+      prisonLocDesc: 'Location 1',
+      dpsLocationId: 'xxx-yyy-zzz',
+      appointmentDate: '2024-04-20',
+      startTime: '10:00',
+      endTime: '10:30',
+      createdTime: '2024-04-20 10:14:00',
+      createdBy: 'TEST',
+      prisonerName: 'Joe Bloggs',
+      prisonLocationDescription: 'Wing A',
+    } as ScheduleItem & { prisonerName: string; prisonLocationDescription: string },
+    {
+      videoBookingId: 2,
+      prisonAppointmentId: 2,
+      bookingType: 'COURT',
+      statusCode: 'ACTIVE',
+      createdByPrison: 'false',
+      courtId: 1,
+      courtCode: 'ABECV',
+      courtDescription: 'Aberystwyth Crown',
+      hearingType: 'APPEAL',
+      hearingTypeDescription: 'Appeal Hearing',
+      prisonCode: 'NHI',
+      prisonName: 'HMP New Hall',
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_COURT_MAIN',
+      appointmentTypeDescription: 'Video link - Court hearing',
+      prisonLocKey: 'LOC-1',
+      prisonLocDesc: 'Location 1',
+      dpsLocationId: 'xxx-yyy-zzz',
+      appointmentDate: '2024-04-20',
+      startTime: '11:00',
+      endTime: '11:30',
+      createdTime: '2024-04-20 10:14:00',
+      createdBy: 'TEST',
+      prisonerName: 'Joe Bloggs',
+      prisonLocationDescription: 'Wing A',
+    } as ScheduleItem & { prisonerName: string; prisonLocationDescription: string },
+  ]
 })

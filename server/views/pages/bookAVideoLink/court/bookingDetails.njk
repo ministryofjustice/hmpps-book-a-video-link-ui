@@ -151,6 +151,9 @@
                                 text: "Enter full web address (URL)",
                                 classes: 'govuk-label--s'
                             },
+                            hint: {
+                                text: "This should start with https://"
+                            },
                             classes: 'govuk-!-width-three-quarters',
                             errorMessage: validationErrors | findError('videoLinkUrl'),
                             value: formResponses.videoLinkUrl or session.journey.bookACourtHearing.videoLinkUrl
@@ -178,9 +181,6 @@
                             text: "Enter guest pin",
                             classes: 'govuk-label--s'
                         },
-                        hint: {
-                          text: "Some meetings require a guest pin for security reasons"
-                        },
                         inputmode: "numeric",
                         classes: 'govuk-input--width-10',
                         errorMessage: validationErrors | findError('guestPin'),
@@ -194,7 +194,7 @@
                     errorMessage: validationErrors | findError('cvpRequired'),
                     fieldset: {
                         legend: {
-                            text: "Do you know the link for this video link hearing?",
+                            text: "Do you know the video link for this hearing?",
                             classes: "govuk-fieldset__legend--s"
                         }
                     },
@@ -225,6 +225,9 @@
                                 text: "Is a guest pin required?",
                                 classes: "govuk-fieldset__legend--s"
                             }
+                        },
+                        hint: {
+                            text: "Some meetings require a guest pin for security reasons."
                         },
                         items: [
                             {

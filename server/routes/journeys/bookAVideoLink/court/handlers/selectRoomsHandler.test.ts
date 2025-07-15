@@ -89,7 +89,7 @@ beforeEach(() => {
     courtCode: 'COURT_CODE',
     courtHearingType: 'APPEAL',
     videoLinkUrl: 'http://example.com',
-    comments: 'test',
+    notesForStaff: 'test',
   } as VideoLinkBooking)
 
   videoLinkService.bookingIsAmendable.mockReturnValue(true)

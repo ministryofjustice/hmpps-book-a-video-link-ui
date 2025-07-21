@@ -113,6 +113,47 @@ describe('GET', () => {
         expect(heading).toEqual('Video link bookings')
         expect(res.text).toContain('HMP Hewell')
         expect(res.text).not.toContain('HMP New Hall')
+
+        // With no links provided it should also highlight this
+        expect(res.text).toContain('Action: provide hearing link')
+
+        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenCalledWith(
+          'court',
+          'ABERCV',
+          parseDatePickerDate('20/04/2024'),
+          user,
+        )
+      })
+  })
+
+  it('should not show the action label if either a HMCTS number or video url is present', () => {
+    // Mock a result with 2 bookings - that both have links present.
+    const scheduleWithLinks = [
+      {
+        ...videoLinkSchedule[0],
+        videoUrl: 'https://test.org',
+      },
+      {
+        ...videoLinkSchedule[1],
+        hmctsNumber: '1234',
+      },
+    ]
+
+    videoLinkService.getVideoLinkSchedule.mockResolvedValue(scheduleWithLinks)
+
+    return request(app)
+      .get(`/court/view-booking?date=20/04/2024&agencyCode=ABERCV`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        expect(heading).toEqual('Video link bookings')
+        expect(res.text).toContain('HMP Hewell')
+        expect(res.text).toContain('HMP New Hall')
+
+        // Check that missing links are NOT highlighted
+        expect(res.text).not.toContain('Action: provide hearing link')
+
         expect(videoLinkService.getVideoLinkSchedule).toHaveBeenCalledWith(
           'court',
           'ABERCV',

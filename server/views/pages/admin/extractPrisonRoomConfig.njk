@@ -1,7 +1,25 @@
 {% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% set pageTitle = "Extract data for room configuration" %}
 
 {% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <p>Are you sure you want to download room data for all prisons?</p>
+
+    <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{ govukButton({
+            text: "Extract data",
+            type: "submit"
+        }) }}
+    </form>
 
 {% endblock %}

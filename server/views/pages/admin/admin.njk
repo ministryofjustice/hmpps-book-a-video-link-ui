@@ -30,6 +30,16 @@
 
         <div class="govuk-grid-column-one-third card-group__item">
             {{ card({
+                "href": "/admin/extract-prison-room-configuration",
+                "clickable": "true",
+                "heading": "Extract data for romm configuration",
+                "description": "Download a CSV summary of the current room configuration for all prisons",
+                "data-qa": "extract-prison-config"
+            }) }}
+        </div>
+
+        <div class="govuk-grid-column-one-third card-group__item">
+            {{ card({
                 "href": "/admin/view-prison-list",
                 "clickable": "true",
                 "heading": "Manage prison video rooms",

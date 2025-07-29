@@ -26,13 +26,25 @@ export default class PrisonerSearchResultsHandler implements PageHandler {
       ? allEnabledPrisons.filter(prison => !config.featureToggles.greyReleasePrisons?.split(',').includes(prison.code))
       : allEnabledPrisons
 
+    let enabledPrisons
+
+    // Filter any court-only prisons from the list if the current journey is a probation booking for a probation user
+    if (res.locals.user.isProbationUser && req.params.type === 'probation') {
+      enabledPrisons = config.featureToggles.courtOnlyPrisons
+        ? enabledMinusGreyReleasePrisons.filter(
+            prison => !config.featureToggles.courtOnlyPrisons?.split(',').includes(prison.code),
+          )
+        : enabledMinusGreyReleasePrisons
+    }
+
     // Filter any probation-only prisons from the list if the current journey is a court booking for a court user
-    const enabledPrisons =
-      res.locals.user.isCourtUser && req.params.type === 'court' && config.featureToggles.probationOnlyPrisons
+    if (res.locals.user.isCourtUser && req.params.type === 'court') {
+      enabledPrisons = config.featureToggles.probationOnlyPrisons
         ? enabledMinusGreyReleasePrisons.filter(
             prison => !config.featureToggles.probationOnlyPrisons?.split(',').includes(prison.code),
           )
         : enabledMinusGreyReleasePrisons
+    }
 
     res.render('pages/bookAVideoLink/prisonerSearch/prisonerSearchResults', { results, enabledPrisons })
   }

@@ -33,6 +33,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   config.featureToggles.probationOnlyPrisons = undefined
+  config.featureToggles.courtOnlyPrisons = undefined
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
@@ -96,13 +97,13 @@ describe('GET', () => {
       })
   })
 
-  it('should filter court bookings for prisons appearing in the PROBATION ONLY PRISONS list', () => {
+  it('should filter court bookings for prisons appearing in the PROBATION_ONLY_PRISONS list', () => {
     // New hall as a probation only prison
     config.featureToggles.probationOnlyPrisons = 'NHI'
     appSetup()
 
     // Mock a result with 2 bookings
-    videoLinkService.getVideoLinkSchedule.mockResolvedValue(videoLinkSchedule)
+    videoLinkService.getVideoLinkSchedule.mockResolvedValue(videoLinkCourtSchedule)
 
     return request(app)
       .get(`/court/view-booking?date=20/04/2024&agencyCode=ABERCV`)
@@ -126,15 +127,42 @@ describe('GET', () => {
       })
   })
 
+  it('should filter probation bookings for prisons appearing in the COURT_ONLY_PRISONS list', () => {
+    // New hall as a court only prison
+    config.featureToggles.courtOnlyPrisons = 'NHI'
+    appSetup()
+
+    // Mock a result with 2 probation bookings
+    videoLinkService.getVideoLinkSchedule.mockResolvedValue(videoLinkProbationSchedule)
+
+    return request(app)
+      .get(`/probation/view-booking?date=20/04/2024&agencyCode=P1`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        expect(heading).toEqual('Video link bookings')
+        expect(res.text).toContain('HMP Hewell')
+        expect(res.text).not.toContain('HMP New Hall')
+
+        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenCalledWith(
+          'probation',
+          'P1',
+          parseDatePickerDate('20/04/2024'),
+          user,
+        )
+      })
+  })
+
   it('should not show the action label if either a HMCTS number or video url is present', () => {
     // Mock a result with 2 bookings - that both have links present.
     const scheduleWithLinks = [
       {
-        ...videoLinkSchedule[0],
+        ...videoLinkCourtSchedule[0],
         videoUrl: 'https://test.org',
       },
       {
-        ...videoLinkSchedule[1],
+        ...videoLinkCourtSchedule[1],
         hmctsNumber: '1234',
       },
     ]
@@ -163,7 +191,7 @@ describe('GET', () => {
       })
   })
 
-  const videoLinkSchedule = [
+  const videoLinkCourtSchedule = [
     {
       videoBookingId: 1,
       prisonAppointmentId: 1,
@@ -207,6 +235,63 @@ describe('GET', () => {
       prisonerNumber: 'A1234AA',
       appointmentType: 'VLB_COURT_MAIN',
       appointmentTypeDescription: 'Video link - Court hearing',
+      prisonLocKey: 'LOC-1',
+      prisonLocDesc: 'Location 1',
+      dpsLocationId: 'xxx-yyy-zzz',
+      appointmentDate: '2024-04-20',
+      startTime: '11:00',
+      endTime: '11:30',
+      createdTime: '2024-04-20 10:14:00',
+      createdBy: 'TEST',
+      prisonerName: 'Joe Bloggs',
+      prisonLocationDescription: 'Wing A',
+    } as ScheduleItem & { prisonerName: string; prisonLocationDescription: string },
+  ]
+
+  const videoLinkProbationSchedule = [
+    {
+      videoBookingId: 1,
+      prisonAppointmentId: 1,
+      bookingType: 'PROBATION',
+      probationTeamId: 1,
+      probationTeamCode: 'P1',
+      probationTeamDescription: 'Probation 1',
+      probationMeetingType: 'PSR',
+      probationMeetingTypeDescription: 'Pre-sentence report',
+      statusCode: 'ACTIVE',
+      createdByPrison: 'false',
+      prisonCode: 'HEI',
+      prisonName: 'HMP Hewell',
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_PROBATION',
+      appointmentTypeDescription: 'Video link - Probation meeting',
+      prisonLocKey: 'LOC-1',
+      prisonLocDesc: 'Location 1',
+      dpsLocationId: 'xxx-yyy-zzz',
+      appointmentDate: '2024-04-20',
+      startTime: '10:00',
+      endTime: '10:30',
+      createdTime: '2024-04-20 10:14:00',
+      createdBy: 'TEST',
+      prisonerName: 'Joe Bloggs',
+      prisonLocationDescription: 'Wing A',
+    } as ScheduleItem & { prisonerName: string; prisonLocationDescription: string },
+    {
+      videoBookingId: 2,
+      prisonAppointmentId: 2,
+      bookingType: 'PROBATION',
+      probationTeamId: 1,
+      probationTeamCode: 'P1',
+      probationTeamDescription: 'Probation 1',
+      probationMeetingType: 'RR',
+      probationMeetingTypeDescription: 'Recall report',
+      statusCode: 'ACTIVE',
+      createdByPrison: 'false',
+      prisonCode: 'NHI',
+      prisonName: 'HMP New Hall',
+      prisonerNumber: 'A1234AA',
+      appointmentType: 'VLB_PROBATION',
+      appointmentTypeDescription: 'Video link - Probation meeting',
       prisonLocKey: 'LOC-1',
       prisonLocDesc: 'Location 1',
       dpsLocationId: 'xxx-yyy-zzz',

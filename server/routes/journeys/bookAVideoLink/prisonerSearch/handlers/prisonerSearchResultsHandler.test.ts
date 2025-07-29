@@ -224,6 +224,77 @@ describe('Prisoner search results handler', () => {
       )
     })
 
+    it('should not offer booking links for probation into court-only prisons in config', async () => {
+      config.featureToggles.courtOnlyPrisons = 'BXI,BMI'
+
+      // Two enabled prisons
+      prisonService.getPrisons.mockResolvedValue([
+        {
+          prisonId: 1,
+          code: 'HEI',
+          name: 'Hewell',
+          enabled: true,
+        },
+        {
+          prisonId: 2,
+          code: 'BXI',
+          name: 'Brixton',
+          enabled: true,
+        },
+      ])
+
+      // One prisoner in each prison
+      prisonerService.searchPrisonersByCriteria.mockResolvedValue({
+        totalPages: 1,
+        totalElements: 2,
+        numberOfElements: 2,
+        first: true,
+        last: true,
+        empty: false,
+        size: 10,
+        content: [
+          {
+            prisonerNumber: 'A1111AA',
+            firstName: 'AAAA',
+            lastName: 'AAAA',
+            dateOfBirth: '2011-01-01',
+            gender: 'M',
+            status: 'ACTIVE IN',
+            prisonId: 'HEI',
+          } as unknown as Prisoner,
+          {
+            prisonerNumber: 'B2222BB',
+            firstName: 'BBBB',
+            lastName: 'BBBB',
+            dateOfBirth: '2011-01-01',
+            gender: 'M',
+            status: 'ACTIVE IN',
+            prisonId: 'BXI',
+          } as unknown as Prisoner,
+        ],
+      } as unknown as Promise<PagePrisoner>)
+
+      await request(app)
+        .get(`/probation/prisoner-search/${journeyId()}/results`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toContain('Search for a prisoner results')
+
+          // One of the rows should have hidden text where the book a video link is not shown
+          const rowWithNoLink = $('span.govuk-visually-hidden').text()
+          expect(rowWithNoLink).toContain('Prison not enabled for book a video link')
+        })
+
+      expect(prisonerService.searchPrisonersByCriteria).toHaveBeenCalledWith(
+        expect.any(Object),
+        { page: 0, size: 10 },
+        user,
+      )
+    })
+
     it.each([
       ['Probation', 'probation'],
       ['Court', 'court'],

@@ -36,13 +36,25 @@ export default class ViewDailyBookingsHandler implements PageHandler {
     const agency = agencies.find(a => a.code === agencyCode)
     const allAppointments = await this.videoLinkService.getVideoLinkSchedule(type, agencyCode, date, user)
 
+    let appointments
+
     // Filter out any scheduled appointments for court bookings where the prison is present in the probation-only prisons list
-    const appointments =
-      type === BavlJourneyType.COURT && config.featureToggles.probationOnlyPrisons
+    if (type === BavlJourneyType.COURT) {
+      appointments = config.featureToggles.probationOnlyPrisons
         ? allAppointments.filter(
             appointment => !config.featureToggles.probationOnlyPrisons?.split(',').includes(appointment.prisonCode),
           )
         : allAppointments
+    }
+
+    // Filter out any scheduled appointments for probation bookings where the prison is present in the court-only prisons list
+    if (type === BavlJourneyType.PROBATION) {
+      appointments = config.featureToggles.courtOnlyPrisons
+        ? allAppointments.filter(
+            appointment => !config.featureToggles.courtOnlyPrisons?.split(',').includes(appointment.prisonCode),
+          )
+        : allAppointments
+    }
 
     return res.render('pages/viewBooking/viewDailyBookings', { agency, agencies, appointments })
   }

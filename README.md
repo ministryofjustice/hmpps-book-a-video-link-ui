@@ -94,9 +94,21 @@ This environment variable can be set in a variety of ways:
 - The values-xxx.yaml files - for deployment into other environments.
 - (The preferred way) in the Kubernetes secret `feature-toggles` which exists in all environments.
 
-Other feature switches can exist, for temporarily enabling or disabling features under development.
+`FEATURE_COURT_ONLY_PRISONS="BXI,FDI"`
 
+Would prevent any probation teams from booking into the prisons listed, but would allow these prisons to be
+set to active in the prisons table, and allow room decoration features to be used. The prison can be considered
+active, but only courts can book or view/amend bookings. Probation users will not see the bookings for these
+prisons.
 
+When no prisons are set in the `court-only prisons` list, the environment variable should be set to null or not
+set at all.
+
+This environment variable can be set in a variety of ways:
+- The local .env file - for local running.
+- The feature.env file - to take effect for Cypress tests.
+- The values-xxx.yaml files - for deployment into other environments.
+- (The preferred way) in the Kubernetes secret `feature-toggles` which exists in all environments.
 
 ### Dependencies
 

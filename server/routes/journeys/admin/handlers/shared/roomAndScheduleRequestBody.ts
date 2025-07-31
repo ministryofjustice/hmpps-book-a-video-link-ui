@@ -13,7 +13,7 @@ export default class RoomAndScheduleRequestBody {
 
   @Expose()
   @ValidateIf(o => o.videoUrl)
-  @MaxLength(120, { message: 'The room link must be less than 120 characters' })
+  @MaxLength(300, { message: 'The room link must be less than 300 characters' })
   videoUrl: string
 
   @Expose()

@@ -387,6 +387,26 @@ describe('bookAVideoLinkApiClient', () => {
     })
   })
 
+  describe('downloadPrisonRoomConfigurationData', () => {
+    it('should return data from api', async () => {
+      fakeBookAVideoLinkApiClient
+        .get('/download-csv/prison-room-configuration-data')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, 'file content', { 'content-disposition': 'attachment; filename="file.txt"' })
+
+      const res = new PassThrough() as unknown as express.Response
+      res.set = jest.fn()
+
+      await bookAVideoLinkApiClient.downloadPrisonRoomConfigurationData(res, user)
+
+      res.on('data', chunk => {
+        expect(chunk.toString()).toBe('file content')
+      })
+
+      expect(nock.isDone()).toBe(true)
+    })
+  })
+
   describe('room administration endpoints', () => {
     it('should get a decorated location', async () => {
       const dpsLocationId = 'aaaa-bbb-cccc-dddd'

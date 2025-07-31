@@ -88,6 +88,10 @@ export default class VideoLinkService {
     return this.bookAVideoLinkApiClient.downloadProbationDataByBookingDate(date, daysToExtract, response, user)
   }
 
+  public async downloadPrisonRoomConfigurationData(response: express.Response, user: Express.User): Promise<void> {
+    return this.bookAVideoLinkApiClient.downloadPrisonRoomConfigurationData(response, user)
+  }
+
   private async fetchPrisonLocations(prisonCodes: string[], user: Express.User) {
     return Promise.all(
       prisonCodes.map(code => this.bookAVideoLinkApiClient.getAppointmentLocations(code, false, user)),

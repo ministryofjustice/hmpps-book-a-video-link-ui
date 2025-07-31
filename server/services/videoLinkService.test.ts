@@ -196,4 +196,12 @@ describe('Video link service', () => {
       expect(bookAVideoLinkClient.downloadProbationDataByBookingDate).toHaveBeenCalledWith(date, 7, res, user)
     })
   })
+
+  describe('downloadPrisonRoomConfigurationData', () => {
+    it('Requests the prison room configuration data to be piped into the response', async () => {
+      const res = {} as unknown as express.Response
+      await videoLinkService.downloadPrisonRoomConfigurationData(res, user)
+      expect(bookAVideoLinkClient.downloadPrisonRoomConfigurationData).toHaveBeenCalledWith(res, user)
+    })
+  })
 })

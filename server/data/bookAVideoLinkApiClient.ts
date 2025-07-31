@@ -209,6 +209,16 @@ export default class BookAVideoLinkApiClient extends RestClient {
     )
   }
 
+  public downloadPrisonRoomConfigurationData(response: express.Response, user: Express.User): Promise<void> {
+    return this.pipeFileStream(
+      {
+        path: '/download-csv/prison-room-configuration-data',
+      },
+      response,
+      user,
+    )
+  }
+
   public getLocationByDpsLocationId(dpsLocationId: string, user: Express.User): Promise<Location> {
     return this.get({ path: `/room-admin/${dpsLocationId}` }, user)
   }

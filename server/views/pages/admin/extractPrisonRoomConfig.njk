@@ -1,0 +1,28 @@
+{% extends "partials/layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% set pageTitle = "Extract data for room configuration" %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    <p>
+        This will produce a comma-separated values (CSV) file containing the room configuration data for all prisons.
+        It can be viewed using Excel or other spreadsheet software.
+    </p>
+
+    <form method='POST'>
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+        {{ govukButton({
+            text: "Extract data",
+            type: "submit"
+        }) }}
+    </form>
+
+{% endblock %}

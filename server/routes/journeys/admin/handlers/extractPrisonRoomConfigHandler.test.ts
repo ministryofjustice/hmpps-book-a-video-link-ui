@@ -47,7 +47,7 @@ describe('Extract prison room config handler', () => {
           const $ = cheerio.load(res.text)
           const heading = $('h1').text().trim()
 
-          expect(heading).toBe(`Extract data for room configuration`)
+          expect(heading).toBe(`Extract room configuration data for all prisons`)
         })
     })
   })

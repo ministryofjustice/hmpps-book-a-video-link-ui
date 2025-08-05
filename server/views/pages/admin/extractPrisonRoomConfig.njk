@@ -1,7 +1,7 @@
 {% extends "partials/layout.njk" %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set pageTitle = "Extract data for room configuration" %}
+{% set pageTitle = "Extract room configuration data for all prisons" %}
 
 {% block content %}
 
@@ -12,8 +12,7 @@
     </div>
 
     <p>
-        This will produce a comma-separated values (CSV) file containing the room configuration data for all prisons.
-        It can be viewed using Excel or other spreadsheet software.
+        Data includes prison, prison code, room key, room description, video link, room setup, room status, permissions and schedule information.
     </p>
 
     <form method='POST'>

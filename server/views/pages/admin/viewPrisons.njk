@@ -26,9 +26,18 @@
                         <a href="/admin/view-prison-locations/{{ result.code }}" class="govuk-link govuk-link--no-visited-state">Manage rooms</a>
                     {% endset %}
 
+                    {% set newRoomsHtml %}
+                        {% if result.newRooms > 0 %}
+                            <span class='moj-notification-badge'>{{ result.newRooms }}</span>
+                        {% else %}
+                            <span>{{ result.newRooms }}</span>
+                        {% endif %}
+                    {% endset %}
+
                     {% set rows = (rows.push([
-                       { text: result.name },
-                       { text: result.code },
+                       { text: result.name, attributes: { "data-sort-value": result.name } },
+                       { text: result.code , attributes: { "data-qa": "prison-" + result.code } },
+                       { html: newRoomsHtml, attributes: { "data-qa": "newRooms-" + result.code, "data-sort-value": result.newRooms } },
                        { html: choosePrisonHtml }
                       ]), rows)
                     %}
@@ -42,6 +51,7 @@
                         head: [
                             { text: "Prison", attributes: { "aria-sort": "ascending" } },
                             { text: "Prison code" },
+                            { text: "New video rooms", attributes: { "aria-sort": "ascending" } },
                             { html: "Action" }
                         ],
                         rows: rows

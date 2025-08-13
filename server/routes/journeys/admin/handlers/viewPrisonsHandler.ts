@@ -23,6 +23,5 @@ export default class ViewPrisonsHandler implements PageHandler {
   }
 
   // A room is considered new when it lacks extra attributes (i.e., undecorated).
-  private new = (rooms: Location[]) =>
-    rooms.filter(r => r.extraAttributes === undefined || r.extraAttributes === null).length
+  private new = (rooms: Location[]) => rooms.filter(r => r.extraAttributes == null).length
 }

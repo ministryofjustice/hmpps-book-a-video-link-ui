@@ -22,3 +22,4 @@ export type CreateDecoratedRoomRequest = components['schemas']['CreateDecoratedR
 export type CreateRoomScheduleRequest = components['schemas']['CreateRoomScheduleRequest']
 export type AmendDecoratedRoomRequest = components['schemas']['AmendDecoratedRoomRequest']
 export type AmendRoomScheduleRequest = components['schemas']['AmendRoomScheduleRequest']
+export type AmendPrisonRequest = components['schemas']['AmendPrisonRequest']

@@ -8,6 +8,7 @@ import ManagePrisonVideoRoomsPage from '../pages/administration/managePrisonVide
 import ViewRoomsPage from '../pages/administration/viewRooms'
 import berwynLocations from '../mockApis/fixtures/bookAVideoLinkApi/berwynLocations.json'
 import EditRoomPage from '../pages/administration/editRoom'
+import ManagePrisonDetailsPage from '../pages/administration/managePrisonDetails'
 
 context('Administration', () => {
   beforeEach(() => {
@@ -184,5 +185,18 @@ context('Administration', () => {
     editRoomPage.roomLink().should('have.value', 'https://prison-room-link')
     editRoomPage.getSelectedRoomPermission().should('eq', 'court')
     editRoomPage.comments().should('have.value', 'This is a comment')
+  })
+
+  it('Admin user can manage prison details', () => {
+    cy.task('stubAllPrisons')
+    cy.signIn()
+
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
+
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.managePrisonDetails().click()
+
+    Page.verifyOnPage(ManagePrisonDetailsPage)
   })
 })

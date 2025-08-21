@@ -6,6 +6,8 @@ import {
   Location,
   AmendRoomScheduleRequest,
   RoomSchedule,
+  AmendPrisonRequest,
+  Prison,
 } from '../@types/bookAVideoLinkApi/types'
 
 export default class AdminService {
@@ -50,6 +52,10 @@ export default class AdminService {
     user: Express.User,
   ): Promise<RoomSchedule> {
     return this.bookAVideoLinkApiClient.amendRoomSchedule(dpsLocationId, scheduleId, request, user)
+  }
+
+  async amendPrison(prisonCode: string, request: AmendPrisonRequest, user: Express.User): Promise<Prison> {
+    return this.bookAVideoLinkApiClient.amendPrison(prisonCode, request, user)
   }
 
   async deleteRoomSchedule(dpsLocationId: string, scheduleId: number, user: Express.User): Promise<Location> {

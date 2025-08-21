@@ -15,6 +15,8 @@ import DeleteRoomScheduleHandler from './handlers/deleteRoomScheduleHandler'
 import AddRoomScheduleHandler from './handlers/addRoomScheduleHandler'
 import EditRoomScheduleHandler from './handlers/editRoomScheduleHandler'
 import ExtractPrisonRoomConfigHandler from './handlers/extractPrisonRoomConfigHandler'
+import ViewPrisonDetailsHandler from './handlers/viewPrisonDetailsHandler'
+import EditPrisonDetailsHandler from './handlers/editPrisonDetailsHandler'
 
 export default function Index({
   auditService,
@@ -56,5 +58,9 @@ export default function Index({
     '/edit-schedule/:prisonCode/:dpsLocationId/:scheduleId',
     new EditRoomScheduleHandler(prisonService, courtsService, probationTeamsService, adminService),
   )
+
+  route('/view-prison-details', new ViewPrisonDetailsHandler(prisonService))
+  route('/edit-prison-details/:prisonCode', new EditPrisonDetailsHandler(prisonService, adminService))
+
   return router
 }

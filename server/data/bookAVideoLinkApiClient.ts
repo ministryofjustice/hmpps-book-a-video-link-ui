@@ -22,6 +22,7 @@ import {
   AmendDecoratedRoomRequest,
   AmendRoomScheduleRequest,
   RoomSchedule,
+  AmendPrisonRequest,
 } from '../@types/bookAVideoLinkApi/types'
 
 import { formatDate } from '../utils/utils'
@@ -258,6 +259,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
     user: Express.User,
   ): Promise<RoomSchedule> {
     return this.put({ path: `/room-admin/${dpsLocationId}/schedule/${scheduleId}`, data: request }, user)
+  }
+
+  public amendPrison(prisonCode: string, request: AmendPrisonRequest, user: Express.User): Promise<Prison> {
+    return this.put({ path: `/prison-admin/${prisonCode}`, data: request }, user)
   }
 
   public deleteRoomSchedule(dpsLocationId: string, scheduleId: number, user: Express.User): Promise<Location> {

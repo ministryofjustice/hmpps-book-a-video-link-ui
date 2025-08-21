@@ -21,12 +21,19 @@ export const userPreferencesCourt = () => {
   ] as Court[]
 }
 
-export const aPrison = (prisonId: number = 1, code: string = 'HEI', name: string = 'Hewell (HMP)'): Prison => {
+export const aPrison = (
+  prisonId: number = 1,
+  code: string = 'HEI',
+  name: string = 'Hewell (HMP)',
+  enabled: boolean = true,
+  pickUpTime: number = null,
+): Prison => {
   return {
     prisonId,
     code,
     name,
-    enabled: true,
+    enabled,
+    pickUpTime: pickUpTime || null,
   } as Prison
 }
 

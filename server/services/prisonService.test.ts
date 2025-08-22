@@ -42,9 +42,9 @@ describe('Prison service', () => {
 
   describe('getPrisonByCode', () => {
     it('Finds the prison with the provided code', async () => {
-      bookAVideoLinkApiClient.getPrisons.mockResolvedValue([{ code: 'code', name: 'description' }] as Prison[])
+      bookAVideoLinkApiClient.getPrisonByCode.mockResolvedValue({ code: 'code', name: 'description' } as Prison)
       const result = await prisonService.getPrisonByCode('code', user)
-      expect(bookAVideoLinkApiClient.getPrisons).toHaveBeenCalledWith(false, user)
+      expect(bookAVideoLinkApiClient.getPrisonByCode).toHaveBeenCalledWith('code', user)
       expect(result).toEqual({ code: 'code', name: 'description' })
     })
   })

@@ -16,7 +16,7 @@ export default class PrisonService {
     return this.bookAVideoLinkApiClient.getPrisons(enabledOnly, user)
   }
 
-  public async getPrisonByCode(code: string, user: Express.User): Promise<Prison> {
-    return this.bookAVideoLinkApiClient.getPrisons(false, user).then(prisons => prisons.find(p => p.code === code))
+  public async getPrisonByCode(prisonCode: string, user: Express.User): Promise<Prison> {
+    return this.bookAVideoLinkApiClient.getPrisonByCode(prisonCode, user)
   }
 }

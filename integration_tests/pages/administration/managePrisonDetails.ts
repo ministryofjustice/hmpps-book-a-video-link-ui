@@ -5,5 +5,5 @@ export default class ManagePrisonDetailsPage extends Page {
     super('Manage prison details')
   }
 
-  managePrisonLink = (): PageElement => this.getLink('Manage prison')
+  managePrisonLink = (prisonCode: string): PageElement => cy.get(`[data-qa=manage-prison-link-${prisonCode}]`)
 }

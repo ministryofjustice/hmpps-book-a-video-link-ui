@@ -31,6 +31,18 @@ context('Amend a booking', () => {
     cy.task('stubPrisonLocations', nottinghamLocations)
     cy.task('stubAvailabilityCheck')
     cy.task('stubUpdateBooking')
+    cy.task('stubUpdateBooking')
+    cy.task('stubGetPrison', {
+      prisonCode: 'NMI',
+      response: {
+        prisonId: 106,
+        code: 'NMI',
+        name: 'Nottingham (HMP & YOI)',
+        enabled: true,
+        notes: null,
+        pickUpTime: null,
+      },
+    })
   })
 
   describe('Court', () => {

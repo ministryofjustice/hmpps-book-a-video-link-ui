@@ -29,6 +29,17 @@ context('Create a booking', () => {
     cy.task('stubPrisonLocations', nottinghamLocations as unknown as JSON)
     cy.task('stubAvailabilityCheck')
     cy.task('stubCreateBooking')
+    cy.task('stubGetPrison', {
+      prisonCode: 'NMI',
+      response: {
+        prisonId: 106,
+        code: 'NMI',
+        name: 'Nottingham (HMP & YOI)',
+        enabled: true,
+        notes: null,
+        pickUpTime: null,
+      },
+    })
   })
 
   describe('Court', () => {

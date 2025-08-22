@@ -70,6 +70,8 @@ describe('Edit prison details handler', () => {
 
           const pickUpTimeChecked = $("input[type='radio'][name='pickUpTime']:checked").val()
           expect(pickUpTimeChecked).toBe('custom')
+          const customPickUpTime = $("input[name='customPickUpTime']").val()
+          expect(customPickUpTime).toBe('35')
 
           expect(prisonService.getPrisonByCode).toHaveBeenCalledWith('RSI', user)
         })

@@ -88,6 +88,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
     )
   }
 
+  public getPrisonByCode(prisonCode: string, user: Express.User): Promise<Prison> {
+    return this.get({ path: `/prisons/${prisonCode}` }, user)
+  }
+
   public getReferenceCodesForGroup(groupCode: string, user: Express.User): Promise<ReferenceCode[]> {
     return this.get({ path: `/reference-codes/group/${groupCode}` }, user)
   }

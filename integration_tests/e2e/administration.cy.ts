@@ -9,6 +9,7 @@ import ViewRoomsPage from '../pages/administration/viewRooms'
 import berwynLocations from '../mockApis/fixtures/bookAVideoLinkApi/berwynLocations.json'
 import EditRoomPage from '../pages/administration/editRoom'
 import ManagePrisonDetailsPage from '../pages/administration/managePrisonDetails'
+import EditPrisonDetailsPage from '../pages/administration/editPrisonDetails'
 
 context('Administration', () => {
   beforeEach(() => {
@@ -189,6 +190,30 @@ context('Administration', () => {
 
   it('Admin user can manage prison details', () => {
     cy.task('stubAllPrisons')
+
+    cy.task('stubGetPrison', {
+      prisonCode: 'AA1',
+      response: {
+        prisonId: 3,
+        code: 'AA1',
+        name: 'AA3 Prison for test',
+        enabled: false,
+        notes: null,
+        pickUpTime: null,
+      },
+    })
+
+    cy.task('stubUpdatePrisonDetails', {
+      prisonCode: 'AA1',
+      response: {
+        prisonId: 3,
+        code: 'AA1',
+        name: 'AA3 Prison for test',
+        enabled: false,
+        notes: null,
+        pickUpTime: '30',
+      },
+    })
     cy.signIn()
 
     const homePage = Page.verifyOnPage(HomePage)
@@ -197,6 +222,13 @@ context('Administration', () => {
     const administrationPage = Page.verifyOnPage(AdministrationPage)
     administrationPage.managePrisonDetails().click()
 
-    Page.verifyOnPage(ManagePrisonDetailsPage)
+    const managePrisonDetailsPage = Page.verifyOnPage(ManagePrisonDetailsPage)
+    managePrisonDetailsPage.managePrisonLink('AA1').click()
+
+    const editPrisonDetailsPage = Page.verifyOnPage(EditPrisonDetailsPage)
+    editPrisonDetailsPage.selectPickUpTimeOn().click()
+    editPrisonDetailsPage.selectPickUpTime30().click()
+    editPrisonDetailsPage.save().click()
+    editPrisonDetailsPage.assertSaved()
   })
 })

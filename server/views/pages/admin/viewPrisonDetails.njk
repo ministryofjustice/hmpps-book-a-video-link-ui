@@ -23,7 +23,7 @@
                 {% for result in prisons %}
 
                 {% set choosePrisonHtml %}
-                    <a href="/admin/edit-prison-details/{{ result.code }}" class="govuk-link govuk-link--no-visited-state">Manage prison</a>
+                    <a href="/admin/edit-prison-details/{{ result.code }}" class="govuk-link govuk-link--no-visited-state" data-qa="manage-prison-link-{{ result.code }}">Manage prison</a>
                 {% endset %}
 
                 {% set pickUpTimeTagHtml %}

@@ -69,22 +69,26 @@
                         {
                           value: "15",
                           text: "15",
-                          checked: formResponses.pickUpTime === '15' or prison.pickUpTime === 15
+                          checked: formResponses.pickUpTime === '15' or prison.pickUpTime === 15,
+                          attributes: { 'data-qa': 'pick-up-time-15' }
                         },
                         {
                           value: "30",
                           text: "30",
-                          checked: formResponses.pickUpTime === '30' or prison.pickUpTime === 30
+                          checked: formResponses.pickUpTime === '30' or prison.pickUpTime === 30,
+                          attributes: { 'data-qa': 'pick-up-time-30' }
                         },
                         {
                           value: "45",
                           text: "45",
-                          checked: formResponses.pickUpTime === '45' or prison.pickUpTime === 45
+                          checked: formResponses.pickUpTime === '45' or prison.pickUpTime === 45,
+                          attributes: { 'data-qa': 'pick-up-time-45' }
                         },
                         {
                           value: "custom",
                           checked: formResponses.pickUpTime === 'custom' or (prison.pickUpTime and prison.pickUpTime !== 15 and prison.pickUpTime !== 30 and prison.pickUpTime !== 45),
-                          html: customPickUpTimeHtml
+                          html: customPickUpTimeHtml,
+                          attributes: { 'data-qa': 'pick-up-time-custom' }
                         }
                       ]
                     }) }}
@@ -113,12 +117,14 @@
                       checked: formResponses.pickUpTimeOnOff or prison.pickUpTime,
                       conditional: {
                         html: choosePickUpTimeHtml
-                      }
+                      },
+                      attributes: { 'data-qa': 'pick-up-time-on' }
                     },
                     {
                       value: "off",
                       text: "Off",
-                      checked: (not formResponses.pickUpTimeOnOff) and (not prison.pickUpTime)
+                      checked: (not formResponses.pickUpTimeOnOff) and (not prison.pickUpTime),
+                      attributes: { 'data-qa': 'pick-up-time-off' }
                     }
                   ]
                 }) }}

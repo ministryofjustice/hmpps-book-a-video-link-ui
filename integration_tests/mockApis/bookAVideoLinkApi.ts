@@ -119,4 +119,8 @@ export default {
   stubProbationDataExtractByMeetingDate,
   stubGetRoomDetails: response => stubGet('/book-a-video-link-api/room-admin/(.)*', response),
   stubUpdateRoomDetails: () => stubPut('/book-a-video-link-api/room-admin/(.)*'),
+  stubUpdatePrisonDetails: ({ prisonCode, response } = { prisonCode: '(.)*', response: [] }) =>
+    stubPut(`/book-a-video-link-api/prison-admin/${prisonCode}`, response),
+  stubGetPrison: ({ prisonCode, response } = { prisonCode: '(.)*', response: [] }) =>
+    stubGet(`/book-a-video-link-api/prisons/${prisonCode}`, response),
 }

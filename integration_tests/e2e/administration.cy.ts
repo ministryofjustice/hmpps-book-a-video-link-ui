@@ -131,6 +131,16 @@ context('Administration', () => {
         ],
       },
     })
+    cy.task('stubGetPrison', {
+      prisonCode: 'BWI',
+      response: {
+        prisonId: 83,
+        code: 'BWI',
+        name: 'Berwyn (HMP & YOI)',
+        enabled: true,
+        notes: null,
+      },
+    })
     cy.signIn()
 
     const homePage = Page.verifyOnPage(HomePage)

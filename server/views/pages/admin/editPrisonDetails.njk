@@ -1,0 +1,138 @@
+{% extends "partials/layout.njk" %}
+
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+
+{% set backLinkText = "Back" %}
+{% set backLinkHref = "/admin/view-prison-details" %}
+
+{% set pageTitle = prison.name %}
+
+{% block content %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+          {{ govukFieldset({
+            legend: {
+              text: pageTitle,
+              classes: "govuk-fieldset__legend--l",
+              isPageHeading: true
+            }
+          }) }}
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters-from-desktop">
+
+            <form method='POST' data-module="form-spinner" data-loading-text="Amending prison details">
+                <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+                {% set customPickUpTimeHtml %}
+                    <div class="custom-time-period">
+                        <span>Custom time period</span>
+                        {{ govukInput({
+                          classes: "govuk-input--width-2",
+                          inputmode: "numeric",
+                          suffix: {
+                            text: "min"
+                          },
+                          id: "customPickUpTime",
+                          name: "customPickUpTime",
+                          value: formResponses.customPickUpTime or prison.pickUpTime if prison.pickUpTime !== 15 and prison.pickUpTime !== 30 and prison.pickUpTime !== 45
+                        }) }}
+                    </div>
+                {% endset %}
+
+
+                {% set choosePickUpTimeHtml %}
+                    {{ govukFieldset({
+                      legend: {
+                        text: "Select time period",
+                        classes: "govuk-fieldset__legend--s",
+                        isPageHeading: false
+                      }
+                    }) }}
+                    {{ govukRadios({
+                      idPrefix: "pickUpTime",
+                      name: "pickUpTime",
+                      errorMessage: validationErrors | findError('pickUpTime'),
+                      fieldset: {
+                        legend: {
+                          text: "This is the time the prisoner will be picked up before their first video appointment"
+                        }
+                      },
+                      items: [
+                        {
+                          value: "15",
+                          text: "15",
+                          checked: formResponses.pickUpTime === '15' or prison.pickUpTime === 15
+                        },
+                        {
+                          value: "30",
+                          text: "30",
+                          checked: formResponses.pickUpTime === '30' or prison.pickUpTime === 30
+                        },
+                        {
+                          value: "45",
+                          text: "45",
+                          checked: formResponses.pickUpTime === '45' or prison.pickUpTime === 45
+                        },
+                        {
+                          value: "custom",
+                          checked: formResponses.pickUpTime === 'custom' or (prison.pickUpTime and prison.pickUpTime !== 15 and prison.pickUpTime !== 30 and prison.pickUpTime !== 45),
+                          html: customPickUpTimeHtml
+                        }
+                      ]
+                    }) }}
+                {% endset %}
+
+                {{ govukFieldset({
+                  legend: {
+                    text: "Display pick-up time",
+                    classes: "govuk-fieldset__legend--m",
+                    isPageHeading: false
+                  }
+                }) }}
+                {{ govukRadios({
+                  idPrefix: "pickUpTimeOnOff",
+                  name: "pickUpTimeOnOff",
+                  errorMessage: validationErrors | findError('pickUpTimeOnOff'),
+                  fieldset: {
+                    legend: {
+                      text: "Select if pick-up times should display on Video Link Daily Schedule"
+                    }
+                  },
+                  items: [
+                    {
+                      value: "on",
+                      text: "On",
+                      checked: formResponses.pickUpTimeOnOff or prison.pickUpTime,
+                      conditional: {
+                        html: choosePickUpTimeHtml
+                      }
+                    },
+                    {
+                      value: "off",
+                      text: "Off",
+                      checked: (not formResponses.pickUpTimeOnOff) and (not prison.pickUpTime)
+                    }
+                  ]
+                }) }}
+
+                <div class="govuk-button-group">
+                    {{ govukButton({
+                        text: "Save",
+                        preventDoubleClick: true,
+                        type: "submit"
+                    }) }}
+
+                    <a href="/admin/view-prison-details" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

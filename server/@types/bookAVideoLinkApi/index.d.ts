@@ -174,6 +174,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prison-admin/{prisonCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /** @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN */
+    put: operations['amendPrison']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/video-link-booking': {
     parameters: {
       query?: never
@@ -593,6 +613,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/prisons/{prisonCode}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Endpoint to find a prison by its code
+     * @description
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     *     * BVLS_ACCESS__RW
+     */
+    get: operations['getPrisonByCode']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/prisons/{prisonCode}/locations': {
     parameters: {
       query?: never
@@ -673,6 +717,26 @@ export interface paths {
      *     Requires one of the following roles:
      *     * BOOK_A_VIDEO_LINK_ADMIN */
     get: operations['downloadProbationBookingsByBookingDate']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/download-csv/prison-room-configuration-data': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** @description Return room decoration data for all active prisons in BVLS.
+     *
+     *     Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN */
+    get: operations['downloadPrisonRoomConfigurationData']
     put?: never
     post?: never
     delete?: never
@@ -1150,6 +1214,58 @@ export interface components {
     PurgeQueueResult: {
       /** Format: int32 */
       messagesFoundCount: number
+    }
+    /** @description The request with the prison amendment details */
+    AmendPrisonRequest: {
+      /**
+       * Format: int32
+       * @description
+       *         Represents the number of minutes to pick-up prisoners prior to bookings starting. For example, if a booking starts
+       *          at 10am and the pick-up time is 15 minutes, the prisoner will be picked up at 9:45am the day of the booking.
+       *
+       *         Must be between 1 to 60 minutes or null.
+       *
+       * @example 15
+       */
+      pickUpTime?: number
+    }
+    /** @description Describes the details of a prison */
+    Prison: {
+      /**
+       * Format: int64
+       * @description An internally-generated unique identifier for this prison.
+       * @example 12345
+       */
+      prisonId: number
+      /**
+       * @description A short code for this prison.
+       * @example BMI
+       */
+      code: string
+      /**
+       * @description A fuller description for this prison
+       * @example HMP Birmingham
+       */
+      name: string
+      /**
+       * @description A boolean value to show whether the prison is enabled for self-service video link bookings by court/probation.
+       * @example true
+       */
+      enabled: boolean
+      /**
+       * @description Notes relating to this prison, e.g. number of video-enabled rooms, address.
+       * @example Free form notes
+       */
+      notes?: string
+      /**
+       * Format: int32
+       * @description
+       *         Represents the number of minutes to pick-up prisoners prior to bookings starting. For example, if a booking starts
+       *          at 10am and the pick-up time is 15 minutes, the prisoner will be picked up at 9:45am the day of the booking.
+       *
+       * @example 15
+       */
+      pickUpTime?: number
     }
     /** @description The request with the new video link booking details */
     CreateVideoBookingRequest: {
@@ -2238,35 +2354,6 @@ export interface components {
        */
       notes?: string
     }
-    /** @description Describes the details of a prison */
-    Prison: {
-      /**
-       * Format: int64
-       * @description An internally-generated unique identifier for this prison.
-       * @example 12345
-       */
-      prisonId: number
-      /**
-       * @description A short code for this prison.
-       * @example BMI
-       */
-      code: string
-      /**
-       * @description A fuller description for this prison
-       * @example HMP Birmingham
-       */
-      name: string
-      /**
-       * @description A boolean value to show whether the prison is enabled for self-service video link bookings by court/probation.
-       * @example true
-       */
-      enabled: boolean
-      /**
-       * @description Notes relating to this prison, e.g. number of video-enabled rooms, address.
-       * @example Free form notes
-       */
-      notes?: string
-    }
     /** @description Describes the details of a court */
     Court: {
       /**
@@ -2897,6 +2984,51 @@ export interface operations {
       }
     }
   }
+  amendPrison: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The code of the prison to be amended. */
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['AmendPrisonRequest']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Prison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   create: {
     parameters: {
       query?: never
@@ -3155,7 +3287,7 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        jobName: 'COURT_HEARING_LINK_REMINDER' | 'PROBATION_OFFICER_DETAILS_REMINDER'
+        jobName: 'COURT_HEARING_LINK_REMINDER' | 'PROBATION_OFFICER_DETAILS_REMINDER' | 'NEW_PRISON_VIDEO_ROOM'
       }
       cookie?: never
     }
@@ -3661,6 +3793,47 @@ export interface operations {
       }
     }
   }
+  getPrisonByCode: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description The code of the prison to be returned. */
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Get a prison by its code */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Prison']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getAppointmentLocationsAtPrison: {
     parameters: {
       query?: {
@@ -3790,6 +3963,35 @@ export interface operations {
         /** @description Return details of bookings occurring within this number of days of start-date. A maximum of 365 days. */
         days?: number
       }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  downloadPrisonRoomConfigurationData: {
+    parameters: {
+      query?: never
       header?: never
       path?: never
       cookie?: never

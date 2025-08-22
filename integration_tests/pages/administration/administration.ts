@@ -10,4 +10,6 @@ export default class AdministrationPage extends Page {
   extractDataByBookingDate = (): PageElement => this.getLink('Extract data by booking date')
 
   managePrisonVideoRooms = (): PageElement => this.getLink('Manage prison video rooms')
+
+  managePrisonDetails = (): PageElement => this.getLink('Manage prison details')
 }

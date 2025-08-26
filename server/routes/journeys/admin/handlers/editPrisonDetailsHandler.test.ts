@@ -255,7 +255,7 @@ describe('Edit prison details handler', () => {
             {
               fieldId: 'customPickUpTime',
               href: '#customPickUpTime',
-              text: 'Custom time period must be a whole number, 20',
+              text: 'Number of minutes should be between 1 and 60, without decimals',
             },
           ])
           expect(prisonService.getPrisonByCode).toHaveBeenCalledTimes(0)
@@ -281,7 +281,7 @@ describe('Edit prison details handler', () => {
             {
               fieldId: 'customPickUpTime',
               href: '#customPickUpTime',
-              text: 'Custom time period must be a whole number between 1 and 60',
+              text: 'Number of minutes should be between 1 and 60, without decimals',
             },
           ])
           expect(prisonService.getPrisonByCode).toHaveBeenCalledTimes(0)
@@ -307,7 +307,7 @@ describe('Edit prison details handler', () => {
             {
               fieldId: 'customPickUpTime',
               href: '#customPickUpTime',
-              text: 'Custom time period must be a whole number between 1 and 60',
+              text: 'Number of minutes should be between 1 and 60, without decimals',
             },
           ])
           expect(prisonService.getPrisonByCode).toHaveBeenCalledTimes(0)

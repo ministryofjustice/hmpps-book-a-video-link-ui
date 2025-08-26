@@ -22,9 +22,9 @@ class Body {
   @Expose()
   @ValidateIf(o => o.pickUpTimeOnOff === OnOff.ON && o.pickUpTime && o.pickUpTime === 'custom')
   @Transform(({ value }) => +value)
-  @Min(1, { message: 'Custom time period must be a whole number between 1 and 60' })
-  @Max(60, { message: 'Custom time period must be a whole number between 1 and 60' })
-  @IsInt({ message: 'Custom time period must be a whole number, 20' })
+  @Min(1, { message: 'Number of minutes should be between 1 and 60, without decimals' })
+  @Max(60, { message: 'Number of minutes should be between 1 and 60, without decimals' })
+  @IsInt({ message: 'Number of minutes should be between 1 and 60, without decimals' })
   customPickUpTime: number
 }
 

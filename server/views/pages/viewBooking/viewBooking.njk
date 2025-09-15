@@ -211,7 +211,7 @@
                             text: "Court hearing link (CVP)"
                         },
                         value: {
-                            text: formatCvpLink(booking.hmctsNumber, booking.videoLinkUrl, hmctsLinkAndGuestPin)
+                            text: formatCvpLink(booking.hmctsNumber, booking.videoLinkUrl)
                         },
                         actions: {
                             items: [
@@ -241,7 +241,7 @@
                                 }
                             ]
                          } if isAmendable
-                    } if booking.bookingType == 'COURT' and hmctsLinkAndGuestPin,
+                    } if booking.bookingType == 'COURT',
                     {
                         key: {
                             text: "Post-court hearing time"

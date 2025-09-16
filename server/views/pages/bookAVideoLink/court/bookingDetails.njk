@@ -121,56 +121,42 @@
                 }) }}
 
                 {% set courtHearingLinkHtml %}
-                    {% if hmctsLinkAndGuestPin %}
-                        {{ govukInput({
-                            id: "hmctsNumber",
-                            name: "hmctsNumber",
-                            label: {
-                                text: "Enter number from CVP address",
-                                classes: 'govuk-label--s'
-                            },
-                            hint: {
-                                text: "For example 3476"
-                            },
-                            prefix: {
-                                text: "HMCTS",
-                                classes: 'govuk-label--s'
-                            },
-                            inputmode: "numeric",
-                            classes: 'govuk-input--width-5',
-                            errorMessage: validationErrors | findError('hmctsNumber'),
-                            value: formResponses.hmctsNumber or session.journey.bookACourtHearing.hmctsNumber
-                        }) }}
+                    {{ govukInput({
+                        id: "hmctsNumber",
+                        name: "hmctsNumber",
+                        label: {
+                            text: "Enter number from CVP address",
+                            classes: 'govuk-label--s'
+                        },
+                        hint: {
+                            text: "For example 3476"
+                        },
+                        prefix: {
+                            text: "HMCTS",
+                            classes: 'govuk-label--s'
+                        },
+                        inputmode: "numeric",
+                        classes: 'govuk-input--width-5',
+                        errorMessage: validationErrors | findError('hmctsNumber'),
+                        value: formResponses.hmctsNumber or session.journey.bookACourtHearing.hmctsNumber
+                    }) }}
 
-                        <p>Or</p>
+                    <p>Or</p>
 
-                        {{ govukInput({
-                            id: "videoLinkUrl",
-                            name: "videoLinkUrl",
-                            label: {
-                                text: "Enter full web address (URL)",
-                                classes: 'govuk-label--s'
-                            },
-                            hint: {
-                                text: "This should start with https://"
-                            },
-                            classes: 'govuk-!-width-three-quarters',
-                            errorMessage: validationErrors | findError('videoLinkUrl'),
-                            value: formResponses.videoLinkUrl or session.journey.bookACourtHearing.videoLinkUrl
-                        }) }}
-                    {% else %}
-                        {{ govukInput({
-                            id: "videoLinkUrl",
-                            name: "videoLinkUrl",
-                            label: {
-                                text: "Court hearing link",
-                                classes: 'govuk-label--s'
-                            },
-                            classes: 'govuk-!-width-three-quarters',
-                            errorMessage: validationErrors | findError('videoLinkUrl'),
-                            value: formResponses.videoLinkUrl or session.journey.bookACourtHearing.videoLinkUrl
-                        }) }}
-                    {% endif %}
+                    {{ govukInput({
+                        id: "videoLinkUrl",
+                        name: "videoLinkUrl",
+                        label: {
+                            text: "Enter full web address (URL)",
+                            classes: 'govuk-label--s'
+                        },
+                        hint: {
+                            text: "This should start with https://"
+                        },
+                        classes: 'govuk-!-width-three-quarters',
+                        errorMessage: validationErrors | findError('videoLinkUrl'),
+                        value: formResponses.videoLinkUrl or session.journey.bookACourtHearing.videoLinkUrl
+                    }) }}
                 {% endset %}
 
                 {% set guestPinHtml %}
@@ -202,7 +188,7 @@
                         {
                             value: 'yes',
                             text: "Yes",
-                            checked: formResponses.cvpRequired == 'yes' or session.journey.bookACourtHearing.videoLinkUrl or (session.journey.bookACourtHearing.hmctsNumber and hmctsLinkAndGuestPin),
+                            checked: formResponses.cvpRequired == 'yes' or session.journey.bookACourtHearing.videoLinkUrl or session.journey.bookACourtHearing.hmctsNumber,
                             conditional: {
                                 html: courtHearingLinkHtml
                             }
@@ -215,37 +201,35 @@
                     ]
                 }) }}
 
-                {% if hmctsLinkAndGuestPin %}
-                    {{ govukRadios({
-                        idPrefix: "guestPinRequired",
-                        name: "guestPinRequired",
-                        errorMessage: validationErrors | findError('guestPinRequired'),
-                        fieldset: {
-                            legend: {
-                                text: "Is a guest pin required?",
-                                classes: "govuk-fieldset__legend--s"
-                            }
+                {{ govukRadios({
+                    idPrefix: "guestPinRequired",
+                    name: "guestPinRequired",
+                    errorMessage: validationErrors | findError('guestPinRequired'),
+                    fieldset: {
+                        legend: {
+                            text: "Is a guest pin required?",
+                            classes: "govuk-fieldset__legend--s"
+                        }
+                    },
+                    hint: {
+                        text: "Some meetings require a guest pin for security reasons."
+                    },
+                    items: [
+                        {
+                            value: 'yes',
+                            text: "Yes",
+                            checked: formResponses.guestPinRequired == 'yes' or session.journey.bookACourtHearing.guestPin,
+                            conditional: {
+                            html: guestPinHtml
+                        }
                         },
-                        hint: {
-                            text: "Some meetings require a guest pin for security reasons."
-                        },
-                        items: [
-                            {
-                                value: 'yes',
-                                text: "Yes",
-                                checked: formResponses.guestPinRequired == 'yes' or session.journey.bookACourtHearing.guestPin,
-                                conditional: {
-                                html: guestPinHtml
-                            }
-                            },
-                            {
-                                value: 'no',
-                                text: "No",
-                                checked: formResponses.guestPinRequired == 'no' or (session.journey.bookACourtHearing.guestPinRequired == false and not formResponses)
-                            }
-                        ]
-                    }) }}
-                {% endif %}
+                        {
+                            value: 'no',
+                            text: "No",
+                            checked: formResponses.guestPinRequired == 'no' or (session.journey.bookACourtHearing.guestPinRequired == false and not formResponses)
+                        }
+                    ]
+                }) }}
 
                 {{ mojDatePicker({
                     id: 'date',

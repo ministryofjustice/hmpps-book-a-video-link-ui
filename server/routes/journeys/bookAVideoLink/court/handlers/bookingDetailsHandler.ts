@@ -22,7 +22,6 @@ import IsValidDate from '../../../../validators/isValidDate'
 import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import config from '../../../../../config'
 
 class Body {
   @Expose()
@@ -35,13 +34,10 @@ class Body {
 
   @Expose()
   @IsEnum(YesNo, { message: 'Select if you know the court hearing link' })
-  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', config.featureToggles.hmctsLinkAndGuestPin, {
+  @CustomOneOrTheOther('videoLinkUrl', 'hmctsNumber', {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     message: (args: ValidationArguments) => {
-      if (config.featureToggles.hmctsLinkAndGuestPin) {
-        return 'Enter number from CVP address or enter full web address (URL)'
-      }
-      return 'Enter court hearing link'
+      return 'Enter number from CVP address or enter full web address (URL)'
     },
   })
   cvpRequired: string
@@ -54,21 +50,18 @@ class Body {
 
   @Expose()
   @Transform(({ value, obj }) => (obj.cvpRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(
-    o => o.cvpRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin && isNotEmpty(o.hmctsNumber),
-  )
+  @ValidateIf(o => o.cvpRequired === YesNo.YES && isNotEmpty(o.hmctsNumber))
   @MaxLength(8, { message: 'Number from CVP address must be $constraint1 characters or less' })
   @IsNumberString({ no_symbols: true }, { message: 'Number from CVP address must be a number, like 3457' })
   hmctsNumber: string
 
   @Expose()
-  @ValidateIf(() => config.featureToggles.hmctsLinkAndGuestPin)
   @IsEnum(YesNo, { message: 'Select if you know the guest pin' })
   guestPinRequired: string
 
   @Expose()
   @Transform(({ value, obj }) => (obj.guestPinRequired === YesNo.YES ? value : undefined))
-  @ValidateIf(o => o.guestPinRequired === YesNo.YES && config.featureToggles.hmctsLinkAndGuestPin)
+  @ValidateIf(o => o.guestPinRequired === YesNo.YES)
   @MaxLength(8, { message: 'Guest pin must be $constraint1 characters or less' })
   @IsNumberString({ no_symbols: true }, { message: 'Guest pin must be a number, like 1344' })
   @IsNotEmpty({ message: 'Enter the guest pin' })

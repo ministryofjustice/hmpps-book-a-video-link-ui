@@ -190,7 +190,7 @@
                             text: "Court hearing link (CVP)"
                         },
                         value: {
-                            text: formatCvpLink(session.journey.bookACourtHearing.hmctsNumber, session.journey.bookACourtHearing.videoLinkUrl, hmctsLinkAndGuestPin)
+                            text: formatCvpLink(session.journey.bookACourtHearing.hmctsNumber, session.journey.bookACourtHearing.videoLinkUrl)
                         },
                         actions: {
                             items: [
@@ -218,7 +218,7 @@
                             }
                         ]
                     }
-                    } if mode != request and hmctsLinkAndGuestPin,
+                    } if mode != request,
                     {
                         key: {
                             text: "Post-court hearing time"

@@ -15,7 +15,6 @@ import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Court, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
-import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtsService')
@@ -42,7 +41,6 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.hmctsLinkAndGuestPin = false
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
@@ -208,6 +206,7 @@ describe('Booking details handler', () => {
       endTime: { hour: 16, minute: 30 },
       preRequired: 'no',
       postRequired: 'no',
+      guestPinRequired: 'no',
     }
 
     it('should validate an empty form on the court journey', () => {
@@ -230,6 +229,11 @@ describe('Booking details handler', () => {
               fieldId: 'cvpRequired',
               href: '#cvpRequired',
               text: 'Select if you know the court hearing link',
+            },
+            {
+              fieldId: 'guestPinRequired',
+              href: '#guestPinRequired',
+              text: 'Select if you know the guest pin',
             },
             {
               fieldId: 'date',
@@ -270,6 +274,8 @@ describe('Booking details handler', () => {
           startTime: { hour: 25, minute: 30 },
           endTime: { hour: 25, minute: 30 },
           notesForStaff: 'a'.repeat(401),
+          guestPinRequired: 'yes',
+          guestPin: 'ABC',
         })
         .expect(() => {
           expectErrorMessages([
@@ -277,6 +283,11 @@ describe('Booking details handler', () => {
               fieldId: 'videoLinkUrl',
               href: '#videoLinkUrl',
               text: 'Court hearing link must be 120 characters or less',
+            },
+            {
+              fieldId: 'guestPin',
+              href: '#guestPin',
+              text: 'Guest pin must be a number, like 1344',
             },
             {
               fieldId: 'date',

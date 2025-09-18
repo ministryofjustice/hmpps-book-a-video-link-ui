@@ -369,6 +369,62 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should validate HMCTS number is numeric', () => {
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({
+          ...validForm,
+          videoLinkUrl: null,
+          hmctsNumber: 'NaN',
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'hmctsNumber',
+              href: '#hmctsNumber',
+              text: 'Number from CVP address must be a number, like 3457',
+            },
+          ])
+        })
+    })
+
+    it('should validate HMCTS number is positive number', () => {
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({
+          ...validForm,
+          videoLinkUrl: null,
+          hmctsNumber: '-1',
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'hmctsNumber',
+              href: '#hmctsNumber',
+              text: 'Number from CVP address must be a number, like 3457',
+            },
+          ])
+        })
+    })
+
+    it('should validate that a CVP link or HMCTS number is provided', () => {
+      return request(app)
+        .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .send({
+          ...validForm,
+          videoLinkUrl: null,
+        })
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'cvpRequired',
+              href: '#cvpRequired',
+              text: 'Enter number from CVP address or enter full web address (URL)',
+            },
+          ])
+        })
+    })
+
     it('should save the posted fields in session', async () => {
       appSetup()
 

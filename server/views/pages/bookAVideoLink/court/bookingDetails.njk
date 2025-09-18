@@ -138,7 +138,7 @@
                         inputmode: "numeric",
                         classes: 'govuk-input--width-5',
                         errorMessage: validationErrors | findError('hmctsNumber'),
-                        value: formResponses.hmctsNumber or session.journey.bookACourtHearing.hmctsNumber
+                        value: formResponses.hmctsNumber if (formResponses.cvpRequired == 'yes') else session.journey.bookACourtHearing.hmctsNumber
                     }) }}
 
                     <p>Or</p>
@@ -155,7 +155,7 @@
                         },
                         classes: 'govuk-!-width-three-quarters',
                         errorMessage: validationErrors | findError('videoLinkUrl'),
-                        value: formResponses.videoLinkUrl or session.journey.bookACourtHearing.videoLinkUrl
+                        value: formResponses.videoLinkUrl if (formResponses.cvpRequired == 'yes') else session.journey.bookACourtHearing.videoLinkUrl
                     }) }}
                 {% endset %}
 

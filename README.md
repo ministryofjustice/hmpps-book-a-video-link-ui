@@ -1,6 +1,6 @@
 # hmpps-book-a-video-link-ui
 [![repo standards badge](https://img.shields.io/badge/endpoint.svg?&style=flat&logo=github&url=https%3A%2F%2Foperations-engineering-reports.cloud-platform.service.justice.gov.uk%2Fapi%2Fv1%2Fcompliant_public_repositories%2Fhmpps-book-a-video-link-ui)](https://operations-engineering-reports.cloud-platform.service.justice.gov.uk/public-github-repositories.html#hmpps-book-a-video-link-ui "Link to report")
-[![CircleCI](https://circleci.com/gh/ministryofjustice/hmpps-book-a-video-link-ui/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/hmpps-book-a-video-link-ui)
+[![Docker Repository on ghcr](https://img.shields.io/badge/ghcr.io-repository-2496ED.svg?logo=docker)](https://ghcr.io/ministryofjustice/hmpps-book-a-video-link-ui)
 
 This front end service provides allows court and probation users to book and manage video link hearings/appointments with people in prison.
 

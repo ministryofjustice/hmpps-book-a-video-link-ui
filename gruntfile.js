@@ -14,7 +14,7 @@ module.exports = grunt => {
           loadPath: ['.', 'node_modules/govuk-frontend/dist', 'node_modules/@ministryofjustice/frontend'],
         },
         files: {
-          'assets/stylesheets/application.css': 'frontend/application.scss',
+          'dist/assets/stylesheets/application.css': 'frontend/application.scss',
         },
       },
     },
@@ -26,14 +26,14 @@ module.exports = grunt => {
       },
       main: {
         files: {
-          'assets/javascript/bookAVideoLink.min.js': 'frontend/index.js',
+          'dist/assets/javascript/bookAVideoLink.min.js': 'frontend/index.js',
         },
       },
     },
     uglify: {
       dist: {
         files: {
-          'assets/javascript/bookAVideoLink.min.js': 'assets/javascript/bookAVideoLink.min.js',
+          'dist/assets/javascript/bookAVideoLink.min.js': 'dist/assets/javascript/bookAVideoLink.min.js',
         },
       },
     },
@@ -44,19 +44,19 @@ module.exports = grunt => {
             expand: true,
             cwd: 'node_modules/govuk-frontend/dist/govuk/assets',
             src: ['./**/*'],
-            dest: 'assets/',
+            dest: 'dist/assets/',
           },
           {
             expand: true,
             cwd: 'node_modules/@ministryofjustice/frontend/moj/assets',
             src: ['./**/*'],
-            dest: 'assets/',
+            dest: 'dist/assets/',
           },
           {
             expand: true,
             cwd: 'frontend/images',
             src: ['./**/*'],
-            dest: 'assets/images/',
+            dest: 'dist/assets/images/',
           },
         ],
       },

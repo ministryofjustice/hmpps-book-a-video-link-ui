@@ -1024,7 +1024,7 @@ export interface components {
        * @example INACTIVE
        * @enum {string}
        */
-      locationStatus: 'ACTIVE' | 'INACTIVE'
+      locationStatus: 'ACTIVE' | 'INACTIVE' | 'TEMPORARILY_BLOCKED'
       /**
        * @description Court or probation team codes allowed to use the room, can be null
        * @example [
@@ -1042,6 +1042,16 @@ export interface components {
        * @example Temporarily unavailable due to ongoing work
        */
       comments?: string
+      /**
+       * Format: date
+       * @description The start date which a location is blocked from. Only applies to temporarily blocked locations.
+       */
+      blockedFrom?: string
+      /**
+       * Format: date
+       * @description The end date which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       */
+      blockedTo?: string
     }
     Location: {
       /**
@@ -1082,22 +1092,11 @@ export interface components {
        */
       attributeId: number
       /**
-       * @description The status of the room (ACTIVE or INACTIVE)
+       * @description The status of the room (ACTIVE, INACTIVE, TEMPORARILY_BLOCKED)
        * @example ACTIVE
        * @enum {string}
        */
-      locationStatus: 'ACTIVE' | 'INACTIVE'
-      /**
-       * @description An optional message relating to an inactive status
-       * @example Room damaged
-       */
-      statusMessage?: string
-      /**
-       * Format: date
-       * @description The date the room is expected to be operational again
-       * @example 2025-02-12
-       */
-      expectedActiveDate?: string
+      locationStatus: 'ACTIVE' | 'INACTIVE' | 'TEMPORARILY_BLOCKED'
       /**
        * @description The preferred usage for this room (COURT, PROBATION, SHARED, BLOCKED, SCHEDULE)
        * @example SHARED
@@ -1123,6 +1122,16 @@ export interface components {
        */
       notes?: string
       schedule: components['schemas']['RoomSchedule'][]
+      /**
+       * Format: date
+       * @description The start date which a room is blocked from. Only applies to temporarily blocked rooms.
+       */
+      blockedFrom?: string
+      /**
+       * Format: date
+       * @description The end date which a room is blocked to. Only applies to temporarily blocked rooms.
+       */
+      blockedTo?: string
     }
     /** @description The additional schedule of usage for a video room */
     RoomSchedule: {
@@ -1759,7 +1768,7 @@ export interface components {
        * @example INACTIVE
        * @enum {string}
        */
-      locationStatus: 'ACTIVE' | 'INACTIVE'
+      locationStatus: 'ACTIVE' | 'INACTIVE' | 'TEMPORARILY_BLOCKED'
       /**
        * @description Court or probation team codes allowed to use the room, can be null
        * @example [
@@ -1777,6 +1786,16 @@ export interface components {
        * @example Temporarily unavailable due to ongoing work
        */
       comments?: string
+      /**
+       * Format: date
+       * @description The start date which a location is blocked from. Only applies to temporarily blocked locations.
+       */
+      blockedFrom?: string
+      /**
+       * Format: date
+       * @description The end date which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       */
+      blockedTo?: string
     }
     /** @description The request with the new schedule details */
     CreateRoomScheduleRequest: {
@@ -3287,7 +3306,11 @@ export interface operations {
       query?: never
       header?: never
       path: {
-        jobName: 'COURT_HEARING_LINK_REMINDER' | 'PROBATION_OFFICER_DETAILS_REMINDER' | 'NEW_PRISON_VIDEO_ROOM'
+        jobName:
+          | 'COURT_HEARING_LINK_REMINDER'
+          | 'PROBATION_OFFICER_DETAILS_REMINDER'
+          | 'NEW_PRISON_VIDEO_ROOM'
+          | 'REACTIVATE_BLOCKED_LOCATIONS'
       }
       cookie?: never
     }

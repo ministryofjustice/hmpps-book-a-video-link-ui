@@ -33,8 +33,10 @@
                         {% if result.extraAttributes %}
                             {% if result.extraAttributes.locationStatus == 'ACTIVE' %}
                                 {{ locationUsageTag("Active", "govuk-tag--green") }}
-                            {% else %}
+                            {% elseif result.extraAttributes.locationStatus == 'INACTIVE' %}
                                 {{ locationUsageTag("Out of use", "govuk-tag--red") }}
+                            {% else  %}
+                                {{ locationUsageTag("Blocked", "govuk-tag--yellow") }}
                             {% endif %}
                         {% else %}
                             {{ locationUsageTag("Active", "govuk-tag--green") }}

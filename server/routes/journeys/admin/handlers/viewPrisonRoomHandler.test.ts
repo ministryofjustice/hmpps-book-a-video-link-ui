@@ -4,17 +4,19 @@ import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import {
+  AmendDecoratedRoomRequest,
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
-  AmendDecoratedRoomRequest,
 } from '../../../../@types/bookAVideoLinkApi/types'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import AdminService from '../../../../services/adminService'
 import PrisonService from '../../../../services/prisonService'
 import { radioOptions } from '../../../testutils/cheerio'
+import config from '../../../../config'
 
 import {
+  aBlockedDecoratedLocation,
   aDecoratedLocation,
   aListOfCourts,
   aListOfProbationTeams,
@@ -25,6 +27,7 @@ import {
   userPreferencesCourt,
   userPreferencesProbation,
 } from '../../../testutils/adminTestUtils'
+import { formatDate } from '../../../../utils/utils'
 
 jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/adminService')
@@ -41,6 +44,8 @@ const dpsLocationId = 'aaaa-bbbb-cccc-dddd'
 let app: Express
 
 beforeEach(() => {
+  config.featureToggles.temporaryBlockingLocations = true
+
   app = appWithAllRoutes({
     services: { prisonService, courtsService, probationTeamsService, adminService },
     userSupplier: () => user,
@@ -76,7 +81,7 @@ describe('View prison room handler', () => {
           expect(heading).toBe(`Room One`)
 
           const statusRadios = radioOptions($, 'roomStatus')
-          expect(statusRadios.length).toBe(2)
+          expect(statusRadios.length).toBe(3)
 
           const permissionRadios = radioOptions($, 'permission')
           expect(permissionRadios.length).toBe(4)
@@ -91,6 +96,27 @@ describe('View prison room handler', () => {
           expect(courtsService.getAllEnabledCourts).toHaveBeenCalledWith(user)
           expect(probationTeamsService.getAllEnabledProbationTeams).toHaveBeenCalledWith(user)
           expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+        })
+    })
+
+    it(`should render a temporarily blocked decorated room`, () => {
+      const today = formatDate(new Date(), 'dd/MM/yyyy')
+
+      const location = aBlockedDecoratedLocation(dpsLocationId, today, today)
+
+      adminService.getLocationByDpsLocationId.mockResolvedValue(location)
+
+      return request(app)
+        .get(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+
+          const heading = $('h1').text().trim()
+          expect(heading).toBe(`Room One`)
+
+          const roomStatus = $("input[type='radio'][name='roomStatus']:checked").val()
+          expect(roomStatus).toBe('temporarily_blocked')
         })
     })
 
@@ -235,7 +261,83 @@ describe('View prison room handler', () => {
               locationUsage: 'SHARED',
               comments: 'comments',
               allowedParties: [],
+              blockedFrom: null,
+              blockedTo: null,
             } as CreateDecoratedRoomRequest,
+            user,
+          )
+          expect(adminService.createRoomSchedule).not.toHaveBeenCalled()
+        })
+    })
+
+    it(`should create a temporarily blocked room POST and redirect`, () => {
+      const today = formatDate(new Date(), 'dd/MM/yyyy')
+
+      adminService.getLocationByDpsLocationId.mockResolvedValue(anUndecoratedLocation(dpsLocationId))
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'temporarily_blocked',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          blockedFrom: today,
+          blockedTo: today,
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.createRoomAttributes).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              locationStatus: 'TEMPORARILY_BLOCKED',
+              prisonVideoUrl: 'link',
+              locationUsage: 'SHARED',
+              comments: 'comments',
+              allowedParties: [],
+              blockedFrom: formatDate(new Date(), 'yyyy-MM-dd'),
+              blockedTo: formatDate(new Date(), 'yyyy-MM-dd'),
+            } as CreateDecoratedRoomRequest,
+            user,
+          )
+          expect(adminService.createRoomSchedule).not.toHaveBeenCalled()
+        })
+    })
+
+    it(`should amend a temporarily blocked room POST and redirect`, () => {
+      const today = formatDate(new Date(), 'dd/MM/yyyy')
+
+      adminService.getLocationByDpsLocationId.mockResolvedValue(aDecoratedLocation(dpsLocationId))
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'temporarily_blocked',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          blockedFrom: today,
+          blockedTo: today,
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.amendRoomAttributes).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              locationStatus: 'TEMPORARILY_BLOCKED',
+              prisonVideoUrl: 'link',
+              locationUsage: 'SHARED',
+              comments: 'comments',
+              allowedParties: [],
+              blockedFrom: formatDate(new Date(), 'yyyy-MM-dd'),
+              blockedTo: formatDate(new Date(), 'yyyy-MM-dd'),
+            } as AmendDecoratedRoomRequest,
             user,
           )
           expect(adminService.createRoomSchedule).not.toHaveBeenCalled()
@@ -271,6 +373,8 @@ describe('View prison room handler', () => {
               locationUsage: 'SCHEDULE',
               comments: 'comments',
               allowedParties: [],
+              blockedFrom: null,
+              blockedTo: null,
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -315,6 +419,8 @@ describe('View prison room handler', () => {
               locationUsage: 'SCHEDULE',
               comments: 'comments',
               allowedParties: [],
+              blockedFrom: null,
+              blockedTo: null,
             } as AmendDecoratedRoomRequest,
             user,
           )

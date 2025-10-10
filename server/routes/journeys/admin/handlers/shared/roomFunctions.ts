@@ -1,5 +1,5 @@
 import { Request } from 'express'
-import { addHours, format, parse, parseISO } from 'date-fns'
+import { addHours, format, formatDate, parse, parseISO } from 'date-fns'
 import { dateToSimpleTime, getDaysOfWeek } from '../../../../../utils/utils'
 import {
   AmendDecoratedRoomRequest,
@@ -8,30 +8,75 @@ import {
   CreateRoomScheduleRequest,
   RoomSchedule,
 } from '../../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../../config'
 
 export const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
 export const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')
 
 export const bodyToCreateRoomRequest = (req: Request): CreateDecoratedRoomRequest => {
-  const { roomStatus, videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
+  const { videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
+  const details = locationStatusDetails(req)
+
   return {
-    locationStatus: roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE',
+    locationStatus: details.locationStatus,
     prisonVideoUrl: videoUrl,
     locationUsage: permission.toUpperCase(),
     comments: notes,
     allowedParties: chooseAllowedParties(permission, courtCodes, probationTeamCodes),
+    blockedFrom: details.blockedFrom,
+    blockedTo: details.blockedTo,
   } as CreateDecoratedRoomRequest
 }
 
 export const bodyToAmendRoomRequest = (req: Request): AmendDecoratedRoomRequest => {
-  const { roomStatus, videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
+  const { videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
+  const details = locationStatusDetails(req)
+
   return {
-    locationStatus: roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE',
+    locationStatus: details.locationStatus,
     prisonVideoUrl: videoUrl,
     locationUsage: permission.toUpperCase(),
     comments: notes,
     allowedParties: chooseAllowedParties(permission, courtCodes, probationTeamCodes),
+    blockedFrom: details.blockedFrom,
+    blockedTo: details.blockedTo,
   } as AmendDecoratedRoomRequest
+}
+
+export const locationStatusDetails = (req: Request) => {
+  const { roomStatus, blockedFrom, blockedTo } = req.body
+
+  let locationStatus = null
+
+  if (config.featureToggles.temporaryBlockingLocations) {
+    switch (roomStatus) {
+      case 'active':
+        locationStatus = 'ACTIVE'
+        break
+      case 'inactive':
+        locationStatus = 'INACTIVE'
+        break
+      case 'temporarily_blocked':
+        locationStatus = 'TEMPORARILY_BLOCKED'
+        break
+      default:
+        locationStatus = 'ACTIVE'
+    }
+  } else {
+    locationStatus = roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE'
+  }
+
+  return {
+    locationStatus,
+    blockedFrom:
+      config.featureToggles.temporaryBlockingLocations && blockedFrom && locationStatus === 'TEMPORARILY_BLOCKED'
+        ? formatDate(blockedFrom, 'yyyy-MM-dd')
+        : null,
+    blockedTo:
+      config.featureToggles.temporaryBlockingLocations && blockedTo && locationStatus === 'TEMPORARILY_BLOCKED'
+        ? formatDate(blockedTo, 'yyyy-MM-dd')
+        : null,
+  }
 }
 
 export const bodyToCreateScheduleRequest = (req: Request): CreateRoomScheduleRequest => {

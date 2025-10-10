@@ -8,12 +8,8 @@
     "extraAttributes": {
       "attributeId": 56,
       "locationStatus": "INACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "COURT",
-      "allowedParties": [
-        "ABERCV"
-      ],
+      "allowedParties": ["ABERCV"],
       "prisonVideoUrl": null,
       "notes": null,
       "schedule": [
@@ -24,9 +20,7 @@
           "startTime": "08:00",
           "endTime": "18:00",
           "locationUsage": "COURT",
-          "allowedParties": [
-            "ABERCV"
-          ]
+          "allowedParties": ["ABERCV"]
         }
       ]
     }
@@ -40,8 +34,6 @@
     "extraAttributes": {
       "attributeId": 21,
       "locationStatus": "ACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "SHARED",
       "allowedParties": [],
       "prisonVideoUrl": "vcc-room-link",
@@ -86,12 +78,8 @@
     "extraAttributes": {
       "attributeId": 19,
       "locationStatus": "ACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "COURT",
-      "allowedParties": [
-        "AYLSCC"
-      ],
+      "allowedParties": ["AYLSCC"],
       "prisonVideoUrl": null,
       "notes": "Test comment",
       "schedule": [
@@ -102,9 +90,7 @@
           "startTime": "10:00",
           "endTime": "17:00",
           "locationUsage": "COURT",
-          "allowedParties": [
-            "ALDRMC"
-          ]
+          "allowedParties": ["ALDRMC"]
         }
       ]
     }
@@ -118,8 +104,6 @@
     "extraAttributes": {
       "attributeId": 57,
       "locationStatus": "INACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "COURT",
       "allowedParties": [],
       "prisonVideoUrl": null,
@@ -141,9 +125,7 @@
           "startTime": "08:00",
           "endTime": "18:00",
           "locationUsage": "COURT",
-          "allowedParties": [
-            "ABERCV"
-          ]
+          "allowedParties": ["ABERCV"]
         },
         {
           "scheduleId": 57,
@@ -175,8 +157,6 @@
     "extraAttributes": {
       "attributeId": 58,
       "locationStatus": "ACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "SHARED",
       "allowedParties": [],
       "prisonVideoUrl": null,
@@ -193,8 +173,6 @@
     "extraAttributes": {
       "attributeId": 60,
       "locationStatus": "ACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "COURT",
       "allowedParties": [],
       "prisonVideoUrl": null,
@@ -221,8 +199,6 @@
     "extraAttributes": {
       "attributeId": 61,
       "locationStatus": "ACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "COURT",
       "allowedParties": [],
       "prisonVideoUrl": null,
@@ -249,8 +225,6 @@
     "extraAttributes": {
       "attributeId": 59,
       "locationStatus": "ACTIVE",
-      "statusMessage": null,
-      "expectedActiveDate": null,
       "locationUsage": "SCHEDULE",
       "allowedParties": [],
       "prisonVideoUrl": "HMCI12345",
@@ -263,9 +237,7 @@
           "startTime": "08:00",
           "endTime": "17:00",
           "locationUsage": "COURT",
-          "allowedParties": [
-            "CRT027"
-          ]
+          "allowedParties": ["CRT027"]
         },
         {
           "scheduleId": 134,

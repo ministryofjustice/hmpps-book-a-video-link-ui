@@ -7,6 +7,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "partials/admin/displayRoomSchedule.njk" import displayRoomSchedule %}
 {% from "partials/admin/enterRoomSchedule.njk" import enterRoomSchedule %}
 {% from "partials/admin/selectCourtFromList.njk" import selectCourtFromList %}
@@ -39,8 +40,35 @@
             <form method='POST' data-module="form-spinner" data-loading-text="Updating room settings">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
+                {% set blockedHtml %}
+                    <p class='govuk-!-font-weight-bold'>Select a duration</p>
+                    <div class='horizontal-form'>
+                        {{ mojDatePicker({
+                            id: 'blockedFrom',
+                            name: 'blockedFrom',
+                            label: {
+                                text: "Date from",
+                                classes: 'govuk-label--s'
+                            },
+                            errorMessage: validationErrors | findError('blockedFrom'),
+                            value: formResponses.blockedFrom if (validationErrors | findError('blockedFrom')) else (room.extraAttributes.blockedFrom | formatDate('dd/MM/yyyy'))
+                        }) }}
+
+                        {{ mojDatePicker({
+                            id: 'blockedTo',
+                            name: 'blockedTo',
+                            label: {
+                                text: "Date to",
+                                classes: 'govuk-label--s'
+                            },
+                            errorMessage: validationErrors | findError('blockedTo'),
+                            value: formResponses.blockedTo if (validationErrors | findError('blockedTo')) else (room.extraAttributes.blockedTo | formatDate('dd/MM/yyyy'))
+                        }) }}
+                    </div>
+                {% endset %}
+
                 {{ govukRadios({
-                    classes: "govuk-radios--inline govuk-radios--small",
+                    classes: "govuk-radios--small",
                     idPrefix: "roomStatus",
                     name: "roomStatus",
                     fieldset: {
@@ -62,7 +90,15 @@
                             value: "inactive",
                             text: "Out of use",
                             checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE"
-                        }
+                        },
+                        {
+                            value: "temporarily_blocked",
+                            text: "Temporary block",
+                            checked: formResponses.roomStatus == 'temporarily_blocked' or room.extraAttributes.locationStatus == "TEMPORARILY_BLOCKED",
+                            conditional: {
+                              html: blockedHtml
+                            }
+                        } if temporaryBlockingLocations
                     ],
                     errorMessage: validationErrors | findError('roomStatus')
                 }) }}

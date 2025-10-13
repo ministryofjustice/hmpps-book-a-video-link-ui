@@ -1,4 +1,4 @@
-import { startOfToday } from 'date-fns'
+import { format, startOfToday } from 'date-fns'
 import Page from '../pages/page'
 import HomePage from '../pages/home'
 import AdministrationPage from '../pages/administration/administration'
@@ -112,8 +112,6 @@ context('Administration', () => {
       extraAttributes: {
         attributeId: 56,
         locationStatus: 'INACTIVE',
-        statusMessage: null,
-        expectedActiveDate: null,
         locationUsage: 'COURT',
         allowedParties: ['ABERCV'],
         prisonVideoUrl: null,
@@ -170,8 +168,6 @@ context('Administration', () => {
       extraAttributes: {
         attributeId: 56,
         locationStatus: 'ACTIVE',
-        statusMessage: null,
-        expectedActiveDate: null,
         locationUsage: 'COURT',
         allowedParties: ['ABERCV'],
         prisonVideoUrl: 'https://prison-room-link',
@@ -196,6 +192,78 @@ context('Administration', () => {
     editRoomPage.roomLink().should('have.value', 'https://prison-room-link')
     editRoomPage.getSelectedRoomPermission().should('eq', 'court')
     editRoomPage.comments().should('have.value', 'This is a comment')
+  })
+
+  it('Admin user can make a room temporarily unavailable', () => {
+    cy.task('stubAllPrisons')
+    cy.task('stubEnabledPrisons')
+    cy.task('stubPrisonLocations', berwynLocations)
+    cy.task('stubGetEnabledCourts')
+    cy.task('stubGetEnabledProbationTeams')
+    cy.task('stubGetRoomDetails', {
+      key: 'BWI-VIDEOLINK-VCC-01',
+      prisonCode: 'BWI',
+      description: 'Video Room 01',
+      enabled: true,
+      dpsLocationId: 'f1c78dca-733b-43cc-b03f-6c870941a2c7',
+      extraAttributes: null,
+    })
+    cy.task('stubGetPrison', {
+      prisonCode: 'BWI',
+      response: {
+        prisonId: 83,
+        code: 'BWI',
+        name: 'Berwyn (HMP & YOI)',
+        enabled: true,
+        notes: null,
+      },
+    })
+    cy.signIn()
+
+    const homePage = Page.verifyOnPage(HomePage)
+    homePage.administrationArea().click()
+
+    const administrationPage = Page.verifyOnPage(AdministrationPage)
+    administrationPage.managePrisonVideoRooms().click()
+
+    const managePrisonRoomPage = Page.verifyOnPage(ManagePrisonVideoRoomsPage)
+    managePrisonRoomPage.manageRoomsLink().click()
+
+    const viewRoomsPage = Page.verifyOnPage(ViewRoomsPage)
+    viewRoomsPage.viewOrEditLink().click()
+
+    const editRoomPage = Page.verifyOnPage(EditRoomPage)
+    editRoomPage.getSelectedRoomStatus().should('eq', 'active')
+    editRoomPage.selectRoomStatus('temporarily_blocked')
+    editRoomPage.selectBlockedFromDate(new Date())
+    editRoomPage.selectBlockedToDate(new Date())
+
+    cy.task('stubUpdateRoomDetails')
+    cy.task('stubGetRoomDetails', {
+      key: 'BWI-VIDEOLINK-VCC-01',
+      prisonCode: 'BWI',
+      description: 'Video Room 01',
+      enabled: true,
+      dpsLocationId: 'f1c78dca-733b-43cc-b03f-6c870941a2c7',
+      extraAttributes: {
+        attributeId: 56,
+        locationStatus: 'TEMPORARILY_BLOCKED',
+        blockedFrom: format(new Date(), 'yyyy-MM-dd'),
+        blockedTo: format(new Date(), 'yyyy-MM-dd'),
+        locationUsage: 'SHARED',
+        allowedParties: [],
+        prisonVideoUrl: null,
+        notes: null,
+        schedule: [],
+      },
+    })
+    editRoomPage.save().click()
+
+    cy.get(`.moj-alert__content`).should('have.text', 'Room changes have been saved')
+    editRoomPage.getSelectedRoomStatus().should('eq', 'temporarily_blocked')
+    editRoomPage.getBlockedFromDate().should('not.be.empty')
+    editRoomPage.getBlockedToDate().should('not.be.empty')
+    editRoomPage.getSelectedRoomPermission().should('eq', 'shared')
   })
 
   it('Admin user can manage prison details', () => {

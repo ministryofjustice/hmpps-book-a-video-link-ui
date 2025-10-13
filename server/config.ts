@@ -145,6 +145,7 @@ export default {
     greyReleasePrisons: get('FEATURE_GREY_RELEASE_PRISONS', null),
     probationOnlyPrisons: get('FEATURE_PROBATION_ONLY_PRISONS', null),
     courtOnlyPrisons: get('FEATURE_COURT_ONLY_PRISONS', null),
+    temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
   },
   defaultCourtVideoUrl: get('DEFAULT_COURT_VIDEO_URL', 'meet.video.justice.gov.uk'),
 }

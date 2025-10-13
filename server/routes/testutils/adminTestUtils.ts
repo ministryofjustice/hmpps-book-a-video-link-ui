@@ -134,6 +134,26 @@ export const aDecoratedLocation = (
   } as Location
 }
 
+export const aBlockedDecoratedLocation = (dpsLocationId: string, blockedFrom: string, blockedTo: string): Location => {
+  return {
+    key: 'KEY',
+    prisonCode: 'HEI',
+    description: 'Room One',
+    dpsLocationId,
+    enabled: true,
+    extraAttributes: {
+      attributeId: 1,
+      locationStatus: 'TEMPORARILY_BLOCKED',
+      blockedFrom,
+      blockedTo,
+      locationUsage: 'SHARED',
+      prisonVideoUrl: 'link',
+      notes: 'comments',
+      allowedParties: [],
+    } as RoomAttributes,
+  } as Location
+}
+
 export const anUndecoratedLocation = (dpsLocationId: string): Location => {
   return {
     key: 'KEY',

@@ -10,7 +10,7 @@ export default function Index(services: Services): Router {
   const router = Router({ mergeParams: true })
 
   router.use((req, res, next) => {
-    const { type } = req.params
+    const { type } = req.routeContext
 
     return (res.locals.user.isCourtUser && type === BavlJourneyType.COURT) ||
       (res.locals.user.isProbationUser && type === BavlJourneyType.PROBATION)

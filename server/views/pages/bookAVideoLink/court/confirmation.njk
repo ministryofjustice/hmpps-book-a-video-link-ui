@@ -5,7 +5,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "partials/formatCvpLink.njk" import formatCvpLink %}
 
-{% set mode = session.req.params.mode %}
+{% set mode = session.req.routeContext.mode %}
 {% set pageTitle = "The video link has been booked" if mode == 'create' else 'The video link booking has been updated' %}
 {% set hideBackLink = true %}
 

@@ -3,7 +3,7 @@
 {% from "govuk/components/panel/macro.njk" import govukPanel %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
-{% set type = session.req.params.type %}
+{% set type = session.req.routeContext.type %}
 {% set pageTitle = "Your " + ("court" if type == BavlJourneyType.COURT else "probation team") + " list has been updated" %}
 {% set hideBackLink = true %}
 

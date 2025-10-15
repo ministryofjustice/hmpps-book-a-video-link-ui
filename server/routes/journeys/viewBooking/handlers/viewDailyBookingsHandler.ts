@@ -19,7 +19,7 @@ export default class ViewDailyBookingsHandler implements PageHandler {
   ) {}
 
   GET = async (req: Request, res: Response) => {
-    const type = req.params.type as BavlJourneyType
+    const type = req.routeContext.type as BavlJourneyType
     const { user, validationErrors } = res.locals
     const date = parseDatePickerDate(req.query.date as string)
 

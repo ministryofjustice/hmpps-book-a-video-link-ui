@@ -109,6 +109,7 @@ describe('GET', () => {
 const getProbationBooking = (prisonerNumber: string) =>
   ({
     bookingType: 'PROBATION',
+
     prisonAppointments: [
       {
         prisonCode: 'MDI',
@@ -120,6 +121,7 @@ const getProbationBooking = (prisonerNumber: string) =>
         endTime: '12:30',
       },
     ],
+
     probationTeamDescription: 'Barnet PPOC',
     probationMeetingTypeDescription: 'Pre-sentence report',
     videoLinkUrl: 'https://video.here.com',

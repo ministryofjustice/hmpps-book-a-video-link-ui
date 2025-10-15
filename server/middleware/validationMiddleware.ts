@@ -36,6 +36,7 @@ export default function validationMiddleware(type: new () => object): RequestHan
     const requestObject = plainToInstance(type, {
       ...req.body,
       ...req.params,
+      ...req.routeContext,
       journey: {
         ...req.session.journey,
         ...req.session.journeyData?.[req.params.journeyId],

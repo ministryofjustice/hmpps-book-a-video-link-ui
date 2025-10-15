@@ -22,7 +22,7 @@ export default class DownloadCsvHandler implements PageHandler {
   ) {}
 
   GET = async (req: Request, res: Response) => {
-    const type = req.params.type as BavlJourneyType
+    const type = req.routeContext.type as BavlJourneyType
     const { user } = res.locals
     const dateFromQueryParam = parseDatePickerDate(req.query.date as string)
     const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())

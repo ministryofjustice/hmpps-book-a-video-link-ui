@@ -8,7 +8,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set mode = session.req.params.mode %}
+{% set mode = session.req.routeContext.mode %}
 {% set prisonerName = ((session.journey.bookACourtHearing.prisoner.firstName + " " + session.journey.bookACourtHearing.prisoner.lastName) | convertToTitleCase) %}
 {% set pageTitle = "Select rooms for court hearings" %}
 {% set pageHeading = "Select rooms for " + prisonerName + "'s court hearings" %}

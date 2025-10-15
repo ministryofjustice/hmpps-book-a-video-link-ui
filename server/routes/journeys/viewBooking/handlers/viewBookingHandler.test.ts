@@ -206,6 +206,7 @@ const getCourtBooking = (prisonerNumber: string) =>
   ({
     videoLinkBookingId: 1001,
     bookingType: 'COURT',
+
     prisonAppointments: [
       {
         prisonCode: 'MDI',
@@ -235,6 +236,7 @@ const getCourtBooking = (prisonerNumber: string) =>
         endTime: '12:45',
       },
     ],
+
     courtDescription: 'Derby Justice Centre',
     courtHearingTypeDescription: 'Appeal hearing',
     videoLinkUrl: 'https://video.here.com',
@@ -245,6 +247,7 @@ const getProbationBooking = (prisonerNumber: string) =>
   ({
     videoLinkBookingId: 1001,
     bookingType: 'PROBATION',
+
     prisonAppointments: [
       {
         prisonCode: 'MDI',
@@ -256,6 +259,7 @@ const getProbationBooking = (prisonerNumber: string) =>
         endTime: '12:30',
       },
     ],
+
     probationTeamDescription: 'Barnet PPOC',
     probationMeetingTypeDescription: 'Pre-sentence report',
     videoLinkUrl: 'https://video.here.com',

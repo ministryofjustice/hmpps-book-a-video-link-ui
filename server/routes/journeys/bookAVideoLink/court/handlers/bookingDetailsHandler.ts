@@ -124,7 +124,7 @@ export default class BookingDetailsHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { mode } = req.params
+    const { mode } = req.routeContext
 
     const journey = req.session.journey.bookACourtHearing
     const offender = journey?.prisoner
@@ -150,7 +150,7 @@ export default class BookingDetailsHandler implements PageHandler {
 
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { mode } = req.params
+    const { mode } = req.routeContext
 
     const offender = req.session.journey.bookACourtHearing?.prisoner
     const {

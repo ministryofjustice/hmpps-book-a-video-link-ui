@@ -9,7 +9,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 
-{% set mode = session.req.params.mode %}
+{% set mode = session.req.routeContext.mode %}
 {% set prisonerName = ((prisoner.firstName + ' ' + prisoner.lastName) | convertToTitleCase) %}
 {% set pageTitle = "Change video link booking" if mode == 'amend' else "Select a date and time for the court video link hearing" %}
 {% set pageHeading = "Change " + prisonerName + "'s video link booking" if mode == 'amend' else "Select a date and time for " + prisonerName +"'s court video link hearing" %}

@@ -18,7 +18,7 @@ export default function CreateRoutes({
   referenceDataService,
   videoLinkService,
 }: Services): Router {
-  const basePath = '/:prisonerNumber([a-zA-Z][0-9]{4}[a-zA-Z]{2})'
+  const basePath = '/:prisonerNumber'
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>

@@ -9,6 +9,7 @@ import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingDetailsHandler from './handlers/bookingDetailsHandler'
 import SelectRoomsHandler from './handlers/selectRoomsHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
+import validatePrisonerNumber from '../middleware/validatePrisonerNumber'
 
 export default function CreateRoutes({
   auditService,
@@ -23,8 +24,12 @@ export default function CreateRoutes({
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+    router.get(
+      path,
+      logPageViewMiddleware(auditService, handler),
+      validatePrisonerNumber(),
+      asyncMiddleware(handler.GET),
+    ) && router.post(path, validatePrisonerNumber(), validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route(
     `${basePath}/video-link-booking`,

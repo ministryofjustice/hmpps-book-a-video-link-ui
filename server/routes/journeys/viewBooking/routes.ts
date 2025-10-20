@@ -2,7 +2,6 @@ import { Router } from 'express'
 import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 import ViewBookingHandler from './handlers/viewBookingHandler'
@@ -19,8 +18,9 @@ export default function Index({
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+    router.get(path, logPageViewMiddleware(auditService, handler), handler.GET) &&
+    handler.POST &&
+    router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
   route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
   route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))

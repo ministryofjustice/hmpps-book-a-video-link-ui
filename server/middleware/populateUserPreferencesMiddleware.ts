@@ -1,6 +1,5 @@
 import type { NextFunction, Request, RequestHandler, Response } from 'express'
 
-import asyncMiddleware from './asyncMiddleware'
 import type { Services } from '../services'
 
 // TODO: This middleware can be removed after a few weeks from go-live.
@@ -16,7 +15,7 @@ export default function populateUserPreferencesMiddleware({
 }: Services): RequestHandler {
   const getUserPreferences = async (user: Express.User) => (await userService.getUserPreferences(user)).items
 
-  return asyncMiddleware(async (req: Request, res: Response, next: NextFunction) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const { user } = res.locals
 
     const courtPreferences = user.isCourtUser && (await courtsService.getUserPreferences(user))
@@ -33,5 +32,5 @@ export default function populateUserPreferencesMiddleware({
     }
 
     return next()
-  })
+  }
 }

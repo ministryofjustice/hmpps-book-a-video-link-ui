@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { parseISO } from 'date-fns'
-import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
@@ -24,8 +23,9 @@ export default function AmendRoutes({
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+    router.get(path, logPageViewMiddleware(auditService, handler), handler.GET) &&
+    handler.POST &&
+    router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
   route('/video-link-booking/confirmation', new ConfirmationHandler(videoLinkService, prisonerService, prisonService))
 

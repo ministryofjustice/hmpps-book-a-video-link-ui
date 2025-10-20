@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import asyncMiddleware from '../../../middleware/asyncMiddleware'
 import type { Services } from '../../../services'
 import HomeHandler from './handlers/homeHandler'
 import { PageHandler } from '../../interfaces/pageHandler'
@@ -10,8 +9,9 @@ export default function Index({ auditService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+    router.get(path, logPageViewMiddleware(auditService, handler), handler.GET) &&
+    handler.POST &&
+    router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
   route('/', new HomeHandler())
 

@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import asyncMiddleware from '../../../../middleware/asyncMiddleware'
 import type { Services } from '../../../../services'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../../middleware/logPageViewMiddleware'
@@ -23,12 +22,9 @@ export default function CreateRoutes({
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
-    router.get(
-      path,
-      logPageViewMiddleware(auditService, handler),
-      validatePrisonerNumber(),
-      asyncMiddleware(handler.GET),
-    ) && router.post(path, validatePrisonerNumber(), validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+    router.get(path, logPageViewMiddleware(auditService, handler), validatePrisonerNumber(), handler.GET) &&
+    handler.POST &&
+    router.post(path, validatePrisonerNumber(), validationMiddleware(handler.BODY), handler.POST)
 
   route(
     `${basePath}/video-link-booking`,

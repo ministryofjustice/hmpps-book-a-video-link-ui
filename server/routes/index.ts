@@ -8,13 +8,15 @@ import bookAVideoLinkProbation from './journeys/bookAVideoLink/probation'
 import viewBooking from './journeys/viewBooking'
 import { Services } from '../services'
 import config from '../config'
+import insertJourneyTypeContext from '../middleware/insertJourneyTypeContext'
 
 export default function routes(services: Services): Router {
   const router = Router()
   router.use((req, res, next) =>
     config.maintenance.enabled ? res.render('pages/maintenanceMode', { maintenance: config.maintenance }) : next(),
   )
-  router.use('/:type(court|probation)/user-preferences', userPreferences(services))
+  router.use('/court/user-preferences', insertJourneyTypeContext('court'), userPreferences(services))
+  router.use('/probation/user-preferences', insertJourneyTypeContext('probation'), userPreferences(services))
 
   // The rest of the routes cannot be accessed unless the user has selected some court or probation team preferences
   router.use(async (req, res, next) => {
@@ -30,12 +32,14 @@ export default function routes(services: Services): Router {
   router.use('/', home(services))
   router.use('/admin', admin(services))
 
-  router.use('/:type(court|probation)/prisoner-search', prisonerSearch(services))
+  router.use('/court/prisoner-search', insertJourneyTypeContext('court'), prisonerSearch(services))
+  router.use('/probation/prisoner-search', insertJourneyTypeContext('probation'), prisonerSearch(services))
 
   router.use('/court/booking', bookAVideoLinkCourt(services))
   router.use('/probation/booking', bookAVideoLinkProbation(services))
 
-  router.use('/:type(court|probation)/view-booking', viewBooking(services))
+  router.use('/court/view-booking', insertJourneyTypeContext('court'), viewBooking(services))
+  router.use('/probation/view-booking', insertJourneyTypeContext('probation'), viewBooking(services))
 
   return router
 }

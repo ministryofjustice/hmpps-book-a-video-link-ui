@@ -121,3 +121,7 @@ export const toFullCourtLink = (hmctsNumber: string) => {
   }
   return `HMCTS${hmctsNumber}@${config.defaultCourtVideoUrl}`
 }
+
+export const isValidPrisonerNumber = (number: string) => {
+  return /^([a-zA-Z][0-9]{4}[a-zA-Z]{2})$/.test(number)
+}

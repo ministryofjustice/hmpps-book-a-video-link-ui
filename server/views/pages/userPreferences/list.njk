@@ -1,6 +1,6 @@
 {% extends "partials/layout.njk" %}
 
-{% set type = session.req.params.type %}
+{% set type = session.req.routeContext.type %}
 {% set pageTitle = "Manage your list of " + ("courts" if type == BavlJourneyType.COURT else "probation teams") %}
 
 {% from "govuk/components/accordion/macro.njk" import govukAccordion %}

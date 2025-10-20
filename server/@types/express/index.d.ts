@@ -28,6 +28,7 @@ declare module 'express-session' {
 declare module 'express-serve-static-core' {
   interface Request {
     rawBody: object
+    routeContext?: { mode?: string; type?: string }
   }
 
   interface Response {

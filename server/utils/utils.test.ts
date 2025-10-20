@@ -7,6 +7,7 @@ import {
   formatDate,
   getDaysOfWeek,
   initialiseName,
+  isValidPrisonerNumber,
   parseDate,
   parseDatePickerDate,
   simpleDateToDate,
@@ -258,5 +259,16 @@ describe('toFullCourtLink', () => {
     [undefined, undefined],
   ])("expands court link [%s] to full link '%s'", (input, expected) => {
     expect(toFullCourtLink(input)).toEqual(expected)
+  })
+})
+
+describe('isValidPrisonerNumber', () => {
+  it.each([
+    ['A0171DZ', true],
+    ['G5662GI', true],
+    ['G5662GI!!', false],
+    [undefined, false],
+  ])("prisoner number [%s] is valid '%s'", (input, expected) => {
+    expect(isValidPrisonerNumber(input)).toEqual(expected)
   })
 })

@@ -15,7 +15,7 @@ export default class ConfirmationHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type } = req.params
+    const { type } = req.routeContext
 
     const selectedPreferences =
       type === BavlJourneyType.COURT

@@ -6,7 +6,7 @@
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "partials/formatCvpLink.njk" import formatCvpLink %}
 
-{% set mode = session.req.params.mode %}
+{% set mode = session.req.routeContext.mode %}
 {% set pageTitle = "Check and confirm your request" if mode == 'request' else "Check and confirm your booking" %}
 
 {% block content %}

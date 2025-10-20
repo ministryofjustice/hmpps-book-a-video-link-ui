@@ -113,6 +113,15 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should redirect home when invalid prisoner number', () => {
+      appSetup()
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA1!/video-link-booking`)
+        .expect(302)
+        .expect('location', '/')
+    })
+
     it('should get the prisoner information from the session for the request journey', () => {
       appSetup({
         bookACourtHearing: {

@@ -29,7 +29,7 @@ export default class PrisonerSearchResultsHandler implements PageHandler {
     let enabledPrisons
 
     // Filter any court-only prisons from the list if the current journey is a probation booking for a probation user
-    if (res.locals.user.isProbationUser && req.params.type === 'probation') {
+    if (res.locals.user.isProbationUser && req.routeContext.type === 'probation') {
       enabledPrisons = config.featureToggles.courtOnlyPrisons
         ? enabledMinusGreyReleasePrisons.filter(
             prison => !config.featureToggles.courtOnlyPrisons?.split(',').includes(prison.code),
@@ -38,7 +38,7 @@ export default class PrisonerSearchResultsHandler implements PageHandler {
     }
 
     // Filter any probation-only prisons from the list if the current journey is a court booking for a court user
-    if (res.locals.user.isCourtUser && req.params.type === 'court') {
+    if (res.locals.user.isCourtUser && req.routeContext.type === 'court') {
       enabledPrisons = config.featureToggles.probationOnlyPrisons
         ? enabledMinusGreyReleasePrisons.filter(
             prison => !config.featureToggles.probationOnlyPrisons?.split(',').includes(prison.code),

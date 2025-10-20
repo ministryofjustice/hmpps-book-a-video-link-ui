@@ -8,6 +8,7 @@ import CheckBookingHandler from './handlers/checkBookingHandler'
 import ConfirmationHandler from './handlers/confirmationHandler'
 import BookingDetailsHandler from './handlers/bookingDetailsHandler'
 import BookingAvailabilityHandler from './handlers/bookingAvailabilityHandler'
+import validatePrisonerNumber from '../middleware/validatePrisonerNumber'
 
 export default function CreateRoutes({
   auditService,
@@ -18,12 +19,16 @@ export default function CreateRoutes({
   referenceDataService,
   videoLinkService,
 }: Services): Router {
-  const basePath = '/:prisonerNumber([a-zA-Z][0-9]{4}[a-zA-Z]{2})'
+  const basePath = '/:prisonerNumber'
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
-    router.get(path, logPageViewMiddleware(auditService, handler), asyncMiddleware(handler.GET)) &&
-    router.post(path, validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
+    router.get(
+      path,
+      logPageViewMiddleware(auditService, handler),
+      validatePrisonerNumber(),
+      asyncMiddleware(handler.GET),
+    ) && router.post(path, validatePrisonerNumber(), validationMiddleware(handler.BODY), asyncMiddleware(handler.POST))
 
   route(
     `${basePath}/video-link-booking`,

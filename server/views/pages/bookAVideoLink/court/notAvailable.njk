@@ -8,7 +8,7 @@
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 
-{% set mode = session.req.params.mode %}
+{% set mode = session.req.routeContext.mode %}
 {% set pageTitle = 'No bookings available for your selected time' %}
 
 {% block content %}

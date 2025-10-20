@@ -33,7 +33,7 @@ export default class CheckBookingHandler implements PageHandler {
   ) {}
 
   public GET = async (req: Request, res: Response) => {
-    const { mode } = req.params
+    const { mode } = req.routeContext
     const { user } = res.locals
     const { bookACourtHearing } = req.session.journey
     const { prisoner, date, preHearingStartTime, startTime } = bookACourtHearing
@@ -68,7 +68,7 @@ export default class CheckBookingHandler implements PageHandler {
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
     const { body } = req
-    const { mode } = req.params
+    const { mode } = req.routeContext
 
     req.session.journey.bookACourtHearing = {
       ...req.session.journey.bookACourtHearing,

@@ -30,7 +30,7 @@ export default class UserPreferencesHandler implements PageHandler {
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type } = req.params
+    const { type } = req.routeContext
 
     const agencies =
       type === BavlJourneyType.COURT
@@ -47,7 +47,7 @@ export default class UserPreferencesHandler implements PageHandler {
 
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { type } = req.params
+    const { type } = req.routeContext
     const { selectedAgencies } = req.body
 
     if (type === BavlJourneyType.COURT) {

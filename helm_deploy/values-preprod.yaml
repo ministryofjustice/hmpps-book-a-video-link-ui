@@ -20,8 +20,6 @@ generic-service:
 
 
   allowlist:
-    pen-tester-1: 80.195.27.199/32
-    pen-tester-2: 109.151.94.16/32
     groups:
       - prisons
       - moj_cloud_platform

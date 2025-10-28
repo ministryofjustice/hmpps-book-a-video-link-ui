@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
+import { dropdownOptions, existsByLabel, getPageHeader, radioOptions } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonerService from '../../../../../services/prisonerService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
@@ -80,6 +80,30 @@ beforeEach(() => {
 
   // Used in amend routes only - initialiseJourney
   videoLinkService.bookingIsAmendable.mockReturnValue(true)
+
+  referenceDataService.getProbationMeetingTypes.mockResolvedValue([
+    {
+      referenceCodeId: 1,
+      groupCode: 'PROBATION_MEETING_TYPE',
+      code: 'PSR',
+      description: 'Pre-Sentence Report',
+      enabled: true,
+    },
+    {
+      referenceCodeId: 2,
+      groupCode: 'PROBATION_MEETING_TYPE',
+      code: 'RR',
+      description: 'Recall report',
+      enabled: true,
+    },
+    {
+      referenceCodeId: 3,
+      groupCode: 'PROBATION_MEETING_TYPE',
+      code: 'OTHER',
+      description: 'Other',
+      enabled: true,
+    },
+  ])
 })
 
 afterEach(() => {
@@ -109,6 +133,65 @@ describe('Booking details handler', () => {
           expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
           expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          const meetingTypeCodes = radioOptions($, 'meetingTypeCode')
+          expect(meetingTypeCodes.length).toBe(3)
+        })
+    })
+
+    it('should render the dropdown when more than 3 meeting types', () => {
+      referenceDataService.getProbationMeetingTypes.mockResolvedValue([
+        {
+          referenceCodeId: 1,
+          groupCode: 'PROBATION_MEETING_TYPE',
+          code: 'PSR',
+          description: 'Pre-Sentence Report',
+          enabled: true,
+        },
+        {
+          referenceCodeId: 2,
+          groupCode: 'PROBATION_MEETING_TYPE',
+          code: 'RR',
+          description: 'Recall report',
+          enabled: true,
+        },
+        {
+          referenceCodeId: 3,
+          groupCode: 'PROBATION_MEETING_TYPE',
+          code: 'OTHER',
+          description: 'Other',
+          enabled: true,
+        },
+        {
+          referenceCodeId: 4,
+          groupCode: 'PROBATION_MEETING_TYPE',
+          code: 'UNKNOWN',
+          description: 'Unknown',
+          enabled: true,
+        },
+      ])
+
+      appSetup()
+
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Enter probation video link booking details for Joe Smith')
+          expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenLastCalledWith('A1234AA', user)
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          const meetingTypeCodes = dropdownOptions($, 'meetingTypeCode')
+          expect(meetingTypeCodes.length).toBe(4)
         })
     })
 

@@ -120,34 +120,50 @@
                 </div>
 
                 {% set items = [] %}
-                {% for meetingType in meetingTypes %}
-                    {% if meetingType.code != 'OTHER' %}
+
+                {%  if meetingTypes.length > 3 %}
+                    {% for meetingType in meetingTypes %}
+                        {% set items = (items.push({
+                            value: meetingType.code,
+                            text: meetingType.description,
+                            selected: formResponses.meetingTypeCode == meetingType.code or session.journey.bookAProbationMeeting.meetingTypeCode == meetingType.code
+                        }), items) %}
+                    {% endfor %}
+
+                    {{ govukSelect({
+                        idPrefix: "meetingTypeCode",
+                        name: "meetingTypeCode",
+                        label: {
+                            text: "Select meeting type",
+                            classes: 'govuk-label--s'
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("meetingTypeCode"),
+                        classes: "govuk-!-width-one-third"
+                    }) }}
+                {% else %}
+                    {% for meetingType in meetingTypes %}
                         {% set items = (items.push({
                             value: meetingType.code,
                             text: meetingType.description,
                             checked: formResponses.meetingTypeCode == meetingType.code or session.journey.bookAProbationMeeting.meetingTypeCode == meetingType.code
                         }), items) %}
-                    {% endif %}
-                {% endfor %}
-                {% set items = (items.push({
-                    value: 'OTHER',
-                    text: 'Other',
-                    checked: formResponses.meetingTypeCode == 'OTHER' or session.journey.bookAProbationMeeting.meetingTypeCode == 'OTHER'
-                }), items) %}
+                    {% endfor %}
 
-                {{ govukRadios({
-                    idPrefix: "meetingTypeCode",
-                    name: "meetingTypeCode",
-                    fieldset: {
-                        legend: {
-                            text: "Select meeting type",
-                            classes: "govuk-fieldset__legend--s"
-                        }
-                    },
-                    items: items,
-                    errorMessage: validationErrors | findError("meetingTypeCode"),
-                    classes: "govuk-!-width-one-third"
-                }) }}
+                    {{ govukRadios({
+                        idPrefix: "meetingTypeCode",
+                        name: "meetingTypeCode",
+                        fieldset: {
+                            legend: {
+                                text: "Select meeting type",
+                                classes: "govuk-fieldset__legend--s"
+                            }
+                        },
+                        items: items,
+                        errorMessage: validationErrors | findError("meetingTypeCode"),
+                        classes: "govuk-!-width-one-third"
+                    }) }}
+                {% endif %}
 
                 {{ mojDatePicker({
                     id: 'date',

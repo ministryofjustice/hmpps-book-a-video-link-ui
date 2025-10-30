@@ -920,7 +920,21 @@ export interface components {
        * @example PSR
        * @enum {string}
        */
-      probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
+      probationMeetingType?:
+        | 'BR'
+        | 'HDC'
+        | 'IOM'
+        | 'MALRAP'
+        | 'OASYS'
+        | 'OTHER'
+        | 'PR'
+        | 'PRP'
+        | 'PSR'
+        | 'RCAT'
+        | 'ROTL'
+        | 'RR'
+        | 'RTSCR'
+        | 'UNKNOWN'
       /**
        * @description The video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
@@ -1339,7 +1353,21 @@ export interface components {
        * @example PSR
        * @enum {string}
        */
-      probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
+      probationMeetingType?:
+        | 'BR'
+        | 'HDC'
+        | 'IOM'
+        | 'MALRAP'
+        | 'OASYS'
+        | 'OTHER'
+        | 'PR'
+        | 'PRP'
+        | 'PSR'
+        | 'RCAT'
+        | 'ROTL'
+        | 'RR'
+        | 'RTSCR'
+        | 'UNKNOWN'
       /**
        * @description The video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
@@ -1550,7 +1578,21 @@ export interface components {
        * @example PSR
        * @enum {string}
        */
-      probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
+      probationMeetingType?:
+        | 'BR'
+        | 'HDC'
+        | 'IOM'
+        | 'MALRAP'
+        | 'OASYS'
+        | 'OTHER'
+        | 'PR'
+        | 'PRP'
+        | 'PSR'
+        | 'RCAT'
+        | 'ROTL'
+        | 'RR'
+        | 'RTSCR'
+        | 'UNKNOWN'
       /**
        * @description The probation meeting type description, required for booking type PROBATION
        * @example Pre-sentence report
@@ -1668,7 +1710,21 @@ export interface components {
        * @example PSR
        * @enum {string}
        */
-      probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
+      probationMeetingType?:
+        | 'BR'
+        | 'HDC'
+        | 'IOM'
+        | 'MALRAP'
+        | 'OASYS'
+        | 'OTHER'
+        | 'PR'
+        | 'PRP'
+        | 'PSR'
+        | 'RCAT'
+        | 'ROTL'
+        | 'RR'
+        | 'RTSCR'
+        | 'UNKNOWN'
       /**
        * @description The video link for the appointment.
        * @example https://video.here.com
@@ -2185,7 +2241,21 @@ export interface components {
        * @example PSR
        * @enum {string}
        */
-      probationMeetingType?: 'OTHER' | 'PSR' | 'RR' | 'UNKNOWN'
+      probationMeetingType?:
+        | 'BR'
+        | 'HDC'
+        | 'IOM'
+        | 'MALRAP'
+        | 'OASYS'
+        | 'OTHER'
+        | 'PR'
+        | 'PRP'
+        | 'PSR'
+        | 'RCAT'
+        | 'ROTL'
+        | 'RR'
+        | 'RTSCR'
+        | 'UNKNOWN'
       /**
        * @description The probation meeting type description, if this is a probation booking
        * @example Pre-sentence report
@@ -2301,6 +2371,11 @@ export interface components {
        * @example 46385765
        */
       guestPin?: string
+      /**
+       * @description A boolean flag to indicate the schedule item may need checking e.g. the location is out of use via room admin.
+       * @example true
+       */
+      checkAvailability: boolean
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
@@ -2330,6 +2405,12 @@ export interface components {
        * @example true
        */
       enabled: boolean
+      /**
+       * Format: int32
+       * @description An integer value to indicate its display sequence in a list of related reference codes.
+       * @example 1
+       */
+      displaySequence?: number
     }
     DlqMessage: {
       body: {

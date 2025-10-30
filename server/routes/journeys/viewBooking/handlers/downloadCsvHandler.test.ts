@@ -202,6 +202,7 @@ const getCourtBooking = (
     prisonerName: name,
     prisonLocationDescription: 'Location description',
     hmctsNumber,
+    checkAvailability: false,
   }
 }
 
@@ -234,4 +235,5 @@ const getProbationTeamBooking = (): ScheduleItem & { prisonerName: string; priso
   prisonLocationDescription: 'Location description',
   probationOfficerName: 'Jane Doe',
   probationOfficerEmailAddress: 'jane.doe@email.com',
+  checkAvailability: false,
 })

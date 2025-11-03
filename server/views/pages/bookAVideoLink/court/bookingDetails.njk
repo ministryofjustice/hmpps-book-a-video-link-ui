@@ -99,7 +99,11 @@
                     }) }}
                 {% endif %}
 
-                {% set items = [{ text: "Select hearing type", value: "" }] %}
+                {% set items = [] %}
+
+                {% if mode === 'create' %}
+                    {% set items = [{ text: "Select hearing type", value: "" }] %}
+                {% endif %}
                 {% for hearingType in hearingTypes %}
                     {% set items = (items.push({
                         value: hearingType.code,

@@ -30,7 +30,7 @@
                     <input type="hidden" name="probationTeamCode" value="{{ session.journey.bookAProbationMeeting.probationTeamCode or probationTeams[0].code }}" />
                     <p class="govuk-body govuk-!-margin-bottom-6">{{ (probationTeams | find('code', session.journey.bookAProbationMeeting.probationTeamCode)).description or probationTeams[0].description }}</p>
                 {% else %}
-                    {% set items = [{ text: "", value: "" }] %}
+                    {% set items = [{ text: "Select probation team", value: "" }] %}
                     {% for team in probationTeams %}
                         {% set items = (items.push({
                             value: team.code,
@@ -122,7 +122,9 @@
                 {% set items = [] %}
 
                 {%  if meetingTypes.length > 3 %}
-                    {% set items = [{ text: "Select meeting type", value: "" }] %}
+                    {% if mode === 'create' %}
+                        {% set items = [{ text: "Select meeting type", value: "" }] %}
+                    {% endif %}
                     {% for meetingType in meetingTypes %}
                         {% set items = (items.push({
                             value: meetingType.code,

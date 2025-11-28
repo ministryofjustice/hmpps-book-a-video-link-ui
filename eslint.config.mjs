@@ -4,4 +4,5 @@ import hmppsConfig from '@ministryofjustice/eslint-config-hmpps'
 
 export default hmppsConfig({
   extraIgnorePaths: ['frontend', 'assets'],
+  extraPathsAllowingDevDependencies: ['.allowed-scripts.mjs'],
 })

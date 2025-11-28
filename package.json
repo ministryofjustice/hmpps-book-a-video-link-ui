@@ -26,7 +26,8 @@
     "clean": "rm -rf dist node_modules test_results",
     "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
     "precommit:lint": "node_modules/.bin/lint-staged",
-    "precommit:verify": "npm run typecheck && npm test"
+    "precommit:verify": "npm run typecheck && npm test",
+    "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
     "node": "^22",
@@ -126,6 +127,7 @@
   },
   "devDependencies": {
     "@ministryofjustice/eslint-config-hmpps": "^0.0.5",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",

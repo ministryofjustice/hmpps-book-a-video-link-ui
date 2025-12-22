@@ -119,21 +119,29 @@ The rest of the dependencies can reference the DEV environment locations (recomm
 
 `npm run lint`
 
+### Run unit tests
+
+`npm run test`
+
 ### Running integration tests
 
-Start a local container for redis on its default port tcp/6379.
+For local running, start a wiremock instance by:
 
-`docker compose up -d`
+`docker compose -f docker-compose-test.yml up`
 
-Run the service in test mode:
+Then run the server in test mode by:
 
-`npm run start-feature` (or `npm run start-feature:dev` to run with nodemon)
+`npm run start-feature` (or `npm run start-feature:dev` to run with auto-restart on changes)
 
-And then either run tests in headless mode with:
+After first install ensure playwright is initialised:
+
+`npm run int-test-init:ci`
+
+And then either, run tests in headless mode with:
 
 `npm run int-test`
- 
-Or run tests with the interactive Cypress UI:
+
+Or run tests with the UI:
 
 `npm run int-test-ui`
 

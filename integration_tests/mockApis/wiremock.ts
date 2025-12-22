@@ -10,7 +10,7 @@ const getMatchingRequests = (body: object) => superagent.post(`${url}/requests/f
 const resetStubs = (): Promise<Array<Response>> =>
   Promise.all([superagent.delete(`${url}/mappings`), superagent.delete(`${url}/requests`)])
 
-const stubGet = (urlPattern, jsonBody?) =>
+const stubGet = (urlPattern: string, jsonBody?: string | object): SuperAgentRequest =>
   stubFor({
     request: { method: 'GET', urlPattern },
     response: {
@@ -20,7 +20,7 @@ const stubGet = (urlPattern, jsonBody?) =>
     },
   })
 
-const stubPost = (urlPattern, jsonBody?) =>
+const stubPost = (urlPattern: string, jsonBody?: string | object): SuperAgentRequest =>
   stubFor({
     request: { method: 'POST', urlPattern },
     response: {
@@ -31,7 +31,7 @@ const stubPost = (urlPattern, jsonBody?) =>
     },
   })
 
-const stubPut = (urlPattern, jsonBody?) =>
+const stubPut = (urlPattern: string, jsonBody?: string | object): SuperAgentRequest =>
   stubFor({
     request: { method: 'PUT', urlPattern },
     response: {
@@ -42,7 +42,7 @@ const stubPut = (urlPattern, jsonBody?) =>
     },
   })
 
-const stubDelete = (urlPattern, jsonBody?) =>
+const stubDelete = (urlPattern: string, jsonBody?: string): SuperAgentRequest =>
   stubFor({
     request: { method: 'DELETE', urlPattern },
     response: {
@@ -52,7 +52,7 @@ const stubDelete = (urlPattern, jsonBody?) =>
     },
   })
 
-const stubFileStream = (urlPattern, file) =>
+const stubFileStream = (urlPattern: string, file: string): SuperAgentRequest =>
   stubFor({
     request: { method: 'GET', urlPattern },
     response: {

@@ -1,0 +1,13 @@
+services:
+  redis:
+    image: 'redis:7.4'
+    networks:
+      - hmpps
+    container_name: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+
+networks:
+  hmpps:

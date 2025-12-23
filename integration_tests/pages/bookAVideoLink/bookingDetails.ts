@@ -1,42 +1,83 @@
-import Page, { PageElement } from '../page'
+import { expect, Locator, Page } from '@playwright/test'
+import AbstractPage from '../abstractPage'
+import { formatDate } from '../../../server/utils/utils'
 
-export default class BookingDetailsPage extends Page {
-  constructor() {
-    super('Enter probation video link booking details for')
+export default class BookingDetailsPage extends AbstractPage {
+  private readonly header: Locator
+
+  private readonly probationTeam: Locator
+
+  private readonly probationOfficerName: Locator
+
+  private readonly probationOfficerEmail: Locator
+
+  private readonly probationMeetingType: Locator
+
+  private readonly date: Locator
+
+  readonly continueButton: Locator
+
+  private constructor(page: Page) {
+    super(page)
+    this.header = page.locator('h1', { hasText: `Enter probation video link booking details for` })
+    this.probationTeam = page.getByLabel('Select probation team')
+    this.probationOfficerName = page.getByLabel('Full name')
+    this.probationOfficerEmail = page.getByLabel('Email address')
+    this.probationMeetingType = page.getByLabel('Select meeting type')
+    this.date = page.getByLabel('Date')
+    this.continueButton = page.getByRole('button', { name: 'Continue' })
   }
 
-  selectProbationTeam = (probationTeam: string) => this.getByLabel('Select probation team').select(probationTeam)
+  static async verifyOnPage(page: Page): Promise<BookingDetailsPage> {
+    const bookingDetailsPage = new BookingDetailsPage(page)
+    await expect(bookingDetailsPage.header).toBeVisible()
+    await bookingDetailsPage.verifyNoAccessViolationsOnPage()
+    return bookingDetailsPage
+  }
 
-  enterProbationOfficerName = (name: string) => this.getByLabel('Full name').type(name)
+  async selectProbationTeam(probationTeam: string) {
+    await this.probationTeam.selectOption(probationTeam)
+  }
 
-  enterProbationOfficerEmail = (email: string) => this.getByLabel('Email address').type(email)
+  async enterProbationOfficerName(name: string) {
+    await this.probationOfficerName.fill(name)
+  }
 
-  selectMeetingType = (type: string) =>
-    cy
-      .contains('legend', 'Select meeting type')
-      .parent()
-      .within(() => this.getByLabel(type).click())
+  async enterProbationOfficerEmail(email: string) {
+    await this.probationOfficerEmail.fill(email)
+  }
 
-  selectDate = (date: Date) => this.selectDatePickerDate('Date', date)
+  async selectProbationMeetingType(probationMeetingType: string) {
+    await this.probationMeetingType.selectOption(probationMeetingType)
+  }
 
-  selectDuration = (duration: string) =>
-    cy
-      .contains('legend', 'Select meeting duration')
-      .parent()
-      .within(() => this.getByLabel(duration).click())
+  async selectDate(date: Date) {
+    await this.date.fill(formatDate(date, 'dd/MM/yyyy') as string)
+  }
 
-  selectTimePeriods = (timePeriods: string[]) =>
-    cy
-      .contains('legend', 'Select time period')
-      .parent()
-      .within(() => timePeriods.forEach(p => this.getByLabel(p).click()))
+  async selectStartTime(hour: number, minute: number) {
+    await this.selectTime('start', hour, minute)
+  }
 
-  selectStartTime = (hour, minute) => this.selectTimePickerTime('Start time', hour, minute)
-
-  selectEndTime = (hour, minute) => this.selectTimePickerTime('End time', hour, minute)
-
-  enterNotesForStaff = (notesForStaff: string) =>
-    this.getByLabel('Notes for prison staff (optional)').type(notesForStaff)
-
-  continue = (): PageElement => this.getButton('Continue')
+  async selectEndTime(hour: number, minute: number) {
+    await this.selectTime('end', hour, minute)
+  }
+  //
+  // selectDuration = (duration: string) =>
+  //   cy
+  //     .contains('legend', 'Select meeting duration')
+  //     .parent()
+  //     .within(() => this.getByLabel(duration).click())
+  //
+  // selectTimePeriods = (timePeriods: string[]) =>
+  //   cy
+  //     .contains('legend', 'Select time period')
+  //     .parent()
+  //     .within(() => timePeriods.forEach(p => this.getByLabel(p).click()))
+  //
+  //
+  // enterNotesForStaff = (notesForStaff: string) =>
+  //   this.getByLabel('Notes for prison staff (optional)').type(notesForStaff)
+  //
+  // continue = (): PageElement => this.getButton('Continue')
 }

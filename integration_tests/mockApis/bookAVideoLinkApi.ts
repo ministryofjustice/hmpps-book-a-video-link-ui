@@ -103,8 +103,7 @@ export default {
   stubGetUserProbationTeamPreferences,
   stubSetUserProbationTeamPreferences: () => stubPost('/book-a-video-link-api/probation-teams/user-preferences/set'),
   stubAllPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=false', allPrisons),
-  stubEnabledPrisons: () =>
-    stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=true', enabledPrisons),
+  stubEnabledPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=true', enabledPrisons),
   stubPrisonLocations: (response: object) => stubGet('/book-a-video-link-api/prisons/(.){3}/locations?(.)*', response),
   stubPostRoomsByDateAndTime: (response: string) =>
     stubPost('/book-a-video-link-api/availability/by-date-and-time', response),

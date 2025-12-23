@@ -5,9 +5,9 @@ import { formatDate } from '../../../server/utils/utils'
 export default class SearchBookingsPage extends AbstractPage {
   readonly header: Locator
 
-  readonly date: Locator
+  private readonly date: Locator
 
-  readonly agencyCode: Locator
+  private readonly agencyCode: Locator
 
   readonly updateResultsButton: Locator
 
@@ -40,12 +40,4 @@ export default class SearchBookingsPage extends AbstractPage {
   async selectProbationTeam(probationTeam: string) {
     await this.agencyCode.selectOption(probationTeam)
   }
-
-  // selectCourt = (court: string) => this.getByLabel('Court').select(court)
-  //
-  // selectProbationTeam = (team: string) => this.getByLabel('Probation team').select(team)
-  //
-  // updateResults = (): PageElement => this.getButton('Update results')
-  //
-  // viewOrEdit = (): PageElement => this.getLink('View or edit')
 }

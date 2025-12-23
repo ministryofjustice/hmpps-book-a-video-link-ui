@@ -1,4 +1,4 @@
-import { type Locator, type Page, expect } from '@playwright/test'
+import { expect, type Locator, type Page } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
 export default class AbstractPage {
@@ -24,9 +24,10 @@ export default class AbstractPage {
     this.manageUserDetails = page.getByTestId('manageDetails')
   }
 
-  async verifyNoAccessViolationsOnPage(): Promise<void> {
+  async verifyNoAccessViolationsOnPage(disabledRules: string[] = []): Promise<void> {
     const accessibilityScanResults = await new AxeBuilder({ page: this.page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .disableRules(disabledRules)
       .analyze()
 
     expect(accessibilityScanResults.violations).toHaveLength(0)
@@ -38,5 +39,10 @@ export default class AbstractPage {
 
   async selectCheckbox(text: string) {
     await this.page.getByRole('checkbox', { name: text, exact: true }).check()
+  }
+
+  async selectTime(idPrefix: string, hour: number, minute: number) {
+    await this.page.locator(`#${idPrefix}Time`).selectOption(hour.toString().padStart(2, '0'))
+    await this.page.locator(`#${idPrefix}Time-minute`).selectOption(minute.toString().padStart(2, '0'))
   }
 }

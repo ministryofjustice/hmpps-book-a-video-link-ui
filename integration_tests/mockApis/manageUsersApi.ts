@@ -1,5 +1,5 @@
 import { SuperAgentRequest } from 'superagent'
-import { stubFor, stubGet } from './wiremock'
+import { stubFor } from './wiremock'
 
 enum UserType {
   ADMIN = 'ADMIN',

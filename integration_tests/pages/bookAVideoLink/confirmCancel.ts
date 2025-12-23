@@ -1,8 +1,8 @@
-import AbstractPage from '../abstractPage'
 import { expect, Locator, Page } from '@playwright/test'
+import AbstractPage from '../abstractPage'
 
 export default class ConfirmCancelPage extends AbstractPage {
-  readonly header: Locator
+  private readonly header: Locator
 
   readonly yesCancelTheBookingButton: Locator
 

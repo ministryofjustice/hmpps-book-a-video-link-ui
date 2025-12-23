@@ -14,8 +14,35 @@ import courtBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/courtBoo
 import nottinghamLocations from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocations.json'
 import ViewBookingPage from '../pages/bookAVideoLink/viewBooking'
 import ConfirmCancelPage from '../pages/bookAVideoLink/confirmCancel'
+import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
+import probationBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/probationBookingsForDay.json'
+import ConfirmedCancelPage from '../pages/bookAVideoLink/confirmedCancel'
 
 test.describe('Cancel a booking', () => {
+  test.beforeEach(async () => {
+    await Promise.all([
+      bookAVideoLinkApi.stubAllPrisons(),
+      bookAVideoLinkApi.stubCancelBooking(),
+      bookAVideoLinkApi.stubEnabledPrisons(),
+      bookAVideoLinkApi.stubPrisonLocations(nottinghamLocations),
+      bookAVideoLinkApi.stubGetPrison({
+        prisonCode: 'NMI',
+        response: {
+          prisonId: 106,
+          code: 'NMI',
+          name: 'Nottingham (HMP & YOI)',
+          enabled: true,
+          notes: null,
+          pickUpTime: null,
+        },
+      }),
+      hmppsAuth.stubSignInPage(),
+      prisonerSearchApi.stubPrisoner(A0171DZ),
+      prisonerSearchApi.stubPrisonerList([A0171DZ]),
+      userPreferencesApi.stubGetUserPreferences(),
+    ])
+  })
+
   test.afterEach(async () => {
     await resetStubs()
   })
@@ -24,28 +51,10 @@ test.describe('Cancel a booking', () => {
     test.beforeEach(async () => {
       await Promise.all([
         bookAVideoLinkApi.stubGetBooking(bobSmithCourtBooking),
-        bookAVideoLinkApi.stubAllPrisons(),
-        bookAVideoLinkApi.stubEnabledPrisons(),
         bookAVideoLinkApi.stubGetCourtSchedule(),
         bookAVideoLinkApi.stubGetEnabledCourts(),
         bookAVideoLinkApi.stubGetUserCourtPreferences(),
-        bookAVideoLinkApi.stubPrisonLocations(nottinghamLocations),
-        bookAVideoLinkApi.stubGetPrison({
-          prisonCode: 'NMI',
-          response: {
-            prisonId: 106,
-            code: 'NMI',
-            name: 'Nottingham (HMP & YOI)',
-            enabled: true,
-            notes: null,
-            pickUpTime: null,
-          },
-        }),
-        hmppsAuth.stubSignInPage(),
         manageUsersApi.stubCourtUser('john smith'),
-        prisonerSearchApi.stubPrisoner(A0171DZ),
-        prisonerSearchApi.stubPrisonerList([A0171DZ]),
-        userPreferencesApi.stubGetUserPreferences(),
       ])
     })
 
@@ -65,15 +74,42 @@ test.describe('Cancel a booking', () => {
       await searchBookingsPage.viewOrEditLink.click()
       const viewBookingPage = await ViewBookingPage.verifyOnPage(page)
       await viewBookingPage.cancelVideoLinkButton.click()
-      await ConfirmCancelPage.verifyOnPage(page)
+      const confirmCancelPage = await ConfirmCancelPage.verifyOnPage(page)
+      await confirmCancelPage.yesCancelTheBookingButton.click()
+      await ConfirmedCancelPage.verifyOnPage(page)
     })
   })
 
   test.describe('Probation', () => {
     test.beforeEach(async () => {
-      await Promise.all([])
+      await Promise.all([
+        bookAVideoLinkApi.stubGetBooking(bobSmithProbationBooking),
+        bookAVideoLinkApi.stubGetProbationTeamSchedule(),
+        bookAVideoLinkApi.stubGetEnabledProbationTeams(),
+        bookAVideoLinkApi.stubGetUserProbationTeamPreferences(),
+        manageUsersApi.stubProbationUser('john smith'),
+      ])
     })
 
-    test('Can cancel a probation team video link booking', async ({ page }) => {})
+    test('Can cancel a probation team video link booking', async ({ page }) => {
+      await login(page)
+      const homePage = await HomePage.verifyOnPage(page)
+      await homePage.viewAndChangeVideoLinks.click()
+      const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      await searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      await searchBookingsPage.selectProbationTeam('Blackpool MC (PPOC)')
+      await bookAVideoLinkApi.stubGetProbationTeamSchedule({
+        probationTeamCode: 'BLKPPP',
+        date: '2050-01-01',
+        response: probationBookingsForDay,
+      })
+      await searchBookingsPage.updateResultsButton.click()
+      await searchBookingsPage.viewOrEditLink.click()
+      const viewBookingPage = await ViewBookingPage.verifyOnPage(page)
+      await viewBookingPage.cancelVideoLinkButton.click()
+      const confirmCancelPage = await ConfirmCancelPage.verifyOnPage(page)
+      await confirmCancelPage.yesCancelTheBookingButton.click()
+      await ConfirmedCancelPage.verifyOnPage(page)
+    })
   })
 })

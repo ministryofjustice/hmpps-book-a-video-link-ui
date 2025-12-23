@@ -4,9 +4,11 @@ import hmppsAuth from '../mockApis/hmppsAuth'
 import { login, resetStubs } from '../testUtils'
 import HomePage from '../pages/homePage'
 import manageUsersApi from '../mockApis/manageUsersApi'
+import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 
 test.describe('SignIn', () => {
   test.beforeEach(async () => {
+    await bookAVideoLinkApi.stubGetUserCourtPreferences()
     await manageUsersApi.stubCourtUser()
   })
 

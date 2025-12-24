@@ -19,6 +19,7 @@ export default class SearchPrisonerResultsPage extends AbstractPage {
     return searchPrisonerResultsPage
   }
 
-  // bookVideoLinkForPrisoner = (prisonerNumber: string): PageElement =>
-  //   cy.get('table.govuk-table').contains('td', prisonerNumber).siblings().last().find('a')
+  async selectPrisoner(prisonerNumber: string) {
+    await this.page.locator(`a[data-qa='${prisonerNumber}']`, { hasText: 'Book video link' }).click()
+  }
 }

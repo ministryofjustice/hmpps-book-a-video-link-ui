@@ -11,6 +11,8 @@ export default class NewBookingPage extends AbstractPage {
 
   private readonly date: Locator
 
+  private readonly notesForStaff: Locator
+
   readonly continueButton: Locator
 
   private constructor(page: Page) {
@@ -19,6 +21,7 @@ export default class NewBookingPage extends AbstractPage {
     this.court = page.getByLabel('Select the court the hearing is for')
     this.courtHearingType = page.getByLabel('Select the court hearing type')
     this.date = page.getByLabel('Date')
+    this.notesForStaff = page.getByLabel('Notes for prison staff (optional)')
     this.continueButton = page.getByRole('button', { name: 'Continue' })
   }
 
@@ -91,6 +94,7 @@ export default class NewBookingPage extends AbstractPage {
     }
   }
 
-  // enterNotesForStaff = (notesForStaff: string) =>
-  //   this.getByLabel('Notes for prison staff (optional)').type(notesForStaff)
+  async enterNotesForStaff(notesForStaff: string) {
+    await this.notesForStaff.fill(notesForStaff)
+  }
 }

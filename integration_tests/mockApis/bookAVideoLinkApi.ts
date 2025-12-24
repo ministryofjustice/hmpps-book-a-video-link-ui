@@ -105,7 +105,7 @@ export default {
   stubAllPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=false', allPrisons),
   stubEnabledPrisons: () => stubGet('/book-a-video-link-api/prisons/list\\?enabledOnly=true', enabledPrisons),
   stubPrisonLocations: (response: object) => stubGet('/book-a-video-link-api/prisons/(.){3}/locations?(.)*', response),
-  stubPostRoomsByDateAndTime: (response: string) =>
+  stubPostRoomsByDateAndTime: (response: string | object) =>
     stubPost('/book-a-video-link-api/availability/by-date-and-time', response),
 
   stubCourtHearingTypes: () =>
@@ -117,7 +117,8 @@ export default {
   stubAvailabilityCheck: (response = { availabilityOk: true }) =>
     stubPost('/book-a-video-link-api/availability', response),
 
-  stubAvailableLocations: (response: string) => stubPost('/book-a-video-link-api/availability/by-time-slot', response),
+  stubAvailableLocations: (response: string | object) =>
+    stubPost('/book-a-video-link-api/availability/by-time-slot', response),
 
   stubCreateBooking: () => stubPost('/book-a-video-link-api/video-link-booking'),
   stubRequestBooking: () => stubPost('/book-a-video-link-api/video-link-booking/request'),

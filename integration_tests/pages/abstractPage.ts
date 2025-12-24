@@ -45,4 +45,12 @@ export default class AbstractPage {
     await this.page.locator(`#${idPrefix}Time`).selectOption(hour.toString().padStart(2, '0'))
     await this.page.locator(`#${idPrefix}Time-minute`).selectOption(minute.toString().padStart(2, '0'))
   }
+
+  async assertSummaryListValue(listIdentifier: string, heading: string, expectedValue: string) {
+    const key = this.page
+      .locator(`[data-qa="${listIdentifier}"] > .govuk-summary-list__row > .govuk-summary-list__key`)
+      .getByText(heading, { exact: true })
+    const value = key.locator('..').locator('.govuk-summary-list__value')
+    await expect(value).toContainText(expectedValue)
+  }
 }

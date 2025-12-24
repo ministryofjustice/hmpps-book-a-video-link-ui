@@ -1,10 +1,18 @@
-import Page from '../page'
+import { expect, Locator, Page } from '@playwright/test'
+import AbstractPage from '../abstractPage'
 
-export default class ConfirmationPage extends Page {
-  constructor() {
-    super('The video link has been booked')
+export default class ConfirmationPage extends AbstractPage {
+  private readonly header: Locator
+
+  private constructor(page: Page) {
+    super(page)
+    this.header = page.locator('h1', { hasText: 'The video link has been booked' })
   }
 
-  assertNotesForStaff = (notesForStaff: string) =>
-    this.assertSummaryListValue('confirmation-details', 'Notes for prison staff', notesForStaff)
+  static async verifyOnPage(page: Page): Promise<ConfirmationPage> {
+    const confirmationPage = new ConfirmationPage(page)
+    await expect(confirmationPage.header).toBeVisible()
+    await confirmationPage.verifyNoAccessViolationsOnPage()
+    return confirmationPage
+  }
 }

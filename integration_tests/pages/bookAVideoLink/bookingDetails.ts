@@ -15,6 +15,8 @@ export default class BookingDetailsPage extends AbstractPage {
 
   private readonly date: Locator
 
+  private readonly notesForStaff: Locator
+
   readonly continueButton: Locator
 
   private constructor(page: Page) {
@@ -25,6 +27,7 @@ export default class BookingDetailsPage extends AbstractPage {
     this.probationOfficerEmail = page.getByLabel('Email address')
     this.probationMeetingType = page.getByLabel('Select meeting type')
     this.date = page.getByLabel('Date')
+    this.notesForStaff = page.getByLabel('Notes for prison staff (optional)')
     this.continueButton = page.getByRole('button', { name: 'Continue' })
   }
 
@@ -62,22 +65,16 @@ export default class BookingDetailsPage extends AbstractPage {
   async selectEndTime(hour: number, minute: number) {
     await this.selectTime('end', hour, minute)
   }
-  //
-  // selectDuration = (duration: string) =>
-  //   cy
-  //     .contains('legend', 'Select meeting duration')
-  //     .parent()
-  //     .within(() => this.getByLabel(duration).click())
-  //
-  // selectTimePeriods = (timePeriods: string[]) =>
-  //   cy
-  //     .contains('legend', 'Select time period')
-  //     .parent()
-  //     .within(() => timePeriods.forEach(p => this.getByLabel(p).click()))
-  //
-  //
-  // enterNotesForStaff = (notesForStaff: string) =>
-  //   this.getByLabel('Notes for prison staff (optional)').type(notesForStaff)
-  //
-  // continue = (): PageElement => this.getButton('Continue')
+
+  async enterNotesForStaff(notes: string) {
+    await this.notesForStaff.fill(notes)
+  }
+
+  async selectDuration(duration: string) {
+    await this.page.getByRole('radio', { name: `${duration}`, exact: true }).click()
+  }
+
+  async selectTimePeriods(timePeriods: string[]) {
+    timePeriods.forEach(period => this.page.getByRole('checkbox', { name: `${period}`, exact: true }).click())
+  }
 }

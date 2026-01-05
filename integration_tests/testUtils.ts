@@ -5,7 +5,7 @@ import { resetStubs } from './mockApis/wiremock'
 
 export { resetStubs }
 
-const DEFAULT_ROLES = ['ROLE_SOME_REQUIRED_ROLE', 'ROLE_PRISON', 'ROLE_VIDEO_LINK_COURT_USER']
+const DEFAULT_ROLES = ['ROLE_PRISON', 'ROLE_VIDEO_LINK_COURT_USER']
 
 export const attemptHmppsAuthLogin = async (page: Page) => {
   await page.goto('/')

@@ -74,7 +74,7 @@ export default class NewBookingPage extends AbstractPage {
     await this.selectTime('end', hour, minute)
   }
 
-  async selectPreHearingRequired(yesOrNo: string) {
+  async selectPreHearingRequired(yesOrNo: 'Yes' | 'No') {
     if (yesOrNo === 'Yes') {
       await this.page.locator('#preRequired').check()
     }
@@ -84,7 +84,7 @@ export default class NewBookingPage extends AbstractPage {
     }
   }
 
-  async selectPostHearingRequired(yesOrNo: string) {
+  async selectPostHearingRequired(yesOrNo: 'Yes' | 'No') {
     if (yesOrNo === 'Yes') {
       await this.page.locator('#postRequired').check()
     }

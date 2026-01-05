@@ -1,18 +1,36 @@
-import Page, { PageElement } from '../page'
+import { expect, Locator, Page } from '@playwright/test'
+import AbstractPage from '../abstractPage'
+import { formatDate } from '../../../server/utils/utils'
 
-export default class ExtractDataByBookingDatePage extends Page {
-  constructor() {
-    super('Extract summary data by booking date')
+export default class ExtractDataByBookingDatePage extends AbstractPage {
+  private readonly header: Locator
+
+  private readonly startDate: Locator
+
+  private readonly numberOfDays: Locator
+
+  readonly extractDataButton: Locator
+
+  private constructor(page: Page) {
+    super(page)
+    this.header = page.locator('h1', { hasText: 'Extract summary data by booking date' })
+    this.startDate = page.locator('#startDate')
+    this.numberOfDays = page.getByLabel('Enter a number of days from the start date')
+    this.extractDataButton = page.getByRole('button', { name: 'Extract data' })
   }
 
-  selectCourt = () => this.getByLabel('Court').click()
+  static async verifyOnPage(page: Page): Promise<ExtractDataByBookingDatePage> {
+    const extractDataByBookingDatePage = new ExtractDataByBookingDatePage(page)
+    await expect(extractDataByBookingDatePage.header).toBeVisible()
+    await extractDataByBookingDatePage.verifyNoAccessViolationsOnPage()
+    return extractDataByBookingDatePage
+  }
 
-  selectProbation = () => this.getByLabel('Probation').click()
+  selectCourt = () => this.page.getByLabel('Court').click()
 
-  selectDate = (date: Date) => this.selectDatePickerDate('Start date', date)
+  selectProbation = () => this.page.getByLabel('Probation').click()
 
-  enterNumberOfDays = (numberOfDays: number) =>
-    this.getByLabel('Enter a number of days from the start date').type(numberOfDays.toString())
+  selectDate = (date: Date) => this.startDate.fill(formatDate(date, 'dd/MM/yyyy') as string)
 
-  extractData = (): PageElement => this.getButton('Extract data')
+  enterNumberOfDays = (numberOfDays: number) => this.numberOfDays.fill(numberOfDays.toString())
 }

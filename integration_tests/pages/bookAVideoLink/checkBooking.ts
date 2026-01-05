@@ -75,6 +75,4 @@ export default class CheckBookingPage extends AbstractPage {
 
   assertNotesForStaff = (notesForStaff: string) =>
     this.assertSummaryListValue('booking-details', 'Notes for prison staff', notesForStaff)
-
-  changeLinkFor = async (key: string) => this.page.locator(`a[data-qa="change-link-${key}"]`)
 }

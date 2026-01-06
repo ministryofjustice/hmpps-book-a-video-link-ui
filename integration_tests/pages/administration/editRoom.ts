@@ -56,9 +56,13 @@ export default class EditRoomPage extends AbstractPage {
   assertSelectedRoomPermission = (permission: 'court' | 'probation' | 'shared' | 'schedule') =>
     expect(this.page.locator(`input[name="permission"][value="${permission}"]`)).toBeChecked()
 
-  assertBlockedFromDate = (date: Date) =>
-    expect(this.page.locator('#blockedFrom')).toContainText(formatDate(date, 'dd/MM/yyyy') as string)
+  async assertBlockedFromDate(date: Date) {
+    const actual = await this.blockedFromDate.inputValue()
+    expect(actual).toBe(formatDate(date, 'dd/MM/yyyy') as string)
+  }
 
-  assertBlockedToDate = (date: Date) =>
-    expect(this.page.locator('#blockedTo')).toContainText(formatDate(date, 'dd/MM/yyyy') as string)
+  async assertBlockedToDate(date: Date) {
+    const actual = await this.blockedToDate.inputValue()
+    expect(actual).toBe(formatDate(date, 'dd/MM/yyyy') as string)
+  }
 }

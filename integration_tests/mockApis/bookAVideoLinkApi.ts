@@ -125,13 +125,27 @@ export default {
   stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),
   stubCancelBooking: () => stubDelete('/book-a-video-link-api/video-link-booking/(.)*'),
   stubGetBooking: (response: object) => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),
-  stubGetCourtSchedule: ({ courtCode, date, response } = { courtCode: '(.)*', date: undefined, response: [] }) =>
+  stubGetCourtSchedule: (
+    { courtCode, date, response }: { courtCode?: string; date?: string | Date; response?: object | string } = {
+      courtCode: '(.)*',
+      date: undefined,
+      response: [],
+    },
+  ) =>
     stubGet(
       `/book-a-video-link-api/schedule/court/${courtCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
       response,
     ),
   stubGetProbationTeamSchedule: (
-    { probationTeamCode, date, response } = { probationTeamCode: '(.)*', date: undefined, response: [] },
+    {
+      probationTeamCode,
+      date,
+      response,
+    }: { probationTeamCode?: string; date?: string | Date; response?: object | string } = {
+      probationTeamCode: '(.)*',
+      date: undefined,
+      response: [],
+    },
   ) =>
     stubGet(
       `/book-a-video-link-api/schedule/probation/${probationTeamCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
@@ -143,8 +157,9 @@ export default {
   stubProbationDataExtractByMeetingDate,
   stubGetRoomDetails: (response: object) => stubGet('/book-a-video-link-api/room-admin/(.)*', response),
   stubUpdateRoomDetails: () => stubPut('/book-a-video-link-api/room-admin/(.)*'),
-  stubUpdatePrisonDetails: ({ prisonCode, response } = { prisonCode: '(.)*', response: [] }) =>
-    stubPut(`/book-a-video-link-api/prison-admin/${prisonCode}`, response),
+  stubUpdatePrisonDetails: (
+    { prisonCode, response }: { prisonCode?: string; response?: object } = { prisonCode: '(.)*', response: {} },
+  ) => stubPut(`/book-a-video-link-api/prison-admin/${prisonCode}`, response),
   stubGetPrison: (prisonCode: string, response: object): SuperAgentRequest =>
     stubFor({
       request: {

@@ -25,8 +25,4 @@ export default class SearchPrisonerPage extends AbstractPage {
   async enterLastName(lastName: string) {
     await this.lastName.fill(lastName)
   }
-
-  // enterLastName = (lastName: string) => this.getByLabel('Last name').type(lastName)
-  //
-  // search = (): PageElement => this.getButton('Search')
 }

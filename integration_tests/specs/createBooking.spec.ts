@@ -32,16 +32,13 @@ test.describe('Create a booking', () => {
       bookAVideoLinkApi.stubCreateBooking(),
       bookAVideoLinkApi.stubEnabledPrisons(),
       bookAVideoLinkApi.stubPrisonLocations(nottinghamLocations),
-      bookAVideoLinkApi.stubGetPrison({
-        prisonCode: 'NMI',
-        response: {
-          prisonId: 106,
-          code: 'NMI',
-          name: 'Nottingham (HMP & YOI)',
-          enabled: true,
-          notes: null,
-          pickUpTime: null,
-        },
+      bookAVideoLinkApi.stubGetPrison('NMI', {
+        prisonId: 106,
+        code: 'NMI',
+        name: 'Nottingham (HMP & YOI)',
+        enabled: true,
+        notes: null,
+        pickUpTime: null,
       }),
       hmppsAuth.stubSignInPage(),
       prisonerSearchApi.stubPrisoner(A0171DZ),

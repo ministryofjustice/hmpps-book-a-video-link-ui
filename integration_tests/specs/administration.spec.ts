@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test'
 import { format, startOfToday } from 'date-fns'
-import * as fs from 'node:fs'
-import path from 'node:path'
 import hmppsAuth from '../mockApis/hmppsAuth'
 
 import { login, resetStubs } from '../testUtils'
@@ -43,9 +41,8 @@ test.describe('Administration', () => {
         page.waitForEvent('download'),
         extractByBookingDatePage.extractDataButton.click(),
       ])
-      const downloadPath = path.join(__dirname, 'downloads', download.suggestedFilename())
-      await download.saveAs(downloadPath)
-      expect(fs.existsSync(downloadPath)).toBeTruthy()
+      expect(download).toBeTruthy()
+      expect(download.suggestedFilename()).toBe('courtDataExtractByBookingDate.csv')
     })
 
     test('Admin user can download a CSV of probation booking events by date of booking', async ({ page }) => {
@@ -63,9 +60,8 @@ test.describe('Administration', () => {
         page.waitForEvent('download'),
         extractByBookingDatePage.extractDataButton.click(),
       ])
-      const downloadPath = path.join(__dirname, 'downloads', download.suggestedFilename())
-      await download.saveAs(downloadPath)
-      expect(fs.existsSync(downloadPath)).toBeTruthy()
+      expect(download).toBeTruthy()
+      expect(download.suggestedFilename()).toBe('probationDataExtractByBookingDate.csv')
     })
 
     test('Admin user can download a CSV of court booking events by date of hearing', async ({ page }) => {
@@ -83,12 +79,11 @@ test.describe('Administration', () => {
         page.waitForEvent('download'),
         extractDataByHearingDatePage.extractDataButton.click(),
       ])
-      const downloadPath = path.join(__dirname, 'downloads', download.suggestedFilename())
-      await download.saveAs(downloadPath)
-      expect(fs.existsSync(downloadPath)).toBeTruthy()
+      expect(download).toBeTruthy()
+      expect(download.suggestedFilename()).toBe('courtDataExtractByHearingDate.csv')
     })
 
-    test('Admin user can download a CSV of probation booking events by date of hearing', async ({ page }) => {
+    test('Admin user can download a CSV of probation booking events by date of meeting', async ({ page }) => {
       await bookAVideoLinkApi.stubProbationDataExtractByMeetingDate()
       await login(page, { roles: ['ROLE_BVLS_ADMIN'] })
       const homePage = await HomePage.verifyOnPage(page)
@@ -103,9 +98,8 @@ test.describe('Administration', () => {
         page.waitForEvent('download'),
         extractDataByHearingDatePage.extractDataButton.click(),
       ])
-      const downloadPath = path.join(__dirname, 'downloads', download.suggestedFilename())
-      await download.saveAs(downloadPath)
-      expect(fs.existsSync(downloadPath)).toBeTruthy()
+      expect(download).toBeTruthy()
+      expect(download.suggestedFilename()).toBe('probationDataExtractByMeetingDate.csv')
     })
   })
 
@@ -150,15 +144,12 @@ test.describe('Administration', () => {
             ],
           },
         }),
-        bookAVideoLinkApi.stubGetPrison({
-          prisonCode: 'BWI',
-          response: {
-            prisonId: 83,
-            code: 'BWI',
-            name: 'Berwyn (HMP & YOI)',
-            enabled: true,
-            notes: null,
-          },
+        bookAVideoLinkApi.stubGetPrison('BWI', {
+          prisonId: 83,
+          code: 'BWI',
+          name: 'Berwyn (HMP & YOI)',
+          enabled: true,
+          notes: null,
         }),
       ])
 
@@ -224,15 +215,12 @@ test.describe('Administration', () => {
           dpsLocationId: 'f1c78dca-733b-43cc-b03f-6c870941a2c7',
           extraAttributes: null,
         }),
-        bookAVideoLinkApi.stubGetPrison({
-          prisonCode: 'BWI',
-          response: {
-            prisonId: 83,
-            code: 'BWI',
-            name: 'Berwyn (HMP & YOI)',
-            enabled: true,
-            notes: null,
-          },
+        bookAVideoLinkApi.stubGetPrison('BWI', {
+          prisonId: 83,
+          code: 'BWI',
+          name: 'Berwyn (HMP & YOI)',
+          enabled: true,
+          notes: null,
         }),
       ])
 
@@ -287,16 +275,13 @@ test.describe('Prison details administration', () => {
       hmppsAuth.stubSignInPage(),
       manageUsersApi.stubAdminUser(),
       bookAVideoLinkApi.stubAllPrisons(),
-      bookAVideoLinkApi.stubGetPrison({
-        prisonCode: 'AA1',
-        response: {
-          prisonId: 3,
-          code: 'AA1',
-          name: 'AA1 Prison for test',
-          enabled: false,
-          notes: null,
-          pickUpTime: null,
-        },
+      bookAVideoLinkApi.stubGetPrison('AA1', {
+        prisonId: 3,
+        code: 'AA1',
+        name: 'AA1 Prison for test',
+        enabled: false,
+        notes: null,
+        pickUpTime: null,
       }),
       bookAVideoLinkApi.stubUpdatePrisonDetails({
         prisonCode: 'AA1',

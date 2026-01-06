@@ -125,7 +125,6 @@ export default {
   stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),
   stubCancelBooking: () => stubDelete('/book-a-video-link-api/video-link-booking/(.)*'),
   stubGetBooking: (response: object) => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),
-  stubUserPreferences: () => Promise.all([stubGetUserCourtPreferences(), stubGetUserProbationTeamPreferences()]),
   stubGetCourtSchedule: ({ courtCode, date, response } = { courtCode: '(.)*', date: undefined, response: [] }) =>
     stubGet(
       `/book-a-video-link-api/schedule/court/${courtCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
@@ -146,6 +145,16 @@ export default {
   stubUpdateRoomDetails: () => stubPut('/book-a-video-link-api/room-admin/(.)*'),
   stubUpdatePrisonDetails: ({ prisonCode, response } = { prisonCode: '(.)*', response: [] }) =>
     stubPut(`/book-a-video-link-api/prison-admin/${prisonCode}`, response),
-  stubGetPrison: ({ prisonCode, response } = { prisonCode: '(.)*', response: [] }) =>
-    stubGet(`/book-a-video-link-api/prisons/${prisonCode}`, response),
+  stubGetPrison: (prisonCode: string, response: object): SuperAgentRequest =>
+    stubFor({
+      request: {
+        method: 'GET',
+        urlPattern: `/book-a-video-link-api/prisons/${prisonCode}`,
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: response,
+      },
+    }),
 }

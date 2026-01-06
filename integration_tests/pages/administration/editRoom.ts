@@ -57,22 +57,8 @@ export default class EditRoomPage extends AbstractPage {
     expect(this.page.locator(`input[name="permission"][value="${permission}"]`)).toBeChecked()
 
   assertBlockedFromDate = (date: Date) =>
-    expect(this.blockedFromDate).toContainText(formatDate(date, 'dd/MM/yyyy') as string)
+    expect(this.page.locator('#blockedFrom')).toContainText(formatDate(date, 'dd/MM/yyyy') as string)
 
   assertBlockedToDate = (date: Date) =>
-    expect(this.blockedToDate).toContainText(formatDate(date, 'dd/MM/yyyy') as string)
-
-  // getBlockedFromDate(): Cypress.Chainable<string> {
-  //   return cy
-  //     .get('input[name="blockedFrom"]')
-  //     .invoke('val')
-  //     .then(value => value as string)
-  // }
-  //
-  // getBlockedToDate(): Cypress.Chainable<string> {
-  //   return cy
-  //     .get('input[name="blockedTo"]')
-  //     .invoke('val')
-  //     .then(value => value as string)
-  // }
+    expect(this.page.locator('#blockedTo')).toContainText(formatDate(date, 'dd/MM/yyyy') as string)
 }

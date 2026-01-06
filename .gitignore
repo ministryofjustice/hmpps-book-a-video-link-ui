@@ -125,7 +125,6 @@ test_results/
 integration_tests/videos/
 integration_tests/screenshots/
 integration_tests/mappings/
-integration_tests/specs/downloads/
 */*.iml
 **/Chart.lock
 /.run/

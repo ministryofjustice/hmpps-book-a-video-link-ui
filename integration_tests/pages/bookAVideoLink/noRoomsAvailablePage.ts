@@ -1,8 +1,22 @@
-import Page, { PageElement } from '../page'
+import { expect, Locator, Page } from '@playwright/test'
+import AbstractPage from '../abstractPage'
 
-export default class NoRoomsAvailablePage extends Page {
-  constructor() {
-    super('No bookings available')
+export default class NoRoomsAvailablePage extends AbstractPage {
+  private readonly header: Locator
+
+  readonly changeTimesButton: Locator
+
+  private constructor(page: Page) {
+    super(page)
+    this.header = page.locator('h1', { hasText: 'No bookings available' })
+    this.changeTimesButton = page.getByRole('button', { name: 'Change times' })
+  }
+
+  static async verifyOnPage(page: Page): Promise<NoRoomsAvailablePage> {
+    const noRoomsAvailablePage = new NoRoomsAvailablePage(page)
+    await expect(noRoomsAvailablePage.header).toBeVisible()
+    await noRoomsAvailablePage.verifyNoAccessViolationsOnPage()
+    return noRoomsAvailablePage
   }
 
   assertPrison = (prison: string) => this.assertSummaryListValue('booking-details', 'Prison', prison)
@@ -19,6 +33,4 @@ export default class NoRoomsAvailablePage extends Page {
 
   assertPostHearingTime = (hearingTime: string) =>
     this.assertSummaryListValue('booking-details', 'Post-court hearing briefing time', hearingTime)
-
-  changeTimesButton = (): PageElement => this.getButton('Change times')
 }

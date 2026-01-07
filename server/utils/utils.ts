@@ -49,7 +49,7 @@ export const formatDate = (date: string | Date, fmt = 'd MMMM yyyy') => {
   return format(richDate, fmt)
 }
 
-export const parseDatePickerDate = (datePickerDate: string): Date => {
+export const parseDatePickerDate = (datePickerDate: string): Date | null => {
   if (!datePickerDate) return null
 
   const dateFormatPattern = /(\d{1,2})([-/,. ])(\d{1,2})[-/,. ](\d{2,4})/
@@ -57,6 +57,7 @@ export const parseDatePickerDate = (datePickerDate: string): Date => {
   if (!dateFormatPattern.test(datePickerDate)) return new Date(NaN)
 
   const dateMatches = datePickerDate.match(dateFormatPattern)
+  if (!dateMatches) return new Date(NaN)
 
   const separator = dateMatches[2]
   const year = dateMatches[4]
@@ -67,17 +68,17 @@ export const parseDatePickerDate = (datePickerDate: string): Date => {
   return date
 }
 
-export const simpleDateToDate = (date: { day: string; month: string; year: string }): Date =>
+export const simpleDateToDate = (date: { day: string; month: string; year: string }): Date | null =>
   date.day || date.month || date.year
     ? parse(`${date.day}/${date.month}/${date.year}`, 'P', new Date(), { locale: enGB })
     : null
 
-export const simpleTimeToDate = (time: { hour: string; minute: string }): Date =>
+export const simpleTimeToDate = (time: { hour: string; minute: string }): Date | null =>
   time && (time.hour || time.minute)
     ? parse(`${time.hour}:${time.minute}`, 'HH:mm', new Date(0), { locale: enGB })
     : null
 
-export const dateToSimpleTime = (date: Date): { hour: string; minute: string } => {
+export const dateToSimpleTime = (date: Date): { hour: string; minute: string } | undefined => {
   if (!isValid(date)) return undefined
   const hour = format(date, 'HH')
   const minute = format(date, 'mm')

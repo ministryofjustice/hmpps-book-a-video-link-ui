@@ -1,14 +1,114 @@
 [
   {
-    "referenceCodeId": 26,
+    "referenceCodeId": 69,
     "groupCode": "PROBATION_MEETING_TYPE",
     "code": "PSR",
-    "description": "Pre-sentence report"
+    "description": "Pre-sentence report (PSR)",
+    "enabled": true,
+    "displaySequence": 1
   },
   {
-    "referenceCodeId": 27,
+    "referenceCodeId": 70,
     "groupCode": "PROBATION_MEETING_TYPE",
     "code": "RR",
-    "description": "Recall report"
+    "description": "Recall report (PRARR - parts B or C)",
+    "enabled": true,
+    "displaySequence": 2
+  },
+  {
+    "referenceCodeId": 71,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "PR",
+    "description": "Parole Report (PAROM)",
+    "enabled": true,
+    "displaySequence": 3
+  },
+  {
+    "referenceCodeId": 72,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "HDC",
+    "description": "HDC (home detention curfew)",
+    "enabled": true,
+    "displaySequence": 4
+  },
+  {
+    "referenceCodeId": 73,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "OASYS",
+    "description": "OASys",
+    "enabled": true,
+    "displaySequence": 5
+  },
+  {
+    "referenceCodeId": 74,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "MALRAP",
+    "description": "Multi-agency lifer risk assessment panel (MALRAP)",
+    "enabled": true,
+    "displaySequence": 6
+  },
+  {
+    "referenceCodeId": 75,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "PRP",
+    "description": "Pre-release planning",
+    "enabled": true,
+    "displaySequence": 7
+  },
+  {
+    "referenceCodeId": 76,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "IOM",
+    "description": "Integrated offender management (IOM)",
+    "enabled": true,
+    "displaySequence": 8
+  },
+  {
+    "referenceCodeId": 77,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "RTSCR",
+    "description": "Response to supervision (court report)",
+    "enabled": true,
+    "displaySequence": 9
+  },
+  {
+    "referenceCodeId": 78,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "BR",
+    "description": "Bail report",
+    "enabled": true,
+    "displaySequence": 10
+  },
+  {
+    "referenceCodeId": 79,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "RCAT",
+    "description": "R-CAT (recategorisation) assessments",
+    "enabled": true,
+    "displaySequence": 11
+  },
+  {
+    "referenceCodeId": 80,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "ROTL",
+    "description": "ROTL (release on temporary licence)",
+    "enabled": true,
+    "displaySequence": 12
+  },
+  {
+    "referenceCodeId": 81,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "OTHER",
+    "description": "Other",
+    "enabled": true,
+    "displaySequence": 13
+  },
+  {
+    "referenceCodeId": 82,
+    "groupCode": "PROBATION_MEETING_TYPE",
+    "code": "UNKNOWN",
+    "description": "Unknown",
+    "enabled": true,
+    "displaySequence": 14
   }
 ]

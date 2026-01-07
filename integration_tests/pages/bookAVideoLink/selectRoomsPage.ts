@@ -1,16 +1,33 @@
-import Page, { PageElement } from '../page'
+import { expect, Locator, Page } from '@playwright/test'
+import AbstractPage from '../abstractPage'
 
-export default class SelectRoomsPage extends Page {
-  constructor() {
-    super('Select rooms for')
+export default class SelectRoomsPage extends AbstractPage {
+  private readonly header: Locator
+
+  readonly continueButton: Locator
+
+  private constructor(page: Page) {
+    super(page)
+    this.header = page.locator('h1', { hasText: 'Select rooms for' })
+    this.continueButton = page.getByRole('button', { name: 'Continue' })
   }
 
-  selectRoomForPreHearing = (room: string) => this.getByLabel('Select room for pre-court hearing briefing').select(room)
+  static async verifyOnPage(page: Page): Promise<SelectRoomsPage> {
+    const selectRoomsPage = new SelectRoomsPage(page)
+    await expect(selectRoomsPage.header).toBeVisible()
+    await selectRoomsPage.verifyNoAccessViolationsOnPage()
+    return selectRoomsPage
+  }
 
-  selectRoomForMainHearing = (room: string) => this.getByLabel('Select room for court hearing').select(room)
+  async selectRoomForPreHearing(room: string) {
+    await this.page.getByLabel('Select room for pre-court hearing briefing').selectOption(room)
+  }
 
-  selectRoomForPostHearing = (room: string) =>
-    this.getByLabel('Select room for post-court hearing briefing').select(room)
+  async selectRoomForMainHearing(room: string) {
+    await this.page.getByLabel('Select room for court hearing').selectOption(room)
+  }
 
-  continue = (): PageElement => this.getButton('Continue')
+  async selectRoomForPostHearing(room: string) {
+    await this.page.getByLabel('Select room for post-court hearing briefing').selectOption(room)
+  }
 }

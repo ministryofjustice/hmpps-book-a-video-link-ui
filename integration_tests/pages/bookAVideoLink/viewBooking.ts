@@ -26,6 +26,8 @@ export default class ViewBookingPage extends AbstractPage {
 
   readonly changeBookingDetailsButton: Locator
 
+  readonly returnToViewBookingsLink: Locator
+
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1', { hasText: 'Bob Smith’s video link details' })
@@ -40,6 +42,7 @@ export default class ViewBookingPage extends AbstractPage {
     this.courtHearingPostHearingRoomChangeLink = page.getByTestId('change-post-location')
     this.staffNotesChangeLink = page.getByTestId('change-notes')
     this.changeBookingDetailsButton = page.getByRole('button', { name: 'Change booking details' })
+    this.returnToViewBookingsLink = page.getByTestId('return-to-all-bookings-link')
   }
 
   static async verifyOnPage(page: Page): Promise<ViewBookingPage> {

@@ -5,6 +5,7 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
 import PrisonService from '../../../../services/prisonService'
+import { VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 
 export default class ViewBookingHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_BOOKING_PAGE
@@ -42,6 +43,16 @@ export default class ViewBookingHandler implements PageHandler {
       rooms,
       isAmendable,
       isCancelled: booking.statusCode === 'CANCELLED',
+      agencyCode: booking.bookingType === 'COURT' ? booking.courtCode : booking.probationTeamCode,
+      bookingDate: this.getBookingDate(booking),
     })
+  }
+
+  private getBookingDate = (booking: VideoLinkBooking) => {
+    if (booking.bookingType === 'COURT') {
+      return booking.prisonAppointments.find(b => b.appointmentType === 'VLB_COURT_MAIN')?.appointmentDate
+    }
+
+    return booking.prisonAppointments.find(b => b.appointmentType === 'VLB_PROBATION')?.appointmentDate
   }
 }

@@ -49,72 +49,81 @@ afterEach(() => {
 
 describe('GET', () => {
   it.each([
-    ['Probation', 'probation'],
-    ['Court', 'court'],
-  ])('%s journey - should render the correct view page', (_: string, journey: string) => {
-    videoLinkService.getVideoLinkBookingById.mockResolvedValue(
-      journey === 'court' ? getCourtBooking('AA1234A') : getProbationBooking('AA1234A'),
-    )
-    prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
-      firstName: 'Joe',
-      lastName: 'Bloggs',
-      prisonId: 'MDI',
-      prisonerNumber: 'AA1234A',
-    } as Prisoner)
-    prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
-    prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
+    ['Probation', 'probation', '06-04-2024', 'PROBATION_AGENCY_CODE'],
+    ['Court', 'court', '05-04-2024', 'COURT_AGENCY_CODE'],
+  ])(
+    '%s journey - should render the correct view page',
+    (_: string, journey: string, bookingDate: string, agencyCode: string) => {
+      videoLinkService.getVideoLinkBookingById.mockResolvedValue(
+        journey === 'court' ? getCourtBooking('AA1234A') : getProbationBooking('AA1234A'),
+      )
+      prisonerService.getPrisonerByPrisonerNumber.mockResolvedValue({
+        firstName: 'Joe',
+        lastName: 'Bloggs',
+        prisonId: 'MDI',
+        prisonerNumber: 'AA1234A',
+      } as Prisoner)
+      prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
+      prisonService.getAppointmentLocations.mockResolvedValue([
+        { key: 'KEY', description: 'description' },
+      ] as Location[])
 
-    return request(app)
-      .get(`/${journey}/view-booking/1`)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_BOOKING_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
+      return request(app)
+        .get(`/${journey}/view-booking/1`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_BOOKING_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+          expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+          expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
+          expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
+
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          const changeLink = getByDataQa($, 'change-link').attr('href')
+          const returnToAllBookingsLink = getByDataQa($, 'return-to-all-bookings-link').attr('href')
+
+          expect(heading).toEqual('Joe Bloggs’s video link details')
+          expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
+          expect(changeLink).toEqual(`/${journey}/booking/amend/1001/video-link-booking`)
+          expect(returnToAllBookingsLink).toEqual(
+            `/${journey}/view-booking?date=${bookingDate}&agencyCode=${agencyCode}`,
+          )
+
+          expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
+          expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
+
+          const courtFields = [
+            'Court',
+            'Hearing type',
+            'Pre-court hearing time',
+            'Pre-court hearing room',
+            'Pre-court hearing link (PVL)',
+            'Court hearing time',
+            'Court hearing room',
+            'Court hearing link (CVP)',
+            'Post-court hearing time',
+            'Post-court hearing room',
+            'Post-court hearing link (PVL)',
+          ]
+
+          const probationFields = [
+            'Probation team',
+            "Probation officer's full name",
+            'Email address',
+            'UK phone number',
+            'Meeting type',
+            'Meeting time',
+            'Prison video link (PVL)',
+          ]
+
+          courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
+          probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
         })
-        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
-        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
-        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
-
-        const $ = cheerio.load(res.text)
-        const heading = getPageHeader($)
-        const changeLink = getByDataQa($, 'change-link').attr('href')
-
-        expect(heading).toEqual('Joe Bloggs’s video link details')
-        expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
-        expect(changeLink).toEqual(`/${journey}/booking/amend/1001/video-link-booking`)
-
-        expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
-        expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
-
-        const courtFields = [
-          'Court',
-          'Hearing type',
-          'Pre-court hearing time',
-          'Pre-court hearing room',
-          'Pre-court hearing link (PVL)',
-          'Court hearing time',
-          'Court hearing room',
-          'Court hearing link (CVP)',
-          'Post-court hearing time',
-          'Post-court hearing room',
-          'Post-court hearing link (PVL)',
-        ]
-
-        const probationFields = [
-          'Probation team',
-          "Probation officer's full name",
-          'Email address',
-          'UK phone number',
-          'Meeting type',
-          'Meeting time',
-          'Prison video link (PVL)',
-        ]
-
-        courtFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'court'))
-        probationFields.forEach(field => expect(existsByKey($, field)).toBe(journey === 'probation'))
-      })
-  })
+    },
+  )
 
   it("Options to change the booking are not available when it's cancelled", () => {
     videoLinkService.getVideoLinkBookingById.mockResolvedValue({
@@ -206,6 +215,7 @@ const getCourtBooking = (prisonerNumber: string) =>
   ({
     videoLinkBookingId: 1001,
     bookingType: 'COURT',
+    courtCode: 'COURT_AGENCY_CODE',
 
     prisonAppointments: [
       {
@@ -247,6 +257,7 @@ const getProbationBooking = (prisonerNumber: string) =>
   ({
     videoLinkBookingId: 1001,
     bookingType: 'PROBATION',
+    probationTeamCode: 'PROBATION_AGENCY_CODE',
 
     prisonAppointments: [
       {
@@ -254,7 +265,7 @@ const getProbationBooking = (prisonerNumber: string) =>
         prisonerNumber,
         appointmentType: 'VLB_PROBATION',
         prisonLocKey: 'VCC-ROOM-1',
-        appointmentDate: '2024-04-05',
+        appointmentDate: '2024-04-06',
         startTime: '11:30',
         endTime: '12:30',
       },

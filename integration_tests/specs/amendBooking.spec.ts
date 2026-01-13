@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { login, resetStubs } from '../testUtils'
 import A0171DZ from '../mockApis/fixtures/prisonerSearchApi/A0171DZ.json'
@@ -90,10 +90,16 @@ test.describe('Amend a booking', () => {
       await notesForStaffPage.enterNotesForStaff('Test notes')
       await notesForStaffPage.continueButton.click()
 
-      await UpdateConfirmationPage.verifyOnPage(page)
+      const updateConfirmationPage = await UpdateConfirmationPage.verifyOnPage(page)
+      await updateConfirmationPage.exitToAllBookingsLink.click()
+
+      const returnedToSearchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      expect(returnedToSearchBookingsPage.page.url()).toContain('/court/view-booking?date=01-01-2050&agencyCode=ABERFC')
     })
 
-    test('Can change the hearing link for a court video link booking', async ({ page }) => {
+    test('Can change the hearing link for a court video link booking and return to all bookings page', async ({
+      page,
+    }) => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
@@ -245,7 +251,9 @@ test.describe('Amend a booking', () => {
       ])
     })
 
-    test('Can add notes to a video link booking for a probation team', async ({ page }) => {
+    test('Can add notes to a video link booking for a probation team and return to all bookings page', async ({
+      page,
+    }) => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
@@ -268,7 +276,13 @@ test.describe('Amend a booking', () => {
       await notesForStaffPage.enterNotesForStaff('Test notes')
       await notesForStaffPage.continueButton.click()
 
-      await UpdateConfirmationPage.verifyOnPage(page)
+      const updateConfirmationPage = await UpdateConfirmationPage.verifyOnPage(page)
+      await updateConfirmationPage.exitToAllBookingsLink.click()
+
+      const returnedToSearchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      expect(returnedToSearchBookingsPage.page.url()).toContain(
+        '/probation/view-booking?date=01-01-2050&agencyCode=BLKPPP',
+      )
     })
   })
 })

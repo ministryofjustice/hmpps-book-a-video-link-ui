@@ -124,7 +124,7 @@
                     <a href='/probation/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
                 {% else %}
                     {{ govukButton({ text: "Return to booking", href: '/probation/view-booking/' + booking.videoLinkBookingId }) }}
-                    <a href='/probation/view-booking' class="govuk-link govuk-link--no-visited-state">Exit to all video link bookings</a>
+                    <a href='/probation/view-booking?date={{ originalBookingDate }}&agencyCode={{ booking.probationTeamCode }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
                 {% endif %}
             </div>
 

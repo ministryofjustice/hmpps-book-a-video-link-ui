@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { format } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import VideoLinkService from '../../../../../services/videoLinkService'
@@ -21,8 +22,15 @@ export default class BookingCancelledHandler implements PageHandler {
     const { prisonerNumber } = booking.prisonAppointments[0]
     const prisoner = await this.prisonerService.getPrisonerByPrisonerNumber(prisonerNumber, user)
 
+    const originalBookingDate = req.session.journey.bookAProbationMeeting?.originalBookingDate
+    const agencyCode = req.session.journey.bookAProbationMeeting?.probationTeamCode
+
     req.session.journey.bookAProbationMeeting = null
 
-    res.render('pages/bookAVideoLink/probation/bookingCancelled', { prisoner })
+    res.render('pages/bookAVideoLink/probation/bookingCancelled', {
+      prisoner,
+      originalBookingDate: originalBookingDate ? format(new Date(originalBookingDate), 'dd-MM-yyyy') : undefined,
+      agencyCode,
+    })
   }
 }

@@ -99,8 +99,10 @@ describe('GET', () => {
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
-
         expect(heading).toEqual('The video link booking has been updated')
+
+        const exitToAllBookingsLink = getByDataQa($, 'exit-to-all-bookings-link').attr('href')
+        expect(exitToAllBookingsLink).toEqual(`/probation/view-booking?date=05-04-2024&agencyCode=PROBATION_CODE`)
       })
       .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
   })
@@ -109,7 +111,7 @@ describe('GET', () => {
 const getProbationBooking = (prisonerNumber: string) =>
   ({
     bookingType: 'PROBATION',
-
+    probationTeamCode: 'PROBATION_CODE',
     prisonAppointments: [
       {
         prisonCode: 'MDI',

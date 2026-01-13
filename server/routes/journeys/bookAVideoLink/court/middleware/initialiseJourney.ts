@@ -58,6 +58,9 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       guestPinRequired: guestPinRequired(),
       videoLinkUrl: booking.videoLinkUrl,
       guestPin: getGuestPinValue(),
+      originalBookingDate: mainAppointment.appointmentDate
+        ? parseDateToISOString(mainAppointment.appointmentDate)
+        : undefined,
     }
 
     return next()

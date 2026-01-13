@@ -32,6 +32,7 @@ beforeEach(() => {
   appSetup()
 
   videoLinkService.getVideoLinkBookingById.mockResolvedValue({
+    courtCode: 'COURT_CODE',
     prisonAppointments: [
       {
         prisonerNumber: 'A1234AA',
@@ -74,9 +75,11 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
+        const returnToAllBookingsLink = getByDataQa($, 'return-to-all-bookings-link').attr('href')
 
         expect(heading).toEqual('This video link booking has been cancelled')
         expect(bookAnotherLink).toEqual(`/court/booking/create/A1234AA/video-link-booking`)
+        expect(returnToAllBookingsLink).toEqual(`/court/view-booking?date=05-04-2024&agencyCode=COURT_CODE`)
       })
       .then(() => expectJourneySession(app, 'bookACourtHearing', null))
   })

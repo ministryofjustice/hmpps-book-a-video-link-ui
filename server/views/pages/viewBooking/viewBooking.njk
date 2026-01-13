@@ -115,7 +115,7 @@
                             text: "Date"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).appointmentDate | formatDate
+                            text: bookingDate | formatDate
                         },
                         actions: {
                             items: [
@@ -133,7 +133,7 @@
                             text: "Date"
                         },
                         value: {
-                            text: (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).appointmentDate | formatDate
+                            text: bookingDate | formatDate
                         }
                     } if booking.bookingType == 'PROBATION',
                     {
@@ -327,7 +327,7 @@
                     {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/cancel/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary" }) }}
                 </div>
             {% endif %}
-            <a href='/{{ booking.bookingType | lower }}/view-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to all video link bookings</a>
+            <a href='/{{ booking.bookingType | lower }}/view-booking?date={{ bookingDate | formatDate("dd-MM-yyyy") }}&agencyCode={{ agencyCode }}' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-all-bookings-link">Return to all video link bookings</a>
         </div>
     </div>
 {% endblock %}

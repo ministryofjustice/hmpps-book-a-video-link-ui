@@ -30,4 +30,5 @@ export type BookACourtHearingJourney = {
   hmctsNumber?: string
   guestPinRequired?: boolean
   guestPin?: string
+  originalBookingDate?: string
 }

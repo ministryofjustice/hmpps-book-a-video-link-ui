@@ -186,6 +186,7 @@ describe('Booking details handler', () => {
             videoLinkUrl: 'http://example.com',
             guestPinRequired: false,
             notesForStaff: 'staff notes',
+            originalBookingDate: startOfTomorrow().toISOString(),
           }),
         )
 
@@ -501,6 +502,7 @@ describe('Booking details handler', () => {
             cvpRequired: true,
             videoLinkUrl: 'https://www.google.co.uk',
             guestPinRequired: false,
+            originalBookingDate: startOfTomorrow().toISOString(),
           }),
         )
     })

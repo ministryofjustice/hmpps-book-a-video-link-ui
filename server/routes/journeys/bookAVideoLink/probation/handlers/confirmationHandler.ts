@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { format } from 'date-fns'
 import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import VideoLinkService from '../../../../../services/videoLinkService'
@@ -29,6 +30,8 @@ export default class ConfirmationHandler implements PageHandler {
       this.prisonService.getAppointmentLocations(prisonCode, false, user),
     ])
 
+    const originalBookingDate = req.session.journey.bookAProbationMeeting?.originalBookingDate
+
     req.session.journey.bookAProbationMeeting = null
 
     res.render('pages/bookAVideoLink/probation/confirmation', {
@@ -36,6 +39,7 @@ export default class ConfirmationHandler implements PageHandler {
       prison,
       booking,
       rooms,
+      originalBookingDate: originalBookingDate ? format(new Date(originalBookingDate), 'dd-MM-yyyy') : undefined,
     })
   }
 }

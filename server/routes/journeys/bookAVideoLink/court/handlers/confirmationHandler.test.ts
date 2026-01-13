@@ -100,8 +100,10 @@ describe('GET', () => {
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
-
         expect(heading).toEqual('The video link booking has been updated')
+
+        const exitToAllBookingsLink = getByDataQa($, 'exit-to-all-bookings-link').attr('href')
+        expect(exitToAllBookingsLink).toEqual(`/court/view-booking?date=05-04-2024&agencyCode=COURT_CODE`)
       })
     return expectJourneySession(app, 'bookACourtHearing', null)
   })
@@ -110,6 +112,7 @@ describe('GET', () => {
 const getCourtBooking = (prisonerNumber: string) =>
   ({
     bookingType: 'COURT',
+    courtCode: 'COURT_CODE',
     prisonAppointments: [
       {
         prisonCode: 'MDI',

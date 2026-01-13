@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { login, resetStubs } from '../testUtils'
 import A0171DZ from '../mockApis/fixtures/prisonerSearchApi/A0171DZ.json'
@@ -55,7 +55,7 @@ test.describe('Cancel a booking', () => {
       ])
     })
 
-    test('Can cancel a court video link booking', async ({ page }) => {
+    test('Can cancel a court video link booking and return to all bookings page', async ({ page }) => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
@@ -73,7 +73,10 @@ test.describe('Cancel a booking', () => {
       await viewBookingPage.cancelVideoLinkButton.click()
       const confirmCancelPage = await ConfirmCancelPage.verifyOnPage(page)
       await confirmCancelPage.yesCancelTheBookingButton.click()
-      await ConfirmedCancelPage.verifyOnPage(page)
+      const confirmedCancelPage = await ConfirmedCancelPage.verifyOnPage(page)
+      await confirmedCancelPage.returnToBookingsLink.click()
+      const returnedToSearchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      expect(returnedToSearchBookingsPage.page.url()).toContain('/court/view-booking?date=01-01-2050&agencyCode=ABERFC')
     })
   })
 
@@ -88,7 +91,7 @@ test.describe('Cancel a booking', () => {
       ])
     })
 
-    test('Can cancel a probation team video link booking', async ({ page }) => {
+    test('Can cancel a probation team video link booking and return to all bookings page', async ({ page }) => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
@@ -106,7 +109,12 @@ test.describe('Cancel a booking', () => {
       await viewBookingPage.cancelVideoLinkButton.click()
       const confirmCancelPage = await ConfirmCancelPage.verifyOnPage(page)
       await confirmCancelPage.yesCancelTheBookingButton.click()
-      await ConfirmedCancelPage.verifyOnPage(page)
+      const confirmedCancelPage = await ConfirmedCancelPage.verifyOnPage(page)
+      await confirmedCancelPage.returnToBookingsLink.click()
+      const returnedToSearchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      expect(returnedToSearchBookingsPage.page.url()).toContain(
+        '/probation/view-booking?date=01-01-2050&agencyCode=BLKPPP',
+      )
     })
   })
 })

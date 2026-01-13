@@ -550,6 +550,7 @@ describe('Booking details handler', () => {
             locationCode: 'LOCATION_CODE',
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
+            originalBookingDate: startOfTomorrow().toISOString(),
           }),
         )
     })

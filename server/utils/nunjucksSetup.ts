@@ -78,6 +78,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('unique', uniq)
   njkEnv.addFilter('toDuration', toDuration)
   njkEnv.addFilter('toFullCourtLink', toFullCourtLink)
+  njkEnv.addFilter('min', (a: number, b: number) => Math.min(a, b))
+  njkEnv.addFilter('max', (a: number, b: number) => Math.max(a, b))
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
   njkEnv.addGlobal('now', () => new Date())

@@ -1,0 +1,105 @@
+{% extends "partials/layout.njk" %}
+
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+{% from "partials/simplePagination.njk" import simplePagination %}
+
+{% set type = session.req.routeContext.type %}
+{% set pageTitle = "Video link bookings" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l govuk-!-display-none-print">{{ pageTitle }}</h1>
+            <p class='govuk-body govuk-!-display-none-print'>You can view and change video link bookings for all the {{ 'courts' if type == 'court' else 'probation teams' }} you have selected in the "Manage your list of {{ 'courts' if type == 'court' else 'probation teams' }}" section.</p>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <form method='GET' class='horizontal-form'>
+
+                <div>
+                  {{ mojDatePicker({
+                      id: 'date',
+                      name: 'date',
+                      label: { text: "Date" },
+                      errorMessage: {} if validationErrors | findError('date'),
+                      value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
+                  }) }}
+                </div>
+
+                <div>
+                {% set items = [{ text: "All", value: "ALL" }] %}
+                {% for agency in agencies %}
+                    {% set items = (items.push({
+                        value: agency.code,
+                        text: agency.description,
+                        selected: session.req.query.agencyCode == agency.code
+                    }), items) %}
+                {% endfor %}
+                {{ govukSelect({
+                    name: "agencyCode",
+                    id: "agencyCode",
+                    label: { text: "Court" if type == 'court' else "Probation team" },
+                    items: items
+                }) }}
+                </div>
+
+                {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print" }) }}
+
+                <div class="hmpps-action-bar">
+                    <div class="hmpps-print-and-export govuk-!-margin-top-6">
+                        <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
+                        <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ (session.req.query.date | parseDate('dd/MM/yyyy') | formatDate('dd-MM-yyyy')) or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
+                            Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
+                        </a>
+                    </div>
+                </div>
+            </form>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-display-none-print" aria-hidden="true">
+
+            {% if appointments.length %}
+                {% set rows = [] %}
+                {% for item in appointments %}
+                    {% set viewOrEditText = 'View or edit' if item.appointmentDate | parseDate | dateAtTime(item.startTime | parseDate('HH:mm')) > now() else 'View' %}
+
+                    {% set rows = (rows.push([
+                            { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
+                            { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase },
+                            { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
+                                    ('<strong class="govuk-tag govuk-tag--red govuk-tag--small">Action: provide hearing link</strong>' if item.appointmentType == 'VLB_COURT_MAIN' and not item.videoUrl and not item.hmctsNumber) },
+                            { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
+                            { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
+                                    ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
+                                    ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') },
+                            { html: '<a class="govuk-link govuk-link--no-visited-state" href="view-booking/' + item.videoBookingId + '?agencyCode=' + session.req.query.agencyCode +'">' + viewOrEditText + '</a>' if item.appointmentType == 'VLB_COURT_MAIN' or item.appointmentType == 'VLB_PROBATION' else '<span class="govuk-visually-hidden">Not selectable</span>', classes: classes + ' govuk-!-display-none-print'}
+                        ]
+                    ), rows) %}
+                {% endfor %}
+                <div class="govuk-!-display-none-print">
+                {{ govukTable({
+                    caption: "Total: " + appointments.length,
+                    captionClasses: "govuk-table__caption--m",
+                    head: [
+                        { text: "Time" },
+                        { text: "Name" },
+                        { text: "Prison location" },
+                        { text: "Court" if type == 'court' else 'Probation team' },
+                        { text: "Hearing type" if type == 'court' else 'Meeting type' },
+                        { text: "Action"}
+                    ],
+                    rows: rows
+                }) }}
+                </div>
+
+                {{ simplePagination(pagination)  }}
+            {% else %}
+                <p class="govuk-body">There are no video link bookings for this date.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

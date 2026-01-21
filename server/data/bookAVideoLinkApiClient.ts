@@ -23,6 +23,7 @@ import {
   AmendRoomScheduleRequest,
   RoomSchedule,
   AmendPrisonRequest,
+  PagedModelScheduleItem,
 } from '../@types/bookAVideoLinkApi/types'
 
 import { formatDate } from '../utils/utils'
@@ -146,6 +147,71 @@ export default class BookAVideoLinkApiClient extends RestClient {
   ): Promise<ScheduleItem[]> {
     return this.get(
       { path: `/schedule/${agencyType}/${agencyCode}`, query: { date: formatDate(date, 'yyyy-MM-dd') } },
+      user,
+    )
+  }
+
+  public getPaginatedMultipleAgenciesVideoLinkSchedules(
+    agencyType: 'court' | 'probation',
+    agencyCodes: string[],
+    date: Date,
+    pageNumber: number,
+    sortBy: 'startTime',
+    user: Express.User,
+  ): Promise<PagedModelScheduleItem> {
+    if (agencyType === 'court') {
+      return this.post<PagedModelScheduleItem>(
+        {
+          path: `/schedule/courts/paginated`,
+          query: { page: pageNumber, size: 10 },
+          data: {
+            date: formatDate(date, 'yyyy-MM-dd'),
+            courtCodes: agencyCodes,
+          },
+        },
+        user,
+      )
+    }
+    return this.post<PagedModelScheduleItem>(
+      {
+        path: `/schedule/probation-teams/paginated`,
+        query: { page: pageNumber, size: 10 },
+        data: {
+          date: formatDate(date, 'yyyy-MM-dd'),
+          probationTeamCodes: agencyCodes,
+        },
+      },
+      user,
+    )
+  }
+
+  public getUnpaginatedMultipleAgenciesVideoLinkSchedules(
+    agencyType: 'court' | 'probation',
+    agencyCodes: string[],
+    date: Date,
+    sortBy: 'startTime',
+    user: Express.User,
+  ): Promise<ScheduleItem[]> {
+    if (agencyType === 'court') {
+      return this.post<ScheduleItem[]>(
+        {
+          path: `/schedule/courts`,
+          data: {
+            date: formatDate(date, 'yyyy-MM-dd'),
+            courtCodes: agencyCodes,
+          },
+        },
+        user,
+      )
+    }
+    return this.post<ScheduleItem[]>(
+      {
+        path: `/schedule/probation-teams`,
+        data: {
+          date: formatDate(date, 'yyyy-MM-dd'),
+          probationTeamCodes: agencyCodes,
+        },
+      },
       user,
     )
   }

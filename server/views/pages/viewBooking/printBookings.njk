@@ -1,0 +1,111 @@
+{% extends "partials/layout.njk" %}
+
+{% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
+
+{% set type = session.req.routeContext.type %}
+{% set pageTitle = "Video link bookings" %}
+{% set printDate = (session.req.query.date | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy')) if session.req.query.date else now() | formatDate('iiii d MMMM yyyy') %}
+
+{% block header %}
+{% endblock %}
+
+{% block beforeContent %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <div class="print-only">
+              <span class="govuk-heading-l">{{ pageTitle }}: {{ agency.description }}</span>
+              <span class="govuk-caption-m govuk-!-padding-bottom-3">{{ printDate }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-l govuk-visually-hidden">Print movement slips</h1>
+
+            <div class="govuk-button-group hmpps-print-and-export--print govuk-!-display-none-print">
+                {{ govukButton({
+                    text: "Print all bookings" if appointments.length > 1 else "Print booking",
+                    classes: "govuk-button--blue js-print no-js-hidden",
+                    preventDoubleClick: true
+                }) }}
+            </div>
+
+            <div class="govuk-!-padding-bottom-2 print-only">
+                <p class="govuk-body govuk-!-margin-bottom-0"><span class="govuk-!-font-weight-bold">{{ appointments.length }}</span> Appointment{{ "s" if appointments.length > 1 else '' }} listed</p>
+            </div>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-display-none-print" aria-hidden="true">
+
+            {% if appointments.length %}
+                <hr class="govuk-section-break govuk-section-break--visible print-only" aria-hidden="true">
+                {% set rows = [] %}
+                {% set printRows = [] %}
+                {% for item in appointments %}
+                    {% set rows = (rows.push([
+                            { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
+                            { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase },
+                            { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
+                                    ('<strong class="govuk-tag govuk-tag--red govuk-tag--small">Action: provide hearing link</strong>' if item.appointmentType == 'VLB_COURT_MAIN' and not item.videoUrl and not item.hmctsNumber) },
+                            { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
+                            { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
+                                    ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
+                                    ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') }
+                        ]
+                    ), rows) %}
+
+                    {% set printRows = (printRows.push([
+                            { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
+                            { html: '<div>'+ item.prisonerName | convertToTitleCase +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonerNumber + '</div>' },
+                            { html: '<div>'+ item.prisonLocationDescription +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonName + '</div>'  },
+                            { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
+                            { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
+                                    ('<span class="govuk-body ">Pre-court hearing</span>' if item.appointmentType == 'VLB_COURT_PRE') +
+                                    ('<span class="govuk-body ">Post-court hearing</span>' if item.appointmentType == 'VLB_COURT_POST') },
+                            { text: (item.videoUrl or item.hmctsNumber | toFullCourtLink) if item.videoUrl or item.hmctsNumber else 'None entered'}
+                        ]
+                    ), printRows) %}
+                {% endfor %}
+                <div class="govuk-!-display-none-print">
+                {{ govukTable({
+                    caption: "Total: " + appointments.length,
+                    captionClasses: "govuk-table__caption--m",
+                    head: [
+                        { text: "Time" },
+                        { text: "Name" },
+                        { text: "Prison location" },
+                        { text: "Court" if type == 'court' else 'Probation team' },
+                        { text: "Hearing type" if type == 'court' else 'Meeting type' }
+                    ],
+                    rows: rows
+                }) }}
+                </div>
+
+                <div class="print-only">
+                {{ govukTable({
+                    head: [
+                        { text: "Time" },
+                        { text: "Name" },
+                        { text: "Prison location" },
+                        { text: "Court" if type == 'court' else 'Probation team' },
+                        { text: "Hearing type" if type == 'court' else 'Meeting type' },
+                        { text: "Meeting link" }
+                    ],
+                    rows: printRows
+                }) }}
+                </div>
+            {% else %}
+                <p class="govuk-body">There are no video link bookings for this date.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

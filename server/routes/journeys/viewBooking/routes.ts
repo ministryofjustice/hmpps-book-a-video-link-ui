@@ -6,6 +6,9 @@ import validationMiddleware from '../../../middleware/validationMiddleware'
 import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 import ViewBookingHandler from './handlers/viewBookingHandler'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
+import config from '../../../config'
+import ViewMultipleTeamsBookingsHandler from './handlers/viewMultipleAgenciesBookingsHandler'
+import PrintBookingsHandler from './handlers/printBookings'
 
 export default function Index({
   auditService,
@@ -22,8 +25,14 @@ export default function Index({
     handler.POST &&
     router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
-  route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
-  route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))
+  if (config.featureToggles.viewMultipleAgenciesBookings) {
+    route('/', new ViewMultipleTeamsBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+    route('/print-bookings', new PrintBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+  } else {
+    route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+    route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))
+  }
+
   route('/:bookingId', new ViewBookingHandler(videoLinkService, prisonerService, prisonService))
 
   return router

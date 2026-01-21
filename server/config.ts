@@ -147,6 +147,7 @@ export default {
     probationOnlyPrisons: get('FEATURE_PROBATION_ONLY_PRISONS', null),
     courtOnlyPrisons: get('FEATURE_COURT_ONLY_PRISONS', null),
     temporaryBlockingLocations: get('FEATURE_TEMPORARY_BLOCKING_LOCATIONS', false) === 'true',
+    viewMultipleAgenciesBookings: get('FEATURE_VIEW_MULTIPLE_AGENCIES_BOOKINGS', false) === 'true',
   },
   defaultCourtVideoUrl: get('DEFAULT_COURT_VIDEO_URL', 'meet.video.justice.gov.uk'),
 }

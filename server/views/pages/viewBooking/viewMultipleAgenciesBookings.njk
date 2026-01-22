@@ -52,7 +52,7 @@
 
                 <div class="hmpps-action-bar">
                     <div class="hmpps-print-and-export govuk-!-margin-top-6">
-                        <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button>
+                        {# <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button> #}
                         <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ (session.req.query.date | parseDate('dd/MM/yyyy') | formatDate('dd-MM-yyyy')) or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
                             Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
                         </a>
@@ -80,20 +80,21 @@
                         ]
                     ), rows) %}
                 {% endfor %}
+
+                {{ simplePagination(pagination)  }}
+
                 <div class="govuk-!-display-none-print">
-                {{ govukTable({
-                    caption: "Total: " + appointments.length,
-                    captionClasses: "govuk-table__caption--m",
-                    head: [
-                        { text: "Time" },
-                        { text: "Name" },
-                        { text: "Prison location" },
-                        { text: "Court" if type == 'court' else 'Probation team' },
-                        { text: "Hearing type" if type == 'court' else 'Meeting type' },
-                        { text: "Action"}
-                    ],
-                    rows: rows
-                }) }}
+                    {{ govukTable({
+                        head: [
+                            { text: "Time" },
+                            { text: "Name" },
+                            { text: "Prison location" },
+                            { text: "Court" if type == 'court' else 'Probation team' },
+                            { text: "Hearing type" if type == 'court' else 'Meeting type' },
+                            { text: "Action"}
+                        ],
+                        rows: rows
+                    }) }}
                 </div>
 
                 {{ simplePagination(pagination)  }}

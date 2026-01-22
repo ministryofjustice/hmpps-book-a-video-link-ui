@@ -36,9 +36,7 @@ export default class PrintBookingsHandler implements PageHandler {
     const agencyCodes = agencyCode === 'ALL' ? agencies.map(a => a.code) : [agencyCode]
 
     const appointments = await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-      type,
-      agencyCodes,
-      date,
+      { agencyType: type, agencyCodes, date },
       user,
     )
 

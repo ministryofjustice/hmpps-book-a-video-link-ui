@@ -183,18 +183,16 @@ export default class BookAVideoLinkApiClient extends RestClient {
   }
 
   public getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-    agencyType: 'court' | 'probation',
-    agencyCodes: string[],
-    date: Date,
+    unpaginatedBookingsRequest: UnpaginatedBookingsRequest,
     user: Express.User,
   ): Promise<ScheduleItem[]> {
-    if (agencyType === 'court') {
+    if (unpaginatedBookingsRequest.agencyType === 'court') {
       return this.post<ScheduleItem[]>(
         {
           path: `/schedule/courts`,
           data: {
-            date: formatDate(date, 'yyyy-MM-dd'),
-            courtCodes: agencyCodes,
+            date: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
+            courtCodes: unpaginatedBookingsRequest.agencyCodes,
           },
         },
         user,
@@ -204,8 +202,8 @@ export default class BookAVideoLinkApiClient extends RestClient {
       {
         path: `/schedule/probation-teams`,
         data: {
-          date: formatDate(date, 'yyyy-MM-dd'),
-          probationTeamCodes: agencyCodes,
+          date: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
+          probationTeamCodes: unpaginatedBookingsRequest.agencyCodes,
         },
       },
       user,
@@ -334,6 +332,12 @@ export default class BookAVideoLinkApiClient extends RestClient {
   public deleteRoomSchedule(dpsLocationId: string, scheduleId: number, user: Express.User): Promise<Location> {
     return this.delete({ path: `/room-admin/${dpsLocationId}/schedule/${scheduleId}` }, user)
   }
+}
+
+export type UnpaginatedBookingsRequest = {
+  agencyType: 'court' | 'probation'
+  agencyCodes: string[]
+  date: Date
 }
 
 export type PaginatedBookingsRequest = {

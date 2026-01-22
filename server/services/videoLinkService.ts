@@ -1,7 +1,10 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import _ from 'lodash'
 import express from 'express'
-import BookAVideoLinkApiClient, { PaginatedBookingsRequest } from '../data/bookAVideoLinkApiClient'
+import BookAVideoLinkApiClient, {
+  PaginatedBookingsRequest,
+  UnpaginatedBookingsRequest,
+} from '../data/bookAVideoLinkApiClient'
 import { Location, PagedModelScheduleItem, ScheduleItem } from '../@types/bookAVideoLinkApi/types'
 import { dateAtTime } from '../utils/utils'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
@@ -70,15 +73,11 @@ export default class VideoLinkService {
   }
 
   public async getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-    agencyType: 'court' | 'probation',
-    agencyCodes: string[],
-    date: Date,
+    unpaginatedBookingsRequest: UnpaginatedBookingsRequest,
     user: Express.User,
   ): Promise<ScheduleItem[]> {
     return this.bookAVideoLinkApiClient.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-      agencyType,
-      agencyCodes,
-      date,
+      unpaginatedBookingsRequest,
       user,
     )
   }

@@ -35,14 +35,17 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
 
     const agencyCode = (req.query.agencyCode as string) || 'ALL'
     const agencyCodes = agencyCode === 'ALL' ? agencies.map(a => a.code) : [agencyCode]
-    const pagination: PaginatedBookingsRequest = {
+    const paginationRequest: PaginatedBookingsRequest = {
       agencyType: type,
       agencyCodes,
       date,
       pagination: { page: page - 1, size: 10, sort: ['appointmentDate', 'startTime'] },
     }
 
-    const appointments = await this.videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules(pagination, user)
+    const appointments = await this.videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules(
+      paginationRequest,
+      user,
+    )
     const queryParams = new URLSearchParams({ page: '{page}', agencyCode, date: formatDate(date, 'dd-MM-yyyy') })
 
     return res.render('pages/viewBooking/viewMultipleAgenciesBookings', {

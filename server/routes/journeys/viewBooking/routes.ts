@@ -8,7 +8,7 @@ import ViewBookingHandler from './handlers/viewBookingHandler'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
 import config from '../../../config'
 import ViewMultipleTeamsBookingsHandler from './handlers/viewMultipleAgenciesBookingsHandler'
-import PrintBookingsHandler from './handlers/printBookings'
+import PrintBookingsHandler from './handlers/printBookingsHandler'
 
 export default function Index({
   auditService,

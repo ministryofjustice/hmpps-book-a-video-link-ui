@@ -22,6 +22,11 @@ export default class PrintBookingsHandler implements PageHandler {
     const { user, validationErrors } = res.locals
     const date = parseDatePickerDate(req.query.date as string)
     const sort = (req.query.sort as string) || 'TIME_ASC'
+    const agencyCode = req.query.agencyCode as string
+
+    if (!date || !agencyCode) {
+      return res.redirect('/')
+    }
 
     if (date && !isValid(date) && !validationErrors) {
       return res.validationFailed(`An invalid date was entered: ${req.query.date}`, 'date')
@@ -32,13 +37,16 @@ export default class PrintBookingsHandler implements PageHandler {
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const agencyCode = (req.query.agencyCode as string) || 'ALL'
-    const agencyCodes = agencyCode === 'ALL' ? agencies.map(a => a.code) : [agencyCode]
+    const agencyCodes =
+      agencyCode === 'ALL' ? agencies.map(a => a.code) : agencies.filter(a => a.code === agencyCode).map(a => a.code)
 
-    const appointments = await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-      { agencyType: type, agencyCodes, date },
-      user,
-    )
+    const appointments =
+      agencyCodes.length > 0
+        ? await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
+            { agencyType: type, agencyCodes, date },
+            user,
+          )
+        : []
 
     return res.render('pages/viewBooking/printBookings', { sort, agencies, appointments })
   }

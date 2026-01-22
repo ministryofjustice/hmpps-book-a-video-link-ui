@@ -53,7 +53,7 @@
                 <div class="hmpps-action-bar">
                     <div class="hmpps-print-and-export govuk-!-margin-top-6">
                         {# <button class="hmpps-print-and-export--export">Export as spreadsheet (.csv file)</button> #}
-                        <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ (session.req.query.date | parseDate('dd/MM/yyyy') | formatDate('dd-MM-yyyy')) or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
+                        <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ session.req.query.date or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
                             Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
                         </a>
                     </div>

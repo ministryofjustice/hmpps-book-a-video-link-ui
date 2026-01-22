@@ -39,7 +39,6 @@ export default class PrintBookingsHandler implements PageHandler {
       type,
       agencyCodes,
       date,
-      'startTime',
       user,
     )
 

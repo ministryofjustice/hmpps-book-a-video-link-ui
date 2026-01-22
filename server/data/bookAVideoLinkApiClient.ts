@@ -152,33 +152,30 @@ export default class BookAVideoLinkApiClient extends RestClient {
   }
 
   public getPaginatedMultipleAgenciesVideoLinkSchedules(
-    agencyType: 'court' | 'probation',
-    agencyCodes: string[],
-    date: Date,
-    pageNumber: number,
-    sortBy: 'startTime',
+    paginateBookingsRequest: PaginatedBookingsRequest,
     user: Express.User,
   ): Promise<PagedModelScheduleItem> {
-    if (agencyType === 'court') {
+    if (paginateBookingsRequest.agencyType === 'court') {
       return this.post<PagedModelScheduleItem>(
         {
           path: `/schedule/courts/paginated`,
-          query: { page: pageNumber, size: 10 },
+          query: { ...paginateBookingsRequest.pagination },
           data: {
-            date: formatDate(date, 'yyyy-MM-dd'),
-            courtCodes: agencyCodes,
+            date: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
+            courtCodes: paginateBookingsRequest.agencyCodes,
           },
         },
         user,
       )
     }
+
     return this.post<PagedModelScheduleItem>(
       {
         path: `/schedule/probation-teams/paginated`,
-        query: { page: pageNumber, size: 10 },
+        query: { ...paginateBookingsRequest.pagination },
         data: {
-          date: formatDate(date, 'yyyy-MM-dd'),
-          probationTeamCodes: agencyCodes,
+          date: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
+          probationTeamCodes: paginateBookingsRequest.agencyCodes,
         },
       },
       user,
@@ -189,7 +186,6 @@ export default class BookAVideoLinkApiClient extends RestClient {
     agencyType: 'court' | 'probation',
     agencyCodes: string[],
     date: Date,
-    sortBy: 'startTime',
     user: Express.User,
   ): Promise<ScheduleItem[]> {
     if (agencyType === 'court') {
@@ -338,4 +334,17 @@ export default class BookAVideoLinkApiClient extends RestClient {
   public deleteRoomSchedule(dpsLocationId: string, scheduleId: number, user: Express.User): Promise<Location> {
     return this.delete({ path: `/room-admin/${dpsLocationId}/schedule/${scheduleId}` }, user)
   }
+}
+
+export type PaginatedBookingsRequest = {
+  agencyType: 'court' | 'probation'
+  agencyCodes: string[]
+  date: Date
+  pagination: Pagination
+}
+
+export type Pagination = {
+  page: number
+  size: number
+  sort?: string[]
 }

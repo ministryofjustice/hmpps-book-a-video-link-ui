@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { formatDate, isValid } from 'date-fns'
+import { formatDate, isValid, startOfToday } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
@@ -21,7 +21,7 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
   GET = async (req: Request, res: Response) => {
     const type = req.routeContext.type as BavlJourneyType
     const { user, validationErrors } = res.locals
-    const date = parseDatePickerDate(req.query.date as string)
+    const date = parseDatePickerDate(req.query.date as string) || startOfToday()
     const page = req.query.page ? Number(req.query.page) : 1
 
     if (date && !isValid(date) && !validationErrors) {

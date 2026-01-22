@@ -1,8 +1,11 @@
 import { addDays, set, startOfToday, startOfTomorrow } from 'date-fns'
 import _ from 'lodash'
 import express from 'express'
-import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { Location, ScheduleItem } from '../@types/bookAVideoLinkApi/types'
+import BookAVideoLinkApiClient, {
+  PaginatedBookingsRequest,
+  UnpaginatedBookingsRequest,
+} from '../data/bookAVideoLinkApiClient'
+import { Location, PagedModelScheduleItem, ScheduleItem } from '../@types/bookAVideoLinkApi/types'
 import { dateAtTime } from '../utils/utils'
 import PrisonerOffenderSearchApiClient from '../data/prisonerOffenderSearchApiClient'
 import { Prisoner } from '../@types/prisonerOffenderSearchApi/types'
@@ -60,6 +63,23 @@ export default class VideoLinkService {
       prisonerName: this.findPrisonerName(prisoners, a.prisonerNumber),
       prisonLocationDescription: this.findPrisonLocationDescription(prisonLocations, a.prisonLocKey),
     }))
+  }
+
+  public async getPaginatedMultipleAgenciesVideoLinkSchedules(
+    paginatedBookingsRequest: PaginatedBookingsRequest,
+    user: Express.User,
+  ): Promise<PagedModelScheduleItem> {
+    return this.bookAVideoLinkApiClient.getPaginatedMultipleAgenciesVideoLinkSchedules(paginatedBookingsRequest, user)
+  }
+
+  public async getUnpaginatedMultipleAgenciesVideoLinkSchedules(
+    unpaginatedBookingsRequest: UnpaginatedBookingsRequest,
+    user: Express.User,
+  ): Promise<ScheduleItem[]> {
+    return this.bookAVideoLinkApiClient.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
+      unpaginatedBookingsRequest,
+      user,
+    )
   }
 
   public async downloadBookingDataByHearingDate(

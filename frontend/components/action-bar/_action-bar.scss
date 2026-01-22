@@ -20,7 +20,7 @@
     margin: 0 0 0 auto;
     justify-content: space-between;
 
-    button {
+    button, a {
       @extend .govuk-link;
       margin: 0;
       background-size: 20px 18px;
@@ -49,6 +49,11 @@
       }
 
       &.hmpps-print-and-export--print {
+        background: url("/assets/images/icon-print.png") no-repeat 10px 50%;
+        padding-right: 0;
+      }
+
+      &.hmpps-print-and-export--link {
         background: url("/assets/images/icon-print.png") no-repeat 10px 50%;
         padding-right: 0;
       }

@@ -19,6 +19,7 @@ export default class ViewBookingHandler implements PageHandler {
   GET = async (req: Request, res: Response) => {
     const { bookingId } = req.params
     const { user } = res.locals
+    const { agencyCode } = req.query
 
     const booking = await this.videoLinkService.getVideoLinkBookingById(+bookingId, user)
 
@@ -43,7 +44,7 @@ export default class ViewBookingHandler implements PageHandler {
       rooms,
       isAmendable,
       isCancelled: booking.statusCode === 'CANCELLED',
-      agencyCode: booking.bookingType === 'COURT' ? booking.courtCode : booking.probationTeamCode,
+      agencyCode: agencyCode || (booking.bookingType === 'COURT' ? booking.courtCode : booking.probationTeamCode),
       bookingDate: this.getBookingDate(booking),
     })
   }

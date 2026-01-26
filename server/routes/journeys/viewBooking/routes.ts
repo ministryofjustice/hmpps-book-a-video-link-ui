@@ -9,6 +9,7 @@ import DownloadCsvHandler from './handlers/downloadCsvHandler'
 import config from '../../../config'
 import ViewMultipleTeamsBookingsHandler from './handlers/viewMultipleAgenciesBookingsHandler'
 import PrintBookingsHandler from './handlers/printBookingsHandler'
+import DownloadMultiAgenciesCsvHandler from './handlers/downloadMultiAgenciesCsvHandler'
 
 export default function Index({
   auditService,
@@ -28,6 +29,7 @@ export default function Index({
   if (config.featureToggles.viewMultipleAgenciesBookings) {
     route('/', new ViewMultipleTeamsBookingsHandler(courtsService, probationTeamsService, videoLinkService))
     route('/print-bookings', new PrintBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+    route('/download-csv', new DownloadMultiAgenciesCsvHandler(courtsService, probationTeamsService, videoLinkService))
   } else {
     route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
     route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))

@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.964.0",
+    "@aws-sdk/client-sqs": "^3.975.0",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-monitoring": "^1.0.0",
     "agentkeepalive": "^4.6.0",
@@ -110,14 +110,14 @@
     "csrf-sync": "^4.2.1",
     "date-fns": "^4.1.0",
     "express": "^5.2.1",
-    "express-session": "^1.18.2",
-    "govuk-frontend": "^5.13.0",
+    "express-session": "^1.19.0",
+    "govuk-frontend": "^5.14.0",
     "helmet": "^8.1.0",
     "http-errors": "^2.0.1",
     "json-2-csv": "^5.5.10",
     "jwt-decode": "^4.0.0",
-    "libphonenumber-js": "^1.12.33",
-    "lodash": "^4.17.21",
+    "libphonenumber-js": "^1.12.35",
+    "lodash": "^4.17.23",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
     "passport": "^0.7.0",
@@ -132,10 +132,10 @@
     "@ministryofjustice/eslint-config-hmpps": "1.0.2",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.58.0",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
-    "@tsconfig/node24": "^24.0.3",
+    "@tsconfig/node24": "^24.0.4",
     "@types/bunyan": "^1.8.11",
     "@types/bunyan-format": "^0.2.9",
     "@types/cheerio": "^0.22.35",
@@ -145,8 +145,8 @@
     "@types/http-errors": "^2.0.5",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/lodash": "^4.17.21",
-    "@types/node": "^22.19.3",
+    "@types/lodash": "^4.17.23",
+    "@types/node": "^22.19.7",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -157,7 +157,7 @@
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.11.1",
     "better-npm-audit": "^3.11.0",
-    "cheerio": "^1.1.2",
+    "cheerio": "^1.2.0",
     "concurrently": "^9.2.1",
     "dotenv": "^16.6.1",
     "grunt": "^1.6.1",
@@ -176,10 +176,10 @@
     "nock": "^13.5.6",
     "nodemon": "^3.1.11",
     "openapi-typescript": "^7.10.1",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "prettier-plugin-jinja-template": "^2.1.0",
-    "sass": "^1.97.2",
-    "sinon": "^19.0.5",
+    "sass": "^1.97.3",
+    "sinon": "^21.0.1",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
     "typescript": "^5.9.3",
@@ -189,6 +189,12 @@
     "js-yaml": "overrides dependency pulled in by grunt"
   },
   "overrides": {
-    "js-yaml": "^4.1.0"
+    "js-yaml": "^4.1.0",
+    "@ministryofjustice/hmpps-npm-script-allowlist@0.0.3": {
+      "tar": "^7.5.6"
+    },
+    "mocha@10.7.3": {
+      "diff": "^5.2.2"
+    }
   }
 }

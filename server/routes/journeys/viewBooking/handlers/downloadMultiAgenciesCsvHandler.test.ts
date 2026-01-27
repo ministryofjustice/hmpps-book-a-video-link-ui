@@ -59,7 +59,7 @@ describe('GET', () => {
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([getCourtBooking()])
 
     return request(app)
-      .get('/court/view-booking/download-csv')
+      .get('/court/view-booking/download-csv?agencyCode=C1')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
@@ -143,7 +143,7 @@ describe('GET', () => {
     ])
 
     return request(app)
-      .get('/court/view-booking/download-csv')
+      .get('/court/view-booking/download-csv?agencyCode=C1')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
@@ -172,7 +172,7 @@ describe('GET', () => {
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([getProbationTeamBooking()])
 
     return request(app)
-      .get('/probation/view-booking/download-csv')
+      .get('/probation/view-booking/download-csv?agencyCode=P1')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',

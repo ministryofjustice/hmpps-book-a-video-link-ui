@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfToday } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
+import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
@@ -72,8 +72,12 @@ describe('GET', () => {
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
+        const exportBookingsLink = getByDataQa($, 'export-bookings')
+        const printBookingsLink = getByDataQa($, 'print-bookings')
 
         expect(heading).toEqual('Video link bookings')
+        expect(exportBookingsLink.length).toBe(1)
+        expect(printBookingsLink.length).toBe(1)
 
         if (journey === 'probation') {
           const expected: PaginatedBookingsRequest = {
@@ -100,6 +104,66 @@ describe('GET', () => {
         }
       })
   })
+
+  it.each([
+    ['Probation', 'probation'],
+    ['Court', 'court'],
+  ])('%s journey - should not show download and print links when no bookings', (_: string, journey: string) => {
+    videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedEmptySchedule)
+
+    return request(app)
+      .get(`/${journey}/view-booking`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        const exportBookingsLink = getByDataQa($, 'export-bookings')
+        const printBookingsLink = getByDataQa($, 'print-bookings')
+
+        expect(heading).toEqual('Video link bookings')
+        expect(exportBookingsLink.length).toBe(0)
+        expect(printBookingsLink.length).toBe(0)
+
+        if (journey === 'probation') {
+          const expected: PaginatedBookingsRequest = {
+            agencyType: 'probation',
+            agencyCodes: ['P1', 'P2'],
+            date: startOfToday(),
+            pagination: { page: 0, size: 10, sort: ['appointmentDate', 'startTime'] },
+          }
+          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
+        }
+
+        if (journey === 'court') {
+          const expected: PaginatedBookingsRequest = {
+            agencyType: 'court',
+            agencyCodes: ['C1', 'C2'],
+            date: startOfToday(),
+            pagination: { page: 0, size: 10, sort: ['appointmentDate', 'startTime'] },
+          }
+          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
+          expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
+        }
+      })
+  })
+
+  const paginatedEmptySchedule = {
+    content: [] as ScheduleItem[],
+    page: {
+      size: 0,
+      number: 0,
+      totalElements: 0,
+      totalPages: 0,
+    },
+  }
 
   const videoLinkCourtSchedule = [
     {

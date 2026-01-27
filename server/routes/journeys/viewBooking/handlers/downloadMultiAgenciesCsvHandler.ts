@@ -32,7 +32,7 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const agencyCode = (req.query.agencyCode as string) || agencies[0].code
+    const agencyCode = (req.query.agencyCode as string) || (agencies.length > 1 ? 'ALL' : agencies[0])
     const agencyCodes =
       agencyCode === 'ALL' ? agencies.map(a => a.code) : agencies.filter(a => a.code === agencyCode).map(a => a.code)
     const agency = agencies.find(a => a.code === agencyCode)

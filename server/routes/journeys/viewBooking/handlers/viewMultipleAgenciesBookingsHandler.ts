@@ -23,6 +23,7 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
     const { user, validationErrors } = res.locals
     const date = parseDatePickerDate(req.query.date as string) || startOfToday()
     const page = req.query.page ? Number(req.query.page) : 1
+    const sortBy = (req.query.sortBy as string) || 'AGENCY_DATE_TIME'
 
     if (date && !isValid(date) && !validationErrors) {
       return res.validationFailed(`An invalid date was entered: ${req.query.date}`, 'date')
@@ -35,18 +36,24 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
 
     const agencyCode = (req.query.agencyCode as string) || 'ALL'
     const agencyCodes = agencyCode === 'ALL' ? agencies.map(a => a.code) : [agencyCode]
+
     const paginationRequest: PaginatedBookingsRequest = {
       agencyType: type,
       agencyCodes,
       date,
-      pagination: { page: page - 1, size: 10, sort: ['appointmentDate', 'startTime'] },
+      pagination: { page: page - 1, size: 10, sort: this.getSortFields(type, sortBy) },
     }
 
     const appointments = await this.videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules(
       paginationRequest,
       user,
     )
-    const queryParams = new URLSearchParams({ page: '{page}', agencyCode, date: formatDate(date, 'dd-MM-yyyy') })
+    const queryParams = new URLSearchParams({
+      page: '{page}',
+      agencyCode,
+      date: formatDate(date, 'dd-MM-yyyy'),
+      sortBy,
+    })
 
     return res.render('pages/viewBooking/viewMultipleAgenciesBookings', {
       agencies,
@@ -57,5 +64,14 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
         hrefTemplate: `${req.originalUrl.split('?')[0]!}?${queryParams.toString()}`,
       },
     })
+  }
+
+  private getSortFields(type: BavlJourneyType, sortBy: string): string[] {
+    if (sortBy === 'AGENCY_DATE_TIME') {
+      const agency = type === BavlJourneyType.COURT ? 'courtDescription' : 'probationTeamDescription'
+      return [agency, 'appointmentDate', 'startTime']
+    }
+
+    return ['appointmentDate', 'startTime']
   }
 }

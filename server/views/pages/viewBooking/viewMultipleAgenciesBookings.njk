@@ -19,47 +19,55 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            <form method='GET' class='horizontal-form'>
+            <form method='GET' class="search-form">
+                <div class='horizontal-form'>
+                    {% set items = [{ text: "All", value: "ALL" }] %}
+                    {% for agency in agencies %}
+                        {% set items = (items.push({
+                            value: agency.code,
+                            text: agency.description,
+                            selected: session.req.query.agencyCode == agency.code
+                        }), items) %}
+                    {% endfor %}
+                    {{ govukSelect({
+                        name: "agencyCode",
+                        id: "agencyCode",
+                        label: { text: "Court" if type == 'court' else "Probation team" },
+                        items: items
+                    }) }}
+                    {{ mojDatePicker({
+                        id: 'date',
+                        name: 'date',
+                        label: { text: "From" },
+                        errorMessage: {} if validationErrors | findError('date'),
+                        value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
+                    }) }}
+                    {% set sortByItems = [
+                        { text: "Court, date, time ascending" if type == 'court' else "Team, date, time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sortBy == 'AGENCY_DATE_TIME' },
+                        { text: "Date, time ascending", value: "DATE_TIME", selected: session.req.query.sortBy == 'DATE_TIME' }
+                    ] %}
+                    {{ govukSelect({
+                        name: "sortBy",
+                        id: "sortBy",
+                        label: { text: "Sort by" },
+                        items: sortByItems
+                    }) }}
 
-                <div>
-                  {{ mojDatePicker({
-                      id: 'date',
-                      name: 'date',
-                      label: { text: "Date" },
-                      errorMessage: {} if validationErrors | findError('date'),
-                      value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
-                  }) }}
+                    {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print" }) }}
                 </div>
 
-                <div>
-                {% set items = [{ text: "All", value: "ALL" }] %}
-                {% for agency in agencies %}
-                    {% set items = (items.push({
-                        value: agency.code,
-                        text: agency.description,
-                        selected: session.req.query.agencyCode == agency.code
-                    }), items) %}
-                {% endfor %}
-                {{ govukSelect({
-                    name: "agencyCode",
-                    id: "agencyCode",
-                    label: { text: "Court" if type == 'court' else "Probation team" },
-                    items: items
-                }) }}
+                <div class='horizontal-form'>
+                    {% if appointments.length %}
+                        <div class="hmpps-action-bar">
+                            <div class="hmpps-print-and-export govuk-!-margin-top-6">
+                                <button class="hmpps-print-and-export--export" data-qa="export-bookings">Export as spreadsheet (.csv file)</button>
+                                <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ session.req.query.date or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
+                                    Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
+                                </a>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
-
-                {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print" }) }}
-
-                {% if appointments.length %}
-                <div class="hmpps-action-bar">
-                    <div class="hmpps-print-and-export govuk-!-margin-top-6">
-                        <button class="hmpps-print-and-export--export" data-qa="export-bookings">Export as spreadsheet (.csv file)</button>
-                        <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ session.req.query.date or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
-                            Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
-                        </a>
-                    </div>
-                </div>
-                {% endif %}
             </form>
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-display-none-print" aria-hidden="true">

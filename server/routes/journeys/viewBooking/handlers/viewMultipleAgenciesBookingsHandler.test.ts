@@ -54,56 +54,118 @@ describe('GET', () => {
   it.each([
     ['Probation', 'probation'],
     ['Court', 'court'],
-  ])('%s journey - should render the default view page', (_: string, journey: string) => {
-    if (journey === 'court') {
-      videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedCourtSchedule)
-    } else {
-      videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedProbationSchedule)
-    }
+  ])(
+    '%s journey - should render the default view page ordering defaults to agency, data and time',
+    (_: string, journey: string) => {
+      if (journey === 'court') {
+        videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedCourtSchedule)
+      } else {
+        videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedProbationSchedule)
+      }
 
-    return request(app)
-      .get(`/${journey}/view-booking`)
-      .expect('Content-Type', /html/)
-      .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
-          who: user.username,
-          correlationId: expect.any(String),
+      return request(app)
+        .get(`/${journey}/view-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          const exportBookingsLink = getByDataQa($, 'export-bookings')
+          const printBookingsLink = getByDataQa($, 'print-bookings')
+
+          expect(heading).toEqual('Video link bookings')
+          expect(exportBookingsLink.length).toBe(1)
+          expect(printBookingsLink.length).toBe(1)
+
+          if (journey === 'probation') {
+            const expected: PaginatedBookingsRequest = {
+              agencyType: 'probation',
+              agencyCodes: ['P1', 'P2'],
+              date: startOfToday(),
+              pagination: { page: 0, size: 10, sort: ['probationTeamDescription', 'appointmentDate', 'startTime'] },
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
+          }
+
+          if (journey === 'court') {
+            const expected: PaginatedBookingsRequest = {
+              agencyType: 'court',
+              agencyCodes: ['C1', 'C2'],
+              date: startOfToday(),
+              pagination: { page: 0, size: 10, sort: ['courtDescription', 'appointmentDate', 'startTime'] },
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
+          }
         })
+    },
+  )
 
-        const $ = cheerio.load(res.text)
-        const heading = getPageHeader($)
-        const exportBookingsLink = getByDataQa($, 'export-bookings')
-        const printBookingsLink = getByDataQa($, 'print-bookings')
+  it.each([
+    ['Probation', 'probation', 'AGENCY_DATE_TIME', ['probationTeamDescription', 'appointmentDate', 'startTime']],
+    ['Probation', 'probation', 'DATE_TIME', ['appointmentDate', 'startTime']],
+    ['Court', 'court', 'AGENCY_DATE_TIME', ['courtDescription', 'appointmentDate', 'startTime']],
+    ['Court', 'court', 'DATE_TIME', ['appointmentDate', 'startTime']],
+  ])(
+    '%s journey - should render the default sorted view page',
+    (_: string, journey: string, sortBy: string, sortFields: string[]) => {
+      if (journey === 'court') {
+        videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedCourtSchedule)
+      } else {
+        videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedProbationSchedule)
+      }
 
-        expect(heading).toEqual('Video link bookings')
-        expect(exportBookingsLink.length).toBe(1)
-        expect(printBookingsLink.length).toBe(1)
+      return request(app)
+        .get(`/${journey}/view-booking?sortBy=${sortBy}`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
 
-        if (journey === 'probation') {
-          const expected: PaginatedBookingsRequest = {
-            agencyType: 'probation',
-            agencyCodes: ['P1', 'P2'],
-            date: startOfToday(),
-            pagination: { page: 0, size: 10, sort: ['appointmentDate', 'startTime'] },
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          const exportBookingsLink = getByDataQa($, 'export-bookings')
+          const printBookingsLink = getByDataQa($, 'print-bookings')
+
+          expect(heading).toEqual('Video link bookings')
+          expect(exportBookingsLink.length).toBe(1)
+          expect(printBookingsLink.length).toBe(1)
+
+          if (journey === 'probation') {
+            const expected: PaginatedBookingsRequest = {
+              agencyType: 'probation',
+              agencyCodes: ['P1', 'P2'],
+              date: startOfToday(),
+              pagination: { page: 0, size: 10, sort: sortFields },
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
           }
-          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
-          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
-          expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
-        }
 
-        if (journey === 'court') {
-          const expected: PaginatedBookingsRequest = {
-            agencyType: 'court',
-            agencyCodes: ['C1', 'C2'],
-            date: startOfToday(),
-            pagination: { page: 0, size: 10, sort: ['appointmentDate', 'startTime'] },
+          if (journey === 'court') {
+            const expected: PaginatedBookingsRequest = {
+              agencyType: 'court',
+              agencyCodes: ['C1', 'C2'],
+              date: startOfToday(),
+              pagination: { page: 0, size: 10, sort: sortFields },
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
           }
-          expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
-          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
-          expect(videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(expected, user)
-        }
-      })
-  })
+        })
+    },
+  )
 
   it.each([
     ['Probation', 'probation'],
@@ -134,7 +196,7 @@ describe('GET', () => {
             agencyType: 'probation',
             agencyCodes: ['P1', 'P2'],
             date: startOfToday(),
-            pagination: { page: 0, size: 10, sort: ['appointmentDate', 'startTime'] },
+            pagination: { page: 0, size: 10, sort: ['probationTeamDescription', 'appointmentDate', 'startTime'] },
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
@@ -146,7 +208,7 @@ describe('GET', () => {
             agencyType: 'court',
             agencyCodes: ['C1', 'C2'],
             date: startOfToday(),
-            pagination: { page: 0, size: 10, sort: ['appointmentDate', 'startTime'] },
+            pagination: { page: 0, size: 10, sort: ['courtDescription', 'appointmentDate', 'startTime'] },
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)

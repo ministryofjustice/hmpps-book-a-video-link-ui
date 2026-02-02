@@ -38,13 +38,13 @@
                     {{ mojDatePicker({
                         id: 'date',
                         name: 'date',
-                        label: { text: "From" },
+                        label: { text: "Date" },
                         errorMessage: {} if validationErrors | findError('date'),
                         value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
                     }) }}
                     {% set sortByItems = [
-                        { text: "Court, date, time ascending" if type == 'court' else "Team, date, time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sortBy == 'AGENCY_DATE_TIME' },
-                        { text: "Date, time ascending", value: "DATE_TIME", selected: session.req.query.sortBy == 'DATE_TIME' }
+                        { text: "Court and time ascending" if type == 'court' else "Team and time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sortBy == 'AGENCY_DATE_TIME' },
+                        { text: "Time ascending", value: "DATE_TIME", selected: session.req.query.sortBy == 'DATE_TIME' }
                     ] %}
                     {{ govukSelect({
                         name: "sortBy",

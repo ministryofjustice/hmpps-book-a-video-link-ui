@@ -106,62 +106,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/queue-admin/retry-dlq/{dlqName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    /**
-     * @description Requires one of the following roles:
-     *     * BOOK_A_VIDEO_LINK_ADMIN
-     */
-    put: operations['retryDlq']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/retry-all-dlqs': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    put: operations['retryAllDlqs']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/purge-queue/{queueName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    get?: never
-    /**
-     * @description Requires one of the following roles:
-     *     * BOOK_A_VIDEO_LINK_ADMIN
-     */
-    put: operations['purgeQueue']
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
   '/prison-admin/{prisonCode}': {
     parameters: {
       query?: never
@@ -588,26 +532,6 @@ export interface paths {
      *     * BVLS_ACCESS__RW
      */
     get: operations['getReferenceDataByGroup']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
-  '/queue-admin/get-dlq-messages/{dlqName}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * @description Requires one of the following roles:
-     *     * BOOK_A_VIDEO_LINK_ADMIN
-     */
-    get: operations['getDlqMessages']
     put?: never
     post?: never
     delete?: never
@@ -1274,14 +1198,6 @@ export interface components {
        */
       notes?: string
     }
-    RetryDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
-    PurgeQueueResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-    }
     /** @description The request with the prison amendment details */
     AmendPrisonRequest: {
       /**
@@ -1857,7 +1773,12 @@ export interface components {
        * Format: date
        * @description A date in ISO format (YYYY-MM-DD). Defaults to today if not supplied.
        */
-      date: string
+      fromDate: string
+      /**
+       * Format: date
+       * @description A date in ISO format (YYYY-MM-DD) on or after the from date and a maximum of thirty days after the from date.
+       */
+      toDate?: string
       /**
        * @description A list of probation team codes to find bookings for
        * @example [CODE1, CODE2, CODE3, CODE4]
@@ -2141,7 +2062,12 @@ export interface components {
        * Format: date
        * @description A date in ISO format (YYYY-MM-DD). Defaults to today if not supplied.
        */
-      date: string
+      fromDate: string
+      /**
+       * Format: date
+       * @description A date in ISO format (YYYY-MM-DD) on or after the from date and a maximum of thirty days after the from date.
+       */
+      toDate?: string
       /**
        * @description A list of court codes to find bookings for
        * @example [CODE1, CODE2, CODE3, CODE4]
@@ -2501,19 +2427,6 @@ export interface components {
        * @example 1
        */
       displaySequence?: number
-    }
-    DlqMessage: {
-      body: {
-        [key: string]: unknown
-      }
-      messageId: string
-    }
-    GetDlqResult: {
-      /** Format: int32 */
-      messagesFoundCount: number
-      /** Format: int32 */
-      messagesReturnedCount: number
-      messages: components['schemas']['DlqMessage'][]
     }
     /** @description Describes the details of a probation team */
     ProbationTeam: {
@@ -3104,70 +3017,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  retryDlq: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        dlqName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['RetryDlqResult']
-        }
-      }
-    }
-  }
-  retryAllDlqs: {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['RetryDlqResult'][]
-        }
-      }
-    }
-  }
-  purgeQueue: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        queueName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['PurgeQueueResult']
         }
       }
     }
@@ -4082,30 +3931,6 @@ export interface operations {
         }
         content: {
           'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getDlqMessages: {
-    parameters: {
-      query?: {
-        maxMessages?: number
-      }
-      header?: never
-      path: {
-        dlqName: string
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description OK */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          '*/*': components['schemas']['GetDlqResult']
         }
       }
     }

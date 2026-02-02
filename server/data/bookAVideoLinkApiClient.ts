@@ -161,7 +161,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
           path: `/schedule/courts/paginated`,
           query: { ...paginateBookingsRequest.pagination },
           data: {
-            date: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
+            fromDate: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
             courtCodes: paginateBookingsRequest.agencyCodes,
           },
         },
@@ -174,7 +174,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
         path: `/schedule/probation-teams/paginated`,
         query: { ...paginateBookingsRequest.pagination },
         data: {
-          date: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
+          fromDate: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
           probationTeamCodes: paginateBookingsRequest.agencyCodes,
         },
       },
@@ -191,7 +191,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
         {
           path: `/schedule/courts`,
           data: {
-            date: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
+            fromDate: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
             courtCodes: unpaginatedBookingsRequest.agencyCodes,
           },
         },
@@ -202,7 +202,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
       {
         path: `/schedule/probation-teams`,
         data: {
-          date: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
+          fromDate: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
           probationTeamCodes: unpaginatedBookingsRequest.agencyCodes,
         },
       },

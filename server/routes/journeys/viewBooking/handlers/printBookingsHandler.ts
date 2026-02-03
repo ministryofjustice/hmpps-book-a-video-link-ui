@@ -21,7 +21,7 @@ export default class PrintBookingsHandler implements PageHandler {
     const type = req.routeContext.type as BavlJourneyType
     const { user, validationErrors } = res.locals
     const date = parseDatePickerDate(req.query.date as string)
-    const sort = (req.query.sort as string) || 'TIME_ASC'
+    const sort = (req.query.sort as string) || 'AGENCY_DATE_TIME'
     const agencyCode = req.query.agencyCode as string
 
     if (!date || !agencyCode) {
@@ -43,11 +43,20 @@ export default class PrintBookingsHandler implements PageHandler {
     const appointments =
       agencyCodes.length > 0
         ? await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-            { agencyType: type, agencyCodes, date },
+            { agencyType: type, agencyCodes, date, sort: this.getSortFields(type, sort) },
             user,
           )
         : []
 
     return res.render('pages/viewBooking/printBookings', { sort, agencies, appointments })
+  }
+
+  private getSortFields(type: BavlJourneyType, sortBy: string): string[] {
+    if (sortBy === 'AGENCY_DATE_TIME') {
+      const agency = type === BavlJourneyType.COURT ? 'courtDescription' : 'probationTeamDescription'
+      return [agency, 'appointmentDate', 'startTime']
+    }
+
+    return ['appointmentDate', 'startTime']
   }
 }

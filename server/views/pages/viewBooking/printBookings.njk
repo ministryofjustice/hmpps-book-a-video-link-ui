@@ -63,7 +63,7 @@
                     {% set printRows = (printRows.push([
                             { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
                             { html: '<div>'+ item.prisonerName | convertToTitleCase +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonerNumber + '</div>' },
-                            { html: '<div>'+ item.prisonLocationDescription +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonName + '</div>'  },
+                            { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonName + '</div>'  },
                             { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
                                     ('<span class="govuk-body ">Pre-court hearing</span>' if item.appointmentType == 'VLB_COURT_PRE') +

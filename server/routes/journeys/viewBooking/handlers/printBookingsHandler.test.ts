@@ -54,7 +54,7 @@ describe('GET', () => {
   it.each([
     ['Probation', 'probation'],
     ['Court', 'court'],
-  ])('%s journey - should render the default view page', (_: string, journey: string) => {
+  ])('%s journey - should render the default view page sorted by date and time', (_: string, journey: string) => {
     if (journey === 'court') {
       videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkCourtSchedule)
     } else {
@@ -62,7 +62,9 @@ describe('GET', () => {
     }
 
     return request(app)
-      .get(`/${journey}/view-booking/print-bookings?agencyCode=ALL&date=${formatDate(startOfToday(), 'dd-MM-yyyy')}`)
+      .get(
+        `/${journey}/view-booking/print-bookings?agencyCode=ALL&date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&sort=DATE_TIME`,
+      )
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRINT_BOOKINGS_PAGE, {
@@ -80,6 +82,7 @@ describe('GET', () => {
             agencyType: 'probation',
             agencyCodes: ['P1', 'P2'],
             date: startOfToday(),
+            sort: ['appointmentDate', 'startTime'],
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
@@ -91,6 +94,7 @@ describe('GET', () => {
             agencyType: 'court',
             agencyCodes: ['C1', 'C2'],
             date: startOfToday(),
+            sort: ['appointmentDate', 'startTime'],
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -98,6 +102,67 @@ describe('GET', () => {
         }
       })
   })
+
+  it.each([
+    ['Probation', 'probation'],
+    ['Court', 'court'],
+  ])(
+    '%s journey - should render the default view page sorted by court/team date and time',
+    (_: string, journey: string) => {
+      if (journey === 'court') {
+        videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkCourtSchedule)
+      } else {
+        videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkProbationSchedule)
+      }
+
+      return request(app)
+        .get(
+          `/${journey}/view-booking/print-bookings?agencyCode=ALL&date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&sort=AGENCY_DATE_TIME`,
+        )
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRINT_BOOKINGS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Print bookings')
+
+          if (journey === 'probation') {
+            const expected: UnpaginatedBookingsRequest = {
+              agencyType: 'probation',
+              agencyCodes: ['P1', 'P2'],
+              date: startOfToday(),
+              sort: ['probationTeamDescription', 'appointmentDate', 'startTime'],
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(
+              expected,
+              user,
+            )
+          }
+
+          if (journey === 'court') {
+            const expected: UnpaginatedBookingsRequest = {
+              agencyType: 'court',
+              agencyCodes: ['C1', 'C2'],
+              date: startOfToday(),
+              sort: ['courtDescription', 'appointmentDate', 'startTime'],
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(
+              expected,
+              user,
+            )
+          }
+        })
+    },
+  )
 
   const videoLinkCourtSchedule = [
     {

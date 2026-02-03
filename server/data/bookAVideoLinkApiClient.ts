@@ -190,6 +190,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
       return this.post<ScheduleItem[]>(
         {
           path: `/schedule/courts`,
+          query: { sort: unpaginatedBookingsRequest.sort },
           data: {
             fromDate: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
             courtCodes: unpaginatedBookingsRequest.agencyCodes,
@@ -201,6 +202,7 @@ export default class BookAVideoLinkApiClient extends RestClient {
     return this.post<ScheduleItem[]>(
       {
         path: `/schedule/probation-teams`,
+        query: { sort: unpaginatedBookingsRequest.sort },
         data: {
           fromDate: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
           probationTeamCodes: unpaginatedBookingsRequest.agencyCodes,
@@ -338,6 +340,7 @@ export type UnpaginatedBookingsRequest = {
   agencyType: 'court' | 'probation'
   agencyCodes: string[]
   date: Date
+  sort?: string[]
 }
 
 export type PaginatedBookingsRequest = {

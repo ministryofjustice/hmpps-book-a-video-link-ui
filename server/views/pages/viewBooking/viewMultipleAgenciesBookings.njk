@@ -43,12 +43,12 @@
                         value: session.req.query.date or now() | formatDate('dd/MM/yyyy')
                     }) }}
                     {% set sortByItems = [
-                        { text: "Court and time ascending" if type == 'court' else "Team and time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sortBy == 'AGENCY_DATE_TIME' },
-                        { text: "Time ascending", value: "DATE_TIME", selected: session.req.query.sortBy == 'DATE_TIME' }
+                        { text: "Court and time ascending" if type == 'court' else "Team and time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sort == 'AGENCY_DATE_TIME' },
+                        { text: "Time ascending", value: "DATE_TIME", selected: session.req.query.sort == 'DATE_TIME' }
                     ] %}
                     {{ govukSelect({
-                        name: "sortBy",
-                        id: "sortBy",
+                        name: "sort",
+                        id: "sort",
                         label: { text: "Sort by" },
                         items: sortByItems
                     }) }}
@@ -61,7 +61,7 @@
                         <div class="hmpps-action-bar">
                             <div class="hmpps-print-and-export govuk-!-margin-top-6">
                                 <button class="hmpps-print-and-export--export" data-qa="export-bookings">Export as spreadsheet (.csv file)</button>
-                                <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ session.req.query.date or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
+                                <a class="hmpps-print-and-export--link" href="view-booking/print-bookings?date={{ session.req.query.date or now() | formatDate('dd-MM-yyyy') }}&agencyCode={{ session.req.query.agencyCode or 'ALL' }}&sort={{ session.req.query.sort or 'AGENCY_DATE_TIME' }}" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print bookings">
                                     Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
                                 </a>
                             </div>

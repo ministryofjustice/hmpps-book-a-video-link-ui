@@ -23,7 +23,7 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
     const { user, validationErrors } = res.locals
     const date = parseDatePickerDate(req.query.date as string) || startOfToday()
     const page = req.query.page ? Number(req.query.page) : 1
-    const sortBy = (req.query.sortBy as string) || 'AGENCY_DATE_TIME'
+    const sort = (req.query.sort as string) || 'AGENCY_DATE_TIME'
 
     if (date && !isValid(date) && !validationErrors) {
       return res.validationFailed(`An invalid date was entered: ${req.query.date}`, 'date')
@@ -41,7 +41,7 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
       agencyType: type,
       agencyCodes,
       date,
-      pagination: { page: page - 1, size: 10, sort: this.getSortFields(type, sortBy) },
+      pagination: { page: page - 1, size: 10, sort: this.getSortFields(type, sort) },
     }
 
     const appointments = await this.videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules(
@@ -52,7 +52,7 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
       page: '{page}',
       agencyCode,
       date: formatDate(date, 'dd-MM-yyyy'),
-      sortBy,
+      sort,
     })
 
     return res.render('pages/viewBooking/viewMultipleAgenciesBookings', {

@@ -124,7 +124,12 @@
                     <a href='/probation/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
                 {% else %}
                     {{ govukButton({ text: "Return to booking", href: '/probation/view-booking/' + booking.videoLinkBookingId }) }}
-                    <a href='/probation/view-booking?date={{ originalBookingDate }}&agencyCode={{ booking.probationTeamCode }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
+                    {% if viewMultipleAgenciesBookings %}
+                        {% set vmab = session.journey.viewMultipleAgencyBookingsJourney %}
+                        <a href='/probation/view-booking?date={{ vmab.fromDate }}&agencyCode={{ vmab.agencyCode }}&page={{ vmab.page }}&sort={{ vmab.sort }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
+                    {% else %}
+                        <a href='/probation/view-booking?date={{ originalBookingDate }}&agencyCode={{ booking.probationTeamCode }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
+                    {% endif %}
                 {% endif %}
             </div>
 

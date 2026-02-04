@@ -327,7 +327,12 @@
                     {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/cancel/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary" }) }}
                 </div>
             {% endif %}
-            <a href='/{{ booking.bookingType | lower }}/view-booking?date={{ bookingDate | formatDate("dd-MM-yyyy") }}&agencyCode={{ agencyCode }}' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-all-bookings-link">Return to all video link bookings</a>
+            {% if viewMultipleAgenciesBookings %}
+                {% set vmab = session.journey.viewMultipleAgencyBookingsJourney %}
+                <a href='/{{ booking.bookingType | lower }}/view-booking?date={{ vmab.fromDate }}&agencyCode={{ vmab.agencyCode }}&page={{ vmab.page }}&sort={{ vmab.sort }}' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-all-bookings-link">Return to all video link bookings</a>
+            {% else %}
+              <a href='/{{ booking.bookingType | lower }}/view-booking?date={{ bookingDate | formatDate("dd-MM-yyyy") }}&agencyCode={{ agencyCode }}' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-all-bookings-link">Return to all video link bookings</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

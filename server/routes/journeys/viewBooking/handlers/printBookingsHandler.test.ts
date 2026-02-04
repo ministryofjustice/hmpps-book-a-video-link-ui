@@ -34,7 +34,6 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   config.featureToggles.viewMultipleAgenciesBookings = true
-  appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
     { code: 'C1', description: 'Court 1' },
@@ -54,7 +53,16 @@ describe('GET', () => {
   it.each([
     ['Probation', 'probation'],
     ['Court', 'court'],
-  ])('%s journey - should render the default view page sorted by date and time', (_: string, journey: string) => {
+  ])('%s journey - should render the view page sorted by date and time', (_: string, journey: string) => {
+    appSetup({
+      viewMultipleAgencyBookingsJourney: {
+        agencyCode: 'ALL',
+        fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+        page: 0,
+        sort: 'DATE_TIME',
+      },
+    })
+
     if (journey === 'court') {
       videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkCourtSchedule)
     } else {
@@ -62,9 +70,7 @@ describe('GET', () => {
     }
 
     return request(app)
-      .get(
-        `/${journey}/view-booking/print-bookings?agencyCode=ALL&date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&sort=DATE_TIME`,
-      )
+      .get(`/${journey}/view-booking/print-bookings`)
       .expect('Content-Type', /html/)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRINT_BOOKINGS_PAGE, {
@@ -109,6 +115,15 @@ describe('GET', () => {
   ])(
     '%s journey - should render the default view page sorted by court/team date and time',
     (_: string, journey: string) => {
+      appSetup({
+        viewMultipleAgencyBookingsJourney: {
+          agencyCode: 'ALL',
+          fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+          page: 0,
+          sort: 'AGENCY_DATE_TIME',
+        },
+      })
+
       if (journey === 'court') {
         videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkCourtSchedule)
       } else {
@@ -116,9 +131,7 @@ describe('GET', () => {
       }
 
       return request(app)
-        .get(
-          `/${journey}/view-booking/print-bookings?agencyCode=ALL&date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&sort=AGENCY_DATE_TIME`,
-        )
+        .get(`/${journey}/view-booking/print-bookings`)
         .expect('Content-Type', /html/)
         .expect(res => {
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRINT_BOOKINGS_PAGE, {
@@ -163,6 +176,15 @@ describe('GET', () => {
         })
     },
   )
+
+  it.each([
+    ['Probation', 'probation'],
+    ['Court', 'court'],
+  ])('%s journey - should redirect to home page when no journey session present', (_: string, journey: string) => {
+    appSetup()
+
+    return request(app).get(`/${journey}/view-booking/print-bookings`).expect(302).expect('location', `/`)
+  })
 
   const videoLinkCourtSchedule = [
     {

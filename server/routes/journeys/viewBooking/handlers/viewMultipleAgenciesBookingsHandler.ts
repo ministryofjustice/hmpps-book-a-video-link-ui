@@ -55,6 +55,14 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
       sort,
     })
 
+    req.session.journey ??= {}
+    req.session.journey.viewMultipleAgencyBookingsJourney = {
+      agencyCode,
+      fromDate: formatDate(date, 'dd-MM-yyyy'),
+      page: appointments.page.number + 1,
+      sort,
+    }
+
     return res.render('pages/viewBooking/viewMultipleAgenciesBookings', {
       agencies,
       appointments: appointments.content,

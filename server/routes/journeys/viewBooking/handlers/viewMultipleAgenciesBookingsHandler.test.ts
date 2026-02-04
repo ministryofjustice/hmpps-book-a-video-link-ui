@@ -1,7 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
-import { formatDate, startOfToday } from 'date-fns'
+import { startOfToday } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
 import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
@@ -55,7 +55,7 @@ describe('GET', () => {
     ['Probation', 'probation'],
     ['Court', 'court'],
   ])(
-    '%s journey - should render the default view page ordering defaults to agency, agency, data and time',
+    '%s journey - should render the default view page ordering defaults to agency, data and time',
     (_: string, journey: string) => {
       if (journey === 'court') {
         videoLinkService.getPaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(paginatedCourtSchedule)
@@ -79,9 +79,7 @@ describe('GET', () => {
 
           expect(heading).toEqual('Video link bookings')
           expect(exportBookingsLink.length).toBe(1)
-          expect(printBookingsLink.attr('href')).toEqual(
-            `view-booking/print-bookings?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=ALL&sort=AGENCY_DATE_TIME`,
-          )
+          expect(printBookingsLink.length).toBe(1)
 
           if (journey === 'probation') {
             const expected: PaginatedBookingsRequest = {
@@ -140,16 +138,7 @@ describe('GET', () => {
 
           expect(heading).toEqual('Video link bookings')
           expect(exportBookingsLink.length).toBe(1)
-
-          if (sortBy === 'AGENCY_DATE_TIME') {
-            expect(printBookingsLink.attr('href')).toEqual(
-              `view-booking/print-bookings?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=ALL&sort=AGENCY_DATE_TIME`,
-            )
-          } else {
-            expect(printBookingsLink.attr('href')).toEqual(
-              `view-booking/print-bookings?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=ALL&sort=DATE_TIME`,
-            )
-          }
+          expect(printBookingsLink.length).toBe(1)
 
           if (journey === 'probation') {
             const expected: PaginatedBookingsRequest = {

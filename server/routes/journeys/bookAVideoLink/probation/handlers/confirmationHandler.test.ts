@@ -1,6 +1,7 @@
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
+import { formatDate, startOfToday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
 import { getByDataQa, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
@@ -10,6 +11,7 @@ import PrisonService from '../../../../../services/prisonService'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/videoLinkService')
@@ -42,15 +44,15 @@ beforeEach(() => {
   videoLinkService.getVideoLinkBookingById.mockResolvedValue(getProbationBooking('AA1234A'))
   prisonService.getPrisonByCode.mockResolvedValue({ code: 'MDI', name: 'Moorland (HMP)' } as Prison)
   prisonService.getAppointmentLocations.mockResolvedValue([{ key: 'KEY', description: 'description' }] as Location[])
-
-  appSetup()
 })
 
 afterEach(() => {
   jest.resetAllMocks()
 })
 
-describe('GET', () => {
+describe('GET with view multiple agencies disabled', () => {
+  config.featureToggles.viewMultipleAgenciesBookings = false
+
   it('should render the correct view page', () => {
     appSetup()
 
@@ -82,6 +84,9 @@ describe('GET', () => {
   })
 
   it('should render the correct page in amend mode', () => {
+    config.featureToggles.viewMultipleAgenciesBookings = false
+
+    appSetup()
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
 
     return request(app)
@@ -102,7 +107,80 @@ describe('GET', () => {
         expect(heading).toEqual('The video link booking has been updated')
 
         const exitToAllBookingsLink = getByDataQa($, 'exit-to-all-bookings-link').attr('href')
-        expect(exitToAllBookingsLink).toEqual(`/probation/view-booking?date=05-04-2024&agencyCode=PROBATION_CODE`)
+        expect(exitToAllBookingsLink).toEqual(
+          `/probation/view-booking?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=PROBATION_CODE`,
+        )
+      })
+      .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
+  })
+})
+
+describe('GET with view multiple agencies enabled', () => {
+  it('should render the correct view page', () => {
+    config.featureToggles.viewMultipleAgenciesBookings = true
+    appSetup()
+
+    return request(app)
+      .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
+        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
+
+        expect(heading).toEqual('The video link has been booked')
+        expect(bookAnotherLink).toEqual(`/probation/prisoner-search/search`)
+
+        expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
+        expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
+        expect(getValueByKey($, 'Notes for prison staff')).toEqual('staff notes')
+      })
+      .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
+  })
+
+  it('should render the correct page in amend mode', () => {
+    config.featureToggles.viewMultipleAgenciesBookings = true
+    appSetup({
+      viewMultipleAgencyBookingsJourney: {
+        agencyCode: 'ALL',
+        fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+        page: 1,
+        sort: 'DATE_TIME',
+      },
+    })
+
+    videoLinkService.bookingIsAmendable.mockReturnValue(true)
+
+    return request(app)
+      .get(`/probation/booking/amend/1/${journeyId()}/video-link-booking/confirmation`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_CONFIRMATION_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(videoLinkService.getVideoLinkBookingById).toHaveBeenCalledWith(1, user)
+        expect(prisonerService.getPrisonerByPrisonerNumber).toHaveBeenCalledWith('AA1234A', user)
+        expect(prisonService.getAppointmentLocations).toHaveBeenCalledWith('MDI', false, user)
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+        expect(heading).toEqual('The video link booking has been updated')
+
+        const exitToAllBookingsLink = getByDataQa($, 'exit-to-all-bookings-link').attr('href')
+        expect(exitToAllBookingsLink).toEqual(
+          `/probation/view-booking?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=ALL&page=1&sort=DATE_TIME`,
+        )
       })
       .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
   })
@@ -118,7 +196,7 @@ const getProbationBooking = (prisonerNumber: string) =>
         prisonerNumber,
         appointmentType: 'VLB_PROBATION',
         prisonLocKey: 'VCC-ROOM-1',
-        appointmentDate: '2024-04-05',
+        appointmentDate: formatDate(startOfToday(), 'yyyy-MM-dd'),
         startTime: '11:30',
         endTime: '12:30',
       },

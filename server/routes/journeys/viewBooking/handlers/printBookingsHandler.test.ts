@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { formatDate, startOfToday } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../services/auditService'
-import { getPageHeader } from '../../../testutils/cheerio'
+import { getByDataQa, getPageHeader } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
@@ -53,7 +53,7 @@ describe('GET', () => {
   it.each([
     ['Probation', 'probation'],
     ['Court', 'court'],
-  ])('%s journey - should render the view page sorted by date and time', (_: string, journey: string) => {
+  ])('%s journey - should render the all agency view page sorted by date and time', (_: string, journey: string) => {
     appSetup({
       viewMultipleAgencyBookingsJourney: {
         agencyCode: 'ALL',
@@ -79,11 +79,12 @@ describe('GET', () => {
         })
 
         const $ = cheerio.load(res.text)
-        const heading = getPageHeader($)
+        expect(getPageHeader($)).toEqual('Print bookings')
 
-        expect(heading).toEqual('Print bookings')
+        const agencyDescription = getByDataQa($, 'agency-description').text()
 
         if (journey === 'probation') {
+          expect(agencyDescription).toEqual('Video link bookings: All probation teams')
           const expected: UnpaginatedBookingsRequest = {
             agencyType: 'probation',
             agencyCodes: ['P1', 'P2'],
@@ -96,6 +97,7 @@ describe('GET', () => {
         }
 
         if (journey === 'court') {
+          expect(agencyDescription).toEqual('Video link bookings: All courts')
           const expected: UnpaginatedBookingsRequest = {
             agencyType: 'court',
             agencyCodes: ['C1', 'C2'],
@@ -108,6 +110,76 @@ describe('GET', () => {
         }
       })
   })
+
+  it.each([
+    ['Probation', 'probation', 'P1'],
+    ['Court', 'court', 'C1'],
+  ])(
+    '%s journey - should render the single agency view page sorted by date and time',
+    (_: string, journey: string, agencyCode: string) => {
+      appSetup({
+        viewMultipleAgencyBookingsJourney: {
+          agencyCode,
+          fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+          page: 0,
+          sort: 'DATE_TIME',
+        },
+      })
+
+      if (journey === 'court') {
+        videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkCourtSchedule)
+      } else {
+        videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue(videoLinkProbationSchedule)
+      }
+
+      return request(app)
+        .get(`/${journey}/view-booking/print-bookings`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.PRINT_BOOKINGS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          const $ = cheerio.load(res.text)
+          expect(getPageHeader($)).toEqual('Print bookings')
+
+          const agencyDescription = getByDataQa($, 'agency-description').text()
+
+          if (journey === 'probation') {
+            expect(agencyDescription).toEqual('Video link bookings: Probation 1')
+            const expected: UnpaginatedBookingsRequest = {
+              agencyType: 'probation',
+              agencyCodes: ['P1'],
+              date: startOfToday(),
+              sort: ['appointmentDate', 'startTime'],
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(
+              expected,
+              user,
+            )
+          }
+
+          if (journey === 'court') {
+            expect(agencyDescription).toEqual('Video link bookings: Aberystwyth Crown')
+            const expected: UnpaginatedBookingsRequest = {
+              agencyType: 'court',
+              agencyCodes: ['C1'],
+              date: startOfToday(),
+              sort: ['appointmentDate', 'startTime'],
+            }
+            expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
+            expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(1)
+            expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenCalledWith(
+              expected,
+              user,
+            )
+          }
+        })
+    },
+  )
 
   it.each([
     ['Probation', 'probation'],

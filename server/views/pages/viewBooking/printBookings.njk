@@ -7,7 +7,6 @@
 
 {% set type = session.req.routeContext.type %}
 {% set pageTitle = "Video link bookings" %}
-{% set printDate = (session.req.query.date | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy')) if session.req.query.date else now() | formatDate('iiii d MMMM yyyy') %}
 
 {% block header %}
 {% endblock %}
@@ -19,8 +18,15 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <div class="print-only">
-              <span class="govuk-heading-l">{{ pageTitle }}: {{ agency.description }}</span>
-              <span class="govuk-caption-m govuk-!-padding-bottom-3">{{ printDate }}</span>
+                {% if appointments.length %}
+                    {% set agencyCode = session.journey.viewMultipleAgencyBookingsJourney.agencyCode %}
+                    {% if type === 'court' %}
+                        <span class="govuk-heading-l" data-qa="agency-description">{{ pageTitle }}: {{ 'All courts' if agencyCode === 'ALL' else appointments[0].courtDescription }}</span>
+                    {% else %}
+                        <span class="govuk-heading-l" data-qa="agency-description">{{ pageTitle }}: {{ 'All probation teams' if agencyCode === 'ALL' else appointments[0].probationTeamDescription }}</span>
+                    {% endif %}
+                    <span class="govuk-caption-m govuk-!-padding-bottom-3">{{ appointments[0].appointmentDate | formatDate('iiii d MMMM yyyy') }}</span>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -108,4 +114,5 @@
 {% endblock %}
 
 {% block footer %}
+    <p class="print-only govuk-body-s hmpps-print-footer">Date printed {{ now() | formatDate('iiii d MMMM yyyy') }}</p>
 {% endblock %}

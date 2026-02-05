@@ -8,6 +8,7 @@ import ProbationTeamsService from '../../../../services/probationTeamsService'
 import { parseDatePickerDate } from '../../../../utils/utils'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { PaginatedBookingsRequest } from '../../../../data/bookAVideoLinkApiClient'
+import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
 
 export default class ViewMultipleAgenciesBookingsHandler implements PageHandler {
   public PAGE_NAME = Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE
@@ -34,7 +35,7 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
         ? await this.courtsService.getUserPreferences(user)
         : await this.probationTeamsService.getUserPreferences(user)
 
-    const agencyCode = (req.query.agencyCode as string) || 'ALL'
+    const agencyCode = this.getAgencyCode(req.query.agencyCode as string, agencies)
     const agencyCodes = agencyCode === 'ALL' ? agencies.map(a => a.code) : [agencyCode]
 
     const paginationRequest: PaginatedBookingsRequest = {
@@ -81,5 +82,13 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
     }
 
     return ['appointmentDate', 'startTime']
+  }
+
+  private getAgencyCode(agencyCode: string | undefined, agencies: Court[] | ProbationTeam[]): string {
+    if (agencyCode) {
+      return agencyCode === 'ALL' && agencies.length > 1 ? 'ALL' : agencyCode
+    }
+
+    return agencies.length > 1 ? 'ALL' : agencies[0].code
   }
 }

@@ -5,6 +5,7 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "partials/simplePagination.njk" import simplePagination %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% set type = session.req.routeContext.type %}
 {% set pageTitle = "Video link bookings" %}
@@ -21,20 +22,37 @@
         <div class="govuk-grid-column-full">
             <form method='GET' class="search-form">
                 <div class='horizontal-form'>
-                    {% set items = [{ text: "All", value: "ALL" }] %}
-                    {% for agency in agencies %}
-                        {% set items = (items.push({
-                            value: agency.code,
-                            text: agency.description,
-                            selected: session.req.query.agencyCode == agency.code
-                        }), items) %}
-                    {% endfor %}
-                    {{ govukSelect({
-                        name: "agencyCode",
-                        id: "agencyCode",
-                        label: { text: "Court" if type == 'court' else "Probation team" },
-                        items: items
-                    }) }}
+                    {% if agencies.length > 1 %}
+                        {% set items = [{ text: "All", value: "ALL" }] %}
+                        {% for agency in agencies %}
+                            {% set items = (items.push({
+                                value: agency.code,
+                                text: agency.description,
+                                selected: session.req.query.agencyCode == agency.code
+                            }), items) %}
+                        {% endfor %}
+                        {{ govukSelect({
+                            name: "agencyCode",
+                            id: "agencyCode",
+                            label: { text: "Court" if type == 'court' else "Probation team" },
+                            items: items
+                        }) }}
+                    {% else %}
+                        {% set items = [] %}
+                        {% for agency in agencies %}
+                            {% set items = (items.push({
+                                value: agency.code,
+                                text: agency.description,
+                                selected: session.req.query.agencyCode == agency.code
+                            }), items) %}
+                        {% endfor %}
+                        {{ govukSelect({
+                            name: "agencyCode",
+                            id: "agencyCode",
+                            label: { text: "Court" if type == 'court' else "Probation team" },
+                            items: items
+                        }) }}
+                    {% endif %}
                     {{ mojDatePicker({
                         id: 'date',
                         name: 'date',

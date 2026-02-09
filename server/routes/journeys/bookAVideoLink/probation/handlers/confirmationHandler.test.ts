@@ -12,6 +12,7 @@ import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import config from '../../../../../config'
+import { toViewBookingsSearchParams } from '../../../../../utils/utils'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/videoLinkService')
@@ -149,14 +150,15 @@ describe('GET with view multiple agencies enabled', () => {
 
   it('should render the correct page in amend mode', () => {
     config.featureToggles.viewMultipleAgenciesBookings = true
-    appSetup({
-      viewMultipleAgencyBookingsJourney: {
-        agencyCode: 'ALL',
-        fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
-        page: 1,
-        sort: 'DATE_TIME',
-      },
-    })
+    const journeySession = {
+      agencyCode: 'ALL',
+      fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+      toDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+      page: 1,
+      sort: 'DATE_TIME',
+    }
+
+    appSetup({ viewMultipleAgencyBookingsJourney: journeySession })
 
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
 
@@ -178,9 +180,7 @@ describe('GET with view multiple agencies enabled', () => {
         expect(heading).toEqual('The video link booking has been updated')
 
         const exitToAllBookingsLink = getByDataQa($, 'exit-to-all-bookings-link').attr('href')
-        expect(exitToAllBookingsLink).toEqual(
-          `/probation/view-booking?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=ALL&page=1&sort=DATE_TIME`,
-        )
+        expect(exitToAllBookingsLink).toEqual(`/probation/view-booking?${toViewBookingsSearchParams(journeySession)}`)
       })
       .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
   })

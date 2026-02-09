@@ -53,8 +53,8 @@ afterEach(() => {
 describe('GET', () => {
   it('should download court csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
-      '12:45,13:15,HMP Moorland,Bob Builder,A1234AA,Court 1,Court hearing,Appeal hearing,https://court.link.url,'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '03/10/2024,12:45,13:15,HMP Moorland,Bob Builder,A1234AA,Court 1,Court hearing,Appeal hearing,https://court.link.url,'
 
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([getCourtBooking()])
 
@@ -74,7 +74,12 @@ describe('GET', () => {
         expect(res.text).toEqual(expectedCsv)
 
         expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
-          { agencyType: 'court', agencyCodes: ['C1'], date: startOfDay(new Date()) },
+          {
+            agencyType: 'court',
+            agencyCodes: ['C1'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })
@@ -82,9 +87,9 @@ describe('GET', () => {
 
   it('should download ALL courts csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
-      '8:45,9:00,HMP Moorland,Bob Builder,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,John Doe,P2,Court 2,Court hearing,Appeal hearing,https://court.link.url,'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,Bob Builder,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:30,HMP Moorland,John Doe,P2,Court 2,Court hearing,Appeal hearing,https://court.link.url,'
 
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
       getCourtBooking(1, '8:45', '9:00', 'Bob', 'Builder', 'P1'),
@@ -107,7 +112,12 @@ describe('GET', () => {
         expect(res.text).toEqual(expectedCsv)
 
         expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
-          { agencyType: 'court', agencyCodes: ['C1', 'C2'], date: startOfDay(new Date()) },
+          {
+            agencyType: 'court',
+            agencyCodes: ['C1', 'C2'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })
@@ -115,18 +125,18 @@ describe('GET', () => {
 
   it('should download sorted court csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
-      '8:45,9:00,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:30,9:45,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '8:45,9:00,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:30,9:45,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '8:45,9:00,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:30,9:45,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:45,10:00,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,HMCTS45643@meet.video.justice.gov.uk,\n' +
-      '10:00,10:45,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,HMCTS54321@meet.video.justice.gov.uk,'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:30,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:30,9:45,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:30,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:30,9:45,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:30,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:30,9:45,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:45,10:00,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,HMCTS45643@meet.video.justice.gov.uk,\n' +
+      '03/10/2024,10:00,10:45,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,HMCTS54321@meet.video.justice.gov.uk,'
 
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
       getCourtBooking(1, '8:45', '9:00', 'john', 'Doe', 'P1'),
@@ -158,7 +168,12 @@ describe('GET', () => {
         expect(res.text).toEqual(expectedCsv)
 
         expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
-          { agencyType: 'court', agencyCodes: ['C1'], date: startOfDay(new Date()) },
+          {
+            agencyType: 'court',
+            agencyCodes: ['C1'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })
@@ -166,8 +181,8 @@ describe('GET', () => {
 
   it('should download probation team csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Probation Team,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n' +
-      '12:45,13:15,HMP Moorland,Bob Builder,A1234AA,Probation 1,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Probation Team,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n' +
+      '03/10/2024,12:45,13:15,HMP Moorland,Bob Builder,A1234AA,Probation 1,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com'
 
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([getProbationTeamBooking()])
 
@@ -187,7 +202,12 @@ describe('GET', () => {
         expect(res.text).toEqual(expectedCsv)
 
         expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
-          { agencyType: 'probation', agencyCodes: ['P1'], date: startOfDay(new Date()) },
+          {
+            agencyType: 'probation',
+            agencyCodes: ['P1'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })
@@ -195,9 +215,9 @@ describe('GET', () => {
 
   it('should download ALL probation teams csv for today', () => {
     const expectedCsv =
-      `Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Probation Team,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n` +
-      `8:45,9:00,HMP Moorland,Bob Builder,1,Probation 1,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com\n` +
-      `9:00,9:30,HMP Moorland,John Doe,2,Probation 2,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com`
+      `Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Probation Team,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n` +
+      `03/10/2024,8:45,9:00,HMP Moorland,Bob Builder,1,Probation 1,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com\n` +
+      `03/10/2024,9:00,9:30,HMP Moorland,John Doe,2,Probation 2,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com`
 
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
       getProbationTeamBooking(1, '8:45', '9:00', 'Bob', 'Builder', '1'),
@@ -220,7 +240,12 @@ describe('GET', () => {
         expect(res.text).toEqual(expectedCsv)
 
         expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
-          { agencyType: 'probation', agencyCodes: ['P1', 'P2'], date: startOfDay(new Date()) },
+          {
+            agencyType: 'probation',
+            agencyCodes: ['P1', 'P2'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })

@@ -161,7 +161,8 @@ export default class BookAVideoLinkApiClient extends RestClient {
           path: `/schedule/courts/paginated`,
           query: { ...paginateBookingsRequest.pagination },
           data: {
-            fromDate: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
+            fromDate: formatDate(paginateBookingsRequest.fromDate, 'yyyy-MM-dd'),
+            toDate: formatDate(paginateBookingsRequest.toDate, 'yyyy-MM-dd'),
             courtCodes: paginateBookingsRequest.agencyCodes,
           },
         },
@@ -174,7 +175,8 @@ export default class BookAVideoLinkApiClient extends RestClient {
         path: `/schedule/probation-teams/paginated`,
         query: { ...paginateBookingsRequest.pagination },
         data: {
-          fromDate: formatDate(paginateBookingsRequest.date, 'yyyy-MM-dd'),
+          fromDate: formatDate(paginateBookingsRequest.fromDate, 'yyyy-MM-dd'),
+          toDate: formatDate(paginateBookingsRequest.toDate, 'yyyy-MM-dd'),
           probationTeamCodes: paginateBookingsRequest.agencyCodes,
         },
       },
@@ -192,7 +194,8 @@ export default class BookAVideoLinkApiClient extends RestClient {
           path: `/schedule/courts`,
           query: { sort: unpaginatedBookingsRequest.sort },
           data: {
-            fromDate: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
+            fromDate: formatDate(unpaginatedBookingsRequest.fromDate, 'yyyy-MM-dd'),
+            toDate: formatDate(unpaginatedBookingsRequest.toDate, 'yyyy-MM-dd'),
             courtCodes: unpaginatedBookingsRequest.agencyCodes,
           },
         },
@@ -204,7 +207,8 @@ export default class BookAVideoLinkApiClient extends RestClient {
         path: `/schedule/probation-teams`,
         query: { sort: unpaginatedBookingsRequest.sort },
         data: {
-          fromDate: formatDate(unpaginatedBookingsRequest.date, 'yyyy-MM-dd'),
+          fromDate: formatDate(unpaginatedBookingsRequest.fromDate, 'yyyy-MM-dd'),
+          toDate: formatDate(unpaginatedBookingsRequest.toDate, 'yyyy-MM-dd'),
           probationTeamCodes: unpaginatedBookingsRequest.agencyCodes,
         },
       },
@@ -339,14 +343,16 @@ export default class BookAVideoLinkApiClient extends RestClient {
 export type UnpaginatedBookingsRequest = {
   agencyType: 'court' | 'probation'
   agencyCodes: string[]
-  date: Date
+  fromDate: Date
+  toDate: Date
   sort?: string[]
 }
 
 export type PaginatedBookingsRequest = {
   agencyType: 'court' | 'probation'
   agencyCodes: string[]
-  date: Date
+  fromDate: Date
+  toDate: Date
   pagination: Pagination
 }
 

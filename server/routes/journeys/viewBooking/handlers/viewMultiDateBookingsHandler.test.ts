@@ -34,6 +34,7 @@ const appSetup = (journeySession = {}) => {
 
 beforeEach(() => {
   config.featureToggles.viewMultipleAgenciesBookings = true
+  config.featureToggles.viewMultipleDateBookings = true
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([
@@ -67,7 +68,7 @@ describe('GET', () => {
         .get(`/${journey}/view-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_DATES_BOOKINGS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
           })
@@ -133,7 +134,7 @@ describe('GET', () => {
         .get(`/${journey}/view-booking`)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_DATES_BOOKINGS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
           })
@@ -198,7 +199,7 @@ describe('GET', () => {
         .get(`/${journey}/view-booking?sort=${sortBy}`)
         .expect('Content-Type', /html/)
         .expect(res => {
-          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_DATES_BOOKINGS_PAGE, {
             who: user.username,
             correlationId: expect.any(String),
           })
@@ -251,7 +252,7 @@ describe('GET', () => {
       .get(`/${journey}/view-booking`)
       .expect('Content-Type', /html/)
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.VIEW_MULTIPLE_DATES_BOOKINGS_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })

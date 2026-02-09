@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { isValid } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
@@ -19,19 +18,16 @@ export default class PrintBookingsHandler implements PageHandler {
 
   GET = async (req: Request, res: Response) => {
     const type = req.routeContext.type as BavlJourneyType
-    const { user, validationErrors, session } = res.locals
+    const { user, session } = res.locals
 
     if (!session?.journey?.viewMultipleAgencyBookingsJourney) {
       return res.redirect('/')
     }
 
-    const date = parseDatePickerDate(session.journey.viewMultipleAgencyBookingsJourney.fromDate as string)
+    const fromDate = parseDatePickerDate(session.journey.viewMultipleAgencyBookingsJourney.fromDate as string)
+    const toDate = parseDatePickerDate(session.journey.viewMultipleAgencyBookingsJourney.toDate as string)
     const agencyCode = session.journey.viewMultipleAgencyBookingsJourney.agencyCode as string
     const sort = session.journey.viewMultipleAgencyBookingsJourney.sort as string
-
-    if (date && !isValid(date) && !validationErrors) {
-      return res.validationFailed(`An invalid date was entered: ${req.query.date}`, 'date')
-    }
 
     const agencies =
       type === BavlJourneyType.COURT
@@ -44,7 +40,7 @@ export default class PrintBookingsHandler implements PageHandler {
     const appointments =
       agencyCodes.length > 0
         ? await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-            { agencyType: type, agencyCodes, date, sort: this.getSortFields(type, sort) },
+            { agencyType: type, agencyCodes, fromDate, toDate, sort: this.getSortFields(type, sort) },
             user,
           )
         : []

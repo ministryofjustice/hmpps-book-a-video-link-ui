@@ -7,9 +7,10 @@ import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 import ViewBookingHandler from './handlers/viewBookingHandler'
 import DownloadCsvHandler from './handlers/downloadCsvHandler'
 import config from '../../../config'
-import ViewMultipleTeamsBookingsHandler from './handlers/viewMultipleAgenciesBookingsHandler'
 import PrintBookingsHandler from './handlers/printBookingsHandler'
 import DownloadMultiAgenciesCsvHandler from './handlers/downloadMultiAgenciesCsvHandler'
+import ViewMultiDateBookingsHandler from './handlers/viewMultiDateBookingsHandler'
+import ViewMultipleAgenciesBookingsHandler from './handlers/viewMultipleAgenciesBookingsHandler'
 
 export default function Index({
   auditService,
@@ -27,7 +28,11 @@ export default function Index({
     router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
   if (config.featureToggles.viewMultipleAgenciesBookings) {
-    route('/', new ViewMultipleTeamsBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+    if (config.featureToggles.viewMultipleDateBookings) {
+      route('/', new ViewMultiDateBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+    } else {
+      route('/', new ViewMultipleAgenciesBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+    }
     route('/print-bookings', new PrintBookingsHandler(courtsService, probationTeamsService, videoLinkService))
     route('/download-csv', new DownloadMultiAgenciesCsvHandler(courtsService, probationTeamsService, videoLinkService))
   } else {

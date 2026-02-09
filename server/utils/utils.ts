@@ -12,6 +12,7 @@ import {
 import { enGB } from 'date-fns/locale'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 import config from '../config'
+import { ViewMultipleAgencyBookingsJourney } from '../routes/journeys/viewBooking/journey'
 
 const properCase = (word: string): string =>
   word.length >= 1 ? word[0].toUpperCase() + word.toLowerCase().slice(1) : word
@@ -125,4 +126,16 @@ export const toFullCourtLink = (hmctsNumber: string) => {
 
 export const isValidPrisonerNumber = (number: string) => {
   return /^([a-zA-Z][0-9]{4}[a-zA-Z]{2})$/.test(number)
+}
+
+export const toViewBookingsSearchParams = (journey: ViewMultipleAgencyBookingsJourney) => {
+  const queryParams = new URLSearchParams({
+    fromDate: journey.fromDate,
+    toDate: journey.toDate,
+    agencyCode: journey.agencyCode,
+    page: journey.page.toString(),
+    sort: journey.sort,
+  })
+
+  return queryParams.toString()
 }

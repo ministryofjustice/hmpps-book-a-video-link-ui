@@ -11,6 +11,7 @@ import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import config from '../../../../../config'
+import { toViewBookingsSearchParams } from '../../../../../utils/utils'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/videoLinkService')
@@ -88,16 +89,17 @@ describe('GET single courts bookings view', () => {
 })
 
 describe('GET multiple courts bookings view', () => {
+  const journeySession = {
+    agencyCode: 'ALL',
+    fromDate: formatDate(startOfToday(), 'dd/MM/yyyy'),
+    toDate: formatDate(startOfToday(), 'dd/MM/yyyy'),
+    page: 1,
+    sort: 'DATE_TIME',
+  }
+
   beforeEach(() => {
     config.featureToggles.viewMultipleAgenciesBookings = true
-    appSetup({
-      viewMultipleAgencyBookingsJourney: {
-        agencyCode: 'ALL',
-        fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
-        page: 1,
-        sort: 'DATE_TIME',
-      },
-    })
+    appSetup({ viewMultipleAgencyBookingsJourney: journeySession })
 
     videoLinkService.getVideoLinkBookingById.mockResolvedValue({
       courtCode: 'COURT_CODE',
@@ -146,9 +148,7 @@ describe('GET multiple courts bookings view', () => {
 
         expect(heading).toEqual('This video link booking has been cancelled')
         expect(bookAnotherLink).toEqual(`/court/booking/create/A1234AA/video-link-booking`)
-        expect(returnToAllBookingsLink).toEqual(
-          `/court/view-booking?date=${formatDate(startOfToday(), 'dd-MM-yyyy')}&agencyCode=ALL&page=1&sort=DATE_TIME`,
-        )
+        expect(returnToAllBookingsLink).toEqual(`/court/view-booking?${toViewBookingsSearchParams(journeySession)}`)
       })
       .then(() => expectJourneySession(app, 'bookACourtHearing', null))
   })

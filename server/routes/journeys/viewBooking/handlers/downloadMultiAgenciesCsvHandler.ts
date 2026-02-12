@@ -50,7 +50,14 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
     const filenameSuffix = agencyCode === 'ALL' ? `all-${type}` : agency.description.split(' ').join('_')
 
     res.header('Content-Type', 'text/csv')
-    res.attachment(`VideoLinkBookings-${formatDate(fromDate, 'yyyy-MM-dd')}-${filenameSuffix}.csv`)
+    if (fromDate.getDate() === toDate.getDate()) {
+      res.attachment(`VideoLinkBookings-${formatDate(fromDate, 'yyyy-MM-dd')}-${filenameSuffix}.csv`)
+    } else {
+      res.attachment(
+        `VideoLinkBookings-${formatDate(fromDate, 'yyyy-MM-dd')}-to-${formatDate(toDate, 'yyyy-MM-dd')}-${filenameSuffix}.csv`,
+      )
+    }
+
     res.send(csv)
   }
 

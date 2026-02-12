@@ -85,24 +85,21 @@ describe('GET', () => {
       })
   })
 
-  it('should download ALL courts csv for today', () => {
+  it('should download ALL courts csv for date range', () => {
     const expectedCsv =
       'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
       '03/10/2024,8:45,9:00,HMP Moorland,Bob Builder,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '03/10/2024,9:00,9:30,HMP Moorland,John Doe,P2,Court 2,Court hearing,Appeal hearing,https://court.link.url,'
+      '04/10/2024,9:00,9:30,HMP Moorland,John Doe,P2,Court 2,Court hearing,Appeal hearing,https://court.link.url,'
 
     videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
       getCourtBooking(1, '8:45', '9:00', 'Bob', 'Builder', 'P1'),
-      getCourtBooking(1, '9:00', '9:30', 'john', 'Doe', 'P2', null, 'C2', 'Court 2'),
+      getCourtBooking(1, '9:00', '9:30', 'john', 'Doe', 'P2', null, 'C2', 'Court 2', '2024-10-04'),
     ])
 
     return request(app)
-      .get('/court/view-booking/download-csv?agencyCode=ALL')
+      .get('/court/view-booking/download-csv?fromDate=03-10-2024&toDate=04-10-2024&agencyCode=ALL')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect(
-        'Content-Disposition',
-        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-all-court.csv"`,
-      )
+      .expect('Content-Disposition', `attachment; filename="VideoLinkBookings-2024-10-03-to-2024-10-04-all-court.csv"`)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
           who: user.username,
@@ -115,8 +112,8 @@ describe('GET', () => {
           {
             agencyType: 'court',
             agencyCodes: ['C1', 'C2'],
-            fromDate: startOfDay(new Date()),
-            toDate: startOfDay(new Date()),
+            fromDate: startOfDay(new Date(2024, 9, 3)),
+            toDate: startOfDay(new Date(2024, 9, 4)),
           },
           user,
         )
@@ -262,6 +259,7 @@ const getCourtBooking = (
   hmctsNumber: string = undefined,
   courtCode: string = 'C1',
   courtDescription: string = 'Court 1',
+  appointmentDate: string = '2024-10-03',
 ): ScheduleItem => {
   const videoUrl = hmctsNumber ? undefined : 'https://court.link.url'
 
@@ -285,7 +283,7 @@ const getCourtBooking = (
     prisonLocKey: 'MDI-VCC-1',
     prisonLocDesc: 'VCC-crown-conference-room-1',
     dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
-    appointmentDate: '2024-10-03',
+    appointmentDate,
     startTime: start,
     endTime: end,
     createdTime: '2024-10-01 14:45',

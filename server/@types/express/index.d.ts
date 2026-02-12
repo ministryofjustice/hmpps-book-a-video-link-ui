@@ -7,8 +7,6 @@ import {
   ViewMultipleAgencyBookingsJourney,
 } from '../../routes/journeys/viewBooking/journey'
 
-export default {}
-
 export interface JourneyData extends Journey {
   instanceUnixEpoch: number
 }

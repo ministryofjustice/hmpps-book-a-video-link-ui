@@ -15,6 +15,7 @@ import {
   toDateString,
   toDuration,
   toFullCourtLink,
+  toViewBookingsSearchParams,
 } from './utils'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
 
@@ -270,5 +271,21 @@ describe('isValidPrisonerNumber', () => {
     [undefined, false],
   ])("prisoner number [%s] is valid '%s'", (input, expected) => {
     expect(isValidPrisonerNumber(input)).toEqual(expected)
+  })
+})
+
+describe('toViewBookingsLinkParams', () => {
+  it('should produce encoded encoded link parameters', () => {
+    const request = {
+      agencyCode: 'ALL',
+      fromDate: '01/01/2026',
+      toDate: '31/12/2026',
+      page: 0,
+      sort: 'DATE_TIME',
+    }
+
+    expect(toViewBookingsSearchParams(request)).toEqual(
+      'fromDate=01%2F01%2F2026&toDate=31%2F12%2F2026&agencyCode=ALL&page=0&sort=DATE_TIME',
+    )
   })
 })

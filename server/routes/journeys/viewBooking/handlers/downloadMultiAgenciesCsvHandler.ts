@@ -24,8 +24,10 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
   GET = async (req: Request, res: Response) => {
     const type = req.routeContext.type as BavlJourneyType
     const { user } = res.locals
-    const dateFromQueryParam = parseDatePickerDate(req.query.date as string)
-    const date = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+    const dateFromQueryParam = parseDatePickerDate(req.query.fromDate as string)
+    const dateToQueryParam = parseDatePickerDate(req.query.toDate as string)
+    const fromDate = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
+    const toDate = startOfDay(isValid(dateToQueryParam) ? dateToQueryParam : new Date())
 
     const agencies =
       type === BavlJourneyType.COURT
@@ -37,7 +39,7 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
       agencyCode === 'ALL' ? agencies.map(a => a.code) : agencies.filter(a => a.code === agencyCode).map(a => a.code)
     const agency = agencies.find(a => a.code === agencyCode)
     const appointments = await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-      { agencyType: type, agencyCodes, date },
+      { agencyType: type, agencyCodes, fromDate, toDate },
       user,
     )
 
@@ -48,7 +50,14 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
     const filenameSuffix = agencyCode === 'ALL' ? `all-${type}` : agency.description.split(' ').join('_')
 
     res.header('Content-Type', 'text/csv')
-    res.attachment(`VideoLinkBookings-${formatDate(date, 'yyyy-MM-dd')}-${filenameSuffix}.csv`)
+    if (fromDate.getDate() === toDate.getDate()) {
+      res.attachment(`VideoLinkBookings-${formatDate(fromDate, 'yyyy-MM-dd')}-${filenameSuffix}.csv`)
+    } else {
+      res.attachment(
+        `VideoLinkBookings-${formatDate(fromDate, 'yyyy-MM-dd')}-to-${formatDate(toDate, 'yyyy-MM-dd')}-${filenameSuffix}.csv`,
+      )
+    }
+
     res.send(csv)
   }
 
@@ -74,6 +83,7 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
 
   private court = (items: ScheduleItem[]) => {
     return items.map(a => ({
+      'Appointment Date': formatDate(a.appointmentDate, 'dd/MM/yyyy'),
       'Appointment Start Time': a.startTime,
       'Appointment End Time': a.endTime,
       Prison: a.prisonName,
@@ -101,6 +111,7 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
 
   private probationTeam = (items: ScheduleItem[]) => {
     return items.map(a => ({
+      'Appointment Date': formatDate(a.appointmentDate, 'dd/MM/yyyy'),
       'Appointment Start Time': a.startTime,
       'Appointment End Time': a.endTime,
       Prison: a.prisonName,

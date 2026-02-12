@@ -53,16 +53,10 @@
                             items: items
                         }) }}
                     {% endif %}
-                    {{ mojDatePicker({
-                        id: 'fromDate',
-                        name: 'fromDate',
-                        label: { text: "Date" },
-                        errorMessage: {} if validationErrors | findError('fromDate'),
-                        value: session.req.query.fromDate or now() | formatDate('dd/MM/yyyy')
-                    }) }}
+
                     {% set sortByItems = [
-                        { text: "Court and time ascending" if type == 'court' else "Team and time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sort == 'AGENCY_DATE_TIME' },
-                        { text: "Time ascending", value: "DATE_TIME", selected: session.req.query.sort == 'DATE_TIME' }
+                        { text: "Court, date and time ascending" if type == 'court' else "Team, date and time ascending", value: "AGENCY_DATE_TIME", selected: session.req.query.sort == 'AGENCY_DATE_TIME' },
+                        { text: "Date and time ascending", value: "DATE_TIME", selected: session.req.query.sort == 'DATE_TIME' }
                     ] %}
                     {{ govukSelect({
                         name: "sort",
@@ -70,11 +64,26 @@
                         label: { text: "Sort by" },
                         items: sortByItems
                     }) }}
-
-                    {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print" }) }}
                 </div>
 
                 <div class='horizontal-form'>
+                    {{ mojDatePicker({
+                        id: 'fromDate',
+                        name: 'fromDate',
+                        label: { text: "From date" },
+                        errorMessage: {} if validationErrors | findError('fromDate'),
+                        value: session.req.query.fromDate or now() | formatDate('dd/MM/yyyy')
+                    }) }}
+                    {{ mojDatePicker({
+                        id: 'toDate',
+                        name: 'toDate',
+                        label: { text: "To date" },
+                        errorMessage: {} if validationErrors | findError('toDate'),
+                        value: session.req.query.toDate or now() | formatDate('dd/MM/yyyy')
+                    }) }}
+
+                    {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print" }) }}
+
                     {% if appointments.length %}
                         <div class="hmpps-action-bar">
                             <div class="hmpps-print-and-export govuk-!-margin-top-6">
@@ -96,16 +105,17 @@
                     {% set viewOrEditText = 'View or edit' if item.appointmentDate | parseDate | dateAtTime(item.startTime | parseDate('HH:mm')) > now() else 'View' %}
 
                     {% set rows = (rows.push([
-                            { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
-                            { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase },
-                            { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
-                                    ('<strong class="govuk-tag govuk-tag--red govuk-tag--small">Action: provide hearing link</strong>' if item.appointmentType == 'VLB_COURT_MAIN' and not item.videoUrl and not item.hmctsNumber) },
-                            { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
-                            { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
-                                    ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
-                                    ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') },
-                            { html: '<a class="govuk-link govuk-link--no-visited-state" href="view-booking/' + item.videoBookingId + '">' + viewOrEditText + '</a>' if item.appointmentType == 'VLB_COURT_MAIN' or item.appointmentType == 'VLB_PROBATION' else '<span class="govuk-visually-hidden">Not selectable</span>'}
-                        ]
+                        { text: item.appointmentDate | formatDate('dd/MM/yyyy') },
+                        { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
+                        { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase },
+                        { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
+                            ('<strong class="govuk-tag govuk-tag--red govuk-tag--small">Action: provide hearing link</strong>' if item.appointmentType == 'VLB_COURT_MAIN' and not item.videoUrl and not item.hmctsNumber) },
+                        { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
+                        { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
+                            ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
+                            ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') },
+                        { html: '<a class="govuk-link govuk-link--no-visited-state" href="view-booking/' + item.videoBookingId + '">' + viewOrEditText + '</a>' if item.appointmentType == 'VLB_COURT_MAIN' or item.appointmentType == 'VLB_PROBATION' else '<span class="govuk-visually-hidden">Not selectable</span>'}
+                    ]
                     ), rows) %}
                 {% endfor %}
 
@@ -114,6 +124,7 @@
                 <div class="govuk-!-display-none-print">
                     {{ govukTable({
                         head: [
+                            { text: "Date" },
                             { text: "Time" },
                             { text: "Name" },
                             { text: "Prison location" },

@@ -15,8 +15,8 @@
 
             <div class="govuk-button-group">
                 {% if viewMultipleAgenciesBookings %}
-                    {% set vmab = session.journey.viewMultipleAgencyBookingsJourney %}
-                    {{ govukButton({ text: "Return to all video link bookings", href: '/probation/view-booking?date=' + vmab.fromDate + '&agencyCode=' + vmab.agencyCode + '&page=' + vmab.page + '&sort=' + vmab.sort, attributes: {'data-qa': 'return-to-all-bookings-link'} }) }}
+                    {% set searchParams = session.journey.viewMultipleAgencyBookingsJourney | toViewBookingsSearchParams %}
+                    {{ govukButton({ text: "Return to all video link bookings", href: '/probation/view-booking?' + searchParams, attributes: {'data-qa': 'return-to-all-bookings-link'} }) }}
                 {% else %}
                     {{ govukButton({ text: "Return to all video link bookings", href: '/probation/view-booking?date=' + originalBookingDate + '&agencyCode=' + agencyCode, attributes: {'data-qa': 'return-to-all-bookings-link'} }) }}
                 {% endif %}

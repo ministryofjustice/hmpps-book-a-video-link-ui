@@ -158,14 +158,13 @@
                 {% else %}
                     {{ govukButton({ text: "Return to booking", href: '/court/view-booking/' + booking.videoLinkBookingId }) }}
                     {% if viewMultipleAgenciesBookings %}
-                        {% set vmab = session.journey.viewMultipleAgencyBookingsJourney %}
-                        <a href='/court/view-booking?date={{ vmab.fromDate }}&agencyCode={{ vmab.agencyCode }}&page={{ vmab.page }}&sort={{ vmab.sort }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
+                        {% set searchParams = session.journey.viewMultipleAgencyBookingsJourney | toViewBookingsSearchParams %}
+                        <a href='/court/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
                     {% else %}
                         <a href='/court/view-booking?date={{ originalBookingDate }}&agencyCode={{ booking.courtCode }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
                    {% endif %}
                 {% endif %}
             </div>
-
         </div>
     </div>
 {% endblock %}

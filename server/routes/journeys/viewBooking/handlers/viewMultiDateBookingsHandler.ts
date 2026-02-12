@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { formatDate, isValid, startOfToday } from 'date-fns'
+import { differenceInDays, formatDate, isValid, startOfToday } from 'date-fns'
 import { Page } from '../../../../services/auditService'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
@@ -10,8 +10,8 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import { PaginatedBookingsRequest } from '../../../../data/bookAVideoLinkApiClient'
 import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
 
-export default class ViewMultipleAgenciesBookingsHandler implements PageHandler {
-  public PAGE_NAME = Page.VIEW_MULTIPLE_AGENCIES_BOOKINGS_PAGE
+export default class ViewMultiDateBookingsHandler implements PageHandler {
+  public PAGE_NAME = Page.VIEW_MULTIPLE_DATES_BOOKINGS_PAGE
 
   constructor(
     private readonly courtsService: CourtsService,
@@ -22,12 +22,23 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
   GET = async (req: Request, res: Response) => {
     const type = req.routeContext.type as BavlJourneyType
     const { user, validationErrors } = res.locals
-    const date = parseDatePickerDate(req.query.fromDate as string) || startOfToday()
+    const fromDate = parseDatePickerDate(req.query.fromDate as string) || startOfToday()
+    const toDate = parseDatePickerDate(req.query.toDate as string) || startOfToday()
     const page = req.query.page ? Number(req.query.page) : 1
     const sort = (req.query.sort as string) || 'AGENCY_DATE_TIME'
 
-    if (date && !isValid(date) && !validationErrors) {
-      return res.validationFailed(`An invalid date was entered: ${req.query.fromDate}`, 'date')
+    // Validation is done like this due to being a GET and not a POST request
+    if (fromDate && !isValid(fromDate) && !validationErrors) {
+      return res.validationFailed(`An invalid from date was entered: ${req.query.fromDate}`, 'fromDate')
+    }
+    if (toDate && !isValid(toDate) && !validationErrors) {
+      return res.validationFailed(`An invalid to date was entered: ${req.query.to}`, 'to')
+    }
+    if (toDate && fromDate && toDate < fromDate) {
+      return res.validationFailed(`To date must be on or after from date`, 'toDate')
+    }
+    if (toDate && fromDate && differenceInDays(fromDate, toDate) > 30) {
+      return res.validationFailed(`The to date must be a maximum of thirty days after the from date`, 'toDate')
     }
 
     const agencies =
@@ -41,8 +52,8 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
     const paginationRequest: PaginatedBookingsRequest = {
       agencyType: type,
       agencyCodes,
-      fromDate: date,
-      toDate: date,
+      fromDate,
+      toDate: toDate || fromDate,
       pagination: { page: page - 1, size: 10, sort: this.getSortFields(type, sort) },
     }
 
@@ -53,20 +64,21 @@ export default class ViewMultipleAgenciesBookingsHandler implements PageHandler 
     const queryParams = new URLSearchParams({
       page: '{page}',
       agencyCode,
-      fromDate: formatDate(date, 'dd/MM/yyyy'),
+      fromDate: formatDate(fromDate, 'dd/MM/yyyy'),
+      toDate: formatDate(toDate, 'dd/MM/yyyy'),
       sort,
     })
 
     req.session.journey ??= {}
     req.session.journey.viewMultipleAgencyBookingsJourney = {
       agencyCode,
-      fromDate: formatDate(date, 'dd/MM/yyyy'),
-      toDate: formatDate(date, 'dd/MM/yyyy'),
+      fromDate: formatDate(fromDate, 'dd/MM/yyyy'),
+      toDate: formatDate(toDate, 'dd/MM/yyyy'),
       page: appointments.page.number + 1,
       sort,
     }
 
-    return res.render('pages/viewBooking/viewMultipleAgenciesBookings', {
+    return res.render('pages/viewBooking/viewMultiDateBookings', {
       agencies,
       appointments: appointments.content,
       pagination: {

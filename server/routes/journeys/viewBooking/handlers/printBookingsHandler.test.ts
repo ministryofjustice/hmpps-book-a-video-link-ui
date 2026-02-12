@@ -58,6 +58,7 @@ describe('GET', () => {
       viewMultipleAgencyBookingsJourney: {
         agencyCode: 'ALL',
         fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+        toDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
         page: 0,
         sort: 'DATE_TIME',
       },
@@ -88,7 +89,8 @@ describe('GET', () => {
           const expected: UnpaginatedBookingsRequest = {
             agencyType: 'probation',
             agencyCodes: ['P1', 'P2'],
-            date: startOfToday(),
+            fromDate: startOfToday(),
+            toDate: startOfToday(),
             sort: ['appointmentDate', 'startTime'],
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -101,7 +103,8 @@ describe('GET', () => {
           const expected: UnpaginatedBookingsRequest = {
             agencyType: 'court',
             agencyCodes: ['C1', 'C2'],
-            date: startOfToday(),
+            fromDate: startOfToday(),
+            toDate: startOfToday(),
             sort: ['appointmentDate', 'startTime'],
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
@@ -121,6 +124,7 @@ describe('GET', () => {
         viewMultipleAgencyBookingsJourney: {
           agencyCode,
           fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+          toDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
           page: 0,
           sort: 'DATE_TIME',
         },
@@ -151,7 +155,8 @@ describe('GET', () => {
             const expected: UnpaginatedBookingsRequest = {
               agencyType: 'probation',
               agencyCodes: ['P1'],
-              date: startOfToday(),
+              fromDate: startOfToday(),
+              toDate: startOfToday(),
               sort: ['appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -167,7 +172,8 @@ describe('GET', () => {
             const expected: UnpaginatedBookingsRequest = {
               agencyType: 'court',
               agencyCodes: ['C1'],
-              date: startOfToday(),
+              fromDate: startOfToday(),
+              toDate: startOfToday(),
               sort: ['appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
@@ -191,6 +197,7 @@ describe('GET', () => {
         viewMultipleAgencyBookingsJourney: {
           agencyCode: 'ALL',
           fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
+          toDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
           page: 0,
           sort: 'AGENCY_DATE_TIME',
         },
@@ -220,7 +227,8 @@ describe('GET', () => {
             const expected: UnpaginatedBookingsRequest = {
               agencyType: 'probation',
               agencyCodes: ['P1', 'P2'],
-              date: startOfToday(),
+              fromDate: startOfToday(),
+              toDate: startOfToday(),
               sort: ['probationTeamDescription', 'appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -235,7 +243,8 @@ describe('GET', () => {
             const expected: UnpaginatedBookingsRequest = {
               agencyType: 'court',
               agencyCodes: ['C1', 'C2'],
-              date: startOfToday(),
+              fromDate: startOfToday(),
+              toDate: startOfToday(),
               sort: ['courtDescription', 'appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)

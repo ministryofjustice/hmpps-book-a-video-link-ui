@@ -25,10 +25,10 @@
                     {% else %}
                         <span class="govuk-heading-l" data-qa="agency-description">{{ pageTitle }}: {{ 'All probation teams' if agencyCode === 'ALL' else appointments[0].probationTeamDescription }}</span>
                     {% endif %}
-                    {% if viewMultipleDateBookings %}
-                      <span class="govuk-caption-m govuk-!-padding-bottom-3">{{ appointments[0].appointmentDate | formatDate('iiii d MMMM yyyy') }} to {{ appointments[appointments.length - 1].appointmentDate | formatDate('iiii d MMMM yyyy') }}</span>
+                    {% if viewMultipleDateBookings and session.journey.viewMultipleAgencyBookingsJourney.fromDate != session.journey.viewMultipleAgencyBookingsJourney.toDate %}
+                      <span class="govuk-caption-m govuk-!-padding-bottom-3" data-qa="print-date-range">{{ session.journey.viewMultipleAgencyBookingsJourney.fromDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }} to {{ session.journey.viewMultipleAgencyBookingsJourney.toDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }}</span>
                     {% else %}
-                        <span class="govuk-caption-m govuk-!-padding-bottom-3">{{ appointments[0].appointmentDate | formatDate('iiii d MMMM yyyy') }}</span>
+                        <span class="govuk-caption-m govuk-!-padding-bottom-3" data-qa="print-date-range">{{ session.journey.viewMultipleAgencyBookingsJourney.fromDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }}</span>
                     {% endif %}
                 {% endif %}
             </div>

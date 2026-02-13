@@ -7,7 +7,13 @@ import { PageHandler } from '../../../interfaces/pageHandler'
 import { Page } from '../../../../services/auditService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
-import { convertToTitleCase, formatDate, parseDatePickerDate, toFullCourtLink } from '../../../../utils/utils'
+import {
+  convertToTitleCase,
+  formatDate,
+  parseDate,
+  parseDatePickerDate,
+  toFullCourtLink,
+} from '../../../../utils/utils'
 import { ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
@@ -66,8 +72,8 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
     // This groups the appointments by booking ID, sorts them by start time and keys them by start time and prisoner name
     const groupedAppointments = _.chain(appointments)
       .groupBy(item => item.videoBookingId)
-      .sortBy(groups => this.canonicalDateTime(groups[0].startTime))
-      .keyBy(a => `${this.canonicalDateTime(a[0].startTime) + a[0].prisonerFirstName} ${a[0].prisonerLastName}`)
+      .sortBy(groups => this.canonicalDateAndTime(groups[0]))
+      .keyBy(a => `${this.canonicalDateAndTime(a[0]) + a[0].prisonerFirstName} ${a[0].prisonerLastName}`)
       .value()
 
     // This sorts the grouped appointments by their keys and then pulls them out in sorted bucket order. This ensures
@@ -78,8 +84,8 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
       .flatMap(a => a)
   }
 
-  private canonicalDateTime = (time: string): string =>
-    (time ? parse(time, 'HH:mm', new Date(0), { locale: enGB }) : null).toISOString()
+  private canonicalDateAndTime = (appointment: ScheduleItem): string =>
+    parse(appointment.startTime, 'HH:mm', parseDate(appointment.appointmentDate), { locale: enGB }).toISOString()
 
   private court = (items: ScheduleItem[]) => {
     return items.map(a => ({

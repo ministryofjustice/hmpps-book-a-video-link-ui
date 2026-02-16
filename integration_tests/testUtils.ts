@@ -32,3 +32,10 @@ export const login = async (
   ])
   await attemptHmppsAuthLogin(page)
 }
+
+export const makePageData = (mockData: object[]) => ({
+  number: 0,
+  size: 10,
+  totalElements: mockData.length,
+  totalPages: Math.ceil(mockData.length / 10),
+})

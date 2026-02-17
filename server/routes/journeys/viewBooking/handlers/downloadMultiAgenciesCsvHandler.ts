@@ -33,7 +33,7 @@ export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
     const dateFromQueryParam = parseDatePickerDate(req.query.fromDate as string)
     const dateToQueryParam = parseDatePickerDate(req.query.toDate as string)
     const fromDate = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
-    const toDate = startOfDay(isValid(dateToQueryParam) ? dateToQueryParam : new Date())
+    const toDate = startOfDay(isValid(dateToQueryParam) ? dateToQueryParam : fromDate)
 
     const agencies =
       type === BavlJourneyType.COURT

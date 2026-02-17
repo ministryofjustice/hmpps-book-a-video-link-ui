@@ -76,6 +76,7 @@ test.describe('View booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
+      await homePage.verifyPageHasText('There are no video link bookings for this date')
       await bookAVideoLinkApi.stubPostCourtSchedule({
         requestBody: {
           fromDate: '2050-01-01',
@@ -88,6 +89,7 @@ test.describe('View booking', () => {
         },
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      await searchBookingsPage.verifySelectedAgencyCode('ALL')
       await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectCourt('Aberystwyth Family')
       await searchBookingsPage.updateResultsButton.click()
@@ -141,6 +143,7 @@ test.describe('View booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
+      await homePage.verifyPageHasText('There are no video link bookings for this date')
       await bookAVideoLinkApi.stubPostProbationTeamSchedule({
         requestBody: {
           fromDate: '2050-01-01',
@@ -153,6 +156,7 @@ test.describe('View booking', () => {
         },
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      await searchBookingsPage.verifySelectedAgencyCode('ALL')
       await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectProbationTeam('Blackpool MC (PPOC)')
       await searchBookingsPage.updateResultsButton.click()

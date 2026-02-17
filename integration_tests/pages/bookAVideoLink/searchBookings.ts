@@ -32,6 +32,10 @@ export default class SearchBookingsPage extends AbstractPage {
     return searchBookingsPage
   }
 
+  async verifySelectedAgencyCode(code: string) {
+    await expect(this.agencyCode).toHaveValue(code)
+  }
+
   async selectFromAndToDate(from: Date, to: Date) {
     await this.fromDate.fill(formatDate(from, 'dd/MM/yyyy') as string)
     await this.toDate.fill(formatDate(to, 'dd/MM/yyyy') as string)

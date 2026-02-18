@@ -186,7 +186,6 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
-    "ajv": "overrides dependency pulled in by better-npm-audit",
     "fast-xml-parser": "overrides dependency pulled in by aws-sdk/client-sqs",
     "qs": "overrides dependency pulled in by express, grunt and superagent"
   },
@@ -196,7 +195,6 @@
       "@isaacs/brace-expansion": "^5.0.1"
     },
     "fast-xml-parser": "^5.3.6",
-    "qs": "^6.15.0",
-    "ajv": "^8.18.0"
+    "qs": "^6.15.0"
   }
 }

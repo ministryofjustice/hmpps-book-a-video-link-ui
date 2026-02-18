@@ -95,9 +95,9 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.975.0",
+    "@aws-sdk/client-sqs": "^3.992.0",
     "@ministryofjustice/frontend": "^3.7.2",
-    "@ministryofjustice/hmpps-monitoring": "^1.0.0",
+    "@ministryofjustice/hmpps-monitoring": "^1.0.2",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
     "bunyan": "^1.8.15",
@@ -116,7 +116,7 @@
     "http-errors": "^2.0.1",
     "json-2-csv": "^5.5.10",
     "jwt-decode": "^4.0.0",
-    "libphonenumber-js": "^1.12.35",
+    "libphonenumber-js": "^1.12.37",
     "lodash": "^4.17.23",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
@@ -128,11 +128,11 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.0",
-    "@ministryofjustice/eslint-config-hmpps": "1.0.2",
+    "@axe-core/playwright": "^4.11.1",
+    "@ministryofjustice/eslint-config-hmpps": "1.0.3",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.3",
     "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
-    "@playwright/test": "^1.58.0",
+    "@playwright/test": "^1.58.2",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
     "@tsconfig/node24": "^24.0.4",
@@ -146,7 +146,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.23",
-    "@types/node": "^22.19.7",
+    "@types/node": "^22.19.11",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -175,7 +175,7 @@
     "mocha-junit-reporter": "^2.2.1",
     "nock": "^13.5.6",
     "nodemon": "^3.1.11",
-    "openapi-typescript": "^7.10.1",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.8.1",
     "prettier-plugin-jinja-template": "^2.1.0",
     "sass": "^1.97.3",
@@ -186,15 +186,15 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
-    "js-yaml": "overrides dependency pulled in by grunt"
+    "fast-xml-parser": "overrides dependency pulled in by aws-sdk/client-sqs",
+    "qs": "overrides dependency pulled in by express, grunt and superagent"
   },
   "overrides": {
-    "js-yaml": "^4.1.0",
     "@ministryofjustice/hmpps-npm-script-allowlist@0.0.3": {
-      "tar": "^7.5.6"
+      "tar": "^7.5.9",
+      "@isaacs/brace-expansion": "^5.0.1"
     },
-    "mocha@10.7.3": {
-      "diff": "^5.2.2"
-    }
+    "fast-xml-parser": "^5.3.6",
+    "qs": "^6.15.0"
   }
 }

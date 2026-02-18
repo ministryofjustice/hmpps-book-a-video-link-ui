@@ -53,4 +53,8 @@ export default class AbstractPage {
     const value = key.locator('..').locator('.govuk-summary-list__value')
     await expect(value).toContainText(expectedValue)
   }
+
+  async verifyPageHasText(text: string) {
+    await expect(this.page.getByText(text)).toBeVisible()
+  }
 }

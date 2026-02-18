@@ -7,7 +7,7 @@ import enabledPrisons from './fixtures/bookAVideoLinkApi/enabledPrisons.json'
 import allPrisons from './fixtures/bookAVideoLinkApi/allPrisons.json'
 import courtHearingTypes from './fixtures/bookAVideoLinkApi/courtHearingTypes.json'
 import probationMeetingTypes from './fixtures/bookAVideoLinkApi/probationMeetingTypes.json'
-import { formatDate } from '../../server/utils/utils'
+import { PagedModelScheduleItem } from '../../server/@types/bookAVideoLinkApi/types'
 
 const stubGetUserCourtPreferences = (
   jsonBody = [
@@ -125,32 +125,50 @@ export default {
   stubUpdateBooking: () => stubPut('/book-a-video-link-api/video-link-booking/(.)*'),
   stubCancelBooking: () => stubDelete('/book-a-video-link-api/video-link-booking/(.)*'),
   stubGetBooking: (response: object) => stubGet('/book-a-video-link-api/video-link-booking/(.)*', response),
-  stubGetCourtSchedule: (
-    { courtCode, date, response }: { courtCode?: string; date?: string | Date; response?: object | string } = {
-      courtCode: '(.)*',
-      date: undefined,
-      response: [],
-    },
-  ) =>
-    stubGet(
-      `/book-a-video-link-api/schedule/court/${courtCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
-      response,
-    ),
-  stubGetProbationTeamSchedule: (
-    {
-      probationTeamCode,
-      date,
-      response,
-    }: { probationTeamCode?: string; date?: string | Date; response?: object | string } = {
-      probationTeamCode: '(.)*',
-      date: undefined,
-      response: [],
-    },
-  ) =>
-    stubGet(
-      `/book-a-video-link-api/schedule/probation/${probationTeamCode}${date ? `\\?date=${formatDate(date, 'yyyy-MM-dd')}` : ''}`,
-      response,
-    ),
+  stubPostCourtSchedule: ({ requestBody, response }: { response?: PagedModelScheduleItem; requestBody?: object }) =>
+    stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/book-a-video-link-api/schedule/courts/paginated\\?page=0&size=10.*`,
+        bodyPatterns: !requestBody
+          ? undefined
+          : [
+              {
+                equalToJson: requestBody,
+              },
+            ],
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: response,
+      },
+    }),
+  stubPostProbationTeamSchedule: ({
+    requestBody,
+    response,
+  }: {
+    response?: PagedModelScheduleItem
+    requestBody?: object
+  }) =>
+    stubFor({
+      request: {
+        method: 'POST',
+        urlPattern: `/book-a-video-link-api/schedule/probation-teams/paginated\\?page=0&size=10.*`,
+        bodyPatterns: !requestBody
+          ? undefined
+          : [
+              {
+                equalToJson: requestBody,
+              },
+            ],
+      },
+      response: {
+        status: 200,
+        headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+        jsonBody: response,
+      },
+    }),
   stubCourtDataExtractByBookingDate,
   stubCourtDataExtractByHearingDate,
   stubProbationDataExtractByBookingDate,

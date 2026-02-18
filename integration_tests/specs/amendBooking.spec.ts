@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-import { login, resetStubs } from '../testUtils'
+import { format } from 'date-fns'
+import { login, makePageData, resetStubs } from '../testUtils'
 import A0171DZ from '../mockApis/fixtures/prisonerSearchApi/A0171DZ.json'
 import prisonerSearchApi from '../mockApis/prisonerSearchApi'
 import HomePage from '../pages/homePage'
@@ -16,7 +17,7 @@ import nottinghamSelectRoomsByDateTime from '../mockApis/fixtures/bookAVideoLink
 import CheckBookingPage from '../pages/bookAVideoLink/checkBooking'
 import courtBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/courtBookingsForDay.json'
 import SearchBookingsPage from '../pages/bookAVideoLink/searchBookings'
-import ViewBookingPage from '../pages/bookAVideoLink/viewBooking'
+import ViewBookingPage from '../pages/viewBooking/viewBooking'
 import NotesForStaffPage from '../pages/bookAVideoLink/notesForStaff'
 import UpdateConfirmationPage from '../pages/bookAVideoLink/updateConfirmation'
 import ChangeVideoLinkBookingPage from '../pages/bookAVideoLink/changeVideoLinkBooking'
@@ -24,6 +25,10 @@ import nottinghamSelectRoomsByDateTimeEmpty from '../mockApis/fixtures/bookAVide
 import NoRoomsAvailablePage from '../pages/bookAVideoLink/noRoomsAvailablePage'
 import probationBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/probationBookingsForDay.json'
 import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
+import { ScheduleItem } from '../../server/@types/bookAVideoLinkApi/types'
+import { toViewBookingsSearchParams } from '../../server/utils/utils'
+
+const today = format(new Date(), 'yyyy-MM-dd')
 
 test.describe('Amend a booking', () => {
   test.beforeEach(async () => {
@@ -57,7 +62,17 @@ test.describe('Amend a booking', () => {
         bookAVideoLinkApi.stubAvailabilityCheck(),
         bookAVideoLinkApi.stubGetBooking(bobSmithCourtBooking),
         bookAVideoLinkApi.stubCourtHearingTypes(),
-        bookAVideoLinkApi.stubGetCourtSchedule(),
+        bookAVideoLinkApi.stubPostCourtSchedule({
+          requestBody: {
+            fromDate: today,
+            toDate: today,
+            courtCodes: ['ABERCV', 'ABERFC'],
+          },
+          response: {
+            content: [],
+            page: makePageData([]),
+          },
+        }),
         bookAVideoLinkApi.stubGetEnabledCourts(),
         bookAVideoLinkApi.stubGetUserCourtPreferences(),
         bookAVideoLinkApi.stubPostRoomsByDateAndTime(nottinghamSelectRoomsByDateTime),
@@ -71,14 +86,19 @@ test.describe('Amend a booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-
-      await bookAVideoLinkApi.stubGetCourtSchedule({
-        courtCode: 'ABERFC',
-        date: '2050-01-01',
-        response: courtBookingsForDay,
+      await bookAVideoLinkApi.stubPostCourtSchedule({
+        requestBody: {
+          fromDate: '2050-01-01',
+          toDate: '2050-01-01',
+          courtCodes: ['ABERFC'],
+        },
+        response: {
+          content: courtBookingsForDay as unknown as ScheduleItem[],
+          page: makePageData(courtBookingsForDay),
+        },
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      await searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectCourt('Aberystwyth Family')
       await searchBookingsPage.updateResultsButton.click()
       await searchBookingsPage.viewOrEditLink.click()
@@ -94,7 +114,15 @@ test.describe('Amend a booking', () => {
       await updateConfirmationPage.exitToAllBookingsLink.click()
 
       const returnedToSearchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      expect(returnedToSearchBookingsPage.page.url()).toContain('/court/view-booking?date=01-01-2050&agencyCode=ABERFC')
+      const urlParams = toViewBookingsSearchParams({
+        agencyCode: 'ABERFC',
+        fromDate: '01/01/2050',
+        toDate: '01/01/2050',
+        page: 1,
+        sort: 'AGENCY_DATE_TIME',
+      })
+
+      expect(returnedToSearchBookingsPage.page.url()).toContain(`/court/view-booking?${urlParams}`)
     })
 
     test('Can change the hearing link for a court video link booking and return to all bookings page', async ({
@@ -103,14 +131,19 @@ test.describe('Amend a booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-
-      await bookAVideoLinkApi.stubGetCourtSchedule({
-        courtCode: 'ABERFC',
-        date: '2050-01-01',
-        response: courtBookingsForDay,
+      await bookAVideoLinkApi.stubPostCourtSchedule({
+        requestBody: {
+          fromDate: '2050-01-01',
+          toDate: '2050-01-01',
+          courtCodes: ['ABERFC'],
+        },
+        response: {
+          content: courtBookingsForDay as unknown as ScheduleItem[],
+          page: makePageData(courtBookingsForDay),
+        },
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      await searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectCourt('Aberystwyth Family')
       await searchBookingsPage.updateResultsButton.click()
       await searchBookingsPage.viewOrEditLink.click()
@@ -153,14 +186,19 @@ test.describe('Amend a booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-
-      await bookAVideoLinkApi.stubGetCourtSchedule({
-        courtCode: 'ABERFC',
-        date: '2050-01-01',
-        response: courtBookingsForDay,
+      await bookAVideoLinkApi.stubPostCourtSchedule({
+        requestBody: {
+          fromDate: '2050-01-01',
+          toDate: '2050-01-01',
+          courtCodes: ['ABERFC'],
+        },
+        response: {
+          content: courtBookingsForDay as unknown as ScheduleItem[],
+          page: makePageData(courtBookingsForDay),
+        },
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      await searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectCourt('Aberystwyth Family')
       await searchBookingsPage.updateResultsButton.click()
       await searchBookingsPage.viewOrEditLink.click()
@@ -185,15 +223,19 @@ test.describe('Amend a booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-
-      await bookAVideoLinkApi.stubGetCourtSchedule({
-        courtCode: 'ABERFC',
-        date: '2050-01-01',
-        response: courtBookingsForDay,
+      await bookAVideoLinkApi.stubPostCourtSchedule({
+        requestBody: {
+          fromDate: '2050-01-01',
+          toDate: '2050-01-01',
+          courtCodes: ['ABERFC'],
+        },
+        response: {
+          content: courtBookingsForDay as unknown as ScheduleItem[],
+          page: makePageData(courtBookingsForDay),
+        },
       })
-
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      await searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectCourt('Aberystwyth Family')
       await searchBookingsPage.updateResultsButton.click()
       await searchBookingsPage.viewOrEditLink.click()
@@ -242,7 +284,17 @@ test.describe('Amend a booking', () => {
         bookAVideoLinkApi.stubGetBooking(bobSmithProbationBooking),
         bookAVideoLinkApi.stubGetEnabledProbationTeams(),
         bookAVideoLinkApi.stubProbationMeetingTypes(),
-        bookAVideoLinkApi.stubGetProbationTeamSchedule(),
+        bookAVideoLinkApi.stubPostProbationTeamSchedule({
+          requestBody: {
+            fromDate: today,
+            toDate: today,
+            probationTeamCodes: ['BLKPPP', 'BURNPM'],
+          },
+          response: {
+            content: [],
+            page: makePageData([]),
+          },
+        }),
         bookAVideoLinkApi.stubGetUserProbationTeamPreferences(),
         bookAVideoLinkApi.stubPostRoomsByDateAndTime(nottinghamSelectRoomsByDateTime),
         bookAVideoLinkApi.stubUpdateBooking(),
@@ -257,14 +309,19 @@ test.describe('Amend a booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-
-      await bookAVideoLinkApi.stubGetProbationTeamSchedule({
-        probationTeamCode: 'BLKPPP',
-        date: '2050-01-01',
-        response: probationBookingsForDay,
+      await bookAVideoLinkApi.stubPostProbationTeamSchedule({
+        requestBody: {
+          fromDate: '2050-01-01',
+          toDate: '2050-01-01',
+          probationTeamCodes: ['BLKPPP'],
+        },
+        response: {
+          content: probationBookingsForDay as unknown as ScheduleItem[],
+          page: makePageData(probationBookingsForDay),
+        },
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      await searchBookingsPage.selectDate(new Date(2050, 0, 1))
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
       await searchBookingsPage.selectProbationTeam('Blackpool MC (PPOC)')
       await searchBookingsPage.updateResultsButton.click()
       await searchBookingsPage.viewOrEditLink.click()
@@ -280,9 +337,16 @@ test.describe('Amend a booking', () => {
       await updateConfirmationPage.exitToAllBookingsLink.click()
 
       const returnedToSearchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
-      expect(returnedToSearchBookingsPage.page.url()).toContain(
-        '/probation/view-booking?date=01-01-2050&agencyCode=BLKPPP',
-      )
+
+      const urlParams = toViewBookingsSearchParams({
+        agencyCode: 'BLKPPP',
+        fromDate: '01/01/2050',
+        toDate: '01/01/2050',
+        page: 1,
+        sort: 'AGENCY_DATE_TIME',
+      })
+
+      expect(returnedToSearchBookingsPage.page.url()).toContain(`/probation/view-booking?${urlParams}`)
     })
   })
 })

@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.991.0",
+    "@aws-sdk/client-sqs": "^3.992.0",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-monitoring": "^1.0.2",
     "agentkeepalive": "^4.6.0",
@@ -186,6 +186,8 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
+    "ajv": "overrides dependency pulled in by better-npm-audit",
+    "fast-xml-parser": "overrides dependency pulled in by aws-sdk/client-sqs",
     "qs": "overrides dependency pulled in by express, grunt and superagent"
   },
   "overrides": {
@@ -193,6 +195,8 @@
       "tar": "^7.5.9",
       "@isaacs/brace-expansion": "^5.0.1"
     },
-    "qs": "^6.15.0"
+    "fast-xml-parser": "^5.3.6",
+    "qs": "^6.15.0",
+    "ajv": "^8.18.0"
   }
 }

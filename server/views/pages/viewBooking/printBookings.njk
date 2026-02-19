@@ -59,22 +59,23 @@
                 {% set printRows = [] %}
                 {% for item in appointments %}
                     {% set rows = (rows.push([
-                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") },
+                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") } if viewMultipleDateBookings,
                             { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
-                            { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase },
+                            { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase + ' ' + item.prisonerNumber},
                             { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
                                     ('<strong class="govuk-tag govuk-tag--red govuk-tag--small">Action: provide hearing link</strong>' if item.appointmentType == 'VLB_COURT_MAIN' and not item.videoUrl and not item.hmctsNumber) },
                             { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
                                     ('<strong class="govuk-tag govuk-tag--small">Pre-court hearing</strong>' if item.appointmentType == 'VLB_COURT_PRE') +
-                                    ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') }
+                                    ('<strong class="govuk-tag govuk-tag--small">Post-court hearing</strong>' if item.appointmentType == 'VLB_COURT_POST') },
+                            { text: (item.videoUrl or item.hmctsNumber | toFullCourtLink) if item.videoUrl or item.hmctsNumber else 'None entered'}
                         ]
                     ), rows) %}
 
                     {% set printRows = (printRows.push([
-                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") },
+                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") } if viewMultipleDateBookings,
                             { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
-                            { html: '<div>'+ item.prisonerName | convertToTitleCase +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonerNumber + '</div>' },
+                            { html: '<div>'+ (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase + '</div><div class="govuk-!-margin-bottom-0">' + item.prisonerNumber + '</div>' },
                             { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonName + '</div>'  },
                             { text: item.courtDescription if type == 'court' else item.probationTeamDescription },
                             { html: '<div>' + (item.hearingTypeDescription or item.probationMeetingTypeDescription) + '</div>' +
@@ -89,12 +90,13 @@
                     caption: "Total: " + appointments.length,
                     captionClasses: "govuk-table__caption--m",
                     head: [
-                        { text: "Date" },
+                        { text: "Date" } if viewMultipleDateBookings,
                         { text: "Time" },
                         { text: "Name" },
                         { text: "Prison location" },
                         { text: "Court" if type == 'court' else 'Probation team' },
-                        { text: "Hearing type" if type == 'court' else 'Meeting type' }
+                        { text: "Hearing type" if type == 'court' else 'Meeting type' },
+                        { text: "Meeting link" }
                     ],
                     rows: rows
                 }) }}
@@ -103,6 +105,7 @@
                 <div class="print-only">
                 {{ govukTable({
                     head: [
+                        { text: "Date" } if viewMultipleDateBookings,
                         { text: "Time" },
                         { text: "Name" },
                         { text: "Prison location" },

@@ -7,18 +7,21 @@ import AuditService, { Page } from '../../../../../services/auditService'
 import { getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import { Court } from '../../../../../@types/bookAVideoLinkApi/types'
+import TelemetryService from '../../../../../services/telemetryService'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtsService')
+jest.mock('../../../../../services/telemetryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtsService = new CourtsService(null) as jest.Mocked<CourtsService>
+const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, courtsService },
+    services: { auditService, courtsService, telemetryService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -60,6 +63,7 @@ describe('GET', () => {
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
 
+        expect(telemetryService.trackEvent).toHaveBeenCalled()
         expect(heading).toEqual('No bookings available for your selected time')
       })
   })

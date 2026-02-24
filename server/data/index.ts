@@ -8,7 +8,7 @@ import applicationInfoSupplier from '../applicationInfo'
 
 const applicationInfo = applicationInfoSupplier()
 initialiseAppInsights()
-buildAppInsightsClient(applicationInfo)
+const applicationInsightsClient = buildAppInsightsClient(applicationInfo)
 
 import ManageUsersApiClient from './manageUsersApiClient'
 import config from '../config'
@@ -24,6 +24,7 @@ export const dataAccess = () => ({
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
   prisonerOffenderSearchApiClient: new PrisonerOffenderSearchApiClient(),
+  applicationInsightsClient,
 })
 
 export type DataAccess = ReturnType<typeof dataAccess>

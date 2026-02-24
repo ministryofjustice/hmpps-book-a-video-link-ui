@@ -19,6 +19,7 @@ export default function AmendRoutes({
   prisonerService,
   referenceDataService,
   videoLinkService,
+  telemetryService,
 }: Services): Router {
   const router = Router({ mergeParams: true })
 
@@ -44,7 +45,7 @@ export default function AmendRoutes({
 
   route('/video-link-booking', new BookingDetailsHandler(courtsService, prisonerService, referenceDataService))
   route(`/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
-  route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
+  route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, telemetryService))
   route('/video-link-booking/comments', new CommentsHandler())
   route(
     '/video-link-booking/check-booking',

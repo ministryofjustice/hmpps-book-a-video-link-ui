@@ -10,6 +10,7 @@ import ReferenceDataService from './referenceDataService'
 import CourtBookingService from './courtBookingService'
 import ProbationBookingService from './probationBookingService'
 import AdminService from './adminService'
+import TelemetryService from './telemetryService'
 
 export const services = () => {
   const {
@@ -19,6 +20,7 @@ export const services = () => {
     hmppsAuditClient,
     bookAVideoLinkApiClient,
     prisonerOffenderSearchApiClient,
+    applicationInsightsClient,
   } = dataAccess()
 
   const userService = new UserService(manageUsersApiClient, userPreferencesApiClient)
@@ -32,6 +34,7 @@ export const services = () => {
   const videoLinkService = new VideoLinkService(bookAVideoLinkApiClient, prisonerOffenderSearchApiClient)
   const referenceDataService = new ReferenceDataService(bookAVideoLinkApiClient)
   const adminService = new AdminService(bookAVideoLinkApiClient)
+  const telemetryService = new TelemetryService(applicationInsightsClient)
 
   return {
     applicationInfo,
@@ -46,6 +49,7 @@ export const services = () => {
     referenceDataService,
     videoLinkService,
     adminService,
+    telemetryService,
   }
 }
 

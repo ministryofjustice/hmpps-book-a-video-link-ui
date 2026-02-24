@@ -18,6 +18,7 @@ export default function CreateRoutes({
   prisonerService,
   referenceDataService,
   videoLinkService,
+  telemetryService,
 }: Services): Router {
   const basePath = '/:prisonerNumber'
   const router = Router({ mergeParams: true })
@@ -44,7 +45,7 @@ export default function CreateRoutes({
   })
 
   route(`${basePath}/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
-  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService))
+  route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, telemetryService))
   route(
     `${basePath}/video-link-booking/check-booking`,
     new CheckBookingHandler(courtBookingService, courtsService, prisonService, referenceDataService, videoLinkService),

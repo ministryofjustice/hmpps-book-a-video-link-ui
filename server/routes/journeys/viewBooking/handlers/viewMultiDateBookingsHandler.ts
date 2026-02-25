@@ -37,8 +37,9 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
     if (toDate && fromDate && toDate < fromDate) {
       return res.validationFailed(`To date must be on or after from date`, 'toDate')
     }
-    if (toDate && fromDate && differenceInDays(fromDate, toDate) > 30) {
-      return res.validationFailed(`The to date must be a maximum of thirty days after the from date`, 'toDate')
+
+    if (toDate && fromDate && differenceInDays(toDate, fromDate) > 30) {
+      return res.validationFailed(`There must be a maximum of 31 days between selected dates`, 'toDate')
     }
 
     const agencies =

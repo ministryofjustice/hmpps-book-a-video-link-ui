@@ -80,7 +80,7 @@ test.describe('View booking', () => {
       await bookAVideoLinkApi.stubPostCourtSchedule({
         requestBody: {
           fromDate: '2050-01-01',
-          toDate: '2050-01-01',
+          toDate: '2050-01-31',
           courtCodes: ['ABERFC'],
         },
         response: {
@@ -90,7 +90,7 @@ test.describe('View booking', () => {
       })
       const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
       await searchBookingsPage.verifySelectedAgencyCode('ALL')
-      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 1))
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 0, 31))
       await searchBookingsPage.selectCourt('Aberystwyth Family')
       await searchBookingsPage.updateResultsButton.click()
       await searchBookingsPage.viewOrEditLink.click()
@@ -103,12 +103,38 @@ test.describe('View booking', () => {
       const urlParams = toViewBookingsSearchParams({
         agencyCode: 'ABERFC',
         fromDate: '01/01/2050',
-        toDate: '01/01/2050',
+        toDate: '31/01/2050',
         page: 1,
         sort: 'AGENCY_DATE_TIME',
       })
 
       expect(returnedToSearchBookingsPage.page.url()).toContain(`/court/view-booking?${urlParams}`)
+    })
+
+    test('Fails when selected dates exceed 31 days', async ({ page }) => {
+      await login(page)
+      const homePage = await HomePage.verifyOnPage(page)
+      await homePage.viewAndChangeVideoLinks.click()
+      await homePage.verifyPageHasText('There are no video link bookings for this date')
+      await bookAVideoLinkApi.stubPostCourtSchedule({
+        requestBody: {
+          fromDate: '2050-01-01',
+          toDate: '2050-01-01',
+          courtCodes: ['ABERFC'],
+        },
+        response: {
+          content: courtBookingsForDay as unknown as ScheduleItem[],
+          page: makePageData(courtBookingsForDay),
+        },
+      })
+      const searchBookingsPage = await SearchBookingsPage.verifyOnPage(page)
+      await searchBookingsPage.verifySelectedAgencyCode('ALL')
+      await searchBookingsPage.selectFromAndToDate(new Date(2050, 0, 1), new Date(2050, 1, 1))
+      await searchBookingsPage.selectCourt('Aberystwyth Family')
+      await searchBookingsPage.updateResultsButton.click()
+      await expect(
+        searchBookingsPage.page.getByText('There must be a maximum of 31 days between selected dates'),
+      ).toBeVisible()
     })
   })
 

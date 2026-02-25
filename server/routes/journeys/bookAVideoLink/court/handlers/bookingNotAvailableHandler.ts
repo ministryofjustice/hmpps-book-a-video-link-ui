@@ -3,6 +3,7 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
 import TelemetryService from '../../../../../services/telemetryService'
+import { formatDate } from '../../../../../utils/utils'
 
 export default class BookingNotAvailableHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_NOT_AVAILABLE_PAGE
@@ -29,18 +30,20 @@ export default class BookingNotAvailableHandler implements PageHandler {
 
     const courts = await this.courtsService.getUserPreferences(user)
 
-    this.telemetryService.trackEvent('NoRoomsAvailableForCourtBooking', {
-      bookingDate: date,
+    const eventToRecord = {
+      bookingDate: formatDate(date, 'yyyy-MM-dd'),
       prisonCode: prisoner?.prisonId,
       courtCode,
-      preHearingStartTime,
-      preHearingEndTime,
-      startTime,
-      endTime,
-      postHearingStartTime,
-      postHearingEndTime,
+      preHearingStartTime: formatDate(preHearingStartTime, 'HH:mm'),
+      preHearingEndTime: formatDate(preHearingEndTime, 'HH:mm'),
+      startTime: formatDate(startTime, 'HH:mm'),
+      endTime: formatDate(endTime, 'HH:mm'),
+      postHearingStartTime: formatDate(postHearingStartTime, 'HH:mm'),
+      postHearingEndTime: formatDate(postHearingEndTime, 'HH:mm'),
       username: user?.username,
-    })
+    }
+
+    this.telemetryService.trackEvent('NoRoomsAvailableForCourtBooking', eventToRecord)
 
     res.render('pages/bookAVideoLink/court/notAvailable', { courts })
   }

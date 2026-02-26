@@ -538,4 +538,43 @@ describe('Court booking service', () => {
       expect(bookAVideoLinkClient.amendVideoLinkBooking).toHaveBeenCalledWith(1, expectedBody, user)
     })
   })
+
+  describe('getAvailableLocations', () => {
+    it('should correctly fetch the list of available locations', async () => {
+      const journey = {
+        prisoner: {
+          prisonId: 'MDI',
+          prisonerNumber: 'ABC123',
+          prisonName: 'Moorland',
+        },
+        date: '2022-03-20T00:00:00Z',
+        locationCode: 'LOCATION',
+        startTime: '1970-01-01T13:30:00Z',
+        endTime: '1970-01-01T14:30:00Z',
+        preLocationCode: 'PRE_LOCATION',
+        preHearingStartTime: '1970-01-01T13:15:00Z',
+        preHearingEndTime: '1970-01-01T13:30:00Z',
+        postLocationCode: 'POST_LOCATION',
+        postHearingStartTime: '1970-01-01T14:30:00Z',
+        postHearingEndTime: '1970-01-01T14:45:00Z',
+        courtCode: 'COURT_HOUSE',
+        hearingTypeCode: 'APPEAL',
+        notesForStaff: 'staff notes',
+        videoLinkUrl: 'videoLinkUrl',
+      } as BookACourtHearingJourney
+
+      await courtBookingService.getAvailableLocations(journey, user)
+
+      expect(bookAVideoLinkClient.fetchAvailableLocations).toHaveBeenCalledWith(
+        {
+          prisonCode: 'MDI',
+          bookingType: 'COURT',
+          courtCode: 'COURT_HOUSE',
+          date: '2022-03-20',
+          bookingDuration: 90,
+        },
+        user,
+      )
+    })
+  })
 })

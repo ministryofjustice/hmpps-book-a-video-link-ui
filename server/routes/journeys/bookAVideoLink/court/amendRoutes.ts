@@ -10,6 +10,8 @@ import CommentsHandler from './handlers/commentsHandler'
 import SelectRoomsHandler from './handlers/selectRoomsHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 import BookingDetailsHandler from './handlers/bookingDetailsHandler'
+import config from '../../../../config'
+import SelectAlternativeRoomsHandler from './handlers/selectAlternativeRoomsHandler'
 
 export default function AmendRoutes({
   auditService,
@@ -45,6 +47,14 @@ export default function AmendRoutes({
 
   route('/video-link-booking', new BookingDetailsHandler(courtsService, prisonerService, referenceDataService))
   route(`/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
+
+  if (config.featureToggles.selectAlternativeRooms) {
+    route(
+      `/video-link-booking/select-alternative-rooms`,
+      new SelectAlternativeRoomsHandler(courtBookingService, telemetryService),
+    )
+  }
+
   route(`/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, telemetryService))
   route('/video-link-booking/comments', new CommentsHandler())
   route(

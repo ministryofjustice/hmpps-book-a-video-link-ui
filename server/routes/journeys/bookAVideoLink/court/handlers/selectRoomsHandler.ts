@@ -7,6 +7,7 @@ import { Page } from '../../../../../services/auditService'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
 import CourtBookingService from '../../../../../services/courtBookingService'
+import config from '../../../../../config'
 
 class Body {
   @Expose()
@@ -77,8 +78,19 @@ export default class SelectRoomsHandler implements PageHandler {
       (postRequired && isEmpty(postLocations.locations)) ||
       isEmpty(mainLocations.locations)
     ) {
-      // One of the required lists is empty, so we cannot support the meeting at this time.
-      res.redirect('not-available')
+      if (config.featureToggles.selectAlternativeRooms) {
+        const alternatives = await this.courtBookingService.getAvailableLocations(journey, user)
+
+        if (alternatives && alternatives.locations.length > 0) {
+          res.render('pages/bookAVideoLink/court/alternativesAvailable')
+        } else {
+          // One of the required lists is empty and nothing else is available, so we cannot support the meeting at this time.
+          res.redirect('not-available')
+        }
+      } else {
+        // One of the required lists is empty, so we cannot support the meeting at this time.
+        res.redirect('not-available')
+      }
     } else {
       res.render('pages/bookAVideoLink/court/selectRooms', {
         courts,

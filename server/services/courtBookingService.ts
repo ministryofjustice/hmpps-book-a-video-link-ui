@@ -1,3 +1,4 @@
+import { differenceInMinutes } from 'date-fns'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
 import {
   AmendVideoBookingRequest,
@@ -5,6 +6,7 @@ import {
   CreateVideoBookingRequest,
   DateTimeAvailabilityRequest,
   RequestVideoBookingRequest,
+  TimeSlotAvailabilityRequest,
 } from '../@types/bookAVideoLinkApi/types'
 import { formatDate } from '../utils/utils'
 import { BookACourtHearingJourney } from '../routes/journeys/bookAVideoLink/court/journey'
@@ -43,6 +45,23 @@ export default class CourtBookingService {
   public amendVideoLinkBooking(journey: BookACourtHearingJourney, user: Express.User) {
     const request = this.buildBookingRequest<AmendVideoBookingRequest>(journey)
     return this.bookAVideoLinkApiClient.amendVideoLinkBooking(journey.bookingId, request, user)
+  }
+
+  public getAvailableLocations(journey: BookACourtHearingJourney, user: Express.User) {
+    const preDuration = journey.preHearingStartTime ? 15 : 0
+    const mainDuration = differenceInMinutes(journey.endTime, journey.startTime, { roundingMethod: 'trunc' })
+    const postDuration = journey.postHearingStartTime ? 15 : 0
+
+    const request = {
+      prisonCode: journey.prisoner.prisonId,
+      bookingType: 'COURT',
+      courtCode: journey.courtCode,
+      date: formatDate(journey.date, 'yyyy-MM-dd'),
+      bookingDuration: preDuration + mainDuration + postDuration,
+      vlbIdToExclude: journey.bookingId,
+    } as TimeSlotAvailabilityRequest
+
+    return this.bookAVideoLinkApiClient.fetchAvailableLocations(request, user)
   }
 
   private buildAvailabilityRequest(journey: BookACourtHearingJourney): AvailabilityRequest {

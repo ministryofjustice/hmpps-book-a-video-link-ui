@@ -9,6 +9,8 @@ import BookingDetailsHandler from './handlers/bookingDetailsHandler'
 import SelectRoomsHandler from './handlers/selectRoomsHandler'
 import BookingNotAvailableHandler from './handlers/bookingNotAvailableHandler'
 import validatePrisonerNumber from '../middleware/validatePrisonerNumber'
+import SelectAlternativeRoomsHandler from './handlers/selectAlternativeRoomsHandler'
+import config from '../../../../config'
 
 export default function CreateRoutes({
   auditService,
@@ -45,6 +47,14 @@ export default function CreateRoutes({
   })
 
   route(`${basePath}/video-link-booking/select-rooms`, new SelectRoomsHandler(courtsService, courtBookingService))
+
+  if (config.featureToggles.selectAlternativeRooms) {
+    route(
+      `${basePath}/video-link-booking/select-alternative-rooms`,
+      new SelectAlternativeRoomsHandler(courtBookingService, telemetryService),
+    )
+  }
+
   route(`${basePath}/video-link-booking/not-available`, new BookingNotAvailableHandler(courtsService, telemetryService))
   route(
     `${basePath}/video-link-booking/check-booking`,

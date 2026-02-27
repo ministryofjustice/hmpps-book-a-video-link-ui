@@ -1,0 +1,128 @@
+{% extends "partials/layout.njk" %}
+
+{% from "moj/components/alert/macro.njk" import mojAlert %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
+{% set alternativeSlots = availableSlots.length > 0 %}
+{% set noBookings = not (alternativeSlots) %}
+
+{% set pageTitle = "No bookings available for your selected time" %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+        </div>
+    </div>
+
+    {% if alternativeSlots %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                <p class="govuk-body">
+                    There are available bookings at other time slots on your selected date. Choose one of these, or change the date.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if noBookings %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-three-quarters">
+                {{ mojAlert({
+                    variant: "information",
+                    title: "No bookings available",
+                    dismissible: false,
+                    text: 'There are no more bookings available for court hearings on the date you selected. You will need to change the date.'
+                }) }}
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters" id="available-bookings-summary-list">
+            {{ govukSummaryList({
+                classes: "govuk-summary-list--no-border govuk-!-padding-bottom-1 govuk-!-padding-top-1",
+                rows: [
+                    {
+                        key: {
+                            text: "Date"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.date | formatDate('dd MMMM yyyy')
+                        }
+                    },
+                    {
+                        key: {
+                        text: "Pre-court hearing briefing time"
+                    },
+                        value: {
+                            text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookACourtHearing.preHearingStartTime,
+                    {
+                        key: {
+                            text: "Hearing time"
+                        },
+                        value: {
+                            text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
+                        }
+                    },
+                    {
+                        key: {
+                        text: "Post-court hearing briefing time"
+                    },
+                        value: {
+                            text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
+                        }
+                    } if session.journey.bookACourtHearing.postHearingStartTime
+                ]
+            }) }}
+
+            <div class="govuk-button-group">
+                <a href="../video-link-booking" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change</a>
+            </div>
+        </div>
+    </div>
+
+    {% set options = availableSlots %}
+    {% if options.length > 0 %}
+        <form method='POST'>
+            <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+
+            {% for period, options in options | groupBy('timeSlot') %}
+                <div class="govuk-grid-row govuk-!-margin-top-6">
+                    <div class="govuk-grid-column-two-thirds">
+                        <h2 class="govuk-heading-m">Available {{ TimePeriod[period] | lower }} time slots</h2>
+
+                        {% set items = [] %}
+                        {% for option in options %}
+                            {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey + '///' + option.timeSlot %}
+                            {% set items = (items.push({
+                                value: value,
+                                html: '
+                                        <span>' + option.startTime + ' to ' + option.endTime + '</span>
+                                        <span>' + option.name + '</span>
+                                      ',
+                                checked: value | startsWith(session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + '///' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm') + '///' + session.journey.bookACourtHearing.locationCode)
+                            }), items) %}
+                        {% endfor %}
+                        {{ govukRadios({
+                            idPrefix: "option" + (('-' + period) if loop.index0 > 0),
+                            name: "option",
+                            items: items,
+                            errorMessage: validationErrors | findError("option"),
+                            classes: 'govuk-radios--double-label'
+                        }) }}
+
+                        {{ govukButton({
+                            text: "Continue"
+                        }) }}
+                    </div>
+                </div>
+            {% endfor %}
+        </form>
+    {% endif %}
+{% endblock %}

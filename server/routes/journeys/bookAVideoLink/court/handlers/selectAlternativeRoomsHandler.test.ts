@@ -147,7 +147,7 @@ describe('Booking availability handler', () => {
             {
               fieldId: 'option',
               href: '#option',
-              text: 'Select a suitable booking',
+              text: 'Select a suitable slot',
             },
           ])
         })

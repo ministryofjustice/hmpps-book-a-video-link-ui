@@ -12,7 +12,7 @@ import TelemetryService from '../../../../../services/telemetryService'
 
 class Body {
   @Expose()
-  @IsNotEmpty({ message: `Select a suitable booking` })
+  @IsNotEmpty({ message: `Select a suitable slot` })
   option: string
 
   @Expose()

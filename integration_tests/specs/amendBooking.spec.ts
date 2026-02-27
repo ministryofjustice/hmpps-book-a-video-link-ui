@@ -22,11 +22,13 @@ import NotesForStaffPage from '../pages/bookAVideoLink/notesForStaff'
 import UpdateConfirmationPage from '../pages/bookAVideoLink/updateConfirmation'
 import ChangeVideoLinkBookingPage from '../pages/bookAVideoLink/changeVideoLinkBooking'
 import nottinghamSelectRoomsByDateTimeEmpty from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamSelectRoomsByDateTimeEmpty.json'
-import NoRoomsAvailablePage from '../pages/bookAVideoLink/noRoomsAvailablePage'
 import probationBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/probationBookingsForDay.json'
 import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
 import { ScheduleItem } from '../../server/@types/bookAVideoLinkApi/types'
 import { toViewBookingsSearchParams } from '../../server/utils/utils'
+import AlternativeRoomsPage from '../pages/bookAVideoLink/alternativeRoomsPage'
+import nottinghamLocationAvailability from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocationAvailability.json'
+import SelectAlternativeRoomsPage from '../pages/bookAVideoLink/selectAlternativeRoomsPage'
 
 const today = format(new Date(), 'yyyy-MM-dd')
 
@@ -76,6 +78,7 @@ test.describe('Amend a booking', () => {
         bookAVideoLinkApi.stubGetEnabledCourts(),
         bookAVideoLinkApi.stubGetUserCourtPreferences(),
         bookAVideoLinkApi.stubPostRoomsByDateAndTime(nottinghamSelectRoomsByDateTime),
+        bookAVideoLinkApi.stubAvailableLocations(nottinghamLocationAvailability),
         bookAVideoLinkApi.stubUpdateBooking(),
         manageUsersApi.stubCourtUser('john smith'),
         prisonerSearchApi.stubAttributeSearch(smithSearch),
@@ -210,13 +213,25 @@ test.describe('Amend a booking', () => {
       await changeVideoLinkBookingPage.continueButton.click()
 
       // No rooms available
-      const noRoomsAvailablePage = await NoRoomsAvailablePage.verifyOnPage(page)
-      await noRoomsAvailablePage.assertCourt('Aberystwyth Family')
-      await noRoomsAvailablePage.assertPrison('Nottingham (HMP)')
-      await noRoomsAvailablePage.assertDate('01/01/2050')
-      await noRoomsAvailablePage.assertPreHearingTime('14:45 to 15:00')
-      await noRoomsAvailablePage.assertHearingTime('15:00 to 16:00')
-      await noRoomsAvailablePage.assertPostHearingTime('16:00 to 16:15')
+      const noSlotsAvailablePage = await AlternativeRoomsPage.verifyOnPage(page)
+      await noSlotsAvailablePage.assertDate('01 January 2050')
+      await noSlotsAvailablePage.assertPreHearingTime('14:45 to 15:00')
+      await noSlotsAvailablePage.assertHearingTime('15:00 to 16:00')
+      await noSlotsAvailablePage.assertPostHearingTime('16:00 to 16:15')
+      await noSlotsAvailablePage.checkForOtherAvailabilityButton.click()
+
+      const selectAlternativeRoomsPage = await SelectAlternativeRoomsPage.verifyOnPage(page)
+      await expect(selectAlternativeRoomsPage.page.getByText('Available morning time slots')).toBeVisible()
+      await expect(selectAlternativeRoomsPage.page.getByText('Available afternoon time slots')).toBeVisible()
+      await expect(selectAlternativeRoomsPage.page.getByText('Available evening time slots')).not.toBeVisible()
+      await expect(selectAlternativeRoomsPage.selectASuitableSlotLink.first()).not.toBeVisible()
+      await selectAlternativeRoomsPage.continueButton.first().click()
+      await expect(selectAlternativeRoomsPage.selectASuitableSlotLink.first()).toBeVisible()
+      await selectAlternativeRoomsPage.selectSlot('08:00 to 09:00')
+      await selectAlternativeRoomsPage.continueButton.first().click()
+      const checkBookingPage = await CheckBookingPage.verifyOnPage(page)
+      await checkBookingPage.updateBookingButton.click()
+      await UpdateConfirmationPage.verifyOnPage(page)
     })
 
     test('Responds to change links and navigates to appropriate pages', async ({ page }) => {

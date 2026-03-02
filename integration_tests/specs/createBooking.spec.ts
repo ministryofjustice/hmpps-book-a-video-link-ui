@@ -134,8 +134,8 @@ test.describe('Create a booking', () => {
       await newBookingPage.selectCvpKnown('No')
       await newBookingPage.selectGuestPinKnown('No')
       await newBookingPage.selectDate(new Date(2050, 0, 1))
-      await newBookingPage.selectStartTime(15, 0)
-      await newBookingPage.selectEndTime(16, 0)
+      await newBookingPage.selectStartTime(15, 15)
+      await newBookingPage.selectEndTime(15, 45)
       await newBookingPage.selectPreHearingRequired('Yes')
       await newBookingPage.selectPostHearingRequired('Yes')
       await newBookingPage.enterNotesForStaff('staff notes')
@@ -143,9 +143,9 @@ test.describe('Create a booking', () => {
 
       const noSlotsAvailablePage = await AlternativeRoomsPage.verifyOnPage(page)
       await noSlotsAvailablePage.assertDate('01 January 2050')
-      await noSlotsAvailablePage.assertPreHearingTime('14:45 to 15:00')
-      await noSlotsAvailablePage.assertHearingTime('15:00 to 16:00')
-      await noSlotsAvailablePage.assertPostHearingTime('16:00 to 16:15')
+      await noSlotsAvailablePage.assertPreHearingTime('15:00 to 15:15')
+      await noSlotsAvailablePage.assertHearingTime('15:15 to 15:45')
+      await noSlotsAvailablePage.assertPostHearingTime('15:45 to 16:00')
       await noSlotsAvailablePage.checkForOtherAvailabilityButton.click()
 
       const selectAlternativeRoomsPage = await SelectAlternativeRoomsPage.verifyOnPage(page)

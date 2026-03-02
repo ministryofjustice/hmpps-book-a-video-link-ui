@@ -77,7 +77,7 @@ afterEach(() => {
 
 describe('Booking availability handler', () => {
   describe('GET', () => {
-    it('should render the correct view page', () => {
+    it('should render the correct view page with no option pre-selected', () => {
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-alternative-rooms`)
         .expect('Content-Type', /html/)
@@ -95,6 +95,61 @@ describe('Booking availability handler', () => {
 
           expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
           expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
+
+          const alternativeTimesRadio = $('input[name="option"]:checked')
+          expect(alternativeTimesRadio.val()).toBeUndefined()
+        })
+    })
+
+    it('should default to selected option when start time matches the main hearing on the session e.g. via back button', () => {
+      bookACourtHearingSession.startTime = '1970-01-01T10:00:00Z'
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-alternative-rooms`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          const radios = radioOptions($, 'option')
+
+          expect(heading).toEqual('No bookings available for your selected time')
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ALTERNATIVE_ROOMS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
+          expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
+
+          const alternativeTimesRadio = $('input[name="option"]:checked')
+          expect(alternativeTimesRadio.val()).toEqual('10:00///12:00///VIDEO_1///AM')
+        })
+    })
+
+    it('should default to selected option when start time matches the pre-hearing on the session e.g. via back button', () => {
+      bookACourtHearingSession.preHearingStartTime = '1970-01-01T10:00:00Z'
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-alternative-rooms`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+          const radios = radioOptions($, 'option')
+
+          expect(heading).toEqual('No bookings available for your selected time')
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.SELECT_ALTERNATIVE_ROOMS_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
+          expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
+
+          const alternativeTimesRadio = $('input[name="option"]:checked')
+          expect(alternativeTimesRadio.val()).toEqual('10:00///12:00///VIDEO_1///AM')
         })
     })
 

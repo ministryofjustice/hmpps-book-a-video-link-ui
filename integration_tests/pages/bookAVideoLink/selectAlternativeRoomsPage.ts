@@ -16,7 +16,9 @@ export default class SelectAlternativeRoomsPage extends AbstractPage {
   static async verifyOnPage(page: Page): Promise<SelectAlternativeRoomsPage> {
     const selectAlternativeRoomsPage = new SelectAlternativeRoomsPage(page)
     await expect(selectAlternativeRoomsPage.header).toBeVisible()
-    await selectAlternativeRoomsPage.verifyNoAccessViolationsOnPage()
+    // // aria-allowed-attr is disabled because radio buttons can have aria-expanded which isn't
+    // // currently allowed by the spec, but that might change: https://github.com/w3c/aria/issues/1404
+    await selectAlternativeRoomsPage.verifyNoAccessViolationsOnPage(['aria-allowed-attr'])
     return selectAlternativeRoomsPage
   }
 

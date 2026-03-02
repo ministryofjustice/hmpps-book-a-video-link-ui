@@ -11,6 +11,8 @@ import {
   formatDate,
   initialiseName,
   parseDate,
+  plusMinutes,
+  subtractMinutes,
   toDuration,
   toFullCourtLink,
   toViewBookingsSearchParams,
@@ -82,6 +84,8 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('min', (a: number, b: number) => Math.min(a, b))
   njkEnv.addFilter('max', (a: number, b: number) => Math.max(a, b))
   njkEnv.addFilter('toViewBookingsSearchParams', toViewBookingsSearchParams)
+  njkEnv.addFilter('plusMinutes', plusMinutes)
+  njkEnv.addFilter('subtractMinutes', subtractMinutes)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
   njkEnv.addGlobal('now', () => new Date())

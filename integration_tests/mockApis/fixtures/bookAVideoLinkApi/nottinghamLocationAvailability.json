@@ -245,24 +245,6 @@
     },
     {
       "name": "Closed Visits Cubicle 5 - Crown Ct",
-      "startTime": "14:45",
-      "endTime": "15:45",
-      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
-      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
-      "usage": null,
-      "timeSlot": "PM"
-    },
-    {
-      "name": "Closed Visits Cubicle 5 - Crown Ct",
-      "startTime": "15:00",
-      "endTime": "16:00",
-      "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",
-      "dpsLocationId": "92401b5b-b902-4923-8a00-945bd45f4a22",
-      "usage": null,
-      "timeSlot": "PM"
-    },
-    {
-      "name": "Closed Visits Cubicle 5 - Crown Ct",
       "startTime": "15:15",
       "endTime": "16:15",
       "dpsLocationKey": "NMI-VIDEOLINK-CVC_5_CC",

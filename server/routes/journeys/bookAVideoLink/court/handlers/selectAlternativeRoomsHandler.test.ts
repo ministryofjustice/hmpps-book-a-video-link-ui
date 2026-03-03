@@ -10,12 +10,15 @@ import { AvailableLocationsResponse } from '../../../../../@types/bookAVideoLink
 import CourtBookingService from '../../../../../services/courtBookingService'
 import { BookACourtHearingJourney } from '../journey'
 import config from '../../../../../config'
+import TelemetryService from '../../../../../services/telemetryService'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtBookingService')
+jest.mock('../../../../../services/telemetryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const courtBookingService = new CourtBookingService(null) as jest.Mocked<CourtBookingService>
+const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express
 
@@ -24,6 +27,7 @@ const appSetup = (journeySession = {}) => {
     services: {
       auditService,
       courtBookingService,
+      telemetryService,
     },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
@@ -76,8 +80,20 @@ afterEach(() => {
 })
 
 describe('Booking availability handler', () => {
+  beforeEach(() => {
+    bookACourtHearingSession.preHearingStartTime = undefined
+    bookACourtHearingSession.preHearingEndTime = undefined
+    bookACourtHearingSession.postHearingStartTime = undefined
+    bookACourtHearingSession.postHearingEndTime = undefined
+  })
+
   describe('GET', () => {
     it('should render the correct view page with no option pre-selected', () => {
+      bookACourtHearingSession.preHearingStartTime = '1970-01-01T13:15:00Z'
+      bookACourtHearingSession.preHearingEndTime = '1970-01-01T13:30:00Z'
+      bookACourtHearingSession.postHearingStartTime = '1970-01-01T14:30:00Z'
+      bookACourtHearingSession.postHearingEndTime = '1970-01-01T14:45:00Z'
+
       return request(app)
         .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-alternative-rooms`)
         .expect('Content-Type', /html/)
@@ -98,6 +114,18 @@ describe('Booking availability handler', () => {
 
           const alternativeTimesRadio = $('input[name="option"]:checked')
           expect(alternativeTimesRadio.val()).toBeUndefined()
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('GetAlternativeRoomsForCourtBooking', {
+            bookingDate: '2022-03-20',
+            courtCode: 'COURT_HOUSE',
+            prisonCode: 'MDI',
+            preHearingStartTime: '13:15',
+            preHearingEndTime: '13:30',
+            startTime: '13:30',
+            endTime: '14:30',
+            postHearingStartTime: '14:30',
+            postHearingEndTime: '14:45',
+            username: 'user1',
+          })
         })
     })
 
@@ -221,6 +249,21 @@ describe('Booking availability handler', () => {
         })
         .expect(302)
         .expect('location', 'check-booking')
+        .expect(() => {
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('PostAlternativeRoomsForCourtBooking', {
+            bookingDate: '2022-03-20',
+            courtCode: 'COURT_HOUSE',
+            prisonCode: 'MDI',
+            locationCode: 'VIDEO_2',
+            preHearingEndTime: '15:15',
+            preHearingStartTime: '15:00',
+            startTime: '15:15',
+            endTime: '15:45',
+            postHearingEndTime: '16:00',
+            postHearingStartTime: '15:45',
+            username: 'user1',
+          })
+        })
         .then(() =>
           expectJourneySession(app, 'bookACourtHearing', {
             ...bookACourtHearingSession,
@@ -238,8 +281,6 @@ describe('Booking availability handler', () => {
     })
 
     it('should save the posted fields in session with post but no pre-hearing', () => {
-      bookACourtHearingSession.preHearingStartTime = undefined
-      bookACourtHearingSession.preHearingEndTime = undefined
       bookACourtHearingSession.postHearingStartTime = '1970-01-01T14:30:00Z'
       bookACourtHearingSession.postHearingEndTime = '1970-01-01T14:45:00Z'
 
@@ -266,8 +307,6 @@ describe('Booking availability handler', () => {
     it('should save the posted fields in session with pre but no post hearing', () => {
       bookACourtHearingSession.preHearingStartTime = '1970-01-01T13:15:00Z'
       bookACourtHearingSession.preHearingEndTime = '1970-01-01T13:30:00Z'
-      bookACourtHearingSession.postHearingStartTime = undefined
-      bookACourtHearingSession.postHearingEndTime = undefined
 
       return request(app)
         .post(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-alternative-rooms`)

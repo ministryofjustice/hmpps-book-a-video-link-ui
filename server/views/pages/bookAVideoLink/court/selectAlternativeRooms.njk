@@ -2,6 +2,7 @@
 
 {% from "moj/components/alert/macro.njk" import mojAlert %}
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/radios/macro.njk" import govukRadios %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
@@ -56,7 +57,7 @@
                     },
                     {
                         key: {
-                        text: "Pre-court hearing briefing time"
+                        text: "Pre-court hearing time"
                     },
                         value: {
                             text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
@@ -72,7 +73,7 @@
                     },
                     {
                         key: {
-                        text: "Post-court hearing briefing time"
+                        text: "Post-court hearing time"
                     },
                         value: {
                             text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
@@ -99,14 +100,70 @@
 
                         {% set items = [] %}
                         {% for option in options %}
+                            {% set meetingsHtml %}
+                                {% set mainHearingStartTime = option.startTime | plusMinutes(15) if session.journey.bookACourtHearing.preHearingStartTime else option.startTime %}
+                                {% set mainHearingEndTime = option.endTime | subtractMinutes(15) if session.journey.bookACourtHearing.postHearingStartTime else option.endTime  %}
+
+                                {{ govukTable({
+                                    rows: [
+                                        [
+                                            {
+                                                text: "Pre-hearing time",
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            },
+                                            {
+                                                text: option.startTime + ' to ' + option.startTime | plusMinutes(15),
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            },
+                                            {
+                                                text: option.name,
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            }
+                                        ] if session.journey.bookACourtHearing.preHearingStartTime,
+                                        [
+                                            {
+                                                text: "Hearing time",
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            },
+                                            {
+                                                text: mainHearingStartTime + ' to ' + mainHearingEndTime,
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            },
+                                            {
+                                                text: option.name,
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            }
+                                        ],
+                                        [
+                                            {
+                                                text: "Post-hearing time",
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            },
+                                            {
+                                                text: option.endTime | subtractMinutes(15) + ' to ' + option.endTime,
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            },
+                                            {
+                                                text: option.name,
+                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
+                                            }
+
+                                        ] if session.journey.bookACourtHearing.postHearingStartTime
+                                    ]
+                                }) }}
+                            {% endset %}
+
                             {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey + '///' + option.timeSlot %}
+                            {% set startTime = session.journey.bookACourtHearing.preHearingStartTime or session.journey.bookACourtHearing.startTime %}
                             {% set items = (items.push({
                                 value: value,
                                 html: '
                                         <span>' + option.startTime + ' to ' + option.endTime + '</span>
-                                        <span>' + option.name + '</span>
                                       ',
-                                checked: value | startsWith(session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + '///' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm') + '///' + session.journey.bookACourtHearing.locationCode)
+                                checked: option.startTime == (startTime | formatDate('HH:mm')),
+                                conditional: {
+                                    html: meetingsHtml
+                                }
                             }), items) %}
                         {% endfor %}
                         {{ govukRadios({

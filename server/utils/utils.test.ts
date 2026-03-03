@@ -10,8 +10,10 @@ import {
   isValidPrisonerNumber,
   parseDate,
   parseDatePickerDate,
+  plusMinutes,
   simpleDateToDate,
   simpleTimeToDate,
+  subtractMinutes,
   toDateString,
   toDuration,
   toFullCourtLink,
@@ -287,5 +289,26 @@ describe('toViewBookingsLinkParams', () => {
     expect(toViewBookingsSearchParams(request)).toEqual(
       'fromDate=01%2F01%2F2026&toDate=31%2F12%2F2026&agencyCode=ALL&page=0&sort=DATE_TIME',
     )
+  })
+})
+
+describe('plusMinutes', () => {
+  it.each([
+    ['09:00', 21, '09:21'],
+    ['12:00', 35, '12:35'],
+    ['15:00', 61, '16:01'],
+    ['23:59', 2, '00:01'],
+  ])("prisoner number [%s] is valid '%s'", (input, minutes: number, expected) => {
+    expect(plusMinutes(input, minutes)).toEqual(expected)
+  })
+})
+
+describe('subtractMinutes', () => {
+  it.each([
+    ['09:21', 21, '09:00'],
+    ['12:35', 35, '12:00'],
+    ['00:01', 2, '23:59'],
+  ])("prisoner number [%s] is valid '%s'", (input, minutes: number, expected) => {
+    expect(subtractMinutes(input, minutes)).toEqual(expected)
   })
 })

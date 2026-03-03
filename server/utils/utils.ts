@@ -8,6 +8,8 @@ import {
   startOfWeek,
   endOfWeek,
   eachDayOfInterval,
+  addMinutes,
+  subMinutes,
 } from 'date-fns'
 import { enGB } from 'date-fns/locale'
 import { VideoLinkBooking } from '../@types/bookAVideoLinkApi/types'
@@ -139,3 +141,9 @@ export const toViewBookingsSearchParams = (journey: ViewMultipleAgencyBookingsJo
 
   return queryParams.toString()
 }
+
+export const plusMinutes = (time: string, minutes: number = 15) =>
+  formatDate(addMinutes(parse(time, 'HH:mm', new Date()), minutes), 'HH:mm')
+
+export const subtractMinutes = (time: string, minutes: number = 15) =>
+  formatDate(subMinutes(parse(time, 'HH:mm', new Date()), minutes), 'HH:mm')

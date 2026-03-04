@@ -40,7 +40,7 @@
                             text: "Pre-court hearing briefing time"
                         },
                         value: {
-                            text: session.journey.bookACourtHearing.preHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.preHearingEndTime | formatDate('HH:mm')
+                            text: session.journey.bookACourtHearing.initialPreHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.initialPreHearingEndTime | formatDate('HH:mm')
                         }
                     } if session.journey.bookACourtHearing.preHearingStartTime,
                     {
@@ -48,7 +48,7 @@
                             text: "Hearing time"
                         },
                         value: {
-                            text: session.journey.bookACourtHearing.startTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.endTime | formatDate('HH:mm')
+                            text: session.journey.bookACourtHearing.initialStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.initialEndTime | formatDate('HH:mm')
                         }
                     },
                     {
@@ -56,7 +56,7 @@
                             text: "Post-court hearing briefing time"
                         },
                         value: {
-                            text: session.journey.bookACourtHearing.postHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.postHearingEndTime | formatDate('HH:mm')
+                            text: session.journey.bookACourtHearing.initialPostHearingStartTime | formatDate('HH:mm') + ' to ' + session.journey.bookACourtHearing.initialPostHearingEndTime | formatDate('HH:mm')
                         }
                     } if session.journey.bookACourtHearing.postHearingStartTime
                 ],

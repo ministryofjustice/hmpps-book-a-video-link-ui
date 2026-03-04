@@ -31,4 +31,11 @@ export type BookACourtHearingJourney = {
   guestPinRequired?: boolean
   guestPin?: string
   originalBookingDate?: string
+  // Record initial values so can be used in alternative flows e.g. alternative court room flow.
+  initialPreHearingStartTime?: string
+  initialPreHearingEndTime?: string
+  initialStartTime?: string
+  initialEndTime?: string
+  initialPostHearingStartTime?: string
+  initialPostHearingEndTime?: string
 }

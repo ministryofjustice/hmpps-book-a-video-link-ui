@@ -26,7 +26,7 @@ describe('insertJourneyIdentifier', () => {
 
     middleware(req, res, next)
 
-    expect(res.redirect).toBeCalledWith(
+    expect(res.redirect).toHaveBeenCalledWith(
       expect.stringMatching(
         /\/manage-courts\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\/select-courts/,
       ),
@@ -40,6 +40,6 @@ describe('insertJourneyIdentifier', () => {
 
     middleware(req, res, next)
 
-    expect(next).toBeCalled()
+    expect(next).toHaveBeenCalled()
   })
 })

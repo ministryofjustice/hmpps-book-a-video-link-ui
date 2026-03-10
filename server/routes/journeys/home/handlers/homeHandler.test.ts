@@ -97,7 +97,7 @@ describe('GET', () => {
         })
       })
 
-    expect(courtsService.setUserPreferences).toBeCalledWith(['ABERCV'], testUser)
+    expect(courtsService.setUserPreferences).toHaveBeenCalledWith(['ABERCV'], testUser)
   })
 
   it('probation user has user preferences migrated from user-preferences-api', async () => {
@@ -131,7 +131,7 @@ describe('GET', () => {
         })
       })
 
-    expect(probationTeamsService.setUserPreferences).toBeCalledWith(['BARNET'], testUser)
+    expect(probationTeamsService.setUserPreferences).toHaveBeenCalledWith(['BARNET'], testUser)
   })
 
   it('court user should be redirected to select court preferences if they have not selected any', async () => {

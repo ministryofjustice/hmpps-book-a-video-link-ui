@@ -82,7 +82,7 @@ export default class SelectRoomsHandler implements PageHandler {
         const alternatives = await this.courtBookingService.getAvailableLocations(journey, user)
 
         if (alternatives && alternatives.locations.length > 0) {
-          res.render('pages/bookAVideoLink/court/alternativesAvailable')
+          res.redirect('select-alternative-rooms')
         } else {
           // One of the required lists is empty and nothing else is available, so we cannot support the meeting at this time.
           res.redirect('not-available')

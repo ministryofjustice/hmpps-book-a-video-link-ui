@@ -20,13 +20,7 @@
     </div>
 
     {% if alternativeSlots %}
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-three-quarters">
-                <p class="govuk-body">
-                    There are available bookings at other time slots on your selected date. Choose one of these, or change the date.
-                </p>
-            </div>
-        </div>
+        <h3 class="govuk-heading-m">Your preferred slot</h3>
     {% endif %}
 
     {% if noBookings %}
@@ -43,48 +37,43 @@
     {% endif %}
 
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-three-quarters" id="available-bookings-summary-list">
-            {{ govukSummaryList({
-                classes: "govuk-summary-list--no-border govuk-!-padding-bottom-1 govuk-!-padding-top-1",
+        <div class="govuk-grid-column-one-half">
+            {{ govukTable({
                 rows: [
-                    {
-                        key: {
+                    [
+                        {
                             text: "Date"
                         },
-                        value: {
+                        {
                             text: session.journey.bookACourtHearing.date | formatDate('dd MMMM yyyy')
                         }
-                    },
-                    {
-                        key: {
-                        text: "Pre-court hearing time"
-                    },
-                        value: {
+                    ],
+                    [
+                        {
+                            text: "Pre-court hearing time"
+                        },
+                        {
                             text: session.journey.bookACourtHearing.initialPreHearingStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.initialPreHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookACourtHearing.preHearingStartTime,
-                    {
-                        key: {
+                    ] if session.journey.bookACourtHearing.preHearingStartTime,
+                    [
+                        {
                             text: "Hearing time"
                         },
-                        value: {
+                        {
                             text: session.journey.bookACourtHearing.initialStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.initialEndTime | formatDate('HH:mm')
                         }
-                    },
-                    {
-                        key: {
-                        text: "Post-court hearing time"
-                    },
-                        value: {
+                    ],
+                    [
+                        {
+                            text: "Post-court hearing time"
+                        },
+                        {
                             text: session.journey.bookACourtHearing.initialPostHearingStartTime | formatDate('HH:mm')  + ' to ' + session.journey.bookACourtHearing.initialPostHearingEndTime | formatDate('HH:mm')
                         }
-                    } if session.journey.bookACourtHearing.postHearingStartTime
+                    ] if session.journey.bookACourtHearing.postHearingStartTime
                 ]
             }) }}
-
-            <div class="govuk-button-group">
-                <a href="../video-link-booking" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change</a>
-            </div>
         </div>
     </div>
 
@@ -96,63 +85,10 @@
             {% for period, options in options | groupBy('timeSlot') %}
                 <div class="govuk-grid-row govuk-!-margin-top-6">
                     <div class="govuk-grid-column-two-thirds">
-                        <h2 class="govuk-heading-m">Available {{ TimePeriod[period] | lower }} time slots</h2>
+                        <h2 class="govuk-heading-m">{{ TimePeriod[period] | convertToTitleCase }} slots</h2>
 
                         {% set items = [] %}
                         {% for option in options %}
-                            {% set meetingsHtml %}
-                                {% set mainHearingStartTime = option.startTime | plusMinutes(15) if session.journey.bookACourtHearing.preHearingStartTime else option.startTime %}
-                                {% set mainHearingEndTime = option.endTime | subtractMinutes(15) if session.journey.bookACourtHearing.postHearingStartTime else option.endTime  %}
-
-                                {{ govukTable({
-                                    rows: [
-                                        [
-                                            {
-                                                text: "Pre-court hearing time",
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            },
-                                            {
-                                                text: option.startTime + ' to ' + option.startTime | plusMinutes(15),
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            },
-                                            {
-                                                text: option.name,
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            }
-                                        ] if session.journey.bookACourtHearing.preHearingStartTime,
-                                        [
-                                            {
-                                                text: "Hearing time",
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            },
-                                            {
-                                                text: mainHearingStartTime + ' to ' + mainHearingEndTime,
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            },
-                                            {
-                                                text: option.name,
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            }
-                                        ],
-                                        [
-                                            {
-                                                text: "Post-court hearing time",
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            },
-                                            {
-                                                text: option.endTime | subtractMinutes(15) + ' to ' + option.endTime,
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            },
-                                            {
-                                                text: option.name,
-                                                classes: "govuk-!-width-one-quarter govuk-table__cell--no-border"
-                                            }
-
-                                        ] if session.journey.bookACourtHearing.postHearingStartTime
-                                    ]
-                                }) }}
-                            {% endset %}
-
                             {% set value = option.startTime + '///' + option.endTime + '///' + option.dpsLocationKey + '///' + option.timeSlot %}
                             {% set startTime = session.journey.bookACourtHearing.preHearingStartTime or session.journey.bookACourtHearing.startTime %}
                             {% set items = (items.push({
@@ -160,10 +96,7 @@
                                 html: '
                                         <span>' + option.startTime + ' to ' + option.endTime + '</span>
                                       ',
-                                checked: option.startTime == (startTime | formatDate('HH:mm')),
-                                conditional: {
-                                    html: meetingsHtml
-                                }
+                                checked: option.startTime == (startTime | formatDate('HH:mm'))
                             }), items) %}
                         {% endfor %}
                         {{ govukRadios({
@@ -174,12 +107,17 @@
                             classes: 'govuk-radios--double-label'
                         }) }}
 
-                        {{ govukButton({
-                            text: "Continue"
-                        }) }}
                     </div>
+
                 </div>
             {% endfor %}
+
+            <div class="govuk-button-group">
+                <a href="../video-link-booking" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Change</a>
+                {{ govukButton({
+                    text: "Continue"
+                }) }}
+            </div>
         </form>
     {% endif %}
 {% endblock %}

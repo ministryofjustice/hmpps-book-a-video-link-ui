@@ -26,7 +26,6 @@ import probationBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/prob
 import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
 import { ScheduleItem } from '../../server/@types/bookAVideoLinkApi/types'
 import { toViewBookingsSearchParams } from '../../server/utils/utils'
-import AlternativeRoomsPage from '../pages/bookAVideoLink/alternativeRoomsPage'
 import nottinghamLocationAvailability from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocationAvailability.json'
 import SelectAlternativeRoomsPage from '../pages/bookAVideoLink/selectAlternativeRoomsPage'
 
@@ -212,23 +211,15 @@ test.describe('Amend a booking', () => {
       const changeVideoLinkBookingPage = await ChangeVideoLinkBookingPage.verifyOnPage(page)
       await changeVideoLinkBookingPage.continueButton.click()
 
-      // No rooms available
-      const noSlotsAvailablePage = await AlternativeRoomsPage.verifyOnPage(page)
-      await noSlotsAvailablePage.assertDate('01 January 2050')
-      await noSlotsAvailablePage.assertPreHearingTime('14:45 to 15:00')
-      await noSlotsAvailablePage.assertHearingTime('15:00 to 16:00')
-      await noSlotsAvailablePage.assertPostHearingTime('16:00 to 16:15')
-      await noSlotsAvailablePage.checkForOtherAvailabilityButton.click()
-
       const selectAlternativeRoomsPage = await SelectAlternativeRoomsPage.verifyOnPage(page)
-      await expect(selectAlternativeRoomsPage.page.getByText('Available morning time slots')).toBeVisible()
-      await expect(selectAlternativeRoomsPage.page.getByText('Available afternoon time slots')).toBeVisible()
-      await expect(selectAlternativeRoomsPage.page.getByText('Available evening time slots')).not.toBeVisible()
+      await expect(selectAlternativeRoomsPage.page.getByText('Morning slots')).toBeVisible()
+      await expect(selectAlternativeRoomsPage.page.getByText('Afternoon slots')).toBeVisible()
+      await expect(selectAlternativeRoomsPage.page.getByText('Evening slots')).not.toBeVisible()
       await expect(selectAlternativeRoomsPage.selectASuitableSlotLink.first()).not.toBeVisible()
-      await selectAlternativeRoomsPage.continueButton.first().click()
+      await selectAlternativeRoomsPage.continueButton.click()
       await expect(selectAlternativeRoomsPage.selectASuitableSlotLink.first()).toBeVisible()
       await selectAlternativeRoomsPage.selectSlot('08:00 to 09:00')
-      await selectAlternativeRoomsPage.continueButton.first().click()
+      await selectAlternativeRoomsPage.continueButton.click()
       const checkBookingPage = await CheckBookingPage.verifyOnPage(page)
       await checkBookingPage.updateBookingButton.click()
       await UpdateConfirmationPage.verifyOnPage(page)

@@ -150,6 +150,7 @@ export default {
     viewMultipleAgenciesBookings: get('FEATURE_VIEW_MULTIPLE_AGENCIES_BOOKINGS', false) === 'true',
     viewMultipleDateBookings: get('FEATURE_VIEW_MULTIPLE_DATE_BOOKINGS', false) === 'true',
     selectAlternativeRooms: get('FEATURE_SELECT_ALTERNATIVE_ROOMS', false) === 'true',
+    notAlternativeCourtRoomPrisons: get('FEATURE_NOT_ALTERNATIVE_COURT_ROOM_PRISONS', null),
   },
   defaultCourtVideoUrl: get('DEFAULT_COURT_VIDEO_URL', 'meet.video.justice.gov.uk'),
 }

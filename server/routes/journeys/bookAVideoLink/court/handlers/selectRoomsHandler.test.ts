@@ -329,7 +329,7 @@ describe('Select rooms handler', () => {
 
     it('should redirect to not available if alterative available rooms feature not available for prison', () => {
       config.featureToggles.selectAlternativeRooms = true
-      config.featureToggles.multiCourtRoomPrisons = 'MDI'
+      config.featureToggles.notAlternativeCourtRoomPrisons = 'MDI'
 
       courtBookingService.roomsAvailableByDateAndTime.mockResolvedValueOnce({
         locations: [],

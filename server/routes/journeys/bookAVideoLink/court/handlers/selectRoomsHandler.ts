@@ -80,7 +80,7 @@ export default class SelectRoomsHandler implements PageHandler {
     ) {
       if (
         config.featureToggles.selectAlternativeRooms &&
-        !config.featureToggles.multiCourtRoomPrisons?.split(',').includes(journey.prisoner?.prisonId)
+        !config.featureToggles.notAlternativeCourtRoomPrisons?.split(',').includes(journey.prisoner?.prisonId)
       ) {
         const alternatives = await this.courtBookingService.getAvailableLocations(journey, user)
 

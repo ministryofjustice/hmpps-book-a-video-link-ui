@@ -14,6 +14,7 @@ import { formatDate } from '../../../../../utils/utils'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import PrisonerService from '../../../../../services/prisonerService'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/videoLinkService')
@@ -33,6 +34,7 @@ const journey = {
   prisoner: {
     firstName: 'Joe',
     lastName: 'Smith',
+    prisonId: 'MDI',
   },
   preHearingStartTime: parse('12:45', 'HH:mm', new Date(0)).toISOString(),
   preHearingEndTime: parse('13:00', 'HH:mm', new Date(0)).toISOString(),
@@ -293,6 +295,52 @@ describe('Select rooms handler', () => {
         .expect('location', 'not-available')
     })
 
+    it('should redirect to alterative available rooms if alternative times are available', () => {
+      config.featureToggles.selectAlternativeRooms = true
+
+      courtBookingService.roomsAvailableByDateAndTime.mockResolvedValueOnce({
+        locations: [],
+      } as AvailableLocationsResponse)
+
+      courtBookingService.getAvailableLocations.mockResolvedValue({
+        locations: [
+          {
+            name: 'Video room 1',
+            startTime: '10:00',
+            endTime: '12:00',
+            dpsLocationKey: 'VIDEO_1',
+            timeSlot: 'AM',
+          },
+          {
+            name: 'Video room 2',
+            startTime: '11:00',
+            endTime: '13:00',
+            dpsLocationKey: 'VIDEO_2',
+            timeSlot: 'AM',
+          },
+        ],
+      } as AvailableLocationsResponse)
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-rooms`)
+        .expect(302)
+        .expect('location', 'select-alternative-rooms')
+    })
+
+    it('should redirect to not available if alterative available rooms feature not available for prison', () => {
+      config.featureToggles.selectAlternativeRooms = true
+      config.featureToggles.multiCourtRoomPrisons = 'MDI'
+
+      courtBookingService.roomsAvailableByDateAndTime.mockResolvedValueOnce({
+        locations: [],
+      } as AvailableLocationsResponse)
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/select-rooms`)
+        .expect(302)
+        .expect('location', 'not-available')
+    })
+
     it("should exclude this booking's appointments from the availability check during amend", () => {
       return request(app)
         .get(`/court/booking/amend/1/${journeyId()}/video-link-booking/select-rooms`)
@@ -386,6 +434,7 @@ describe('Select rooms handler', () => {
             prisoner: {
               firstName: 'Joe',
               lastName: 'Smith',
+              prisonId: 'MDI',
             },
             preHearingStartTime: parse('12:45', 'HH:mm', new Date(0)).toISOString(),
             preHearingEndTime: parse('13:00', 'HH:mm', new Date(0)).toISOString(),

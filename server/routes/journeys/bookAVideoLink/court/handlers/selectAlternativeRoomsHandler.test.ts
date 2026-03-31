@@ -118,6 +118,7 @@ describe('Booking availability handler', () => {
             bookingDate: '2022-03-20',
             courtCode: 'COURT_HOUSE',
             prisonCode: 'MDI',
+            prisonerNumber: 'ABC123',
             preHearingStartTime: '13:15',
             preHearingEndTime: '13:30',
             startTime: '13:30',

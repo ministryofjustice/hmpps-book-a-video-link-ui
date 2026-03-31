@@ -52,6 +52,7 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
     const eventToRecord = {
       bookingDate: formatDate(bookACourtHearing.date, 'yyyy-MM-dd'),
       prisonCode: bookACourtHearing.prisoner?.prisonId,
+      prisonerNumber: bookACourtHearing.prisoner?.prisonerNumber,
       courtCode: bookACourtHearing.courtCode,
       preHearingStartTime: formatDate(bookACourtHearing.preHearingStartTime, 'HH:mm'),
       preHearingEndTime: formatDate(bookACourtHearing.preHearingEndTime, 'HH:mm'),

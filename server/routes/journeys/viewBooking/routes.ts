@@ -3,14 +3,10 @@ import type { Services } from '../../../services'
 import { PageHandler } from '../../interfaces/pageHandler'
 import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
-import ViewDailyBookingsHandler from './handlers/viewDailyBookingsHandler'
 import ViewBookingHandler from './handlers/viewBookingHandler'
-import DownloadCsvHandler from './handlers/downloadCsvHandler'
-import config from '../../../config'
 import PrintBookingsHandler from './handlers/printBookingsHandler'
 import DownloadMultiAgenciesCsvHandler from './handlers/downloadMultiAgenciesCsvHandler'
 import ViewMultiDateBookingsHandler from './handlers/viewMultiDateBookingsHandler'
-import ViewMultipleAgenciesBookingsHandler from './handlers/viewMultipleAgenciesBookingsHandler'
 
 export default function Index({
   auditService,
@@ -27,19 +23,9 @@ export default function Index({
     handler.POST &&
     router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
-  if (config.featureToggles.viewMultipleAgenciesBookings) {
-    if (config.featureToggles.viewMultipleDateBookings) {
-      route('/', new ViewMultiDateBookingsHandler(courtsService, probationTeamsService, videoLinkService))
-    } else {
-      route('/', new ViewMultipleAgenciesBookingsHandler(courtsService, probationTeamsService, videoLinkService))
-    }
-    route('/print-bookings', new PrintBookingsHandler(courtsService, probationTeamsService, videoLinkService))
-    route('/download-csv', new DownloadMultiAgenciesCsvHandler(courtsService, probationTeamsService, videoLinkService))
-  } else {
-    route('/', new ViewDailyBookingsHandler(courtsService, probationTeamsService, videoLinkService))
-    route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))
-  }
-
+  route('/', new ViewMultiDateBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+  route('/print-bookings', new PrintBookingsHandler(courtsService, probationTeamsService, videoLinkService))
+  route('/download-csv', new DownloadMultiAgenciesCsvHandler(courtsService, probationTeamsService, videoLinkService))
   route('/:bookingId', new ViewBookingHandler(videoLinkService, prisonerService, prisonService))
 
   return router

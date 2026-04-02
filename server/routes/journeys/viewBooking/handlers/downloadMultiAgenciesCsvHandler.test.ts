@@ -30,7 +30,6 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.viewMultipleAgenciesBookings = true
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([

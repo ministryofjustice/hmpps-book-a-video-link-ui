@@ -25,11 +25,7 @@
                     {% else %}
                         <span class="govuk-heading-l" data-qa="agency-description">{{ pageTitle }}: {{ 'All probation teams' if agencyCode === 'ALL' else appointments[0].probationTeamDescription }}</span>
                     {% endif %}
-                    {% if viewMultipleDateBookings and session.journey.viewMultipleAgencyBookingsJourney.fromDate != session.journey.viewMultipleAgencyBookingsJourney.toDate %}
-                      <span class="govuk-caption-m govuk-!-padding-bottom-3" data-qa="print-date-range">{{ session.journey.viewMultipleAgencyBookingsJourney.fromDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }} to {{ session.journey.viewMultipleAgencyBookingsJourney.toDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }}</span>
-                    {% else %}
-                        <span class="govuk-caption-m govuk-!-padding-bottom-3" data-qa="print-date-range">{{ session.journey.viewMultipleAgencyBookingsJourney.fromDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }}</span>
-                    {% endif %}
+                    <span class="govuk-caption-m govuk-!-padding-bottom-3" data-qa="print-date-range">{{ session.journey.viewMultipleAgencyBookingsJourney.fromDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }} to {{ session.journey.viewMultipleAgencyBookingsJourney.toDate | parseDate('dd/MM/yyyy') | formatDate('iiii d MMMM yyyy') }}</span>
                 {% endif %}
             </div>
         </div>
@@ -59,7 +55,7 @@
                 {% set printRows = [] %}
                 {% for item in appointments %}
                     {% set rows = (rows.push([
-                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") } if viewMultipleDateBookings,
+                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") },
                             { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
                             { text: (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase + ' ' + item.prisonerNumber},
                             { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-hint govuk-!-margin-bottom-0">' + item.prisonName + '</div>' +
@@ -73,7 +69,7 @@
                     ), rows) %}
 
                     {% set printRows = (printRows.push([
-                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") } if viewMultipleDateBookings,
+                            { text: item.appointmentDate | formatDate("dd/MM/yyyy") },
                             { text: item.startTime + ' to ' + item.endTime, attributes: { 'data-sort-value': item.startTime | parseDate('HH:mm') | formatDate("HHmm") } },
                             { html: '<div>'+ (item.prisonerFirstName + ' ' + item.prisonerLastName) | convertToTitleCase + '</div><div class="govuk-!-margin-bottom-0">' + item.prisonerNumber + '</div>' },
                             { html: '<div>'+ item.prisonLocDesc +'</div><div class="govuk-!-margin-bottom-0">' + item.prisonName + '</div>'  },
@@ -90,7 +86,7 @@
                     caption: "Total: " + appointments.length,
                     captionClasses: "govuk-table__caption--m",
                     head: [
-                        { text: "Date" } if viewMultipleDateBookings,
+                        { text: "Date" },
                         { text: "Time" },
                         { text: "Name" },
                         { text: "Prison location" },
@@ -105,7 +101,7 @@
                 <div class="print-only">
                 {{ govukTable({
                     head: [
-                        { text: "Date" } if viewMultipleDateBookings,
+                        { text: "Date" },
                         { text: "Time" },
                         { text: "Name" },
                         { text: "Prison location" },

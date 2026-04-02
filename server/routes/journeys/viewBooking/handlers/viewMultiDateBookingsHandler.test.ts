@@ -9,7 +9,6 @@ import VideoLinkService from '../../../../services/videoLinkService'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import { Court, ProbationTeam, ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
-import config from '../../../../config'
 import { PaginatedBookingsRequest } from '../../../../data/bookAVideoLinkApiClient'
 
 jest.mock('../../../../services/auditService')
@@ -33,8 +32,6 @@ const appSetup = (journeySession = {}) => {
 }
 
 beforeEach(() => {
-  config.featureToggles.viewMultipleAgenciesBookings = true
-  config.featureToggles.viewMultipleDateBookings = true
   appSetup()
 
   courtsService.getUserPreferences.mockResolvedValue([

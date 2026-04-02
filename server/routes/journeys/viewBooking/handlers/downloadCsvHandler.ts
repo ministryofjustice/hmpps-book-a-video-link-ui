@@ -18,8 +18,8 @@ import { ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import CourtsService from '../../../../services/courtsService'
 
-export default class DownloadMultiAgenciesCsvHandler implements PageHandler {
-  public PAGE_NAME = Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE
+export default class DownloadCsvHandler implements PageHandler {
+  public PAGE_NAME = Page.DOWNLOAD_BOOKINGS_PAGE
 
   constructor(
     private readonly courtsService: CourtsService,

@@ -65,7 +65,7 @@ describe('GET', () => {
         `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv"`,
       )
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })
@@ -100,7 +100,7 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect('Content-Disposition', `attachment; filename="VideoLinkBookings-2024-10-03-to-2024-10-04-all-court.csv"`)
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })
@@ -156,7 +156,7 @@ describe('GET', () => {
         `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv"`,
       )
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })
@@ -190,7 +190,7 @@ describe('GET', () => {
         `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Probation_1.csv"`,
       )
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })
@@ -228,7 +228,7 @@ describe('GET', () => {
         `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-all-probation.csv"`,
       )
       .expect(res => {
-        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_MULTIPLE_AGENCIES_BOOKINGS_PAGE, {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
           who: user.username,
           correlationId: expect.any(String),
         })

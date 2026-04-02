@@ -5,7 +5,7 @@ import logPageViewMiddleware from '../../../middleware/logPageViewMiddleware'
 import validationMiddleware from '../../../middleware/validationMiddleware'
 import ViewBookingHandler from './handlers/viewBookingHandler'
 import PrintBookingsHandler from './handlers/printBookingsHandler'
-import DownloadMultiAgenciesCsvHandler from './handlers/downloadMultiAgenciesCsvHandler'
+import DownloadCsvHandler from './handlers/downloadCsvHandler'
 import ViewMultiDateBookingsHandler from './handlers/viewMultiDateBookingsHandler'
 
 export default function Index({
@@ -25,7 +25,7 @@ export default function Index({
 
   route('/', new ViewMultiDateBookingsHandler(courtsService, probationTeamsService, videoLinkService))
   route('/print-bookings', new PrintBookingsHandler(courtsService, probationTeamsService, videoLinkService))
-  route('/download-csv', new DownloadMultiAgenciesCsvHandler(courtsService, probationTeamsService, videoLinkService))
+  route('/download-csv', new DownloadCsvHandler(courtsService, probationTeamsService, videoLinkService))
   route('/:bookingId', new ViewBookingHandler(videoLinkService, prisonerService, prisonService))
 
   return router

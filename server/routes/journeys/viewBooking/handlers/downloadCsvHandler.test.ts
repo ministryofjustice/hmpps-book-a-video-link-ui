@@ -52,12 +52,13 @@ afterEach(() => {
 describe('GET', () => {
   it('should download court csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n12:45,13:15,HMP Moorland,John Doe,A1234AA,Court hearing,Appeal hearing,https://court.link.url,'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '03/10/2024,12:45,13:15,HMP Moorland,Bob Builder,A1234AA,Court 1,Court hearing,Appeal hearing,https://court.link.url,'
 
-    videoLinkService.getVideoLinkSchedule.mockResolvedValue([getCourtBooking()])
+    videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([getCourtBooking()])
 
     return request(app)
-      .get('/court/view-booking/download-csv')
+      .get('/court/view-booking/download-csv?agencyCode=C1')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
@@ -71,10 +72,48 @@ describe('GET', () => {
 
         expect(res.text).toEqual(expectedCsv)
 
-        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenLastCalledWith(
-          'court',
-          'C1',
-          startOfDay(new Date()),
+        expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
+          {
+            agencyType: 'court',
+            agencyCodes: ['C1'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
+          user,
+        )
+      })
+  })
+
+  it('should download ALL courts csv for date range', () => {
+    const expectedCsv =
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,Bob Builder,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '04/10/2024,9:00,9:30,HMP Moorland,John Doe,P2,Court 2,Court hearing,Appeal hearing,https://court.link.url,'
+
+    videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
+      getCourtBooking(1, '8:45', '9:00', 'Bob', 'Builder', 'P1'),
+      getCourtBooking(1, '9:00', '9:30', 'john', 'Doe', 'P2', null, 'C2', 'Court 2', '2024-10-04'),
+    ])
+
+    return request(app)
+      .get('/court/view-booking/download-csv?fromDate=03-10-2024&toDate=04-10-2024&agencyCode=ALL')
+      .expect('Content-Type', /text\/csv; charset=utf-8/)
+      .expect('Content-Disposition', `attachment; filename="VideoLinkBookings-2024-10-03-to-2024-10-04-all-court.csv"`)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(res.text).toEqual(expectedCsv)
+
+        expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
+          {
+            agencyType: 'court',
+            agencyCodes: ['C1', 'C2'],
+            fromDate: startOfDay(new Date(2024, 9, 3)),
+            toDate: startOfDay(new Date(2024, 9, 4)),
+          },
           user,
         )
       })
@@ -82,35 +121,35 @@ describe('GET', () => {
 
   it('should download sorted court csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
-      '8:45,9:00,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:30,9:45,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '8:45,9:00,HMP Moorland,Jenny,P3,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,Jenny,P3,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:30,9:45,HMP Moorland,Jenny,P3,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '8:45,9:00,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:00,9:30,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:30,9:45,HMP Moorland,John,P1,Court hearing,Appeal hearing,https://court.link.url,\n' +
-      '9:45,10:00,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,HMCTS45643@meet.video.justice.gov.uk,\n' +
-      '10:00,10:45,HMP Moorland,Jane,P2,Court hearing,Appeal hearing,HMCTS54321@meet.video.justice.gov.uk,'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Court,Appointment Type,Hearing Type,Court Hearing Link,Room Hearing Link\n' +
+      '03/10/2024,8:30,8:45,HMP Moorland,John Doe,P1,Court 1,Pre-hearing,Appeal hearing,,https://court.link.url\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,John Doe,P1,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:15,HMP Moorland,John Doe,P1,Court 1,Post-hearing,Appeal hearing,,https://court.link.url\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:30,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:30,9:45,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,8:45,9:00,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:00,9:30,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:30,9:45,HMP Moorland,Jenny Doe,P3,Court 1,Court hearing,Appeal hearing,https://court.link.url,\n' +
+      '03/10/2024,9:45,10:00,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,HMCTS45643@meet.video.justice.gov.uk,\n' +
+      '03/10/2024,10:00,10:45,HMP Moorland,Jane Doe,P2,Court 1,Court hearing,Appeal hearing,HMCTS54321@meet.video.justice.gov.uk,'
 
-    videoLinkService.getVideoLinkSchedule.mockResolvedValue([
-      getCourtBooking(1, '8:45', '9:00', 'john', 'P1'),
-      getCourtBooking(1, '9:00', '9:30', 'john', 'P1'),
-      getCourtBooking(1, '9:30', '9:45', 'john', 'P1'),
-      getCourtBooking(2, '8:45', '9:00', 'jane', 'P2'),
-      getCourtBooking(2, '9:00', '9:30', 'jane', 'P2'),
-      getCourtBooking(2, '9:30', '9:45', 'jane', 'P2'),
-      getCourtBooking(3, '8:45', '9:00', 'jenny', 'P3'),
-      getCourtBooking(3, '9:00', '9:30', 'jenny', 'P3'),
-      getCourtBooking(3, '9:30', '9:45', 'jenny', 'P3'),
-      getCourtBooking(4, '9:45', '10:00', 'jane', 'P2', '45643'),
-      getCourtBooking(4, '10:00', '10:45', 'jane', 'P2', '54321'),
+    videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
+      getPreCourtBooking(1, '8:30', '8:45', 'john', 'Doe', 'P1'),
+      getCourtBooking(1, '8:45', '9:00', 'john', 'Doe', 'P1'),
+      getPostCourtBooking(1, '9:00', '9:15', 'john', 'Doe', 'P1'),
+      getCourtBooking(2, '8:45', '9:00', 'jane', 'Doe', 'P2'),
+      getCourtBooking(2, '9:00', '9:30', 'jane', 'Doe', 'P2'),
+      getCourtBooking(2, '9:30', '9:45', 'jane', 'Doe', 'P2'),
+      getCourtBooking(3, '8:45', '9:00', 'jenny', 'Doe', 'P3'),
+      getCourtBooking(3, '9:00', '9:30', 'jenny', 'Doe', 'P3'),
+      getCourtBooking(3, '9:30', '9:45', 'jenny', 'Doe', 'P3'),
+      getCourtBooking(4, '9:45', '10:00', 'jane', 'Doe', 'P2', '45643'),
+      getCourtBooking(4, '10:00', '10:45', 'jane', 'Doe', 'P2', '54321'),
     ])
 
     return request(app)
-      .get('/court/view-booking/download-csv')
+      .get('/court/view-booking/download-csv?agencyCode=C1')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
@@ -124,10 +163,13 @@ describe('GET', () => {
 
         expect(res.text).toEqual(expectedCsv)
 
-        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenLastCalledWith(
-          'court',
-          'C1',
-          startOfDay(new Date()),
+        expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
+          {
+            agencyType: 'court',
+            agencyCodes: ['C1'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })
@@ -135,12 +177,13 @@ describe('GET', () => {
 
   it('should download probation team csv for today', () => {
     const expectedCsv =
-      'Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n12:45,13:15,HMP Moorland,Jane Doe,A1234AA,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com'
+      'Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Probation Team,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n' +
+      '03/10/2024,12:45,13:15,HMP Moorland,Bob Builder,A1234AA,Probation 1,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com'
 
-    videoLinkService.getVideoLinkSchedule.mockResolvedValue([getProbationTeamBooking()])
+    videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([getProbationTeamBooking()])
 
     return request(app)
-      .get('/probation/view-booking/download-csv')
+      .get('/probation/view-booking/download-csv?agencyCode=P1')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
@@ -154,24 +197,115 @@ describe('GET', () => {
 
         expect(res.text).toEqual(expectedCsv)
 
-        expect(videoLinkService.getVideoLinkSchedule).toHaveBeenLastCalledWith(
-          'probation',
-          'P1',
-          startOfDay(new Date()),
+        expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
+          {
+            agencyType: 'probation',
+            agencyCodes: ['P1'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
+          user,
+        )
+      })
+  })
+
+  it('should download ALL probation teams csv for today', () => {
+    const expectedCsv =
+      `Appointment Date,Appointment Start Time,Appointment End Time,Prison,Prisoner Name,Prisoner Number,Probation Team,Meeting Type,Room Hearing Link,Probation Officer Name,Email Address\n` +
+      `03/10/2024,8:45,9:00,HMP Moorland,Bob Builder,1,Probation 1,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com\n` +
+      `03/10/2024,9:00,9:30,HMP Moorland,John Doe,2,Probation 2,Pre sentence report,https://room.link.url,Jane Doe,jane.doe@email.com`
+
+    videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules.mockResolvedValue([
+      getProbationTeamBooking(1, '8:45', '9:00', 'Bob', 'Builder', '1'),
+      getProbationTeamBooking(2, '9:00', '9:30', 'john', 'Doe', '2', 'P2', 'Probation 2'),
+    ])
+
+    return request(app)
+      .get('/probation/view-booking/download-csv?agencyCode=ALL')
+      .expect('Content-Type', /text\/csv; charset=utf-8/)
+      .expect(
+        'Content-Disposition',
+        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-all-probation.csv"`,
+      )
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        expect(res.text).toEqual(expectedCsv)
+
+        expect(videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules).toHaveBeenLastCalledWith(
+          {
+            agencyType: 'probation',
+            agencyCodes: ['P1', 'P2'],
+            fromDate: startOfDay(new Date()),
+            toDate: startOfDay(new Date()),
+          },
           user,
         )
       })
   })
 })
 
+const getPreCourtBooking = (
+  bookingId: number = 1,
+  start: string = '12:45',
+  end: string = '13:15',
+  firstName: string = 'Bob',
+  lastName: string = 'Builder',
+  prisNumber: string = 'A1234AA',
+  hmctsNumber: string = undefined,
+  courtCode: string = 'C1',
+  courtDescription: string = 'Court 1',
+  appointmentDate: string = '2024-10-03',
+): ScheduleItem => {
+  const videoUrl = hmctsNumber ? undefined : 'https://court.link.url'
+
+  return {
+    videoBookingId: bookingId,
+    prisonAppointmentId: bookingId - 1,
+    bookingType: 'COURT',
+    statusCode: 'ACTIVE',
+    videoUrl,
+    createdByPrison: 'false',
+    courtId: 1,
+    courtCode,
+    courtDescription,
+    hearingType: 'APPEAL',
+    hearingTypeDescription: 'Appeal hearing',
+    prisonCode: 'MDI',
+    prisonName: 'HMP Moorland',
+    prisonerNumber: prisNumber,
+    appointmentType: 'VLB_COURT_PRE',
+    appointmentTypeDescription: 'Court - pre hearing',
+    prisonLocKey: 'MDI-VCC-1',
+    prisonLocDesc: 'VCC-crown-conference-room-1',
+    dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
+    appointmentDate,
+    startTime: start,
+    endTime: end,
+    createdTime: '2024-10-01 14:45',
+    createdBy: 'creator@email.com',
+    hmctsNumber,
+    checkAvailability: false,
+    prisonerFirstName: firstName,
+    prisonerLastName: lastName,
+  }
+}
+
 const getCourtBooking = (
   bookingId: number = 1,
   start: string = '12:45',
   end: string = '13:15',
-  name: string = 'john doe',
+  firstName: string = 'Bob',
+  lastName: string = 'Builder',
   prisNumber: string = 'A1234AA',
   hmctsNumber: string = undefined,
-): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => {
+  courtCode: string = 'C1',
+  courtDescription: string = 'Court 1',
+  appointmentDate: string = '2024-10-03',
+): ScheduleItem => {
   const videoUrl = hmctsNumber ? undefined : 'https://court.link.url'
 
   return {
@@ -182,8 +316,8 @@ const getCourtBooking = (
     videoUrl,
     createdByPrison: 'false',
     courtId: 1,
-    courtCode: 'C1',
-    courtDescription: 'Court 1',
+    courtCode,
+    courtDescription,
     hearingType: 'APPEAL',
     hearingTypeDescription: 'Appeal hearing',
     prisonCode: 'MDI',
@@ -194,50 +328,101 @@ const getCourtBooking = (
     prisonLocKey: 'MDI-VCC-1',
     prisonLocDesc: 'VCC-crown-conference-room-1',
     dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
-    appointmentDate: '2024-10-03',
+    appointmentDate,
     startTime: start,
     endTime: end,
     createdTime: '2024-10-01 14:45',
     createdBy: 'creator@email.com',
-    prisonerName: name,
-    prisonLocationDescription: 'Location description',
     hmctsNumber,
     checkAvailability: false,
-    prisonerFirstName: 'Bob',
-    prisonerLastName: 'Builder',
+    prisonerFirstName: firstName,
+    prisonerLastName: lastName,
   }
 }
 
-const getProbationTeamBooking = (): ScheduleItem & { prisonerName: string; prisonLocationDescription: string } => ({
-  videoBookingId: 2,
+const getPostCourtBooking = (
+  bookingId: number = 1,
+  start: string = '12:45',
+  end: string = '13:15',
+  firstName: string = 'Bob',
+  lastName: string = 'Builder',
+  prisNumber: string = 'A1234AA',
+  hmctsNumber: string = undefined,
+  courtCode: string = 'C1',
+  courtDescription: string = 'Court 1',
+  appointmentDate: string = '2024-10-03',
+): ScheduleItem => {
+  const videoUrl = hmctsNumber ? undefined : 'https://court.link.url'
+
+  return {
+    videoBookingId: bookingId,
+    prisonAppointmentId: bookingId + 1,
+    bookingType: 'COURT',
+    statusCode: 'ACTIVE',
+    videoUrl,
+    createdByPrison: 'false',
+    courtId: 1,
+    courtCode,
+    courtDescription,
+    hearingType: 'APPEAL',
+    hearingTypeDescription: 'Appeal hearing',
+    prisonCode: 'MDI',
+    prisonName: 'HMP Moorland',
+    prisonerNumber: prisNumber,
+    appointmentType: 'VLB_COURT_POST',
+    appointmentTypeDescription: 'Court - post hearing',
+    prisonLocKey: 'MDI-VCC-1',
+    prisonLocDesc: 'VCC-crown-conference-room-1',
+    dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
+    appointmentDate,
+    startTime: start,
+    endTime: end,
+    createdTime: '2024-10-01 14:45',
+    createdBy: 'creator@email.com',
+    hmctsNumber,
+    checkAvailability: false,
+    prisonerFirstName: firstName,
+    prisonerLastName: lastName,
+  }
+}
+
+const getProbationTeamBooking = (
+  bookingId: number = 1,
+  start: string = '12:45',
+  end: string = '13:15',
+  firstName: string = 'Bob',
+  lastName: string = 'Builder',
+  prisNumber: string = 'A1234AA',
+  probationTeamCode: string = 'P1',
+  probationTeamDescription: string = 'Probation 1',
+): ScheduleItem => ({
+  videoBookingId: bookingId,
   prisonAppointmentId: 2,
   bookingType: 'PROBATION',
   statusCode: 'ACTIVE',
   videoUrl: 'https://room.link.url',
   createdByPrison: 'false',
   probationTeamId: 1,
-  probationTeamCode: 'P1',
-  probationTeamDescription: 'Probation 1',
+  probationTeamCode,
+  probationTeamDescription,
   probationMeetingType: 'PSR',
   probationMeetingTypeDescription: 'Pre sentence report',
   prisonCode: 'MDI',
   prisonName: 'HMP Moorland',
-  prisonerNumber: 'A1234AA',
+  prisonerNumber: prisNumber,
   appointmentType: 'VLB_PROBATION',
   appointmentTypeDescription: 'Probation meeting',
   prisonLocKey: 'MDI-VCC-1',
   prisonLocDesc: 'VCC-crown-conference-room-1',
   dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
   appointmentDate: '2024-10-03',
-  startTime: '12:45',
-  endTime: '13:15',
+  startTime: start,
+  endTime: end,
   createdTime: '2024-10-01 14:45',
   createdBy: 'creator@email.com',
-  prisonerName: 'jane doe',
-  prisonLocationDescription: 'Location description',
   probationOfficerName: 'Jane Doe',
   probationOfficerEmailAddress: 'jane.doe@email.com',
   checkAvailability: false,
-  prisonerFirstName: 'Bob',
-  prisonerLastName: 'Builder',
+  prisonerFirstName: firstName,
+  prisonerLastName: lastName,
 })

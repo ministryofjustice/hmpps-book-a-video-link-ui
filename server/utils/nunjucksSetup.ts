@@ -96,5 +96,4 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   // Default base URLs for court meeting links
   njkEnv.addGlobal('defaultCourtVideoUrl', config.defaultCourtVideoUrl)
-  njkEnv.addGlobal('temporaryBlockingLocations', config.featureToggles.temporaryBlockingLocations)
 }

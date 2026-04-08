@@ -96,6 +96,7 @@
                                 value: value,
                                 html: '
                                         <span>' + option.startTime + ' to ' + option.endTime + '</span>
+                                        <span>' + option.name + '</span>
                                       ',
                                 checked: option.startTime == (startTime | formatDate('HH:mm'))
                             }), items) %}

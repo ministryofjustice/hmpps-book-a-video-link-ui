@@ -8,7 +8,6 @@ import {
   CreateRoomScheduleRequest,
   RoomSchedule,
 } from '../../../../../@types/bookAVideoLinkApi/types'
-import config from '../../../../../config'
 
 export const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
 export const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')
@@ -48,34 +47,24 @@ export const locationStatusDetails = (req: Request) => {
 
   let locationStatus = null
 
-  if (config.featureToggles.temporaryBlockingLocations) {
-    switch (roomStatus) {
-      case 'active':
-        locationStatus = 'ACTIVE'
-        break
-      case 'inactive':
-        locationStatus = 'INACTIVE'
-        break
-      case 'temporarily_blocked':
-        locationStatus = 'TEMPORARILY_BLOCKED'
-        break
-      default:
-        locationStatus = 'ACTIVE'
-    }
-  } else {
-    locationStatus = roomStatus === 'active' ? 'ACTIVE' : 'INACTIVE'
+  switch (roomStatus) {
+    case 'active':
+      locationStatus = 'ACTIVE'
+      break
+    case 'inactive':
+      locationStatus = 'INACTIVE'
+      break
+    case 'temporarily_blocked':
+      locationStatus = 'TEMPORARILY_BLOCKED'
+      break
+    default:
+      locationStatus = 'ACTIVE'
   }
 
   return {
     locationStatus,
-    blockedFrom:
-      config.featureToggles.temporaryBlockingLocations && blockedFrom && locationStatus === 'TEMPORARILY_BLOCKED'
-        ? formatDate(blockedFrom, 'yyyy-MM-dd')
-        : null,
-    blockedTo:
-      config.featureToggles.temporaryBlockingLocations && blockedTo && locationStatus === 'TEMPORARILY_BLOCKED'
-        ? formatDate(blockedTo, 'yyyy-MM-dd')
-        : null,
+    blockedFrom: blockedFrom && locationStatus === 'TEMPORARILY_BLOCKED' ? formatDate(blockedFrom, 'yyyy-MM-dd') : null,
+    blockedTo: blockedTo && locationStatus === 'TEMPORARILY_BLOCKED' ? formatDate(blockedTo, 'yyyy-MM-dd') : null,
   }
 }
 

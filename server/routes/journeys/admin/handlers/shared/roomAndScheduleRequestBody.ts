@@ -5,7 +5,6 @@ import { isBefore, isValid, startOfToday } from 'date-fns'
 import Validator from '../../../../validators/validator'
 import { parseDatePickerDate, simpleTimeToDate } from '../../../../../utils/utils'
 import IsValidDate from '../../../../validators/isValidDate'
-import config from '../../../../../config'
 
 export default class RoomAndScheduleRequestBody {
   @Expose()
@@ -13,9 +12,7 @@ export default class RoomAndScheduleRequestBody {
   roomStatus: string
 
   @Expose()
-  @ValidateIf(
-    o => config.featureToggles.temporaryBlockingLocations && o.roomStatus && o.roomStatus === 'temporarily_blocked',
-  )
+  @ValidateIf(o => o.roomStatus && o.roomStatus === 'temporarily_blocked')
   @Transform(({ value }) => parseDatePickerDate(value))
   @Validator((blockedFrom, { blockedTo }) => isValid(blockedTo) && !isBefore(blockedTo, blockedFrom), {
     message: 'Enter a date from on or before the date to',
@@ -25,9 +22,7 @@ export default class RoomAndScheduleRequestBody {
   blockedFrom: Date
 
   @Expose()
-  @ValidateIf(
-    o => config.featureToggles.temporaryBlockingLocations && o.roomStatus && o.roomStatus === 'temporarily_blocked',
-  )
+  @ValidateIf(o => o.roomStatus && o.roomStatus === 'temporarily_blocked')
   @Transform(({ value }) => parseDatePickerDate(value))
   @Validator((blockedTo, { blockedFrom }) => isValid(blockedFrom) && !isBefore(blockedTo, blockedFrom), {
     message: 'Enter a date to on or after the date from',

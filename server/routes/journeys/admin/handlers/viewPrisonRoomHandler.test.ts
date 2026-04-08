@@ -13,7 +13,6 @@ import ProbationTeamsService from '../../../../services/probationTeamsService'
 import AdminService from '../../../../services/adminService'
 import PrisonService from '../../../../services/prisonService'
 import { radioOptions } from '../../../testutils/cheerio'
-import config from '../../../../config'
 
 import {
   aBlockedDecoratedLocation,
@@ -44,8 +43,6 @@ const dpsLocationId = 'aaaa-bbbb-cccc-dddd'
 let app: Express
 
 beforeEach(() => {
-  config.featureToggles.temporaryBlockingLocations = true
-
   app = appWithAllRoutes({
     services: { prisonService, courtsService, probationTeamsService, adminService },
     userSupplier: () => user,

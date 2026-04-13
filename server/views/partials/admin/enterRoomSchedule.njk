@@ -112,6 +112,16 @@
                 }
             },
             {
+                value: "probation_court",
+                text: "Probation - court teams",
+                checked: formResponses.schedulePermission == 'probation_court' or editValues.schedulePermission == 'probation_court'
+            },
+            {
+                value: "probation_sentence",
+                text: "Probation - sentence management teams",
+                checked: formResponses.schedulePermission == 'probation_sentence' or editValues.schedulePermission == 'probation_sentence'
+            },
+            {
                 value: "blocked",
                 text: "Blocked",
                 checked: formResponses.schedulePermission == 'blocked'or editValues.schedulePermission == 'blocked'
@@ -119,7 +129,7 @@
         ]
     }) }}
 
-    {# Conditional HTNL to choose start and end times #}
+    {# Conditional HTML to choose start and end times #}
 
     {% set timesHtml %}
         {{ hmppsTimePicker({

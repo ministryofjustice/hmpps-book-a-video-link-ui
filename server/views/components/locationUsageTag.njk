@@ -1,7 +1,16 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+
 {% macro locationUsageTag(locationUsage, colour) %}
+   {% if locationUsage === "Probation_court" %}
+     {% set usage = "Probation (court)" %}
+   {% elseif locationUsage === "Probation_sentence" %}
+     {% set usage = "Probation (sentence)" %}
+   {% else %}
+     {% set usage = locationUsage %}
+   {% endif %}
+
    {{ govukTag({
-       text: locationUsage,
+       text: usage,
        classes: colour,
        attributes: { "data-qa": "location-usage-tag" }
    }) }}

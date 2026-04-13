@@ -390,6 +390,54 @@ describe('View prison room handler', () => {
         })
     })
 
+    it(`should accept a room and first schedule for probation court POST and redirect`, () => {
+      adminService.getLocationByDpsLocationId.mockResolvedValue(aDecoratedLocation(dpsLocationId, 'SCHEDULE', []))
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'active',
+          permission: 'schedule',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          allDay: 'Yes',
+          schedulePermission: 'probation_court',
+          scheduleStartDay: '1',
+          scheduleEndDay: '7',
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.amendRoomAttributes).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              locationStatus: 'ACTIVE',
+              prisonVideoUrl: 'link',
+              locationUsage: 'SCHEDULE',
+              comments: 'comments',
+              allowedParties: [],
+              blockedFrom: null,
+              blockedTo: null,
+            } as AmendDecoratedRoomRequest,
+            user,
+          )
+          expect(adminService.createRoomSchedule).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              startDayOfWeek: 1,
+              endDayOfWeek: 7,
+              startTime: '07:00',
+              endTime: '17:00',
+              locationUsage: 'PROBATION_COURT',
+              allowedParties: [],
+            } as CreateRoomScheduleRequest,
+            user,
+          )
+        })
+    })
+
     it(`should accept a room with an existing schedule and redirect`, () => {
       adminService.getLocationByDpsLocationId.mockResolvedValue(
         aLocationWithSchedule(dpsLocationId, 'PROBATION', ['P1', 'P2']),

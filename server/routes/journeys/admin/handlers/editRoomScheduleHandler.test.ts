@@ -142,6 +142,74 @@ describe('Edit room schedule handler', () => {
         })
     })
 
+    it(`should accept a valid POST body for a probation court team and redirect`, () => {
+      adminService.getLocationByDpsLocationId.mockResolvedValue(aLocationWithSchedule(dpsLocationId, 'PROBATION_COURT'))
+      const { scheduleId } = aLocationWithSchedule(dpsLocationId).extraAttributes.schedule[0]
+
+      return request(app)
+        .post(`/admin/edit-schedule/HEI/${dpsLocationId}/${scheduleId}`)
+        .send({
+          existingSchedule: 'true',
+          scheduleStartDay: '1',
+          scheduleEndDay: '3',
+          allDay: 'Yes',
+          schedulePermission: 'probation_court',
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.amendRoomSchedule).toHaveBeenCalledWith(
+            dpsLocationId,
+            scheduleId,
+            {
+              startDayOfWeek: 1,
+              endDayOfWeek: 3,
+              startTime: '07:00',
+              endTime: '17:00',
+              locationUsage: 'PROBATION_COURT',
+              allowedParties: [],
+            } as AmendRoomScheduleRequest,
+            user,
+          )
+        })
+    })
+
+    it(`should accept a valid POST body for a probation sentence management team and redirect`, () => {
+      adminService.getLocationByDpsLocationId.mockResolvedValue(
+        aLocationWithSchedule(dpsLocationId, 'PROBATION_SENTENCE'),
+      )
+      const { scheduleId } = aLocationWithSchedule(dpsLocationId).extraAttributes.schedule[0]
+
+      return request(app)
+        .post(`/admin/edit-schedule/HEI/${dpsLocationId}/${scheduleId}`)
+        .send({
+          existingSchedule: 'true',
+          scheduleStartDay: '1',
+          scheduleEndDay: '3',
+          allDay: 'Yes',
+          schedulePermission: 'probation_sentence',
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.amendRoomSchedule).toHaveBeenCalledWith(
+            dpsLocationId,
+            scheduleId,
+            {
+              startDayOfWeek: 1,
+              endDayOfWeek: 3,
+              startTime: '07:00',
+              endTime: '17:00',
+              locationUsage: 'PROBATION_SENTENCE',
+              allowedParties: [],
+            } as AmendRoomScheduleRequest,
+            user,
+          )
+        })
+    })
+
     it(`should accept a valid POST body with specific times and redirect`, () => {
       adminService.getLocationByDpsLocationId.mockResolvedValue(aLocationWithSchedule(dpsLocationId, 'COURT', ['C1']))
       const { scheduleId } = aLocationWithSchedule(dpsLocationId).extraAttributes.schedule[0]

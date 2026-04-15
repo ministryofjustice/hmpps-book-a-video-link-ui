@@ -18,7 +18,7 @@ Parameters passed in:
     <div class="moj-add-another">
         {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or
             (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'PROBATION' and room.extraAttributes.allowedParties.length) or
-            (editValues.scheduleProbationTeams if editValues.schedulePermission == 'probation' and editValues.scheduleProbationTeams.length) or
+            (editValues.scheduleProbationTeams if editValues.schedulePermission == 'PROBATION' and editValues.scheduleProbationTeams.length) or
             [""]
         %}
 

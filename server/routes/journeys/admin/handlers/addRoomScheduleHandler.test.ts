@@ -117,7 +117,7 @@ describe('Add room schedule handler', () => {
           scheduleStartDay: '1',
           scheduleEndDay: '3',
           allDay: 'Yes',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
         })
         .expect(302)
@@ -149,7 +149,7 @@ describe('Add room schedule handler', () => {
           scheduleStartDay: '1',
           scheduleEndDay: '3',
           allDay: 'Yes',
-          schedulePermission: 'probation_court',
+          schedulePermission: 'PROBATION_COURT',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -182,7 +182,7 @@ describe('Add room schedule handler', () => {
           scheduleStartDay: '1',
           scheduleEndDay: '3',
           allDay: 'Yes',
-          schedulePermission: 'probation_sentence',
+          schedulePermission: 'PROBATION_SENTENCE',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -212,7 +212,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: { hour: '08', minute: '00' },
@@ -276,7 +276,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '3',
           scheduleEndDay: '1',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: { hour: '08', minute: '00' },
@@ -306,7 +306,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: { hour: '12', minute: '00' },
@@ -336,7 +336,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: undefined,

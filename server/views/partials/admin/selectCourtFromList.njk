@@ -18,7 +18,7 @@
     <div class="moj-add-another">
         {% set selectsToRender = ([formResponses[fieldName]] | flatten if formResponses) or
             (room.extraAttributes.allowedParties if room.extraAttributes.locationUsage == 'COURT' and room.extraAttributes.allowedParties.length) or
-            (editValues.scheduleCourtCodes if editValues.schedulePermission == 'court' and editValues.scheduleCourtCodes.length) or
+            (editValues.scheduleCourtCodes if editValues.schedulePermission == 'COURT' and editValues.scheduleCourtCodes.length) or
             [""]
         %}
 

@@ -87,7 +87,7 @@
         idPrefix: "schedulePermission",
         name: "schedulePermission",
         errorMessage: validationErrors | findError('schedulePermission'),
-        value: formResponses.schedulePermission or editValues.schedulePermission or "court",
+        value: formResponses.schedulePermission or editValues.schedulePermission or "COURT",
         fieldset: {
             legend: {
                 text: "Select permissions",
@@ -96,35 +96,35 @@
         },
         items: [
             {
-                value: "court",
+                value: "COURT",
                 text: "Court",
-                checked: formResponses.schedulePermission == 'court' or editValues.schedulePermission == 'court',
+                checked: formResponses.schedulePermission == 'COURT' or editValues.schedulePermission == 'COURT',
                 conditional: {
                     html: courtScheduleHtml
                 }
             },
             {
-                value: "probation",
+                value: "PROBATION",
                 text: "Probation",
-                checked: formResponses.schedulePermission == 'probation' or editValues.schedulePermission == 'probation',
+                checked: formResponses.schedulePermission == 'PROBATION' or editValues.schedulePermission == 'PROBATION',
                 conditional: {
                     html: probationScheduleHtml
                 }
             },
             {
-                value: "probation_court",
+                value: "PROBATION_COURT",
                 text: "Probation - court teams",
-                checked: formResponses.schedulePermission == 'probation_court' or editValues.schedulePermission == 'probation_court'
+                checked: formResponses.schedulePermission == 'PROBATION_COURT' or editValues.schedulePermission == 'PROBATION_COURT'
             },
             {
-                value: "probation_sentence",
+                value: "PROBATION_SENTENCE",
                 text: "Probation - sentence management teams",
-                checked: formResponses.schedulePermission == 'probation_sentence' or editValues.schedulePermission == 'probation_sentence'
+                checked: formResponses.schedulePermission == 'PROBATION_SENTENCE' or editValues.schedulePermission == 'PROBATION_SENTENCE'
             },
             {
-                value: "blocked",
+                value: "BLOCKED",
                 text: "Blocked",
-                checked: formResponses.schedulePermission == 'blocked'or editValues.schedulePermission == 'blocked'
+                checked: formResponses.schedulePermission == 'BLOCKED' or editValues.schedulePermission == 'BLOCKED'
             }
         ]
     }) }}

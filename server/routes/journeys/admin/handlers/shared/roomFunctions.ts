@@ -93,7 +93,7 @@ export const bodyToCreateScheduleRequest = (req: Request): CreateRoomScheduleReq
     endDayOfWeek: parseInt(scheduleEndDay, 10),
     startTime: format(startTimeAsDate, 'HH:mm'),
     endTime: format(endTimeAsDate, 'HH:mm'),
-    locationUsage: schedulePermission.toUpperCase(),
+    locationUsage: schedulePermission,
     allowedParties: chooseAllowedParties(schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes),
   } as CreateRoomScheduleRequest
 }
@@ -123,7 +123,7 @@ export const bodyToAmendScheduleRequest = (req: Request): AmendRoomScheduleReque
     endDayOfWeek: parseInt(scheduleEndDay, 10),
     startTime: format(startTimeAsDate, 'HH:mm'),
     endTime: format(endTimeAsDate, 'HH:mm'),
-    locationUsage: schedulePermission.toUpperCase(),
+    locationUsage: schedulePermission,
     allowedParties: chooseAllowedParties(schedulePermission, scheduleCourtCodes, scheduleProbationTeamCodes),
   } as AmendRoomScheduleRequest
 }
@@ -135,9 +135,9 @@ export const convertScheduleToDisplayFormat = (schedule: RoomSchedule) => {
   return {
     scheduleStartDay: getDaysOfWeek().indexOf(schedule.startDayOfWeek) + 1,
     scheduleEndDay: getDaysOfWeek().indexOf(schedule.endDayOfWeek) + 1,
-    scheduleCourtCodes: schedule.locationUsage.toUpperCase() === 'COURT' ? schedule.allowedParties : [],
-    scheduleProbationTeams: schedule.locationUsage.toUpperCase() === 'PROBATION' ? schedule.allowedParties : [],
-    schedulePermission: schedule.locationUsage.toLowerCase(),
+    scheduleCourtCodes: schedule.locationUsage === 'COURT' ? schedule.allowedParties : [],
+    scheduleProbationTeams: schedule.locationUsage === 'PROBATION' ? schedule.allowedParties : [],
+    schedulePermission: schedule.locationUsage,
     allDay:
       schedule.startTime === format(addHours(START_OF_DAY_TIME, 1), 'HH:mm') &&
       schedule.endTime === format(addHours(END_OF_DAY_TIME, 1), 'HH:mm')
@@ -154,9 +154,9 @@ export const chooseAllowedParties = (
   probationTeamCodes: string[],
 ): string[] => {
   switch (permission) {
-    case 'court':
+    case 'COURT':
       return courtCodes
-    case 'probation':
+    case 'PROBATION':
       return probationTeamCodes
     default:
       return []

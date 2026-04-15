@@ -32,7 +32,7 @@
         {% endset %}
 
         {% set usageHtml %}
-            {{ locationUsageTag(schedule.locationUsage | convertToTitleCase, "govuk-tag--blue") }}
+            {{ locationUsageTag(schedule.locationUsage, "govuk-tag--blue") }}
         {% endset %}
 
         {% set allocationsHtml %}

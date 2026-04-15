@@ -508,6 +508,51 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/subject-access-request': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Provides content for a prisoner to satisfy the needs of a subject access request on their behalf
+     * @description Requires role SAR_DATA_ACCESS or additional role as specified by hmpps.sar.additionalAccessRole configuration.
+     *
+     *     Requires one of the following roles:
+     *     * SAR_DATA_ACCESS
+     *     * ROLE_BOOK_A_VIDEO_LINK_ADMIN
+     */
+    get: operations['getSarContentByReference']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/subject-access-request/template': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * @description Requires one of the following roles:
+     *     * SAR_DATA_ACCESS
+     *     * ROLE_BOOK_A_VIDEO_LINK_ADMIN
+     */
+    get: operations['getServiceTemplate']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/schedule/probation/{probationTeamCode}': {
     parameters: {
       query?: never
@@ -1227,7 +1272,7 @@ export interface components {
        * @example SHARED
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'BLOCKED'
+      locationUsage: 'COURT' | 'PROBATION' | 'PROBATION_COURT' | 'PROBATION_SENTENCE' | 'BLOCKED'
       /**
        * @description Court or probation codes (comma-separated) that can use the room within this slot
        * @example [YRKMAG,DRBYJS]
@@ -1241,7 +1286,7 @@ export interface components {
        * @example PROBATION
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'BLOCKED'
+      locationUsage: 'COURT' | 'PROBATION' | 'PROBATION_COURT' | 'PROBATION_SENTENCE' | 'BLOCKED'
       /**
        * @description Court or probation team codes allowed to use the room
        * @example [
@@ -2212,7 +2257,7 @@ export interface components {
        * @example PROBATION
        * @enum {string}
        */
-      locationUsage: 'COURT' | 'PROBATION' | 'BLOCKED'
+      locationUsage: 'COURT' | 'PROBATION' | 'PROBATION_COURT' | 'PROBATION_SENTENCE' | 'BLOCKED'
       /**
        * @description Court or probation team codes allowed to use the room
        * @example [
@@ -2381,7 +2426,7 @@ export interface components {
       date: string
       /**
        * Format: int32
-       * @description Rooms can be booked in 30 minutes slots upto a maximum of 120 minutes (two hours)
+       * @description Rooms can be booked in multiples of 15 minute slots
        * @example 60
        */
       bookingDuration: number
@@ -2482,6 +2527,32 @@ export interface components {
        */
       appointmentToExclude?: number
     }
+    Attachment: {
+      /**
+       * Format: int32
+       * @description The number of the attachment which will match any corresponding reference in the content section
+       */
+      attachmentNumber: number
+      /** @description The name or description of the attachment which will be included in the report */
+      name: string
+      /** @description The content type of the attachment */
+      contentType: string
+      /** @description The url to be used to download the attachment file */
+      url: string
+      /**
+       * Format: int32
+       * @description The size of the attachment file in bytes
+       */
+      filesize: number
+      /** @description The filename of attachment file */
+      filename: string
+    }
+    HmppsSubjectAccessRequestContent: {
+      /** @description The content of the subject access request response */
+      content: unknown
+      /** @description The details of any attachments for the subject access request response */
+      attachments?: components['schemas']['Attachment'][]
+    }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
       /**
@@ -2558,6 +2629,16 @@ export interface components {
        * @example Free form notes
        */
       notes?: string
+      /**
+       * @description Boolean flag to indicate if the team is a court team or not.
+       * @example true
+       */
+      courtTeam: boolean
+      /**
+       * @description Boolean flag to indicate if the team is a sentence management team or not.
+       * @example false
+       */
+      sentenceManagementTeam: boolean
     }
     /** @description Describes the details of a court */
     Court: {
@@ -3883,6 +3964,127 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getSarContentByReference: {
+    parameters: {
+      query?: {
+        /** @description NOMIS Prison Reference Number */
+        prn?: string
+        /** @description nDelius Case Reference Number */
+        crn?: string
+        /** @description Optional parameter denoting minimum date of event occurrence which should be returned in the response */
+        fromDate?: string
+        /** @description Optional parameter denoting maximum date of event occurrence which should be returned in the response */
+        toDate?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Request successfully processed - content found */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HmppsSubjectAccessRequestContent']
+        }
+      }
+      /** @description Request successfully processed - no content found */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description Subject Identifier is not recognised by this service */
+      209: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': Record<string, never>
+        }
+      }
+      /** @description The client does not have authorisation to make this request */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unexpected error occurred */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getServiceTemplate: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Request successfully processed - return template file content */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'plain/text': string
+        }
+      }
+      /** @description The client does not have authorisation to make this request */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unexpected error occurred */
+      500: {
         headers: {
           [name: string]: unknown
         }

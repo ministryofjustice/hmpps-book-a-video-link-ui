@@ -353,7 +353,7 @@ describe('View prison room handler', () => {
           videoUrl: 'link',
           notes: 'comments',
           allDay: 'Yes',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           scheduleStartDay: '1',
           scheduleEndDay: '7',
@@ -384,6 +384,54 @@ describe('View prison room handler', () => {
               endTime: '17:00',
               locationUsage: 'COURT',
               allowedParties: ['C1'],
+            } as CreateRoomScheduleRequest,
+            user,
+          )
+        })
+    })
+
+    it(`should accept a room and first schedule for probation court POST and redirect`, () => {
+      adminService.getLocationByDpsLocationId.mockResolvedValue(aDecoratedLocation(dpsLocationId, 'SCHEDULE', []))
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'active',
+          permission: 'schedule',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          allDay: 'Yes',
+          schedulePermission: 'PROBATION_COURT',
+          scheduleStartDay: '1',
+          scheduleEndDay: '7',
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.amendRoomAttributes).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              locationStatus: 'ACTIVE',
+              prisonVideoUrl: 'link',
+              locationUsage: 'SCHEDULE',
+              comments: 'comments',
+              allowedParties: [],
+              blockedFrom: null,
+              blockedTo: null,
+            } as AmendDecoratedRoomRequest,
+            user,
+          )
+          expect(adminService.createRoomSchedule).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              startDayOfWeek: 1,
+              endDayOfWeek: 7,
+              startTime: '07:00',
+              endTime: '17:00',
+              locationUsage: 'PROBATION_COURT',
+              allowedParties: [],
             } as CreateRoomScheduleRequest,
             user,
           )
@@ -458,7 +506,7 @@ describe('View prison room handler', () => {
           permission: 'schedule',
           existingSchedule: 'false',
           allDay: 'Yes',
-          schedulePermission: 'blocked',
+          schedulePermission: 'BLOCKED',
           scheduleStartDay: '3',
           scheduleEndDay: '2',
         })
@@ -484,7 +532,7 @@ describe('View prison room handler', () => {
           permission: 'schedule',
           existingSchedule: 'false',
           allDay: 'No',
-          schedulePermission: 'blocked',
+          schedulePermission: 'BLOCKED',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
           scheduleStartTime: { hour: '11', minute: '00' },
@@ -512,7 +560,7 @@ describe('View prison room handler', () => {
           permission: 'schedule',
           existingSchedule: 'false',
           allDay: 'No',
-          schedulePermission: 'blocked',
+          schedulePermission: 'BLOCKED',
           scheduleStartDay: '1',
           scheduleEndDay: '7',
         })

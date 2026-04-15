@@ -1,8 +1,25 @@
 {% from "govuk/components/tag/macro.njk" import govukTag %}
+
 {% macro locationUsageTag(locationUsage, colour) %}
-   {{ govukTag({
-       text: locationUsage,
-       classes: colour,
-       attributes: { "data-qa": "location-usage-tag" }
-   }) }}
+  {#  Translate the location usage types to their display formats #}
+  {% if locationUsage === "PROBATION_COURT" %}
+    {% set usage = "Probation (court)" %}
+  {% elseif locationUsage === "PROBATION_SENTENCE" %}
+    {% set usage = "Probation (sentence)" %}
+  {% elseif locationUsage === "PROBATION" %}
+    {% set usage = "Probation" %}
+  {% elseif locationUsage === "COURT" %}
+    {% set usage = "Court" %}
+  {% elseif locationUsage === "BLOCKED" %}
+    {% set usage = "Blocked" %}
+  {% else %}
+    {# Other values are called with their display format pre-set and need no translation #}
+    {% set usage = locationUsage %}
+  {% endif %}
+
+  {{ govukTag({
+     text: usage,
+     classes: colour,
+     attributes: { "data-qa": "location-usage-tag" }
+  }) }}
 {% endmacro %}

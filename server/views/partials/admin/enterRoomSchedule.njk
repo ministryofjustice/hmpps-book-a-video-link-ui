@@ -87,7 +87,7 @@
         idPrefix: "schedulePermission",
         name: "schedulePermission",
         errorMessage: validationErrors | findError('schedulePermission'),
-        value: formResponses.schedulePermission or editValues.schedulePermission or "court",
+        value: formResponses.schedulePermission or editValues.schedulePermission or "COURT",
         fieldset: {
             legend: {
                 text: "Select permissions",
@@ -96,30 +96,40 @@
         },
         items: [
             {
-                value: "court",
+                value: "COURT",
                 text: "Court",
-                checked: formResponses.schedulePermission == 'court' or editValues.schedulePermission == 'court',
+                checked: formResponses.schedulePermission == 'COURT' or editValues.schedulePermission == 'COURT',
                 conditional: {
                     html: courtScheduleHtml
                 }
             },
             {
-                value: "probation",
+                value: "PROBATION",
                 text: "Probation",
-                checked: formResponses.schedulePermission == 'probation' or editValues.schedulePermission == 'probation',
+                checked: formResponses.schedulePermission == 'PROBATION' or editValues.schedulePermission == 'PROBATION',
                 conditional: {
                     html: probationScheduleHtml
                 }
             },
             {
-                value: "blocked",
+                value: "PROBATION_COURT",
+                text: "Probation - court teams",
+                checked: formResponses.schedulePermission == 'PROBATION_COURT' or editValues.schedulePermission == 'PROBATION_COURT'
+            },
+            {
+                value: "PROBATION_SENTENCE",
+                text: "Probation - sentence management teams",
+                checked: formResponses.schedulePermission == 'PROBATION_SENTENCE' or editValues.schedulePermission == 'PROBATION_SENTENCE'
+            },
+            {
+                value: "BLOCKED",
                 text: "Blocked",
-                checked: formResponses.schedulePermission == 'blocked'or editValues.schedulePermission == 'blocked'
+                checked: formResponses.schedulePermission == 'BLOCKED' or editValues.schedulePermission == 'BLOCKED'
             }
         ]
     }) }}
 
-    {# Conditional HTNL to choose start and end times #}
+    {# Conditional HTML to choose start and end times #}
 
     {% set timesHtml %}
         {{ hmppsTimePicker({

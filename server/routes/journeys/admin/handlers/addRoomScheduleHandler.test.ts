@@ -93,7 +93,7 @@ describe('Add room schedule handler', () => {
           expect(endDayOptions.length).toBe(7)
 
           const schedulePermissionOptions = radioOptions($, 'schedulePermission')
-          expect(schedulePermissionOptions.length).toBe(3)
+          expect(schedulePermissionOptions.length).toBe(5)
 
           const scheduleTimeOptions = radioOptions($, 'allDay')
           expect(scheduleTimeOptions.length).toBe(2)
@@ -117,7 +117,7 @@ describe('Add room schedule handler', () => {
           scheduleStartDay: '1',
           scheduleEndDay: '3',
           allDay: 'Yes',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
         })
         .expect(302)
@@ -139,6 +139,70 @@ describe('Add room schedule handler', () => {
         })
     })
 
+    it(`should accept a valid POST body for probation court team and redirect`, () => {
+      adminService.getLocationByDpsLocationId.mockResolvedValue(aLocationWithSchedule(dpsLocationId, 'PROBATION_COURT'))
+
+      return request(app)
+        .post(`/admin/add-schedule/HEI/${dpsLocationId}`)
+        .send({
+          existingSchedule: 'true',
+          scheduleStartDay: '1',
+          scheduleEndDay: '3',
+          allDay: 'Yes',
+          schedulePermission: 'PROBATION_COURT',
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.createRoomSchedule).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              startDayOfWeek: 1,
+              endDayOfWeek: 3,
+              startTime: '07:00',
+              endTime: '17:00',
+              locationUsage: 'PROBATION_COURT',
+              allowedParties: [],
+            } as CreateRoomScheduleRequest,
+            user,
+          )
+        })
+    })
+
+    it(`should accept a valid POST body for probation sentence management team and redirect`, () => {
+      adminService.getLocationByDpsLocationId.mockResolvedValue(
+        aLocationWithSchedule(dpsLocationId, 'PROBATION_SENTENCE'),
+      )
+
+      return request(app)
+        .post(`/admin/add-schedule/HEI/${dpsLocationId}`)
+        .send({
+          existingSchedule: 'true',
+          scheduleStartDay: '1',
+          scheduleEndDay: '3',
+          allDay: 'Yes',
+          schedulePermission: 'PROBATION_SENTENCE',
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.createRoomSchedule).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              startDayOfWeek: 1,
+              endDayOfWeek: 3,
+              startTime: '07:00',
+              endTime: '17:00',
+              locationUsage: 'PROBATION_SENTENCE',
+              allowedParties: [],
+            } as CreateRoomScheduleRequest,
+            user,
+          )
+        })
+    })
+
     it(`should accept a valid POST body with specific times and redirect`, () => {
       adminService.getLocationByDpsLocationId.mockResolvedValue(aLocationWithSchedule(dpsLocationId, 'COURT', ['C1']))
 
@@ -148,7 +212,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: { hour: '08', minute: '00' },
@@ -212,7 +276,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '3',
           scheduleEndDay: '1',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: { hour: '08', minute: '00' },
@@ -242,7 +306,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: { hour: '12', minute: '00' },
@@ -272,7 +336,7 @@ describe('Add room schedule handler', () => {
           existingSchedule: 'true',
           scheduleStartDay: '1',
           scheduleEndDay: '3',
-          schedulePermission: 'court',
+          schedulePermission: 'COURT',
           scheduleCourtCodes: ['C1'],
           allDay: 'No',
           scheduleStartTime: undefined,

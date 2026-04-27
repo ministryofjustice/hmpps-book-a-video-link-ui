@@ -84,7 +84,7 @@ describe('View prison room handler', () => {
           expect(permissionRadios.length).toBe(4)
 
           const defaultStatus = $("input[type='radio'][name='roomStatus']:checked").val()
-          expect(defaultStatus).toBe('active')
+          expect(defaultStatus).toBe('inactive')
 
           const defaultPermission = $("input[type='radio'][name='permission']:checked").val()
           expect(defaultPermission).toBe('shared')

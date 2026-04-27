@@ -234,7 +234,7 @@ test.describe('Administration', () => {
       const viewRoomsPage = await ViewRoomsPage.verifyOnPage(page)
       await viewRoomsPage.viewOrEditLink('f1c78dca-733b-43cc-b03f-6c870941a2c7').click()
       const editRoomPage = await EditRoomPage.verifyOnPage(page)
-      await editRoomPage.assertSelectedRoomStatus('active')
+      await editRoomPage.assertSelectedRoomStatus('inactive')
       await editRoomPage.selectRoomStatus('temporarily_blocked')
       await editRoomPage.selectBlockedFromDate(new Date())
       await editRoomPage.selectBlockedToDate(new Date())

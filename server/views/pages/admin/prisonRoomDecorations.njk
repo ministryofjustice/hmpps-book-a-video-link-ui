@@ -84,12 +84,12 @@
                         {
                             value: "active",
                             text: "Active",
-                            checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE" or (not room.extraAttributes and not formResponses)
+                            checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE"
                         },
                         {
                             value: "inactive",
                             text: "Out of use",
-                            checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE"
+                            checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE" or (not room.extraAttributes and not formResponses)
                         },
                         {
                             value: "temporarily_blocked",

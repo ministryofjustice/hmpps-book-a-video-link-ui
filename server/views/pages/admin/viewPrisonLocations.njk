@@ -34,6 +34,7 @@
                             {% if result.extraAttributes.locationStatus == 'ACTIVE' %}
                                 {{ locationUsageTag("Active", "govuk-tag--green") }}
                             {% elseif result.extraAttributes.locationStatus == 'INACTIVE' %}
+                                {{ locationUsageTag("Out of use", "govuk-tag--red") }}
                             {% else  %}
                                 {{ locationUsageTag("Blocked", "govuk-tag--yellow") }}
                             {% endif %}

@@ -8,6 +8,7 @@ import { getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import { Court } from '../../../../../@types/bookAVideoLinkApi/types'
 import TelemetryService from '../../../../../services/telemetryService'
+import config from '../../../../../config'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/courtsService')
@@ -30,6 +31,9 @@ const appSetup = (journeySession = {}) => {
 beforeEach(() => {
   appSetup({
     bookACourtHearing: {
+      prisoner: {
+        prisonId: 'MDI',
+      },
       preHearingStartTime: parse('12:45', 'HH:mm', new Date(0)).toISOString(),
       preHearingEndTime: parse('13:00', 'HH:mm', new Date(0)).toISOString(),
       startTime: parse('13:00', 'HH:mm', new Date(0)).toISOString(),
@@ -50,7 +54,51 @@ afterEach(() => {
 })
 
 describe('GET', () => {
-  it('should render the correct view page', () => {
+  it('should render the correct view page when alternative room feature off', () => {
+    config.featureToggles.selectAlternativeRooms = false
+
+    return request(app)
+      .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_NOT_AVAILABLE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+
+        expect(telemetryService.trackEvent).toHaveBeenCalled()
+        expect(heading).toEqual('No bookings available for your selected time')
+      })
+  })
+
+  it('should render the correct view page when alternative room feature on', () => {
+    config.featureToggles.selectAlternativeRooms = true
+    config.featureToggles.notAlternativeCourtRoomPrisons = ''
+
+    return request(app)
+      .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
+      .expect('Content-Type', /html/)
+      .expect(res => {
+        expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_NOT_AVAILABLE_PAGE, {
+          who: user.username,
+          correlationId: expect.any(String),
+        })
+
+        const $ = cheerio.load(res.text)
+        const heading = getPageHeader($)
+
+        expect(telemetryService.trackEvent).toHaveBeenCalled()
+        expect(heading).toEqual('No bookings available for your selected date')
+      })
+  })
+
+  it('should render the correct view page when alternative room feature on but prison is excluded from feature', () => {
+    config.featureToggles.selectAlternativeRooms = true
+    config.featureToggles.notAlternativeCourtRoomPrisons = 'MDI'
+
     return request(app)
       .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking/not-available`)
       .expect('Content-Type', /html/)

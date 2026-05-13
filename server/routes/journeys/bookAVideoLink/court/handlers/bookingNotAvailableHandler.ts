@@ -4,6 +4,7 @@ import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
 import TelemetryService from '../../../../../services/telemetryService'
 import { formatDate } from '../../../../../utils/utils'
+import config from '../../../../../config'
 
 export default class BookingNotAvailableHandler implements PageHandler {
   public PAGE_NAME = Page.BOOKING_NOT_AVAILABLE_PAGE
@@ -45,6 +46,15 @@ export default class BookingNotAvailableHandler implements PageHandler {
 
     this.telemetryService.trackEvent('NoRoomsAvailableForCourtBooking', eventToRecord)
 
-    res.render('pages/bookAVideoLink/court/notAvailable', { courts })
+    if (
+      config.featureToggles.selectAlternativeRooms &&
+      !config.featureToggles.notAlternativeCourtRoomPrisons?.split(',').includes(prisoner?.prisonId)
+    ) {
+      // When you arrive here via the alternative room flow, we know for certain the date is not available
+      res.render('pages/bookAVideoLink/court/dateNotAvailable', { courts })
+    } else {
+      // When you arrive here via the original flow, we only know the time is not available
+      res.render('pages/bookAVideoLink/court/notAvailable', { courts })
+    }
   }
 }

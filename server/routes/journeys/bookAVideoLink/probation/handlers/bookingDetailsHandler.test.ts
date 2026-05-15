@@ -251,6 +251,7 @@ describe('Booking details handler', () => {
       date: formatDate(startOfTomorrow(), 'dd/MM/yyyy'),
       duration: '120',
       timePeriods: ['AM'],
+      probationOfficerDetailsKnown: 'yes',
     }
 
     it('should validate an empty form', () => {
@@ -265,9 +266,9 @@ describe('Booking details handler', () => {
               text: 'Select a probation team',
             },
             {
-              fieldId: 'officerDetailsOrUnknown',
-              href: '#officerDetailsOrUnknown',
-              text: "Enter the probation officer's details",
+              fieldId: 'probationOfficerDetailsKnown',
+              href: '#probationOfficerDetailsKnown',
+              text: 'Select if you know the details of the probation officer',
             },
             {
               fieldId: 'meetingTypeCode',
@@ -288,24 +289,6 @@ describe('Booking details handler', () => {
               fieldId: 'timePeriods',
               href: '#timePeriods',
               text: 'Select at least one time period',
-            },
-          ])
-        })
-    })
-
-    it('should validate that both `not yet known` and some details can be entered for probation officer details', () => {
-      return request(app)
-        .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
-        .send({
-          ...validForm,
-          officerDetailsNotKnown: 'true',
-        })
-        .expect(() => {
-          expectErrorMessages([
-            {
-              fieldId: 'officerDetailsOrUnknown',
-              href: '#officerDetailsOrUnknown',
-              text: `Enter either the probation officer's details, or select 'Not yet known'`,
             },
           ])
         })
@@ -466,7 +449,7 @@ describe('Booking details handler', () => {
               prisonName: 'Moorland',
               prisonerNumber: 'A1234AA',
             },
-            officerDetailsNotKnown: false,
+            probationOfficerDetailsKnown: true,
             officer: {
               fullName: 'John Bing',
               email: 'jbing@gmail.com',
@@ -484,7 +467,7 @@ describe('Booking details handler', () => {
         .post(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking`)
         .send({
           ...validForm,
-          officerDetailsNotKnown: 'true',
+          probationOfficerDetailsKnown: 'no',
           officerFullName: '',
           officerEmail: '',
           officerTelephone: '',
@@ -507,7 +490,7 @@ describe('Booking details handler', () => {
               prisonName: 'Moorland',
               prisonerNumber: 'A1234AA',
             },
-            officerDetailsNotKnown: true,
+            probationOfficerDetailsKnown: false,
             duration: 120,
             timePeriods: ['AM'],
           }),
@@ -539,7 +522,7 @@ describe('Booking details handler', () => {
               prisonName: 'Moorland',
               prisonerNumber: 'A1234AA',
             },
-            officerDetailsNotKnown: false,
+            probationOfficerDetailsKnown: true,
             officer: {
               fullName: 'John Bing',
               email: 'jbing@gmail.com',
@@ -595,7 +578,7 @@ describe('Booking details handler', () => {
               prisonId: 'MDI',
               prisonName: 'Moorland',
             },
-            officerDetailsNotKnown: false,
+            probationOfficerDetailsKnown: true,
             officer: {
               fullName: 'John Bing',
               email: 'jbing@gmail.com',

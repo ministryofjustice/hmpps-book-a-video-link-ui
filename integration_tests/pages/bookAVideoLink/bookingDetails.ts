@@ -34,12 +34,24 @@ export default class BookingDetailsPage extends AbstractPage {
   static async verifyOnPage(page: Page): Promise<BookingDetailsPage> {
     const bookingDetailsPage = new BookingDetailsPage(page)
     await expect(bookingDetailsPage.header).toBeVisible()
-    await bookingDetailsPage.verifyNoAccessViolationsOnPage()
+    // // aria-allowed-attr is disabled because radio buttons can have aria-expanded which isn't
+    // // currently allowed by the spec, but that might change: https://github.com/w3c/aria/issues/1404
+    await bookingDetailsPage.verifyNoAccessViolationsOnPage(['aria-allowed-attr'])
     return bookingDetailsPage
   }
 
   async selectProbationTeam(probationTeam: string) {
     await this.probationTeam.selectOption(probationTeam)
+  }
+
+  async selectProbationOfficerDetailsKnown(yesOrNo: string) {
+    if (yesOrNo === 'Yes') {
+      await this.page.locator('#probationOfficerDetailsKnown').check()
+    }
+
+    if (yesOrNo === 'No') {
+      await this.page.locator('#probationOfficerDetailsKnown-2').check()
+    }
   }
 
   async enterProbationOfficerName(name: string) {

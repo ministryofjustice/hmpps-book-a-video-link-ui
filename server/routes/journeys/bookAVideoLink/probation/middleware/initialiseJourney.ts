@@ -33,14 +33,15 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
         prisonName: prisoner.prisonName,
       },
       probationTeamCode: booking.probationTeamCode,
-      officerDetailsNotKnown: booking.additionalBookingDetails?.contactName === undefined,
-      officer: booking.additionalBookingDetails?.contactName
-        ? {
-            fullName: booking.additionalBookingDetails?.contactName,
-            email: booking.additionalBookingDetails?.contactEmail,
-            telephone: booking.additionalBookingDetails?.contactNumber,
-          }
-        : undefined,
+      probationOfficerDetailsKnown: booking.additionalBookingDetails?.contactName !== undefined,
+      officer:
+        booking.additionalBookingDetails?.contactName !== undefined
+          ? {
+              fullName: booking.additionalBookingDetails?.contactName,
+              email: booking.additionalBookingDetails?.contactEmail,
+              telephone: booking.additionalBookingDetails?.contactNumber,
+            }
+          : undefined,
       meetingTypeCode: booking.probationMeetingType,
       date: parseDateToISOString(mainAppointment.appointmentDate),
       duration: differenceInMinutes(parseTime(mainAppointment.endTime), parseTime(mainAppointment.startTime)),

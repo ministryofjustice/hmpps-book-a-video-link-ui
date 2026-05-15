@@ -116,6 +116,7 @@ test.describe('Request a booking', () => {
       const bookingDetailsPage = await BookingDetailsPage.verifyOnPage(page)
 
       await bookingDetailsPage.selectProbationTeam('Blackpool MC (PPOC)')
+      await bookingDetailsPage.selectProbationOfficerDetailsKnown('Yes')
       await bookingDetailsPage.enterProbationOfficerName('Alan Key')
       await bookingDetailsPage.enterProbationOfficerEmail('akey@justice.gov.uk')
       await bookingDetailsPage.selectProbationMeetingType('Recall report (PRARR - parts B or C)')

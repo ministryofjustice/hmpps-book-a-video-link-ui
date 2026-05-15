@@ -1,7 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
-import { ArrayNotEmpty, Equals, IsEmail, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'
+import { ArrayNotEmpty, IsEmail, IsEnum, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'
 import { isValid, startOfToday } from 'date-fns'
 import { parsePhoneNumberWithError } from 'libphonenumber-js'
 import { Page } from '../../../../../services/auditService'
@@ -13,6 +13,7 @@ import Validator from '../../../../validators/validator'
 import PrisonerService from '../../../../../services/prisonerService'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import IsValidUkPhoneNumber from '../../../../validators/isValidUkPhoneNumber'
+import YesNo from '../../../../enumerator/yesNo'
 
 class Body {
   @Expose()
@@ -20,32 +21,25 @@ class Body {
   probationTeamCode: string
 
   @Expose()
-  @Transform(({ obj }) =>
-    !obj.officerDetailsNotKnown && !obj.officerFullName && !obj.officerEmail && !obj.officerTelephone
-      ? null
-      : !!obj.officerDetailsNotKnown !== !!(obj.officerFullName || obj.officerEmail || obj.officerTelephone),
-  )
-  @Equals(true, { message: `Enter either the probation officer's details, or select 'Not yet known'` })
-  @IsNotEmpty({ message: "Enter the probation officer's details" })
-  officerDetailsOrUnknown: boolean
+  @IsEnum(YesNo, { message: 'Select if you know the details of the probation officer' })
+  probationOfficerDetailsKnown: string
 
   @Expose()
-  @Transform(({ value }) => value === 'true')
-  officerDetailsNotKnown: boolean
-
-  @Expose()
-  @ValidateIf(o => o.officerDetailsOrUnknown && !o.officerDetailsNotKnown)
+  @Transform(({ value, obj }) => (obj.probationOfficerDetailsKnown === YesNo.YES ? value : undefined))
+  @ValidateIf(o => o.probationOfficerDetailsKnown === YesNo.YES)
   @IsNotEmpty({ message: `Enter the probation officer's full name` })
   officerFullName: string
 
   @Expose()
-  @ValidateIf(o => o.officerDetailsOrUnknown && !o.officerDetailsNotKnown)
+  @Transform(({ value, obj }) => (obj.probationOfficerDetailsKnown === YesNo.YES ? value : undefined))
+  @ValidateIf(o => o.probationOfficerDetailsKnown === YesNo.YES)
   @IsEmail({}, { message: 'Enter a valid email address' })
   @IsNotEmpty({ message: `Enter the probation officer's email address` })
   officerEmail: string
 
   @Expose()
-  @ValidateIf(o => o.officerDetailsOrUnknown && !o.officerDetailsNotKnown)
+  @Transform(({ value, obj }) => (obj.probationOfficerDetailsKnown === YesNo.YES ? value : undefined))
+  @ValidateIf(o => o.probationOfficerDetailsKnown === YesNo.YES)
   @IsOptional()
   @IsValidUkPhoneNumber({ message: 'Enter a valid UK phone number' })
   officerTelephone: string
@@ -144,7 +138,7 @@ export default class BookingDetailsHandler implements PageHandler {
 
     const {
       probationTeamCode,
-      officerDetailsNotKnown,
+      probationOfficerDetailsKnown,
       officerFullName,
       officerEmail,
       officerTelephone,
@@ -171,16 +165,17 @@ export default class BookingDetailsHandler implements PageHandler {
         prisonName: prisoner.prisonName,
       },
       probationTeamCode,
-      officerDetailsNotKnown,
-      officer: officerDetailsNotKnown
-        ? undefined
-        : {
-            fullName: officerFullName,
-            email: officerEmail,
-            telephone: officerTelephone
-              ? parsePhoneNumberWithError(officerTelephone, 'GB').formatNational()
-              : undefined,
-          },
+      probationOfficerDetailsKnown: probationOfficerDetailsKnown === YesNo.YES,
+      officer:
+        probationOfficerDetailsKnown === YesNo.YES
+          ? {
+              fullName: officerFullName,
+              email: officerEmail,
+              telephone: officerTelephone
+                ? parsePhoneNumberWithError(officerTelephone, 'GB').formatNational()
+                : undefined,
+            }
+          : undefined,
       meetingTypeCode,
       date: date.toISOString(),
       notesForStaff,

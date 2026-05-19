@@ -119,7 +119,7 @@ describe('Check Booking handler', () => {
           expect(getValueByKey($, 'Phone number (probation officer)')).toEqual('07892 398108')
         })
     })
-    it('should render the correct view page with out fficer details', () => {
+    it('should render the correct view page without officer details', () => {
       appSetup({
         bookAProbationMeeting: {
           prisoner: { prisonId: 'MDI' },

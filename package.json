@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1043.0",
+    "@aws-sdk/client-sqs": "^3.1045.0",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-monitoring": "^1.1.0",
     "agentkeepalive": "^4.6.0",
@@ -116,7 +116,7 @@
     "http-errors": "^2.0.1",
     "json-2-csv": "^5.5.10",
     "jwt-decode": "^4.0.0",
-    "libphonenumber-js": "^1.12.42",
+    "libphonenumber-js": "1.13.1",
     "lodash": "^4.18.1",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
@@ -130,9 +130,9 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.4",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.5",
     "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
-    "@playwright/test": "^1.59.1",
+    "@playwright/test": "^1.60.0",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
     "@tsconfig/node24": "^24.0.4",
@@ -146,7 +146,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^22.19.17",
+    "@types/node": "^22.19.19",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -167,7 +167,7 @@
     "grunt-contrib-uglify": "^5.2.2",
     "grunt-contrib-watch": "^1.1.0",
     "grunt-rollup": "^12.0.0",
-    "jest": "^30.3.0",
+    "jest": "^30.4.2",
     "jest-html-reporter": "^4.4.0",
     "jest-junit": "^16.0.0",
     "jsonwebtoken": "^9.0.3",
@@ -185,11 +185,9 @@
     "wiremock": "^3.13.2"
   },
   "overrides-comments": {
-    "minimatch": "overrides dependency pulled in by numerous grunt dev dependencies",
-    "qs": "overrides dependency pulled in by express, grunt and superagent"
+    "minimatch": "overrides dependency pulled in by numerous grunt dev dependencies"
   },
   "overrides": {
-    "minimatch@>3.0.0 <3.1.4": "^3.1.4",
-    "qs": "^6.15.0"
+    "minimatch@>3.0.0 <3.1.4": "^3.1.4"
   }
 }

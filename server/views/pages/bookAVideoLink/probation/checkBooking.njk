@@ -151,7 +151,7 @@
                             text: "Phone number (probation officer)"
                         },
                         value: {
-                            text: session.journey.bookAProbationMeeting.officer.telephone or ("Not yet known" if session.journey.bookAProbationMeeting.officerDetailsNotKnown else "None entered")
+                            text: session.journey.bookAProbationMeeting.officer.telephone or "Not yet known"
                         },
                         actions: {
                             items: [

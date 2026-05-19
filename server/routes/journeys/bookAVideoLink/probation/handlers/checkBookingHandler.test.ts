@@ -3,7 +3,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByDataQa, existsByKey, getPageHeader } from '../../../../testutils/cheerio'
+import { existsByDataQa, existsByKey, getPageHeader, getValueByKey } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonService from '../../../../../services/prisonService'
 import VideoLinkService from '../../../../../services/videoLinkService'
@@ -82,12 +82,18 @@ describe('Check Booking handler', () => {
   })
 
   describe('GET', () => {
-    it('should render the correct view page', () => {
+    it('should render the correct view page with officer details', () => {
       appSetup({
         bookAProbationMeeting: {
           prisoner: { prisonId: 'MDI' },
           date: '2024-06-12',
           startTime: '1970-01-01T16:00',
+          probationOfficerDetailsKnown: true,
+          officer: {
+            fullName: 'John Bing',
+            email: 'jbing@gmail.com',
+            telephone: '07892 398108',
+          },
         },
       })
 
@@ -108,6 +114,41 @@ describe('Check Booking handler', () => {
 
           expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
           expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          expect(getValueByKey($, 'Name of probation officer')).toEqual('John Bing')
+          expect(getValueByKey($, 'Email (probation officer)')).toEqual('jbing@gmail.com')
+          expect(getValueByKey($, 'Phone number (probation officer)')).toEqual('07892 398108')
+        })
+    })
+    it('should render the correct view page without officer details', () => {
+      appSetup({
+        bookAProbationMeeting: {
+          prisoner: { prisonId: 'MDI' },
+          date: '2024-06-12',
+          startTime: '1970-01-01T16:00',
+          probationOfficerDetailsKnown: false,
+        },
+      })
+
+      return request(app)
+        .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/check-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+          const heading = getPageHeader($)
+
+          expect(heading).toEqual('Check and confirm your booking')
+          expect(existsByKey($, 'Notes for prison staff')).toBe(true)
+
+          expect(auditService.logPageView).toHaveBeenCalledWith(Page.CHECK_BOOKING_PAGE, {
+            who: user.username,
+            correlationId: expect.any(String),
+          })
+
+          expect(probationTeamsService.getUserPreferences).toHaveBeenCalledTimes(2)
+          expect(referenceDataService.getProbationMeetingTypes).toHaveBeenCalledWith(user)
+          expect(getValueByKey($, 'Name of probation officer')).toEqual('Not yet known')
+          expect(getValueByKey($, 'Email (probation officer)')).toEqual('Not yet known')
+          expect(getValueByKey($, 'Phone number (probation officer)')).toEqual('Not yet known')
         })
     })
 

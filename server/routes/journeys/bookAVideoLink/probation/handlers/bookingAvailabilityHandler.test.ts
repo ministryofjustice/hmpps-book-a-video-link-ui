@@ -41,12 +41,6 @@ const bookAProbationMeetingSession = {
     prisonName: 'Moorland',
     prisonerNumber: 'A1234AA',
   },
-  officerDetailsNotKnown: false,
-  officer: {
-    fullName: 'John Bing',
-    email: 'jbing@gmail.com',
-    telephone: '07892 398108',
-  },
   duration: 120,
   timePeriods: ['AM'],
 }

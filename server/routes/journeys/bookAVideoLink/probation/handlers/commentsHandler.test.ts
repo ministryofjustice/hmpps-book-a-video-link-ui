@@ -61,6 +61,9 @@ describe('Comments handler', () => {
 
           expect(heading).toEqual('Change notes on this booking')
           expect(cancelLink).toEqual(`/probation/view-booking/1001`)
+          expect(getByDataQa($, 'notes-for-staff-hint-text').text().trim()).toEqual(
+            'This can include any additional information the prison staff need to know about the booking. For example, interpreter details if required.The information in this text box could potentially be shared in accordance with the Data Protection Act 2018.',
+          )
 
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.COMMENTS_PAGE, {
             who: user.username,

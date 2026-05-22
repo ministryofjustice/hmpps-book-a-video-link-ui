@@ -1,7 +1,7 @@
 {% extends "partials/layout.njk" %}
 
-{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/notesForStaff.njk" import notesForStaff %}
 
 {% set pageTitle = "Change notes on this booking" if session.journey.bookAProbationMeeting.notesForStaff else "Add notes to this booking" %}
 
@@ -17,18 +17,7 @@
             <form method="POST" action='check-booking' data-module="form-spinner" data-loading-text="Updating notes">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-                {{ govukCharacterCount({
-                    name: "notesForStaff",
-                    id: "notesForStaff",
-                    maxlength: 400,
-                    errorMessage: validationErrors | findError("notesForStaff"),
-                    label: {
-                        text: "Notes for prison staff (optional)",
-                        classes: 'govuk-fieldset__legend--s'
-                    },
-                    hint: { text: "This can include any additional information the prison staff need to know about the booking. For example, interpreter details if required." },
-                    value: formResponses.notesForStaff or session.journey.bookAProbationMeeting.notesForStaff
-                }) }}
+                {{ notesForStaff('This can include any additional information the prison staff need to know about the booking. For example, interpreter details if required.', formResponses.notesForStaff, session.journey.bookAProbationMeeting.notesForStaff) }}
 
                 {{ govukButton({
                     text: "Continue",

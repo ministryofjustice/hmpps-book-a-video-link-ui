@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { dropdownOptions, existsByLabel, getPageHeader, radioOptions } from '../../../../testutils/cheerio'
+import { dropdownOptions, existsByLabel, getByDataQa, getPageHeader, radioOptions } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonerService from '../../../../../services/prisonerService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
@@ -124,6 +124,9 @@ describe('Booking details handler', () => {
 
           expect(heading).toEqual('Enter probation video link booking details for Joe Smith')
           expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
+          expect(getByDataQa($, 'notes-for-staff-hint-text').text().trim()).toEqual(
+            'This can include any additional information the prison staff need to know about the booking. For example, interpreter details if required.The information in this text box could potentially be shared in accordance with the Data Protection Act 2018.',
+          )
 
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {
             who: user.username,

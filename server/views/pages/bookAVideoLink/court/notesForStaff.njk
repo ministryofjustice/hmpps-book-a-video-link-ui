@@ -1,7 +1,7 @@
 {% extends "partials/layout.njk" %}
 
-{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "partials/notesForStaff.njk" import notesForStaff %}
 
 {% set pageTitle = "Change notes on this booking" if session.journey.bookACourtHearing.notesForStaff else "Add notes on this booking" %}
 
@@ -17,18 +17,7 @@
             <form method="POST" action='check-booking' data-module="form-spinner" data-loading-text="Updating notes">
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-                {{ govukCharacterCount({
-                    name: "notesForStaff",
-                    id: "notesForStaff",
-                    maxlength: 400,
-                    errorMessage: validationErrors | findError("notesForStaff"),
-                    label: {
-                        text: "Notes for prison staff (optional)",
-                        classes: 'govuk-fieldset__legend--s'
-                    },
-                    hint: { text: "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details." },
-                    value: formResponses.notesForStaff or session.journey.bookACourtHearing.notesForStaff
-                }) }}
+                {{ notesForStaff("This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details.", formResponses.notesForStaff, session.journey.bookACourtHearing.notesForStaff) }}
 
                 {{ govukButton({
                     text: "Continue",

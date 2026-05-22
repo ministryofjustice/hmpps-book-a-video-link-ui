@@ -56,6 +56,9 @@ describe('Comments handler', () => {
             who: user.username,
             correlationId: expect.any(String),
           })
+          expect(getByDataQa($, 'notes-for-staff-hint-text').text().trim()).toEqual(
+            "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details.The information in this text box could potentially be shared in accordance with the Data Protection Act 2018.",
+          )
         })
     })
   })

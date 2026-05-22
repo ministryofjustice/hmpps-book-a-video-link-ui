@@ -7,7 +7,7 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
-{% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
+{% from "partials/notesForStaff.njk" import notesForStaff %}
 
 {% set mode = session.req.routeContext.mode %}
 {% set pageTitle = ("Change" if mode == 'amend' else "Enter") + ' probation video link booking details' %}
@@ -277,21 +277,7 @@
                     }) }}
                 {% endif %}
 
-                {{ govukCharacterCount({
-                    name: "notesForStaff",
-                    id: "notesForStaff",
-                    maxlength: 400,
-                    label: {
-                        text: "Notes for prison staff (optional)",
-                        classes: 'govuk-fieldset__legend--s'
-                    },
-                    hint: { text: "This can include any additional information the prison staff need to know about the booking. For example, interpreter details if required." },
-                    formGroup: {
-                        classes: 'govuk-!-width-two-thirds'
-                    },
-                    errorMessage: validationErrors | findError('notesForStaff'),
-                    value: formResponses.notesForStaff or session.journey.bookAProbationMeeting.notesForStaff
-                }) }}
+                {{ notesForStaff('This can include any additional information the prison staff need to know about the booking. For example, interpreter details if required.', formResponses.notesForStaff, session.journey.bookAProbationMeeting.notesForStaff) }}
 
                 {{ govukButton({
                     text: "Continue",

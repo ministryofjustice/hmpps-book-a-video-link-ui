@@ -4,7 +4,7 @@ import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import AuditService, { Page } from '../../../../../services/auditService'
-import { existsByLabel, getPageHeader } from '../../../../testutils/cheerio'
+import { existsByLabel, getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -110,6 +110,9 @@ describe('Booking details handler', () => {
           expect(existsByLabel($, 'Select the court the hearing is for')).toBe(true)
           expect(existsByLabel($, 'Select the court hearing type')).toBe(true)
           expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
+          expect(getByDataQa($, 'notes-for-staff-hint-text').text().trim()).toEqual(
+            "This can include case number, co-defendant details if this is a multi-hander case, interpreter, or solicitor's details.The information in this text box could potentially be shared in accordance with the Data Protection Act 2018.",
+          )
         })
     })
 

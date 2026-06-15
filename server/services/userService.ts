@@ -21,12 +21,24 @@ export default class UserService {
 
   public async getUser(user: Express.User): Promise<UserDetails> {
     const serviceUser = await this.manageUsersApiClient.getUser(user)
+
     const isAuthUser = serviceUser.authSource === 'auth'
+    const isDeliusUser = serviceUser.authSource === 'delius'
 
     const userGroups = isAuthUser && (await this.manageUsersApiClient.getUserGroups(serviceUser.userId, user))
     const roles = this.getUserRoles(user.token)
-    const isProbationUser = isAuthUser && userGroups.some(g => g.groupCode === 'VIDEO_LINK_PROBATION_USER')
+
+    // Probation users can authenticate in two ways
+    // - An external account with group membership of VIDEO_LINK_PROBATION and the role VIDEO_LINK_COURT_USER
+    // - An nDelius account with NDelius BVLS role (which is mapped to BVLS_PROBATION by Auth)
+    const isProbationUser =
+      (isAuthUser && userGroups.some(g => g.groupCode === 'VIDEO_LINK_PROBATION_USER')) ||
+      (isDeliusUser && roles.some(r => r === 'BVLS_PROBATION'))
+
+    // Court users are only external accounts with group membership of VIDEO_LINK_COURT_USER and the role VIDEO_LINK_COURT_USER
     const isCourtUser = isAuthUser && userGroups.some(g => g.groupCode === 'VIDEO_LINK_COURT_USER')
+
+    // Admin users are only external at present - until additional roles could be added to nDelius.
     const isAdminUser = isAuthUser && roles.some(r => r === 'BVLS_ADMIN')
 
     return {

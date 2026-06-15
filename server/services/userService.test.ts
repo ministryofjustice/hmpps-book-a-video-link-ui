@@ -70,6 +70,16 @@ describe('User service', () => {
       expect(result.isProbationUser).toEqual(true)
     })
 
+    it('isCourtUser and isProbationUser are set correctly for an nDelius probation user with the correct role', async () => {
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith', authSource: 'delius' } as User)
+
+      const result = await userService.getUser(createUser(['ROLE_BVLS_PROBATION']))
+
+      expect(result.isCourtUser).toEqual(false)
+      expect(result.isProbationUser).toEqual(true)
+      expect(result.isAdminUser).toEqual(false)
+    })
+
     it('Propagates error', async () => {
       manageUsersApiClient.getUser.mockRejectedValue(new Error('some error'))
 

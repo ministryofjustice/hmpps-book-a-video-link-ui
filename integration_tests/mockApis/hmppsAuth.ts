@@ -12,7 +12,7 @@ function createToken(userToken: UserToken) {
     name: userToken.name || 'john smith',
     user_name: 'john.smith@somewhere.com',
     scope: ['read', 'write'],
-    auth_source: 'auth',
+    auth_source: userToken.authSource || 'auth',
     authorities: userToken.roles,
     jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
     client_id: 'clientid',

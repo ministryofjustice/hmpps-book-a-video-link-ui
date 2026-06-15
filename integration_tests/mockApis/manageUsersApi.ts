@@ -5,6 +5,7 @@ enum UserType {
   ADMIN = 'ADMIN',
   COURT = 'COURT',
   PROBATION = 'PROBATION',
+  DELIUS_PROBATION = 'DELIUS_PROBATION',
 }
 
 const stubUser = (name: string = 'john.smith@somewhere.com') =>
@@ -21,6 +22,25 @@ const stubUser = (name: string = 'john.smith@somewhere.com') =>
         active: true,
         userId: '123456',
         authSource: 'auth',
+        name,
+      },
+    },
+  })
+
+const stubDeliusUser = (name: string = 'X2222') =>
+  stubFor({
+    request: {
+      method: 'GET',
+      urlPattern: '/manage-users-api/users/me',
+    },
+    response: {
+      status: 200,
+      headers: { 'Content-Type': 'application/json;charset=UTF-8' },
+      jsonBody: {
+        username: 'X2222',
+        active: true,
+        userId: '123456',
+        authSource: 'delius',
         name,
       },
     },
@@ -48,6 +68,7 @@ const stubUserGroups = (userType: UserType) => {
       ]
       break
 
+    case UserType.DELIUS_PROBATION:
     case UserType.ADMIN:
       response = []
       break
@@ -85,4 +106,6 @@ export default {
   stubAdminUser: (name = 'john smith') => Promise.all([stubUser(name), stubUserGroups(UserType.ADMIN)]),
   stubCourtUser: (name = 'john smith') => Promise.all([stubUser(name), stubUserGroups(UserType.COURT)]),
   stubProbationUser: (name = 'john smith') => Promise.all([stubUser(name), stubUserGroups(UserType.PROBATION)]),
+  stubDeliusUser: (name = 'john smith') =>
+    Promise.all([stubDeliusUser(name), stubUserGroups(UserType.DELIUS_PROBATION)]),
 }

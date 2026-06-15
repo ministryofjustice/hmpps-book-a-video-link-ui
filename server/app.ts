@@ -38,7 +38,13 @@ export default function createApp(services: Services): express.Application {
   nunjucksSetup(app, services.applicationInfo)
   app.use(setUpAuthentication())
   app.use('/accessibility-statement', (req, res) => res.render('pages/accessibility'))
-  app.use(authorisationMiddleware([AuthorisedRoles.VIDEO_LINK_COURT_USER, AuthorisedRoles.BVLS_ADMIN]))
+  app.use(
+    authorisationMiddleware([
+      AuthorisedRoles.VIDEO_LINK_COURT_USER,
+      AuthorisedRoles.BVLS_ADMIN,
+      AuthorisedRoles.BVLS_PROBATION,
+    ]),
+  )
   app.use(setUpCsrf())
   app.use(setUpFlash())
   app.use(setUpCurrentUser(services))

@@ -58,7 +58,7 @@ describe('Probation booking service', () => {
   })
 
   describe('getAvailableLocations', () => {
-    it('should correctly fetch the list of available locations', async () => {
+    it('should correctly fetch the list of available locations with time periods', async () => {
       const journey = {
         prisoner: {
           prisonId: 'MDI',
@@ -85,6 +85,39 @@ describe('Probation booking service', () => {
           probationTeamCode: 'AGENCY_CODE',
           date: '2022-03-20',
           bookingDuration: 120,
+          timePeriods: ['AM'],
+        },
+        user,
+      )
+    })
+
+    it('should correctly fetch the list of available locations with no time periods', async () => {
+      const journey = {
+        prisoner: {
+          prisonId: 'MDI',
+          prisonerNumber: 'ABC123',
+          prisonName: 'Moorland',
+          firstName: 'Joe',
+          lastName: 'Bloggs',
+        },
+        date: '2022-03-20T00:00:00Z',
+        locationCode: 'LOCATION_CODE',
+        startTime: '1970-01-01T13:30:00Z',
+        endTime: '1970-01-01T14:30:00Z',
+        probationTeamCode: 'AGENCY_CODE',
+        duration: 120,
+      } as BookAProbationMeetingJourney
+
+      await probationBookingService.getAvailableLocations(journey, user)
+
+      expect(bookAVideoLinkClient.fetchAvailableLocations).toHaveBeenCalledWith(
+        {
+          prisonCode: 'MDI',
+          bookingType: 'PROBATION',
+          probationTeamCode: 'AGENCY_CODE',
+          date: '2022-03-20',
+          bookingDuration: 120,
+          timePeriods: [],
         },
         user,
       )

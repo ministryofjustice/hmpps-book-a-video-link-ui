@@ -27,7 +27,7 @@ export default class ProbationBookingService {
       date: formatDate(journey.date, 'yyyy-MM-dd'),
       bookingDuration: journey.duration,
       vlbIdToExclude: journey.bookingId,
-      timePeriods: journey.timePeriods || [],
+      timeSlots: journey.timePeriods || [],
     } as TimeSlotAvailabilityRequest
 
     return this.bookAVideoLinkApiClient.fetchAvailableLocations(request, user)

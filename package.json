@@ -95,7 +95,7 @@
     ]
   },
   "dependencies": {
-    "@aws-sdk/client-sqs": "^3.1061.0",
+    "@aws-sdk/client-sqs": "^3.1066.0",
     "@ministryofjustice/frontend": "^3.7.2",
     "@ministryofjustice/hmpps-monitoring": "^1.1.0",
     "agentkeepalive": "^4.6.0",
@@ -116,7 +116,7 @@
     "http-errors": "^2.0.1",
     "json-2-csv": "^5.5.11",
     "jwt-decode": "^4.0.0",
-    "libphonenumber-js": "1.13.5",
+    "libphonenumber-js": "1.13.6",
     "lodash": "^4.18.1",
     "nocache": "^4.0.0",
     "nunjucks": "^3.2.4",
@@ -146,7 +146,7 @@
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/lodash": "^4.17.24",
-    "@types/node": "^22.19.19",
+    "@types/node": "^22.19.21",
     "@types/nunjucks": "^3.2.6",
     "@types/passport": "^1.0.17",
     "@types/passport-oauth2": "^1.8.0",
@@ -155,7 +155,7 @@
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^10.0.0",
     "aws-sdk-client-mock": "^4.1.0",
-    "axe-core": "^4.12.0",
+    "axe-core": "^4.12.1",
     "audit-ci": "^7.1.0",
     "cheerio": "^1.2.0",
     "concurrently": "^10.0.3",
@@ -175,7 +175,7 @@
     "nock": "^13.5.6",
     "nodemon": "^3.1.14",
     "openapi-typescript": "^7.13.0",
-    "prettier": "^3.8.3",
+    "prettier": "^3.8.4",
     "prettier-plugin-jinja-template": "^2.2.0",
     "sass": "^1.100.0",
     "sinon": "^21.1.2",
@@ -189,5 +189,9 @@
   },
   "overrides": {
     "minimatch@>3.0.0 <3.1.4": "^3.1.4"
-  }
+  },
+  "brace-expansion": "5.0.6",
+  "form-data": "4.0.6",
+  "js-yaml": "4.2.0",
+  "@opentelemetry/core": "2.8.0"
 }

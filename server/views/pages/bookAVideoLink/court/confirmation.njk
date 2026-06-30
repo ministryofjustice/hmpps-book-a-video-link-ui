@@ -72,7 +72,7 @@
                             text: "Pre-court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).description
+                            text: (rooms | find('dpsLocationId', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).dpsLocationId)).description
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
                     {
@@ -80,7 +80,7 @@
                             text: "Pre-court hearing link (PVL)"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
+                            text: (rooms | find('dpsLocationId', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE')).dpsLocationId)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_PRE'),
                     {
@@ -96,7 +96,7 @@
                             text: "Court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).prisonLocKey)).description
+                            text: (rooms | find('dpsLocationId', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_MAIN')).dpsLocationId)).description
                         }
                     },
                     {
@@ -128,7 +128,7 @@
                             text: "Post-court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).description
+                            text: (rooms | find('dpsLocationId', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).dpsLocationId)).description
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
                     {
@@ -136,7 +136,7 @@
                             text: "Post-court hearing link (PVL)"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).prisonLocKey)).extraAttributes.prisonVideoUrl or "Not yet known"
+                            text: (rooms | find('dpsLocationId', (booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST')).dpsLocationId)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
                     } if booking.prisonAppointments | find('appointmentType', 'VLB_COURT_POST'),
                     {

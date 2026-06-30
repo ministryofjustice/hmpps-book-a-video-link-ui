@@ -133,7 +133,7 @@
                             text: "Pre-court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).description
+                            text: (rooms | find('dpsLocationId', session.journey.bookACourtHearing.preLocationId)).description
                         },
                         actions: {
                             items: [
@@ -145,15 +145,15 @@
                                 }
                             ]
                         }
-                    } if session.journey.bookACourtHearing.preLocationCode,
+                    } if session.journey.bookACourtHearing.preLocationId,
                     {
                         key: {
                             text: "Pre-court hearing link (PVL)"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.preLocationCode)).extraAttributes.prisonVideoUrl or "Not yet known"
+                            text: (rooms | find('dpsLocationId', session.journey.bookACourtHearing.preLocationId)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
-                    } if session.journey.bookACourtHearing.preLocationCode,
+                    } if session.journey.bookACourtHearing.preLocationId,
                     {
                         key: {
                             text: "Court hearing time"
@@ -177,7 +177,7 @@
                             text: "Court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.locationCode)).description
+                            text: (rooms | find('dpsLocationId', session.journey.bookACourtHearing.locationId)).description
                         },
                         actions: {
                             items: [
@@ -239,7 +239,7 @@
                             text: "Post-court hearing room"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).description
+                            text: (rooms | find('dpsLocationId', session.journey.bookACourtHearing.postLocationId)).description
                         },
                         actions: {
                             items: [
@@ -251,15 +251,15 @@
                                 }
                             ]
                         }
-                    } if session.journey.bookACourtHearing.postLocationCode,
+                    } if session.journey.bookACourtHearing.postLocationId,
                     {
                         key: {
                             text: "Post-court hearing link (PVL)"
                         },
                         value: {
-                            text: (rooms | find('key', session.journey.bookACourtHearing.postLocationCode)).extraAttributes.prisonVideoUrl or "Not yet known"
+                            text: (rooms | find('dpsLocationId', session.journey.bookACourtHearing.postLocationId)).extraAttributes.prisonVideoUrl or "Not yet known"
                         }
-                    } if session.journey.bookACourtHearing.postLocationCode,
+                    } if session.journey.bookACourtHearing.postLocationId,
                     {
                         key: {
                             text: "Notes for prison staff"

@@ -109,9 +109,9 @@ export default class SelectRoomsHandler implements PageHandler {
 
     req.session.journey.bookACourtHearing = {
       ...req.session.journey.bookACourtHearing,
-      locationCode: location,
-      preLocationCode: preLocation,
-      postLocationCode: postLocation,
+      locationId: location,
+      preLocationId: preLocation,
+      postLocationId: postLocation,
     }
     return res.redirect('check-booking')
   }

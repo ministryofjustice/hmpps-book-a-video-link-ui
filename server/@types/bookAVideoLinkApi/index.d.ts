@@ -691,7 +691,7 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Endpoint to return the list of probation teams select by a user (identified from the token content)
+     * Endpoint to return the list of probation teams selected by a user (identified from the token content)
      * @description Requires one of the following roles:
      *     * BOOK_A_VIDEO_LINK_ADMIN
      */
@@ -954,7 +954,7 @@ export interface components {
       /** @description The email address for the contact, must be a valid email address */
       contactEmail: string
       /** @description The contact phone number for the contact, must be a valid phone number */
-      contactNumber?: string
+      contactNumber?: string | null
     }
     /** @description The request with the amended video link booking details */
     AmendVideoBookingRequest: {
@@ -975,7 +975,7 @@ export interface components {
       /**
        * @description The court hearing type is needed if booking type is COURT, otherwise null
        * @example APPEAL
-       * @enum {string}
+       * @enum {string|null}
        */
       courtHearingType?:
         | 'APPEAL'
@@ -1004,10 +1004,11 @@ export interface components {
         | 'TRIBUNAL'
         | 'OTHER'
         | 'UNKNOWN'
+        | null
       /**
        * @description The probation meeting type is needed if booking type is PROBATION, otherwise null
        * @example PSR
-       * @enum {string}
+       * @enum {string|null}
        */
       probationMeetingType?:
         | 'BR'
@@ -1024,37 +1025,35 @@ export interface components {
         | 'ROTL'
         | 'RR'
         | 'RTSCR'
+        | 'RECALL'
         | 'UNKNOWN'
+        | null
       /**
        * @description The video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
        */
-      videoLinkUrl?: string
+      videoLinkUrl?: string | null
       /**
        * @description The HMCTS number for the appointment. When this is provided the video link must be null. Ignored for non-court bookings.
        * @example 12345678
        */
-      hmctsNumber?: string
+      hmctsNumber?: string | null
       /**
        * @description The guest PIN to access the video booking. Ignored for non-court bookings.
        * @example 46385765
        */
-      guestPin?: string
-      /**
-       * @description The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
-       *           be ignored if not a probation booking.
-       */
-      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
+      guestPin?: string | null
+      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
        * @example Legal representation details ...
        */
-      notesForStaff?: string
+      notesForStaff?: string | null
       /**
        * @description Public free text notes for the booking. These notes are visible outside of the service, care should be taken what is entered.
        * @example Please arrive 10 minutes early
        */
-      notesForPrisoners?: string
+      notesForPrisoners?: string | null
     }
     Appointment: {
       /**
@@ -1064,10 +1063,17 @@ export interface components {
        */
       type: 'VLB_PROBATION' | 'VLB_COURT_PRE' | 'VLB_COURT_MAIN' | 'VLB_COURT_POST'
       /**
+       * Format: uuid
+       * @description The unique UUID for the location where the appointment takes place. The id field from the locations-inside-prison service.
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId?: string | null
+      /**
+       * @deprecated
        * @description The location key for the appointment
        * @example PVI-A-1-001
        */
-      locationKey: string
+      locationKey?: string | null
       /**
        * Format: date
        * @description The future date for which the appointment will start
@@ -1110,10 +1116,10 @@ export interface components {
     ErrorResponse: {
       /** Format: int32 */
       status: number
-      errorCode?: string
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
+      errorCode?: string | null
+      userMessage?: string | null
+      developerMessage?: string | null
+      moreInfo?: string | null
     }
     /** @description The request with the decoration details */
     AmendDecoratedRoomRequest: {
@@ -1135,27 +1141,27 @@ export interface components {
        *       "DRBYMC"
        *     ]
        */
-      allowedParties?: string[]
+      allowedParties?: string[] | null
       /**
        * @description The prison video URL for the location, can be null
        * @example HMPS123456
        */
-      prisonVideoUrl?: string
+      prisonVideoUrl?: string | null
       /**
        * @description Optional comments for the decorated location, can be null
        * @example Temporarily unavailable due to ongoing work
        */
-      comments?: string
+      comments?: string | null
       /**
        * Format: date
        * @description The start date which a location is blocked from. Only applies to temporarily blocked locations.
        */
-      blockedFrom?: string
+      blockedFrom?: string | null
       /**
        * Format: date
        * @description The end date which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
        */
-      blockedTo?: string
+      blockedTo?: string | null
     }
     Location: {
       /**
@@ -1172,7 +1178,7 @@ export interface components {
        * @description The description for the location, can be null
        * @example VIDEO LINK
        */
-      description?: string
+      description?: string | null
       /**
        * @description Flag indicates if the location is enabled, true is enabled and false is disabled.
        * @example true
@@ -1184,8 +1190,7 @@ export interface components {
        * @example ef88-efefef-3efggg-3323ddd
        */
       dpsLocationId: string
-      /** @description Additional location attributes returned if any are requested and available for this location. */
-      extraAttributes?: components['schemas']['RoomAttributes']
+      extraAttributes?: components['schemas']['RoomAttributes'] | null
     }
     /** @description The additional attributes of a video location */
     RoomAttributes: {
@@ -1219,23 +1224,23 @@ export interface components {
        * @description The video URL to access the equipment in this room
        * @example https://prison.video.link/123
        */
-      prisonVideoUrl?: string
+      prisonVideoUrl?: string | null
       /**
        * @description Notes for these additional attributes
        * @example some notes
        */
-      notes?: string
+      notes?: string | null
       schedule: components['schemas']['RoomSchedule'][]
       /**
        * Format: date
        * @description The start date which a room is blocked from. Only applies to temporarily blocked rooms.
        */
-      blockedFrom?: string
+      blockedFrom?: string | null
       /**
        * Format: date
        * @description The end date which a room is blocked to. Only applies to temporarily blocked rooms.
        */
-      blockedTo?: string
+      blockedTo?: string | null
     }
     /** @description The additional schedule of usage for a video room */
     RoomSchedule: {
@@ -1293,7 +1298,7 @@ export interface components {
        *       "DRBYMC"
        *     ]
        */
-      allowedParties?: string[]
+      allowedParties?: string[] | null
       /**
        * Format: int32
        * @description The day of the week the schedule starts on. The week starts at 1 for Monday and finishes at 7 for Sunday.
@@ -1318,7 +1323,7 @@ export interface components {
        * @description Notes related to the schedule
        * @example Some notes
        */
-      notes?: string
+      notes?: string | null
     }
     RetryDlqResult: {
       /** Format: int32 */
@@ -1338,7 +1343,7 @@ export interface components {
        *         Must be between 1 to 60 minutes or null.
        * @example 15
        */
-      pickUpTime?: number
+      pickUpTime?: number | null
     }
     /** @description Describes the details of a prison */
     Prison: {
@@ -1367,14 +1372,14 @@ export interface components {
        * @description Notes relating to this prison, e.g. number of video-enabled rooms, address.
        * @example Free form notes
        */
-      notes?: string
+      notes?: string | null
       /**
        * Format: int32
        * @description Represents the number of minutes to pick-up prisoners prior to bookings starting. For example, if a booking starts
        *          at 10am and the pick-up time is 15 minutes, the prisoner will be picked up at 9:45am the day of the booking.
        * @example 15
        */
-      pickUpTime?: number
+      pickUpTime?: number | null
     }
     /** @description The request with the new video link booking details */
     CreateVideoBookingRequest: {
@@ -1396,11 +1401,11 @@ export interface components {
        * @description The court code is needed if booking type is COURT, otherwise null
        * @example DRBYMC
        */
-      courtCode?: string
+      courtCode?: string | null
       /**
        * @description The court hearing type is needed if booking type is COURT, otherwise null
        * @example APPEAL
-       * @enum {string}
+       * @enum {string|null}
        */
       courtHearingType?:
         | 'APPEAL'
@@ -1429,15 +1434,16 @@ export interface components {
         | 'TRIBUNAL'
         | 'OTHER'
         | 'UNKNOWN'
+        | null
       /**
        * @description The probation team code is needed if booking type is PROBATION, otherwise null
        * @example BLKPPP
        */
-      probationTeamCode?: string
+      probationTeamCode?: string | null
       /**
        * @description The probation meeting type is needed if booking type is PROBATION, otherwise null
        * @example PSR
-       * @enum {string}
+       * @enum {string|null}
        */
       probationMeetingType?:
         | 'BR'
@@ -1454,37 +1460,35 @@ export interface components {
         | 'ROTL'
         | 'RR'
         | 'RTSCR'
+        | 'RECALL'
         | 'UNKNOWN'
+        | null
       /**
        * @description The video link for the video booking. When this is provided the HMCTS number must be null.
        * @example https://video.here.com
        */
-      videoLinkUrl?: string
+      videoLinkUrl?: string | null
       /**
        * @description The HMCTS number for the video booking. When this is provided the video link must be null. Ignored for non-court bookings.
        * @example 12345678
        */
-      hmctsNumber?: string
+      hmctsNumber?: string | null
       /**
        * @description The guest PIN to access the video booking. Ignored for non-court bookings.
        * @example 46385765
        */
-      guestPin?: string
-      /**
-       * @description The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
-       *           be ignored if not a probation booking.
-       */
-      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
+      guestPin?: string | null
+      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
        * @example Some notes that will not be visible outside of the service
        */
-      notesForStaff?: string
+      notesForStaff?: string | null
       /**
        * @description Public free text notes for the booking. These notes are visible outside of the service, care should be taken what is entered.
        * @example Please arrive 10 minutes early
        */
-      notesForPrisoners?: string
+      notesForPrisoners?: string | null
     }
     /** @description The request with the search criteria for a video booking */
     VideoBookingSearchRequest: {
@@ -1494,10 +1498,17 @@ export interface components {
        */
       prisonerNumber: string
       /**
+       * Format: uuid
+       * @description The unique UUID for the location where the appointment takes place. The id field from the locations-inside-prison service.
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId?: string | null
+      /**
+       * @deprecated
        * @description The location key for the appointment
        * @example PVI-A-1-001
        */
-      locationKey: string
+      locationKey?: string | null
       /**
        * Format: date
        * @description The date for which the appointment starts
@@ -1517,9 +1528,9 @@ export interface components {
       /**
        * @description The status of the booking to match, defaults to ACTIVE
        * @example ACTIVE
-       * @enum {string}
+       * @enum {string|null}
        */
-      statusCode?: 'ACTIVE' | 'CANCELLED'
+      statusCode?: 'ACTIVE' | 'CANCELLED' | null
     }
     /** @description A representation of a prison appointment */
     PrisonAppointment: {
@@ -1541,14 +1552,21 @@ export interface components {
       prisonerNumber: string
       /**
        * @description The appointment type
-       * @example VLB
+       * @example VLB_COURT_MAIN
        */
       appointmentType: string
       /**
+       * @deprecated
        * @description The location of the appointment at the prison
        * @example VCC-ROOM-1
        */
       prisonLocKey: string
+      /**
+       * Format: uuid
+       * @description The unique UUID for the location where the appointment takes place. The id field from the locations-inside-prison service.
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId: string
       /**
        * Format: date
        * @description The date of the appointment
@@ -1569,12 +1587,12 @@ export interface components {
        * @description Public free text notes for the booking.
        * @example Please arrive 10 minutes early
        */
-      notesForPrisoners?: string
+      notesForPrisoners?: string | null
       /**
        * @description Private free text notes for the booking.
        * @example Legal representation details ...
        */
-      notesForStaff?: string
+      notesForStaff?: string | null
       /**
        * @description The time slot the appointment falls into
        * @example PM
@@ -1607,16 +1625,16 @@ export interface components {
        * @description The court code for booking type COURT, otherwise null
        * @example DRBYMC
        */
-      courtCode?: string
+      courtCode?: string | null
       /**
        * @description The court description for booking type COURT, otherwise null
        * @example Derby Justice Centre
        */
-      courtDescription?: string
+      courtDescription?: string | null
       /**
        * @description The court hearing type for booking type COURT, otherwise null
        * @example APPEAL
-       * @enum {string}
+       * @enum {string|null}
        */
       courtHearingType?:
         | 'APPEAL'
@@ -1645,25 +1663,26 @@ export interface components {
         | 'TRIBUNAL'
         | 'OTHER'
         | 'UNKNOWN'
+        | null
       /**
        * @description The court hearing type description, for booking type COURT, otherwise null
        * @example Appeal hearing
        */
-      courtHearingTypeDescription?: string
+      courtHearingTypeDescription?: string | null
       /**
        * @description The probation team code for booking type PROBATION, otherwise null
        * @example BLKPPP
        */
-      probationTeamCode?: string
+      probationTeamCode?: string | null
       /**
        * @description The probation team description for booking type PROBATION, otherwise null
        * @example Barnet PPOC
        */
-      probationTeamDescription?: string
+      probationTeamDescription?: string | null
       /**
        * @description The probation meeting type for booking type PROBATION, otherwise null
        * @example PSR
-       * @enum {string}
+       * @enum {string|null}
        */
       probationMeetingType?:
         | 'BR'
@@ -1680,32 +1699,34 @@ export interface components {
         | 'ROTL'
         | 'RR'
         | 'RTSCR'
+        | 'RECALL'
         | 'UNKNOWN'
+        | null
       /**
        * @description The probation meeting type description, required for booking type PROBATION
        * @example Pre-sentence report
        */
-      probationMeetingTypeDescription?: string
+      probationMeetingTypeDescription?: string | null
       /**
        * @description The video link for the video booking. Must be a valid URL. When this is provided the HMCTS number will be null.
        * @example https://video.here.com
        */
-      videoLinkUrl?: string
+      videoLinkUrl?: string | null
       /**
        * @description The HMCTS number for the video booking. When this is provided the video link will be null.
        * @example 12345678
        */
-      hmctsNumber?: string
+      hmctsNumber?: string | null
       /**
        * @description The guest PIN to access the video booking.
        * @example 46385765
        */
-      guestPin?: string
+      guestPin?: string | null
       /**
        * @description True if the booking was made by a prison user.
        * @example false
        */
-      createdByPrison?: boolean
+      createdByPrison?: boolean | null
       /**
        * @description Username of the person who created this booking.
        * @example creator@email.com
@@ -1721,25 +1742,24 @@ export interface components {
        * @description Username of the person who last amended this booking.
        * @example amender@email.com
        */
-      amendedBy?: string
+      amendedBy?: string | null
       /**
        * Format: date-time
        * @description Date and time of the last amendment to this booking.
        * @example 2024-03-14 14:45
        */
-      amendedAt?: string
-      /** @description Additional details for the booking if there are any. */
-      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
+      amendedAt?: string | null
+      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
        * @example Legal representation details ...
        */
-      notesForStaff?: string
+      notesForStaff?: string | null
       /**
        * @description Public free text notes for the booking. These notes are visible outside of the service, care should be taken what is entered.
        * @example Please arrive 10 minutes early
        */
-      notesForPrisoners?: string
+      notesForPrisoners?: string | null
     }
     /** @description The request with the requested video link booking details */
     RequestVideoBookingRequest: {
@@ -1755,11 +1775,11 @@ export interface components {
        * @description The court code is needed if booking type is COURT, otherwise null
        * @example DRBYMC
        */
-      courtCode?: string
+      courtCode?: string | null
       /**
        * @description The court hearing type is needed if booking type is COURT, otherwise null
        * @example APPEAL
-       * @enum {string}
+       * @enum {string|null}
        */
       courtHearingType?:
         | 'APPEAL'
@@ -1788,15 +1808,16 @@ export interface components {
         | 'TRIBUNAL'
         | 'OTHER'
         | 'UNKNOWN'
+        | null
       /**
        * @description The probation team code is needed if booking type is PROBATION, otherwise null
        * @example BLKPPP
        */
-      probationTeamCode?: string
+      probationTeamCode?: string | null
       /**
        * @description The probation meeting type is needed if booking type is PROBATION, otherwise null
        * @example PSR
-       * @enum {string}
+       * @enum {string|null}
        */
       probationMeetingType?:
         | 'BR'
@@ -1813,22 +1834,20 @@ export interface components {
         | 'ROTL'
         | 'RR'
         | 'RTSCR'
+        | 'RECALL'
         | 'UNKNOWN'
+        | null
       /**
        * @description The video link for the appointment.
        * @example https://video.here.com
        */
-      videoLinkUrl?: string
-      /**
-       * @description The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
-       *           be ignored if not a probation booking.
-       */
-      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails']
+      videoLinkUrl?: string | null
+      additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
        * @example Some notes that will not be visible outside of the service
        */
-      notesForStaff?: string
+      notesForStaff?: string | null
     }
     RequestedAppointment: {
       /**
@@ -1911,7 +1930,7 @@ export interface components {
        * Format: date
        * @description A date in ISO format (YYYY-MM-DD) on or after the from date and a maximum of thirty days after the from date.
        */
-      toDate?: string
+      toDate?: string | null
       /**
        * @description A list of probation team codes to find bookings for
        * @example [CODE1, CODE2, CODE3, CODE4]
@@ -1948,7 +1967,7 @@ export interface components {
        * @description The video link URL to attend this event
        * @example https://video.link.url
        */
-      videoUrl?: string
+      videoUrl?: string | null
       /**
        * @description True if the booking was made by a prison user
        * @example false
@@ -1960,21 +1979,21 @@ export interface components {
        * @description The internal court ID, if this is a court booking
        * @example 1234
        */
-      courtId?: number
+      courtId?: number | null
       /**
        * @description The court code, if this is a court booking
        * @example DRBYMC
        */
-      courtCode?: string
+      courtCode?: string | null
       /**
        * @description The court description, if this is a court booking
        * @example Derby Magistrates
        */
-      courtDescription?: string
+      courtDescription?: string | null
       /**
        * @description The court hearing type code, if this is a court booking
        * @example APPEAL
-       * @enum {string}
+       * @enum {string|null}
        */
       hearingType?:
         | 'APPEAL'
@@ -2003,31 +2022,32 @@ export interface components {
         | 'TRIBUNAL'
         | 'OTHER'
         | 'UNKNOWN'
+        | null
       /**
        * @description The court hearing type description, if this is a court booking
        * @example Appeal hearing
        */
-      hearingTypeDescription?: string
+      hearingTypeDescription?: string | null
       /**
        * Format: int64
        * @description The internal probation team ID, if this is a probation booking
        * @example 1234
        */
-      probationTeamId?: number
+      probationTeamId?: number | null
       /**
        * @description The internal probation team code, if this is a probation booking
        * @example BLCKPPP
        */
-      probationTeamCode?: string
+      probationTeamCode?: string | null
       /**
        * @description The probation team description, if this is a probation booking
        * @example Blackpool PP
        */
-      probationTeamDescription?: string
+      probationTeamDescription?: string | null
       /**
        * @description The probation meeting type code, if this is a probation booking
        * @example PSR
-       * @enum {string}
+       * @enum {string|null}
        */
       probationMeetingType?:
         | 'BR'
@@ -2044,12 +2064,14 @@ export interface components {
         | 'ROTL'
         | 'RR'
         | 'RTSCR'
+        | 'RECALL'
         | 'UNKNOWN'
+        | null
       /**
        * @description The probation meeting type description, if this is a probation booking
        * @example Pre-sentence report
        */
-      probationMeetingTypeDescription?: string
+      probationMeetingTypeDescription?: string | null
       /**
        * @description The prison code
        * @example MDI
@@ -2085,7 +2107,7 @@ export interface components {
        * @description The appointment type description
        * @example Court - main hearing
        */
-      appointmentTypeDescription?: string
+      appointmentTypeDescription?: string | null
       /**
        * @description The location key for the room where the appointment will take place in the prison.
        * @example MDI-VCC-1
@@ -2134,42 +2156,42 @@ export interface components {
        * @description The timestamp when the booking was last updated
        * @example 2024-10-02 14:45
        */
-      updatedTime?: string
+      updatedTime?: string | null
       /**
        * @description The username of the person who updated the booking
        * @example amender@email.com
        */
-      updatedBy?: string
+      updatedBy?: string | null
       /**
        * @description The name of the probation officer if this is a probation booking and present
        * @example Jane Doe
        */
-      probationOfficerName?: string
+      probationOfficerName?: string | null
       /**
        * @description The email address of the probation officer if this is a probation booking and present
        * @example jane.doe@somewhere.com
        */
-      probationOfficerEmailAddress?: string
+      probationOfficerEmailAddress?: string | null
       /**
        * @description Private free text notes for the booking.
        * @example Legal representation details ...
        */
-      notesForStaff?: string
+      notesForStaff?: string | null
       /**
        * @description Public free text notes for the booking.
        * @example Please arrive 10 minutes early
        */
-      notesForPrisoners?: string
+      notesForPrisoners?: string | null
       /**
        * @description The HMCTS number for the video booking. When this is provided the video link will be null.
        * @example 12345678
        */
-      hmctsNumber?: string
+      hmctsNumber?: string | null
       /**
        * @description The guest PIN to access the video booking.
        * @example 46385765
        */
-      guestPin?: string
+      guestPin?: string | null
       /**
        * @description A boolean flag to indicate the schedule item may need checking e.g. the location is out of use via room admin.
        * @example true
@@ -2201,7 +2223,7 @@ export interface components {
        * Format: date
        * @description A date in ISO format (YYYY-MM-DD) on or after the from date and a maximum of thirty days after the from date.
        */
-      toDate?: string
+      toDate?: string | null
       /**
        * @description A list of court codes to find bookings for
        * @example [CODE1, CODE2, CODE3, CODE4]
@@ -2228,27 +2250,27 @@ export interface components {
        *       "DRBYMC"
        *     ]
        */
-      allowedParties?: string[]
+      allowedParties?: string[] | null
       /**
        * @description The prison video URL for the location, can be null
        * @example HMPS123456
        */
-      prisonVideoUrl?: string
+      prisonVideoUrl?: string | null
       /**
        * @description Optional comments for the decorated location, can be null
        * @example Temporarily unavailable due to ongoing work
        */
-      comments?: string
+      comments?: string | null
       /**
        * Format: date
        * @description The start date which a location is blocked from. Only applies to temporarily blocked locations.
        */
-      blockedFrom?: string
+      blockedFrom?: string | null
       /**
        * Format: date
        * @description The end date which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
        */
-      blockedTo?: string
+      blockedTo?: string | null
     }
     /** @description The request with the new schedule details */
     CreateRoomScheduleRequest: {
@@ -2264,7 +2286,7 @@ export interface components {
        *       "DRBYMC"
        *     ]
        */
-      allowedParties?: string[]
+      allowedParties?: string[] | null
       /**
        * Format: int32
        * @description The day of the week the schedule starts on. The week starts at 1 for Monday and finishes at 7 for Sunday.
@@ -2289,7 +2311,7 @@ export interface components {
        * @description Notes related to the schedule
        * @example Some notes
        */
-      notes?: string
+      notes?: string | null
     }
     /** @description The request body containing the user probation team preferences */
     SetProbationTeamPreferencesRequest: {
@@ -2341,17 +2363,15 @@ export interface components {
        * @example 2024-04-05
        */
       date: string
-      /** @description If present, the prison location and start/end time of the requested pre hearing, else null */
-      preAppointment?: components['schemas']['LocationAndInterval']
+      preAppointment?: components['schemas']['LocationAndInterval'] | null
       /** @description The main appointment which is always present */
       mainAppointment: components['schemas']['LocationAndInterval']
-      /** @description If present, the prison location and start/end time of the post hearing, else null */
-      postAppointment?: components['schemas']['LocationAndInterval']
+      postAppointment?: components['schemas']['LocationAndInterval'] | null
       /**
        * Format: int64
        * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
        */
-      vlbIdToExclude?: number
+      vlbIdToExclude?: number | null
     }
     /** @description A time interval between a start and end time */
     Interval: {
@@ -2369,10 +2389,17 @@ export interface components {
     /** @description The prison location key and start/end interval for an appointment slot */
     LocationAndInterval: {
       /**
+       * Format: uuid
+       * @description The unique UUID for the location where the appointment takes place. The id field from the locations-inside-prison service.
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId?: string | null
+      /**
+       * @deprecated
        * @description The location of the appointment at the prison
        * @example VCC-ROOM-1
        */
-      prisonLocKey: string
+      prisonLocKey: string | null
       /** @description The start and end time of a prison appointment to define the interval */
       interval?: components['schemas']['Interval']
     }
@@ -2388,12 +2415,10 @@ export interface components {
     }
     /** @description Video link booking option */
     BookingOption: {
-      /** @description The pre appointment location and time */
-      pre?: components['schemas']['LocationAndInterval']
+      pre?: components['schemas']['LocationAndInterval'] | null
       /** @description The main appointment location and time */
       main: components['schemas']['LocationAndInterval']
-      /** @description The post appointment location and time */
-      post?: components['schemas']['LocationAndInterval']
+      post?: components['schemas']['LocationAndInterval'] | null
     }
     /** @description The search criteria for looking up available locations */
     TimeSlotAvailabilityRequest: {
@@ -2412,12 +2437,12 @@ export interface components {
        * @description The court code is needed if booking type is COURT, otherwise null
        * @example DRBYMC
        */
-      courtCode?: string
+      courtCode?: string | null
       /**
        * @description The probation team code is needed if booking type is PROBATION, otherwise null
        * @example BLKPPP
        */
-      probationTeamCode?: string
+      probationTeamCode?: string | null
       /**
        * Format: date
        * @description The present or future date when the room is needed
@@ -2436,12 +2461,12 @@ export interface components {
        *       "AM"
        *     ]
        */
-      timeSlots?: ('AM' | 'PM' | 'ED')[]
+      timeSlots?: ('AM' | 'PM' | 'ED')[] | null
       /**
        * Format: int64
        * @description Exclude the video link booking with this ID from the availability check. Useful when checking availability during the amending of a booking.
        */
-      vlbIdToExclude?: number
+      vlbIdToExclude?: number | null
     }
     AvailableLocation: {
       name: string
@@ -2469,9 +2494,9 @@ export interface components {
       /**
        * @description The usage for this location, will be null if no attributes set up for location
        * @example PROBATION
-       * @enum {string}
+       * @enum {string|null}
        */
-      usage?: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE'
+      usage?: 'COURT' | 'PROBATION' | 'SHARED' | 'SCHEDULE' | null
       /**
        * @description The time slot the available location falls into
        * @example PM
@@ -2499,12 +2524,12 @@ export interface components {
        * @description The court code is needed if booking type is COURT, otherwise null
        * @example DRBYMC
        */
-      courtCode?: string
+      courtCode?: string | null
       /**
        * @description The probation team code is needed if booking type is PROBATION, otherwise null
        * @example BLKPPP
        */
-      probationTeamCode?: string
+      probationTeamCode?: string | null
       /**
        * Format: date
        * @description The present or future date when the room is needed
@@ -2525,7 +2550,7 @@ export interface components {
        * Format: int64
        * @description Exclude the appointment with this ID from the availability check. Useful when checking availability during the amending of a booking.
        */
-      appointmentToExclude?: number
+      appointmentToExclude?: number | null
     }
     Attachment: {
       /**
@@ -2543,15 +2568,23 @@ export interface components {
        * Format: int32
        * @description The size of the attachment file in bytes
        */
-      filesize: number
+      filesize?: number | null
       /** @description The filename of attachment file */
       filename: string
+      /** @description The additional headers to use when calling the url for fetching this attachment */
+      headers?: components['schemas']['AttachmentHeader'][] | null
+    }
+    AttachmentHeader: {
+      /** @description The name of the header */
+      name: string
+      /** @description The value of the header */
+      value: string
     }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: unknown
       /** @description The details of any attachments for the subject access request response */
-      attachments?: components['schemas']['Attachment'][]
+      attachments?: components['schemas']['Attachment'][] | null
     }
     /** @description Describes the details of a reference code */
     ReferenceCode: {
@@ -2575,7 +2608,7 @@ export interface components {
        * @description A fuller description of the reference code
        * @example Sentencing hearing
        */
-      description?: string
+      description?: string | null
       /**
        * @description A boolean value to show whether enabled or not.
        * @example true
@@ -2586,7 +2619,7 @@ export interface components {
        * @description An integer value to indicate its display sequence in a list of related reference codes.
        * @example 1
        */
-      displaySequence?: number
+      displaySequence?: number | null
     }
     DlqMessage: {
       body: {
@@ -2628,7 +2661,7 @@ export interface components {
        * @description Notes relating to this probation team for opening hours, postal address, main contact.
        * @example Free form notes
        */
-      notes?: string
+      notes?: string | null
       /**
        * @description Boolean flag to indicate if the team is a court team or not.
        * @example true
@@ -2667,7 +2700,7 @@ export interface components {
        * @description Notes relating to this court for opening hours, postal address, main contact.
        * @example Free form notes
        */
-      notes?: string
+      notes?: string | null
     }
     /** @description Describes the details of a booking contact */
     BookingContact: {
@@ -2687,22 +2720,22 @@ export interface components {
        * @description Describes the contact name (optional)
        * @example Mr. Person-contact
        */
-      name?: string
+      name?: string | null
       /**
        * @description Describes the position or role of the contact person (optional)
        * @example BVLS Administrator
        */
-      position?: string
+      position?: string | null
       /**
        * @description Describes the email address of this contact (optional)
        * @example example@example.com
        */
-      email?: string
+      email?: string | null
       /**
        * @description Describes the telephone number of this contact (optional)
        * @example 00902 0909779
        */
-      telephone?: string
+      telephone?: string | null
       /**
        * @description Describes the whether the contact is a primary contact or not, true if yes otherwise false.
        *
@@ -3780,6 +3813,7 @@ export interface operations {
           | 'PROBATION_OFFICER_DETAILS_REMINDER'
           | 'NEW_PRISON_VIDEO_ROOM'
           | 'REACTIVATE_BLOCKED_LOCATIONS'
+          | 'MERGE_PROBATION_RECALL_MEETING_TYPES'
       }
       cookie?: never
     }
@@ -4377,7 +4411,7 @@ export interface operations {
     }
     requestBody?: never
     responses: {
-      /** @description Probation teams select by this user */
+      /** @description Probation teams selected by this user */
       200: {
         headers: {
           [name: string]: unknown

@@ -87,9 +87,9 @@
                     {% set items = [{ text: '-', value: '' }] %}
                     {% for room in preLocations %}
                         {% set items = (items.push({
-                            value: room.dpsLocationKey,
+                            value: room.dpsLocationId,
                             text: room.name,
-                            selected: formResponses.preLocation == room.dpsLocationKey or session.journey.bookACourtHearing.preLocationCode == room.dpsLocationKey
+                            selected: formResponses.preLocation == room.dpsLocationId or session.journey.bookACourtHearing.preLocationId == room.dpsLocationId
                         }), items) %}
                     {% endfor %}
 
@@ -109,9 +109,9 @@
                 {% set items = [{ text: '-', value: '' }] %}
                 {% for room in mainLocations %}
                     {% set items = (items.push({
-                        value: room.dpsLocationKey,
+                        value: room.dpsLocationId,
                         text: room.name,
-                        selected: formResponses.location == room.dpsLocationKey or session.journey.bookACourtHearing.locationCode == room.dpsLocationKey
+                        selected: formResponses.location == room.dpsLocationId or session.journey.bookACourtHearing.locationId == room.dpsLocationId
                     }), items) %}
                 {% endfor %}
 
@@ -131,9 +131,9 @@
                     {% set items = [{ text: '-', value: '' }] %}
                     {% for room in postLocations %}
                         {% set items = (items.push({
-                            value: room.dpsLocationKey,
+                            value: room.dpsLocationId,
                             text: room.name,
-                            selected: formResponses.postLocation == room.dpsLocationKey or session.journey.bookACourtHearing.postLocationCode == room.dpsLocationKey
+                            selected: formResponses.postLocation == room.dpsLocationId or session.journey.bookACourtHearing.postLocationId == room.dpsLocationId
                         }), items) %}
                     {% endfor %}
 

@@ -21,9 +21,9 @@ export type BookACourtHearingJourney = {
   preHearingEndTime?: string
   postHearingStartTime?: string
   postHearingEndTime?: string
-  locationCode?: string
-  preLocationCode?: string
-  postLocationCode?: string
+  locationId?: string
+  preLocationId?: string
+  postLocationId?: string
   notesForStaff?: string
   cvpRequired?: boolean
   videoLinkUrl?: string

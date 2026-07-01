@@ -30,7 +30,7 @@ describe('Probation booking service', () => {
         lastName: 'Bloggs',
       },
       date: '2022-03-20T00:00:00Z',
-      locationCode: 'LOCATION_CODE',
+      locationId: 'LOCATION_ID',
       startTime: '1970-01-01T13:30:00Z',
       endTime: '1970-01-01T14:30:00Z',
       probationTeamCode: 'AGENCY_CODE',
@@ -48,7 +48,7 @@ describe('Probation booking service', () => {
           date: '2022-03-20',
           prisonCode: 'MDI',
           mainAppointment: {
-            prisonLocKey: 'LOCATION_CODE',
+            dpsLocationId: 'LOCATION_ID',
             interval: { start: '13:30', end: '14:30' },
           },
         },
@@ -68,7 +68,7 @@ describe('Probation booking service', () => {
           lastName: 'Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION_CODE',
+        locationId: 'LOCATION_ID',
         startTime: '1970-01-01T13:30:00Z',
         endTime: '1970-01-01T14:30:00Z',
         probationTeamCode: 'AGENCY_CODE',
@@ -101,7 +101,7 @@ describe('Probation booking service', () => {
           lastName: 'Bloggs',
         },
         date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION_CODE',
+        locationId: 'LOCATION_ID',
         startTime: '1970-01-01T13:30:00Z',
         endTime: '1970-01-01T14:30:00Z',
         probationTeamCode: 'AGENCY_CODE',
@@ -139,7 +139,7 @@ describe('Probation booking service', () => {
       duration: 120,
       timePeriods: ['AM'],
       date: '2022-03-20T00:00:00Z',
-      locationCode: 'LOCATION',
+      locationId: 'LOCATION_ID',
       startTime: '1970-01-01T13:30:00Z',
       endTime: '1970-01-01T14:30:00Z',
       probationTeamCode: 'PROBATION_TEAM',
@@ -159,7 +159,7 @@ describe('Probation booking service', () => {
             appointments: [
               {
                 type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
+                dpsLocationId: 'LOCATION_ID',
                 date: '2022-03-20',
                 startTime: '13:30',
                 endTime: '14:30',
@@ -195,7 +195,7 @@ describe('Probation booking service', () => {
             appointments: [
               {
                 type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
+                dpsLocationId: 'LOCATION_ID',
                 date: '2022-03-20',
                 startTime: '13:30',
                 endTime: '14:30',
@@ -231,7 +231,7 @@ describe('Probation booking service', () => {
           telephone: '07892 398108',
         },
         date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION',
+        locationId: 'LOCATION_ID',
         startTime: '1970-01-01T13:30:00Z',
         endTime: '1970-01-01T14:30:00Z',
         probationTeamCode: 'PROBATION_TEAM',
@@ -250,7 +250,7 @@ describe('Probation booking service', () => {
             appointments: [
               {
                 type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
+                dpsLocationId: 'LOCATION_ID',
                 date: '2022-03-20',
                 startTime: '13:30',
                 endTime: '14:30',
@@ -289,7 +289,7 @@ describe('Probation booking service', () => {
           telephone: '07892 398108',
         },
         date: '2022-03-20T00:00:00Z',
-        locationCode: 'LOCATION',
+        locationId: 'LOCATION_ID',
         startTime: '1970-01-01T13:30:00Z',
         endTime: '1970-01-01T14:30:00Z',
         probationTeamCode: 'PROBATION_TEAM',
@@ -306,7 +306,7 @@ describe('Probation booking service', () => {
             appointments: [
               {
                 type: 'VLB_PROBATION',
-                locationKey: 'LOCATION',
+                dpsLocationId: 'LOCATION_ID',
                 date: '2022-03-20',
                 startTime: '13:30',
                 endTime: '14:30',

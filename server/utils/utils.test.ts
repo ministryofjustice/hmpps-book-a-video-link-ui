@@ -185,7 +185,7 @@ describe('extractPrisonAppointmentsFromBooking', () => {
     const probationAppointment = {
       prisonerNumber: 'A1234AA',
       appointmentType: 'VLB_PROBATION',
-      prisonLocKey: 'VCC-ROOM-1',
+      dpsLocationId: 'VCC-ROOM-1',
       appointmentDate: '2024-04-05',
       startTime: '11:30',
       endTime: '12:30',
@@ -204,7 +204,7 @@ describe('extractPrisonAppointmentsFromBooking', () => {
     const preHearing = {
       prisonerNumber: 'A1234AA',
       appointmentType: 'VLB_COURT_PRE',
-      prisonLocKey: 'PRE_LOCATION',
+      dpsLocationId: 'PRE_LOCATION',
       appointmentDate: '2022-03-20',
       startTime: '13:15',
       endTime: '13:30',
@@ -213,7 +213,7 @@ describe('extractPrisonAppointmentsFromBooking', () => {
     const mainHearing = {
       prisonerNumber: 'A1234AA',
       appointmentType: 'VLB_COURT_MAIN',
-      prisonLocKey: 'LOCATION',
+      dpsLocationId: 'LOCATION',
       appointmentDate: '2022-03-20',
       startTime: '13:30',
       endTime: '14:30',
@@ -222,7 +222,7 @@ describe('extractPrisonAppointmentsFromBooking', () => {
     const postHearing = {
       prisonerNumber: 'A1234AA',
       appointmentType: 'VLB_COURT_POST',
-      prisonLocKey: 'POST_LOCATION',
+      dpsLocationId: 'POST_LOCATION',
       appointmentDate: '2022-03-20',
       startTime: '14:30',
       endTime: '14:45',

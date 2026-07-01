@@ -8,7 +8,7 @@
 {% set mode = session.req.routeContext.mode %}
 {% set pageTitle = "Check and confirm your request" if mode == 'request' else "Check and confirm your booking" %}
 
-{% set room = rooms | find('key', session.journey.bookAProbationMeeting.locationCode) %}
+{% set room = rooms | find('dpsLocationId', session.journey.bookAProbationMeeting.locationId) %}
 
 {% block content %}
     {% if warnPrison %}

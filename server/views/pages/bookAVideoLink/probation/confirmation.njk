@@ -95,7 +95,7 @@
                             text: "Meeting room"
                         },
                         value: {
-                            text: (rooms | find('key', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).prisonLocKey)).description
+                            text: (rooms | find('dpsLocationId', (booking.prisonAppointments | find('appointmentType', 'VLB_PROBATION')).dpsLocationId)).description
                         }
                     },
                     {

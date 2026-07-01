@@ -127,7 +127,7 @@ const getProbationBooking = (prisonerNumber: string) =>
         prisonCode: 'MDI',
         prisonerNumber,
         appointmentType: 'VLB_PROBATION',
-        prisonLocKey: 'VCC-ROOM-1',
+        dpsLocationId: 'VCC-ROOM-1',
         appointmentDate: formatDate(startOfToday(), 'yyyy-MM-dd'),
         startTime: '11:30',
         endTime: '12:30',

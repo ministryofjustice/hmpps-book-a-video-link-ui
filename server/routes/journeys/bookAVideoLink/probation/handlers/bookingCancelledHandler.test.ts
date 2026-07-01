@@ -48,7 +48,7 @@ describe('GET multiple probation teams bookings view', () => {
         {
           prisonerNumber: 'A1234AA',
           appointmentType: 'VLB_PROBATION',
-          prisonLocKey: 'VCC-ROOM-1',
+          dpsLocationId: 'VCC-ROOM-1',
           appointmentDate: formatDate(startOfToday(), 'yyyy-MM-dd'),
           startTime: '11:30',
           endTime: '12:30',

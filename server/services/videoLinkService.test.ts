@@ -139,11 +139,11 @@ describe('Video link service', () => {
     it('should fetch the video link schedule for self service prisons only', async () => {
       bookAVideoLinkClient.getPrisons.mockResolvedValue([{ code: 'BMI' }, { code: 'WWI' }] as Prison[])
       bookAVideoLinkClient.getVideoLinkSchedule.mockResolvedValue([
-        { videoBookingId: 1, prisonCode: 'BMI', prisonerNumber: 'ABC123', prisonLocKey: 'LOC1' },
-        { videoBookingId: 2, prisonCode: 'MDI', prisonerNumber: 'ZYX321', prisonLocKey: 'LOC2' },
+        { videoBookingId: 1, prisonCode: 'BMI', prisonerNumber: 'ABC123', dpsLocationId: 'LOCATION_ID_1' },
+        { videoBookingId: 2, prisonCode: 'MDI', prisonerNumber: 'ZYX321', dpsLocationId: 'LOCATION_ID_2' },
       ] as ScheduleItem[])
       bookAVideoLinkClient.getAppointmentLocations.mockResolvedValue([
-        { key: 'LOC1', description: 'Location 1' },
+        { key: 'LOC1', description: 'Location 1', dpsLocationId: 'LOCATION_ID_1' },
       ] as Location[])
       prisonerOffenderSearchClient.getByPrisonerNumbers.mockResolvedValue([
         { prisonerNumber: 'ABC123', firstName: 'Joe', lastName: 'Bloggs' },
@@ -155,7 +155,7 @@ describe('Video link service', () => {
         {
           videoBookingId: 1,
           prisonCode: 'BMI',
-          prisonLocKey: 'LOC1',
+          dpsLocationId: 'LOCATION_ID_1',
           prisonLocationDescription: 'Location 1',
           prisonerName: 'Joe Bloggs',
           prisonerNumber: 'ABC123',

@@ -76,19 +76,19 @@ export default class CourtBookingService {
       courtOrProbationCode: journey.courtCode,
       prisonCode: journey.prisoner.prisonId,
       date: formatDate(journey.date, 'yyyy-MM-dd'),
-      preAppointment: journey.preLocationCode
+      preAppointment: journey.preLocationId
         ? {
-            prisonLocKey: journey.preLocationCode,
+            dpsLocationId: journey.preLocationId,
             interval: formatInterval(journey.preHearingStartTime, journey.preHearingEndTime),
           }
         : undefined,
       mainAppointment: {
-        prisonLocKey: journey.locationCode,
+        dpsLocationId: journey.locationId,
         interval: formatInterval(journey.startTime, journey.endTime),
       },
-      postAppointment: journey.postLocationCode
+      postAppointment: journey.postLocationId
         ? {
-            prisonLocKey: journey.postLocationCode,
+            dpsLocationId: journey.postLocationId,
             interval: formatInterval(journey.postHearingStartTime, journey.postHearingEndTime),
           }
         : undefined,
@@ -135,11 +135,11 @@ export default class CourtBookingService {
   }
 
   private mapSessionToAppointments(journey: BookACourtHearingJourney) {
-    const createAppointment = (type: string, locationCode: string, date: string, startTime: string, endTime: string) =>
+    const createAppointment = (type: string, locationId: string, date: string, startTime: string, endTime: string) =>
       startTime
         ? {
             type,
-            locationKey: locationCode,
+            dpsLocationId: locationId,
             date: formatDate(date, 'yyyy-MM-dd'),
             startTime: formatDate(startTime, 'HH:mm'),
             endTime: formatDate(endTime, 'HH:mm'),
@@ -149,15 +149,15 @@ export default class CourtBookingService {
     return [
       createAppointment(
         'VLB_COURT_PRE',
-        journey.preLocationCode,
+        journey.preLocationId,
         journey.date,
         journey.preHearingStartTime,
         journey.preHearingEndTime,
       ),
-      createAppointment('VLB_COURT_MAIN', journey.locationCode, journey.date, journey.startTime, journey.endTime),
+      createAppointment('VLB_COURT_MAIN', journey.locationId, journey.date, journey.startTime, journey.endTime),
       createAppointment(
         'VLB_COURT_POST',
-        journey.postLocationCode,
+        journey.postLocationId,
         journey.date,
         journey.postHearingStartTime,
         journey.postHearingEndTime,

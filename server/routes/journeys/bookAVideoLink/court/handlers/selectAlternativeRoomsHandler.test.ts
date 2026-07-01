@@ -41,7 +41,7 @@ const bookACourtHearingSession = {
     prisonName: 'Moorland',
   },
   date: '2022-03-20T00:00:00Z',
-  locationCode: 'LOCATION',
+  locationId: 'LOCATION_ID',
   startTime: '1970-01-01T13:30:00Z',
   endTime: '1970-01-01T14:30:00Z',
   courtCode: 'COURT_HOUSE',
@@ -61,14 +61,14 @@ beforeEach(() => {
         name: 'Video room 1',
         startTime: '10:00',
         endTime: '12:00',
-        dpsLocationKey: 'VIDEO_1',
+        dpsLocationId: 'LOCATION_ID_1',
         timeSlot: 'AM',
       },
       {
         name: 'Video room 2',
         startTime: '11:00',
         endTime: '13:00',
-        dpsLocationKey: 'VIDEO_2',
+        dpsLocationId: 'LOCATION_ID_2',
         timeSlot: 'AM',
       },
     ],
@@ -110,7 +110,7 @@ describe('Booking availability handler', () => {
           })
 
           expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
-          expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
+          expect(radios).toEqual(['10:00///12:00///LOCATION_ID_1///AM', '11:00///13:00///LOCATION_ID_2///AM'])
 
           const alternativeTimesRadio = $('input[name="option"]:checked')
           expect(alternativeTimesRadio.val()).toBeUndefined()
@@ -149,10 +149,10 @@ describe('Booking availability handler', () => {
           })
 
           expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
-          expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
+          expect(radios).toEqual(['10:00///12:00///LOCATION_ID_1///AM', '11:00///13:00///LOCATION_ID_2///AM'])
 
           const alternativeTimesRadio = $('input[name="option"]:checked')
-          expect(alternativeTimesRadio.val()).toEqual('10:00///12:00///VIDEO_1///AM')
+          expect(alternativeTimesRadio.val()).toEqual('10:00///12:00///LOCATION_ID_1///AM')
         })
     })
 
@@ -175,10 +175,10 @@ describe('Booking availability handler', () => {
           })
 
           expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
-          expect(radios).toEqual(['10:00///12:00///VIDEO_1///AM', '11:00///13:00///VIDEO_2///AM'])
+          expect(radios).toEqual(['10:00///12:00///LOCATION_ID_1///AM', '11:00///13:00///LOCATION_ID_2///AM'])
 
           const alternativeTimesRadio = $('input[name="option"]:checked')
-          expect(alternativeTimesRadio.val()).toEqual('10:00///12:00///VIDEO_1///AM')
+          expect(alternativeTimesRadio.val()).toEqual('10:00///12:00///LOCATION_ID_1///AM')
         })
     })
 
@@ -189,14 +189,14 @@ describe('Booking availability handler', () => {
             name: 'Video room 1',
             startTime: '13:00',
             endTime: '14:00',
-            dpsLocationKey: 'VIDEO_1',
+            dpsLocationId: 'LOCATION_ID_1',
             timeSlot: 'PM',
           },
           {
             name: 'Video room 2',
             startTime: '15:00',
             endTime: '16:00',
-            dpsLocationKey: 'VIDEO_2',
+            dpsLocationId: 'LOCATION_ID',
             timeSlot: 'PM',
           },
         ],
@@ -212,14 +212,14 @@ describe('Booking availability handler', () => {
 
           expect(heading).toEqual('No bookings available for your selected time')
           expect(courtBookingService.getAvailableLocations).toHaveBeenCalled()
-          expect(radios).toEqual(['13:00///14:00///VIDEO_1///PM', '15:00///16:00///VIDEO_2///PM'])
+          expect(radios).toEqual(['13:00///14:00///LOCATION_ID_1///PM', '15:00///16:00///LOCATION_ID///PM'])
         })
     })
   })
 
   describe('POST', () => {
     const validForm = {
-      option: '15:00///16:00///VIDEO_2///PM',
+      option: '15:00///16:00///LOCATION_ID///PM',
     }
 
     it('should validate an empty form', () => {
@@ -255,7 +255,7 @@ describe('Booking availability handler', () => {
             bookingDate: '2022-03-20',
             courtCode: 'COURT_HOUSE',
             prisonCode: 'MDI',
-            locationCode: 'VIDEO_2',
+            locationId: 'LOCATION_ID',
             preHearingEndTime: '15:15',
             preHearingStartTime: '15:00',
             startTime: '15:15',
@@ -270,13 +270,13 @@ describe('Booking availability handler', () => {
             ...bookACourtHearingSession,
             preHearingStartTime: '1970-01-01T15:00:00.000Z',
             preHearingEndTime: '1970-01-01T15:15:00.000Z',
-            preLocationCode: 'VIDEO_2',
+            preLocationId: 'LOCATION_ID',
             startTime: '1970-01-01T15:15:00.000Z',
             endTime: '1970-01-01T15:45:00.000Z',
             postHearingStartTime: '1970-01-01T15:45:00.000Z',
             postHearingEndTime: '1970-01-01T16:00:00.000Z',
-            postLocationCode: 'VIDEO_2',
-            locationCode: 'VIDEO_2',
+            postLocationId: 'LOCATION_ID',
+            locationId: 'LOCATION_ID',
           }),
         )
     })
@@ -297,10 +297,10 @@ describe('Booking availability handler', () => {
             ...bookACourtHearingSession,
             startTime: '1970-01-01T15:00:00.000Z',
             endTime: '1970-01-01T15:45:00.000Z',
-            locationCode: 'VIDEO_2',
+            locationId: 'LOCATION_ID',
             postHearingStartTime: '1970-01-01T15:45:00.000Z',
             postHearingEndTime: '1970-01-01T16:00:00.000Z',
-            postLocationCode: 'VIDEO_2',
+            postLocationId: 'LOCATION_ID',
           }),
         )
     })
@@ -321,10 +321,10 @@ describe('Booking availability handler', () => {
             ...bookACourtHearingSession,
             preHearingStartTime: '1970-01-01T15:00:00.000Z',
             preHearingEndTime: '1970-01-01T15:15:00.000Z',
-            preLocationCode: 'VIDEO_2',
+            preLocationId: 'LOCATION_ID',
             startTime: '1970-01-01T15:15:00.000Z',
             endTime: '1970-01-01T16:00:00.000Z',
-            locationCode: 'VIDEO_2',
+            locationId: 'LOCATION_ID',
           }),
         )
     })

@@ -67,7 +67,7 @@ beforeEach(() => {
         appointmentDate: formatDate(startOfTomorrow(), 'yyyy-MM-dd'),
         startTime: '08:00',
         endTime: '09:00',
-        prisonLocKey: 'LOCATION_CODE',
+        dpsLocationId: 'LOCATION_ID',
       },
     ],
     courtCode: 'COURT_CODE',
@@ -176,7 +176,7 @@ describe('Booking details handler', () => {
             startTime: '1970-01-01T08:00:00.000Z',
             endTime: '1970-01-01T09:00:00.000Z',
             hearingTypeCode: 'APPEAL',
-            locationCode: 'LOCATION_CODE',
+            locationId: 'LOCATION_ID',
             prisoner: {
               firstName: 'Joe',
               lastName: 'Smith',
@@ -501,7 +501,7 @@ describe('Booking details handler', () => {
             initialStartTime: '1970-01-01T15:30:00.000Z',
             initialEndTime: '1970-01-01T16:30:00.000Z',
             hearingTypeCode: 'APPEAL',
-            locationCode: 'LOCATION_CODE',
+            locationId: 'LOCATION_ID',
             prisoner: {
               firstName: 'Joe',
               lastName: 'Smith',

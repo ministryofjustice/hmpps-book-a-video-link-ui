@@ -26,7 +26,7 @@ class Body {
 
   @Expose()
   @Transform(({ obj }) => obj.option && obj.option.split('///')[2])
-  dpsLocationKey: string
+  dpsLocationId: string
 
   @Expose()
   @Transform(({ obj }) => obj.option && obj.option.split('///')[3])
@@ -70,7 +70,7 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
 
   public POST = async (req: Request, res: Response) => {
     const { user } = res.locals
-    const { startTime, endTime, dpsLocationKey } = req.body
+    const { startTime, endTime, dpsLocationId } = req.body
 
     const meetingTimes = this.getMeetingTimes(
       parseISO(startTime.toISOString()),
@@ -82,13 +82,13 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
       ...req.session.journey.bookACourtHearing,
       preHearingStartTime: meetingTimes.preStartTime,
       preHearingEndTime: meetingTimes.preEndTime,
-      preLocationCode: meetingTimes.preStartTime ? dpsLocationKey : undefined,
+      preLocationId: meetingTimes.preStartTime ? dpsLocationId : undefined,
       startTime: meetingTimes.startTime,
       endTime: meetingTimes.endTime,
       postHearingStartTime: meetingTimes.postStartTime,
       postHearingEndTime: meetingTimes.postEndTime,
-      postLocationCode: meetingTimes.postStartTime ? dpsLocationKey : undefined,
-      locationCode: dpsLocationKey,
+      postLocationId: meetingTimes.postStartTime ? dpsLocationId : undefined,
+      locationId: dpsLocationId,
     }
 
     const journey = req.session.journey.bookACourtHearing
@@ -101,7 +101,7 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
       preHearingEndTime: formatDate(journey.preHearingEndTime, 'HH:mm'),
       startTime: formatDate(journey.startTime, 'HH:mm'),
       endTime: formatDate(journey.endTime, 'HH:mm'),
-      locationCode: journey.locationCode,
+      locationId: journey.locationId,
       postHearingStartTime: formatDate(journey.postHearingStartTime, 'HH:mm'),
       postHearingEndTime: formatDate(journey.postHearingEndTime, 'HH:mm'),
       username: user?.username,

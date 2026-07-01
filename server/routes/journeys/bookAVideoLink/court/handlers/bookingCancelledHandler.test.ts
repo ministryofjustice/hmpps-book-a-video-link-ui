@@ -48,7 +48,7 @@ describe('GET multiple courts bookings view', () => {
         {
           prisonerNumber: 'A1234AA',
           appointmentType: 'VLB_COURT_MAIN',
-          prisonLocKey: 'VCC-ROOM-1',
+          dpsLocationId: 'LOCATION_ID',
           appointmentDate: formatDate(startOfToday(), 'yyyy-MM-dd'),
           startTime: '11:30',
           endTime: '12:30',

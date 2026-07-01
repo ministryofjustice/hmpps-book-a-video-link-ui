@@ -61,7 +61,7 @@ export default class ProbationBookingService {
       prisonCode: journey.prisoner.prisonId,
       date: formatDate(journey.date, 'yyyy-MM-dd'),
       mainAppointment: {
-        prisonLocKey: journey.locationCode,
+        dpsLocationId: journey.locationId,
         interval: formatInterval(journey.startTime, journey.endTime),
       },
     } as AvailabilityRequest
@@ -97,7 +97,7 @@ export default class ProbationBookingService {
     return [
       {
         type: 'VLB_PROBATION',
-        locationKey: journey.locationCode,
+        dpsLocationId: journey.locationId,
         date: formatDate(journey.date, 'yyyy-MM-dd'),
         startTime: formatDate(journey.startTime, 'HH:mm'),
         endTime: formatDate(journey.endTime, 'HH:mm'),

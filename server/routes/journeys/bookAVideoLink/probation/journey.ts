@@ -22,7 +22,7 @@ export type BookAProbationMeetingJourney = {
   timePeriods?: string[]
   startTime?: string
   endTime?: string
-  locationCode?: string
+  locationId?: string
   notesForStaff?: string
   originalBookingDate?: string
 }

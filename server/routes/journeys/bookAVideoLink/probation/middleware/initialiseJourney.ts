@@ -48,7 +48,7 @@ export default ({ videoLinkService, prisonerService }: Services): RequestHandler
       timePeriods: [mainAppointment.timeSlot],
       startTime: parseTimeToISOString(mainAppointment.startTime),
       endTime: parseTimeToISOString(mainAppointment.endTime),
-      locationCode: mainAppointment?.prisonLocKey,
+      locationId: mainAppointment?.dpsLocationId,
       notesForStaff: booking.notesForStaff,
       originalBookingDate: mainAppointment.appointmentDate
         ? parseDateToISOString(mainAppointment.appointmentDate)

@@ -61,7 +61,7 @@ export default class VideoLinkService {
     return appointments.map(a => ({
       ...a,
       prisonerName: this.findPrisonerName(prisoners, a.prisonerNumber),
-      prisonLocationDescription: this.findPrisonLocationDescription(prisonLocations, a.prisonLocKey),
+      prisonLocationDescription: this.findPrisonLocationDescription(prisonLocations, a.dpsLocationId),
     }))
   }
 
@@ -123,7 +123,7 @@ export default class VideoLinkService {
     return prisoner ? `${prisoner.firstName} ${prisoner.lastName}` : ''
   }
 
-  private findPrisonLocationDescription(prisonLocations: Location[], prisonLocKey: string) {
-    return prisonLocations.find(loc => loc.key === prisonLocKey)?.description ?? ''
+  private findPrisonLocationDescription(prisonLocations: Location[], locationId: string) {
+    return prisonLocations.find(loc => loc.dpsLocationId === locationId)?.description ?? ''
   }
 }

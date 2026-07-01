@@ -279,7 +279,6 @@ const getPreCourtBooking = (
     prisonerNumber: prisNumber,
     appointmentType: 'VLB_COURT_PRE',
     appointmentTypeDescription: 'Court - pre hearing',
-    prisonLocKey: 'MDI-VCC-1',
     prisonLocDesc: 'VCC-crown-conference-room-1',
     dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
     appointmentDate,
@@ -291,7 +290,7 @@ const getPreCourtBooking = (
     checkAvailability: false,
     prisonerFirstName: firstName,
     prisonerLastName: lastName,
-  }
+  } as unknown as ScheduleItem
 }
 
 const getCourtBooking = (
@@ -325,7 +324,6 @@ const getCourtBooking = (
     prisonerNumber: prisNumber,
     appointmentType: 'VLB_COURT_MAIN',
     appointmentTypeDescription: 'Court - main hearing',
-    prisonLocKey: 'MDI-VCC-1',
     prisonLocDesc: 'VCC-crown-conference-room-1',
     dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
     appointmentDate,
@@ -337,7 +335,7 @@ const getCourtBooking = (
     checkAvailability: false,
     prisonerFirstName: firstName,
     prisonerLastName: lastName,
-  }
+  } as unknown as ScheduleItem
 }
 
 const getPostCourtBooking = (
@@ -371,7 +369,6 @@ const getPostCourtBooking = (
     prisonerNumber: prisNumber,
     appointmentType: 'VLB_COURT_POST',
     appointmentTypeDescription: 'Court - post hearing',
-    prisonLocKey: 'MDI-VCC-1',
     prisonLocDesc: 'VCC-crown-conference-room-1',
     dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
     appointmentDate,
@@ -383,7 +380,7 @@ const getPostCourtBooking = (
     checkAvailability: false,
     prisonerFirstName: firstName,
     prisonerLastName: lastName,
-  }
+  } as unknown as ScheduleItem
 }
 
 const getProbationTeamBooking = (
@@ -395,34 +392,34 @@ const getProbationTeamBooking = (
   prisNumber: string = 'A1234AA',
   probationTeamCode: string = 'P1',
   probationTeamDescription: string = 'Probation 1',
-): ScheduleItem => ({
-  videoBookingId: bookingId,
-  prisonAppointmentId: 2,
-  bookingType: 'PROBATION',
-  statusCode: 'ACTIVE',
-  videoUrl: 'https://room.link.url',
-  createdByPrison: 'false',
-  probationTeamId: 1,
-  probationTeamCode,
-  probationTeamDescription,
-  probationMeetingType: 'PSR',
-  probationMeetingTypeDescription: 'Pre sentence report',
-  prisonCode: 'MDI',
-  prisonName: 'HMP Moorland',
-  prisonerNumber: prisNumber,
-  appointmentType: 'VLB_PROBATION',
-  appointmentTypeDescription: 'Probation meeting',
-  prisonLocKey: 'MDI-VCC-1',
-  prisonLocDesc: 'VCC-crown-conference-room-1',
-  dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
-  appointmentDate: '2024-10-03',
-  startTime: start,
-  endTime: end,
-  createdTime: '2024-10-01 14:45',
-  createdBy: 'creator@email.com',
-  probationOfficerName: 'Jane Doe',
-  probationOfficerEmailAddress: 'jane.doe@email.com',
-  checkAvailability: false,
-  prisonerFirstName: firstName,
-  prisonerLastName: lastName,
-})
+): ScheduleItem =>
+  ({
+    videoBookingId: bookingId,
+    prisonAppointmentId: 2,
+    bookingType: 'PROBATION',
+    statusCode: 'ACTIVE',
+    videoUrl: 'https://room.link.url',
+    createdByPrison: 'false',
+    probationTeamId: 1,
+    probationTeamCode,
+    probationTeamDescription,
+    probationMeetingType: 'PSR',
+    probationMeetingTypeDescription: 'Pre sentence report',
+    prisonCode: 'MDI',
+    prisonName: 'HMP Moorland',
+    prisonerNumber: prisNumber,
+    appointmentType: 'VLB_PROBATION',
+    appointmentTypeDescription: 'Probation meeting',
+    prisonLocDesc: 'VCC-crown-conference-room-1',
+    dpsLocationId: 'a4fe3fef-34fd-4354fde-a12efe',
+    appointmentDate: '2024-10-03',
+    startTime: start,
+    endTime: end,
+    createdTime: '2024-10-01 14:45',
+    createdBy: 'creator@email.com',
+    probationOfficerName: 'Jane Doe',
+    probationOfficerEmailAddress: 'jane.doe@email.com',
+    checkAvailability: false,
+    prisonerFirstName: firstName,
+    prisonerLastName: lastName,
+  }) as unknown as ScheduleItem

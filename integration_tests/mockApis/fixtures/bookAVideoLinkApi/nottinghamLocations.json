@@ -12,49 +12,49 @@
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK-CVC_7_MC",
+    "dpsLocationId": "d14b2f9b-c44e-4a48-844d-f5a2413ac3fe",
     "key": "NMI-VIDEOLINK-CVC_7_MC",
     "description": "Closed Visits Cubicle 7 - Mags Court",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK-LVR_3_CCON",
+    "dpsLocationId": "69f532eb-6fa4-43a9-a8ec-472bafa18974",
     "key": "NMI-VIDEOLINK-LVR_3_CCON",
     "description": "Legal Visits Room  3 - Crown Conf",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK-LVR_4_MAGCON",
+    "dpsLocationId": "aae8e1d5-1523-486e-a8e1-dae9bec5ad42",
     "key": "NMI-VIDEOLINK-LVR_4_MAGCON",
     "description": "Legal Visits Room  4 - Magistrates Conf",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK-LVR_1_MAGCON",
+    "dpsLocationId": "aa9923e9-3a45-4cae-99bb-cce4670742da",
     "key": "NMI-VIDEOLINK-LVR_1_MAGCON",
     "description": "Legal Visits Room 1 - Magistrates Conf",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK-LVR_2_CCON",
+    "dpsLocationId": "fcc51418-c432-4b70-b884-acd936a454a4\n",
     "key": "NMI-VIDEOLINK-LVR_2_CCON",
     "description": "Legal Visits Room 2 - Crown Conf",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK-LVR_5_MAGCON",
+    "dpsLocationId": "fcc51418-c432-4b70-b884-acd936a454a4",
     "key": "NMI-VIDEOLINK-LVR_5_MAGCON",
     "description": "Legal Visits Room 5 - Magistrates Conf",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VIDEOLINK",
+    "dpsLocationId": "0a11a248-d799-4196-bab2-74b2d52b3a18",
     "key": "NMI-VIDEOLINK",
     "description": "Video Link",
     "enabled": true
   },
   {
-    "dpsLocationId": "NMI-VISITS-VLNK",
+    "dpsLocationId": "3aa8bb06-19dc-441e-800b-91dd176c5229",
     "key": "NMI-VISITS-VLNK",
     "description": "Video Link",
     "enabled": true

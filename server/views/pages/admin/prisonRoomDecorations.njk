@@ -7,6 +7,7 @@
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "govuk/components/character-count/macro.njk" import govukCharacterCount %}
 {% from "components/locationUsageTag.njk" import locationUsageTag %}
+{% from "components/hmppsTimePicker.njk" import hmppsTimePicker %}
 {% from "moj/components/date-picker/macro.njk" import mojDatePicker %}
 {% from "partials/admin/displayRoomSchedule.njk" import displayRoomSchedule %}
 {% from "partials/admin/enterRoomSchedule.njk" import enterRoomSchedule %}
@@ -41,30 +42,12 @@
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
                 {% set blockedHtml %}
-                    <p class='govuk-!-font-weight-bold'>Select a duration</p>
-                    <div class='horizontal-form'>
-                        {{ mojDatePicker({
-                            id: 'blockedFrom',
-                            name: 'blockedFrom',
-                            label: {
-                                text: "Date from",
-                                classes: 'govuk-label--s'
-                            },
-                            errorMessage: validationErrors | findError('blockedFrom'),
-                            value: formResponses.blockedFrom if (validationErrors | findError('blockedFrom')) else (room.extraAttributes.blockedFrom | formatDate('dd/MM/yyyy'))
-                        }) }}
-
-                        {{ mojDatePicker({
-                            id: 'blockedTo',
-                            name: 'blockedTo',
-                            label: {
-                                text: "Date to",
-                                classes: 'govuk-label--s'
-                            },
-                            errorMessage: validationErrors | findError('blockedTo'),
-                            value: formResponses.blockedTo if (validationErrors | findError('blockedTo')) else (room.extraAttributes.blockedTo | formatDate('dd/MM/yyyy'))
-                        }) }}
-                    </div>
+                    {# Feature switched behaviour #}
+                    {% if roomBlockingWithTimes %}
+                        {{ blockingWithDatesAndTimes() }}
+                    {% else %}
+                        {{ blockingWithDatesOnly() }}
+                    {% endif %}
                 {% endset %}
 
                 {{ govukRadios({
@@ -205,3 +188,74 @@
         </div>
     </div>
 {% endblock %}
+
+
+{% macro blockingWithDatesOnly() %}
+    <p class='govuk-!-font-weight-bold'>Select a duration</p>
+    <div class='horizontal-form'>
+        {{ mojDatePicker({
+            id: 'blockedFrom',
+            name: 'blockedFrom',
+            label: {
+                text: "Date from",
+                classes: 'govuk-label--s'
+            },
+            errorMessage: validationErrors | findError('blockedFrom'),
+            value: formResponses.blockedFrom if (validationErrors | findError('blockedFrom')) else (room.extraAttributes.blockedFrom | formatDate('dd/MM/yyyy'))
+        }) }}
+
+        {{ mojDatePicker({
+            id: 'blockedTo',
+            name: 'blockedTo',
+            label: {
+                text: "Date to",
+                classes: 'govuk-label--s'
+            },
+            errorMessage: validationErrors | findError('blockedTo'),
+            value: formResponses.blockedTo if (validationErrors | findError('blockedTo')) else (room.extraAttributes.blockedTo | formatDate('dd/MM/yyyy'))
+        }) }}
+    </div>
+{% endmacro %}
+
+{% macro blockingWithDatesAndTimes() %}
+    <p class='govuk-!-font-weight-bold'>Select a duration</p>
+    <div class='horizontal-form'>
+        {{ mojDatePicker({
+            id: 'blockedFrom',
+            name: 'blockedFrom',
+            label: {
+                text: "Date from",
+                classes: 'govuk-label--s'
+            },
+            errorMessage: validationErrors | findError('blockedFrom'),
+            value: formResponses.blockedFrom if (blockedDateTimeIssues) else (room.extraAttributes.blockedFrom | formatDate('dd/MM/yyyy'))
+        }) }}
+
+        {{ hmppsTimePicker({
+            id: 'blockedFromTime',
+            name: 'blockedFromTime',
+            errorMessage: validationErrors | findError('blockedFromTime'),
+            formResponses: formResponses.blockedFromTime if (blockedDateTimeIssues) else (room.extraAttributes.blockedFromTime | parseTimeToIsoString)
+        }) }}
+    </div>
+
+    <div class='horizontal-form'>
+        {{ mojDatePicker({
+            id: 'blockedTo',
+            name: 'blockedTo',
+            label: {
+                text: "Date to",
+                classes: 'govuk-label--s'
+            },
+            errorMessage: validationErrors | findError('blockedTo'),
+            value: formResponses.blockedTo if (blockedDateTimeIssues) else (room.extraAttributes.blockedTo | formatDate('dd/MM/yyyy'))
+        }) }}
+
+        {{ hmppsTimePicker({
+            id: 'blockedToTime',
+            name: 'blockedToTime',
+            errorMessage: validationErrors | findError('blockedToTime'),
+            formResponses: formResponses.blockedToTime if (blockedDateTimeIssues) else (room.extraAttributes.blockedToTime | parseTimeToIsoString)
+        }) }}
+    </div>
+{% endmacro %}

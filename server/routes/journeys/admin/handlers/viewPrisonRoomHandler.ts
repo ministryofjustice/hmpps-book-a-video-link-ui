@@ -23,7 +23,7 @@ export default class ViewPrisonRoomHandler implements PageHandler {
   ) {}
 
   GET = async (req: Request, res: Response, next: NextFunction) => {
-    const { user } = res.locals
+    const { user, validationErrors } = res.locals
     const { prisonCode, dpsLocationId } = req.params
 
     const [prison, room, courts, probationTeams] = await Promise.all([
@@ -33,8 +33,21 @@ export default class ViewPrisonRoomHandler implements PageHandler {
       this.probationTeamsService.getAllEnabledProbationTeams(user),
     ])
 
+    // Identify validation errors for blocked dates and times - flag to prompt the form to display unsaved values from formResponses
+    const dateTimeFields = ['blockedFrom', 'blockedTo', 'blockedFromTime', 'blockedToTime']
+    const blockedDateTimeIssues: boolean =
+      validationErrors?.some((val: { fieldId: string; href: string; text: string }) =>
+        dateTimeFields.includes(val.fieldId),
+      ) || false
+
     if (room) {
-      res.render('pages/admin/prisonRoomDecorations', { prison, room, courts, probationTeams })
+      res.render('pages/admin/prisonRoomDecorations', {
+        prison,
+        room,
+        courts,
+        probationTeams,
+        blockedDateTimeIssues,
+      })
     } else {
       next(new NotFound())
     }

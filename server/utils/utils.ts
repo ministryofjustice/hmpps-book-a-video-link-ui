@@ -147,3 +147,6 @@ export const plusMinutes = (time: string, minutes: number = 15) =>
 
 export const subtractMinutes = (time: string, minutes: number = 15) =>
   formatDate(subMinutes(parse(time, 'HH:mm', new Date()), minutes), 'HH:mm')
+
+export const parseTimeToISOString = (time: string) =>
+  time ? parse(time, 'HH:mm', new Date(0)).toISOString() : undefined

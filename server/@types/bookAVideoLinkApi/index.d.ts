@@ -1155,13 +1155,25 @@ export interface components {
       /**
        * Format: date
        * @description The start date which a location is blocked from. Only applies to temporarily blocked locations.
+       * @example 2028-07-05
        */
       blockedFrom?: string | null
       /**
        * Format: date
        * @description The end date which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       * @example 2028-07-06
        */
       blockedTo?: string | null
+      /**
+       * @description The start time which a location is blocked from. Only applies to temporarily blocked locations.
+       * @example 10:00
+       */
+      blockedFromTime?: string | null
+      /**
+       * @description The end time which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       * @example 15:00
+       */
+      blockedToTime?: string | null
     }
     Location: {
       /**
@@ -1234,13 +1246,25 @@ export interface components {
       /**
        * Format: date
        * @description The start date which a room is blocked from. Only applies to temporarily blocked rooms.
+       * @example 2028-07-05
        */
       blockedFrom?: string | null
       /**
        * Format: date
        * @description The end date which a room is blocked to. Only applies to temporarily blocked rooms.
+       * @example 2028-07-06
        */
       blockedTo?: string | null
+      /**
+       * @description The start time which a location is blocked from. Only applies to temporarily blocked locations.
+       * @example 10:00
+       */
+      blockedFromTime?: string | null
+      /**
+       * @description The end time which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       * @example 15:00
+       */
+      blockedToTime?: string | null
     }
     /** @description The additional schedule of usage for a video room */
     RoomSchedule: {
@@ -2264,13 +2288,25 @@ export interface components {
       /**
        * Format: date
        * @description The start date which a location is blocked from. Only applies to temporarily blocked locations.
+       * @example 2028-07-05
        */
       blockedFrom?: string | null
       /**
        * Format: date
        * @description The end date which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       * @example 2028-07-06
        */
       blockedTo?: string | null
+      /**
+       * @description The start time which a location is blocked from. Only applies to temporarily blocked locations.
+       * @example 10:00
+       */
+      blockedFromTime?: string | null
+      /**
+       * @description The end time which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
+       * @example 15:00
+       */
+      blockedToTime?: string | null
     }
     /** @description The request with the new schedule details */
     CreateRoomScheduleRequest: {

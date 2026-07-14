@@ -3,11 +3,13 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
+
 import {
   AmendDecoratedRoomRequest,
   CreateDecoratedRoomRequest,
   CreateRoomScheduleRequest,
 } from '../../../../@types/bookAVideoLinkApi/types'
+
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import AdminService from '../../../../services/adminService'
@@ -26,6 +28,7 @@ import {
   userPreferencesCourt,
   userPreferencesProbation,
 } from '../../../testutils/adminTestUtils'
+
 import { formatDate } from '../../../../utils/utils'
 
 jest.mock('../../../../services/prisonService')
@@ -43,11 +46,6 @@ const dpsLocationId = 'aaaa-bbbb-cccc-dddd'
 let app: Express
 
 beforeEach(() => {
-  app = appWithAllRoutes({
-    services: { prisonService, courtsService, probationTeamsService, adminService },
-    userSupplier: () => user,
-  })
-
   probationTeamsService.getUserPreferences.mockResolvedValue(userPreferencesProbation())
   courtsService.getUserPreferences.mockResolvedValue(userPreferencesCourt())
   prisonService.getPrisonByCode.mockResolvedValue(aPrison())
@@ -57,6 +55,11 @@ beforeEach(() => {
   adminService.createRoomAttributes.mockResolvedValue(aDecoratedLocation(dpsLocationId))
   adminService.amendRoomAttributes.mockResolvedValue(aDecoratedLocation(dpsLocationId))
   adminService.createRoomSchedule.mockResolvedValue(aSchedule())
+
+  app = appWithAllRoutes({
+    services: { prisonService, courtsService, probationTeamsService, adminService },
+    userSupplier: () => user,
+  })
 })
 
 afterEach(() => {
@@ -234,7 +237,7 @@ describe('View prison room handler', () => {
   })
 
   describe('POST', () => {
-    it(`should accept a minimal room POST and redirect`, () => {
+    it(`should accept a minimal room request and redirect`, () => {
       adminService.getLocationByDpsLocationId.mockResolvedValue(anUndecoratedLocation(dpsLocationId))
 
       return request(app)
@@ -260,6 +263,8 @@ describe('View prison room handler', () => {
               allowedParties: [],
               blockedFrom: null,
               blockedTo: null,
+              blockedFromTime: null,
+              blockedToTime: null,
             } as CreateDecoratedRoomRequest,
             user,
           )
@@ -267,8 +272,9 @@ describe('View prison room handler', () => {
         })
     })
 
-    it(`should create a temporarily blocked room POST and redirect`, () => {
-      const today = formatDate(new Date(), 'dd/MM/yyyy')
+    it(`should create a temporarily blocked room with dates only and redirect`, () => {
+      const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
+      const todayAsYmd = formatDate(new Date(), 'yyyy-MM-dd')
 
       adminService.getLocationByDpsLocationId.mockResolvedValue(anUndecoratedLocation(dpsLocationId))
 
@@ -280,8 +286,8 @@ describe('View prison room handler', () => {
           existingSchedule: 'false',
           videoUrl: 'link',
           notes: 'comments',
-          blockedFrom: today,
-          blockedTo: today,
+          blockedFrom: todayAsDmy,
+          blockedTo: todayAsDmy,
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -295,8 +301,10 @@ describe('View prison room handler', () => {
               locationUsage: 'SHARED',
               comments: 'comments',
               allowedParties: [],
-              blockedFrom: formatDate(new Date(), 'yyyy-MM-dd'),
-              blockedTo: formatDate(new Date(), 'yyyy-MM-dd'),
+              blockedFrom: todayAsYmd,
+              blockedTo: todayAsYmd,
+              blockedFromTime: null,
+              blockedToTime: null,
             } as CreateDecoratedRoomRequest,
             user,
           )
@@ -304,8 +312,55 @@ describe('View prison room handler', () => {
         })
     })
 
-    it(`should amend a temporarily blocked room POST and redirect`, () => {
-      const today = formatDate(new Date(), 'dd/MM/yyyy')
+    it(`should create a temporarily blocked room wth dates and times request and redirect`, () => {
+      const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
+      const todayAsYmd = formatDate(new Date(), 'yyyy-MM-dd')
+      const startTime = '10:00'
+      const endTime = '11:00'
+
+      adminService.getLocationByDpsLocationId.mockResolvedValue(anUndecoratedLocation(dpsLocationId))
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'temporarily_blocked',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          blockedFrom: todayAsDmy,
+          blockedTo: todayAsDmy,
+          blockedFromTime: { hour: 10, minute: 0 },
+          blockedToTime: { hour: 11, minute: 0 },
+        })
+        .expect(302)
+        .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .expect(() => {
+          expect(adminService.getLocationByDpsLocationId).toHaveBeenCalledWith(dpsLocationId, user)
+          expect(adminService.createRoomAttributes).toHaveBeenCalledWith(
+            dpsLocationId,
+            {
+              locationStatus: 'TEMPORARILY_BLOCKED',
+              prisonVideoUrl: 'link',
+              locationUsage: 'SHARED',
+              comments: 'comments',
+              allowedParties: [],
+              blockedFrom: todayAsYmd,
+              blockedTo: todayAsYmd,
+              blockedFromTime: startTime,
+              blockedToTime: endTime,
+            } as CreateDecoratedRoomRequest,
+            user,
+          )
+          expect(adminService.createRoomSchedule).not.toHaveBeenCalled()
+        })
+    })
+
+    it(`should amend a temporarily blocked room request and redirect`, () => {
+      const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
+      const todayAsYmd = formatDate(new Date(), 'yyyy-MM-dd')
+      const startTime = '10:00'
+      const endTime = '12:00'
 
       adminService.getLocationByDpsLocationId.mockResolvedValue(aDecoratedLocation(dpsLocationId))
 
@@ -317,8 +372,10 @@ describe('View prison room handler', () => {
           existingSchedule: 'false',
           videoUrl: 'link',
           notes: 'comments',
-          blockedFrom: today,
-          blockedTo: today,
+          blockedFrom: todayAsDmy,
+          blockedTo: todayAsDmy,
+          blockedFromTime: { hour: 10, minute: 0 },
+          blockedToTime: { hour: 12, minute: 0 },
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -332,8 +389,10 @@ describe('View prison room handler', () => {
               locationUsage: 'SHARED',
               comments: 'comments',
               allowedParties: [],
-              blockedFrom: formatDate(new Date(), 'yyyy-MM-dd'),
-              blockedTo: formatDate(new Date(), 'yyyy-MM-dd'),
+              blockedFrom: todayAsYmd,
+              blockedTo: todayAsYmd,
+              blockedFromTime: startTime,
+              blockedToTime: endTime,
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -341,7 +400,7 @@ describe('View prison room handler', () => {
         })
     })
 
-    it(`should accept a room and first schedule POST and redirect`, () => {
+    it(`should accept a room and first schedule request and redirect`, () => {
       adminService.getLocationByDpsLocationId.mockResolvedValue(aDecoratedLocation(dpsLocationId, 'SCHEDULE', []))
 
       return request(app)
@@ -372,6 +431,8 @@ describe('View prison room handler', () => {
               allowedParties: [],
               blockedFrom: null,
               blockedTo: null,
+              blockedFromTime: null,
+              blockedToTime: null,
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -420,6 +481,8 @@ describe('View prison room handler', () => {
               allowedParties: [],
               blockedFrom: null,
               blockedTo: null,
+              blockedFromTime: null,
+              blockedToTime: null,
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -466,6 +529,8 @@ describe('View prison room handler', () => {
               allowedParties: [],
               blockedFrom: null,
               blockedTo: null,
+              blockedFromTime: null,
+              blockedToTime: null,
             } as AmendDecoratedRoomRequest,
             user,
           )

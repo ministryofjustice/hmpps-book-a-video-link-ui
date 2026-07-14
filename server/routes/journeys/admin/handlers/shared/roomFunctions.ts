@@ -24,6 +24,8 @@ export const bodyToCreateRoomRequest = (req: Request): CreateDecoratedRoomReques
     allowedParties: chooseAllowedParties(permission, courtCodes, probationTeamCodes),
     blockedFrom: details.blockedFrom,
     blockedTo: details.blockedTo,
+    blockedFromTime: details.blockedFromTime,
+    blockedToTime: details.blockedToTime,
   } as CreateDecoratedRoomRequest
 }
 
@@ -39,13 +41,15 @@ export const bodyToAmendRoomRequest = (req: Request): AmendDecoratedRoomRequest 
     allowedParties: chooseAllowedParties(permission, courtCodes, probationTeamCodes),
     blockedFrom: details.blockedFrom,
     blockedTo: details.blockedTo,
+    blockedFromTime: details.blockedFromTime,
+    blockedToTime: details.blockedToTime,
   } as AmendDecoratedRoomRequest
 }
 
 export const locationStatusDetails = (req: Request) => {
-  const { roomStatus, blockedFrom, blockedTo } = req.body
+  const { roomStatus, blockedFrom, blockedTo, blockedFromTime, blockedToTime } = req.body
 
-  let locationStatus = null
+  let locationStatus
 
   switch (roomStatus) {
     case 'active':
@@ -65,6 +69,10 @@ export const locationStatusDetails = (req: Request) => {
     locationStatus,
     blockedFrom: blockedFrom && locationStatus === 'TEMPORARILY_BLOCKED' ? formatDate(blockedFrom, 'yyyy-MM-dd') : null,
     blockedTo: blockedTo && locationStatus === 'TEMPORARILY_BLOCKED' ? formatDate(blockedTo, 'yyyy-MM-dd') : null,
+    blockedFromTime:
+      blockedFromTime && locationStatus === 'TEMPORARILY_BLOCKED' ? formatDate(blockedFromTime, 'HH:mm') : null,
+    blockedToTime:
+      blockedToTime && locationStatus === 'TEMPORARILY_BLOCKED' ? formatDate(blockedToTime, 'HH:mm') : null,
   }
 }
 

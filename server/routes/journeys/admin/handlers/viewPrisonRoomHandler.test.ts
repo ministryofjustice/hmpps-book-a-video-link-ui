@@ -30,6 +30,7 @@ import {
 } from '../../../testutils/adminTestUtils'
 
 import { formatDate } from '../../../../utils/utils'
+import config from '../../../../config'
 
 jest.mock('../../../../services/prisonService')
 jest.mock('../../../../services/adminService')
@@ -64,6 +65,7 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.resetAllMocks()
+  config.featureToggles.roomBlockingWithTimes = false
 })
 
 describe('View prison room handler', () => {
@@ -397,6 +399,38 @@ describe('View prison room handler', () => {
             user,
           )
           expect(adminService.createRoomSchedule).not.toHaveBeenCalled()
+        })
+    })
+
+    it(`should fail validation if no end time is set for a temporary room block`, () => {
+      const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
+
+      config.featureToggles.roomBlockingWithTimes = true
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'temporarily_blocked',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          blockedFrom: todayAsDmy,
+          blockedTo: todayAsDmy,
+          blockedFromTime: { hour: 10, minute: 0 },
+          blockedToTime: null,
+        })
+        .expect(302)
+        .expect('location', '/')
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'blockedToTime',
+              href: '#blockedToTime',
+              text: 'Enter the time the room block will end',
+            },
+          ])
+          expect(adminService.getLocationByDpsLocationId).not.toHaveBeenCalled()
         })
     })
 

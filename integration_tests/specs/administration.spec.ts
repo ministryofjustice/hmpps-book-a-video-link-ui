@@ -238,6 +238,8 @@ test.describe('Administration', () => {
       await editRoomPage.selectRoomStatus('temporarily_blocked')
       await editRoomPage.selectBlockedFromDate(new Date())
       await editRoomPage.selectBlockedToDate(new Date())
+      await editRoomPage.selectBlockedFromTime(10, 30)
+      await editRoomPage.selectBlockedToTime(11, 45)
 
       await bookAVideoLinkApi.stubUpdateRoomDetails()
       await bookAVideoLinkApi.stubGetRoomDetails({
@@ -251,6 +253,8 @@ test.describe('Administration', () => {
           locationStatus: 'TEMPORARILY_BLOCKED',
           blockedFrom: format(new Date(), 'yyyy-MM-dd'),
           blockedTo: format(new Date(), 'yyyy-MM-dd'),
+          blockedFromTime: '10:30',
+          blockedToTime: '11:45',
           locationUsage: 'SHARED',
           allowedParties: [],
           prisonVideoUrl: null,
@@ -265,6 +269,8 @@ test.describe('Administration', () => {
       await editRoomPage.assertSelectedRoomPermission('shared')
       await editRoomPage.assertBlockedFromDate(new Date())
       await editRoomPage.assertBlockedToDate(new Date())
+      await editRoomPage.assertTimeValue('blockedFrom', 10, 30)
+      await editRoomPage.assertTimeValue('blockedTo', 11, 45)
     })
   })
 })

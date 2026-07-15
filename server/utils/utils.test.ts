@@ -10,6 +10,7 @@ import {
   isValidPrisonerNumber,
   parseDate,
   parseDatePickerDate,
+  parseTimeToISOString,
   plusMinutes,
   simpleDateToDate,
   simpleTimeToDate,
@@ -310,5 +311,17 @@ describe('subtractMinutes', () => {
     ['00:01', 2, '23:59'],
   ])("prisoner number [%s] is valid '%s'", (input, minutes: number, expected) => {
     expect(subtractMinutes(input, minutes)).toEqual(expected)
+  })
+})
+
+describe('parseTimeToIsoString', () => {
+  it.each([
+    ['08:00', '1970-01-01T08:00:00.000Z'],
+    ['09:21', '1970-01-01T09:21:00.000Z'],
+    ['14:01', '1970-01-01T14:01:00.000Z'],
+    ['23:59', '1970-01-01T23:59:00.000Z'],
+    [undefined, undefined],
+  ])('time [%s] to [%s]', (input, expected) => {
+    expect(parseTimeToISOString(input)).toEqual(expected)
   })
 })

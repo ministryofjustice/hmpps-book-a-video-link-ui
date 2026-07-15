@@ -134,7 +134,13 @@ export const aDecoratedLocation = (
   } as Location
 }
 
-export const aBlockedDecoratedLocation = (dpsLocationId: string, blockedFrom: string, blockedTo: string): Location => {
+export const aBlockedDecoratedLocation = (
+  dpsLocationId: string,
+  blockedFrom: string,
+  blockedTo: string,
+  blockedFromTime: string = null,
+  blockedToTime: string = null,
+): Location => {
   return {
     key: 'KEY',
     prisonCode: 'HEI',
@@ -146,6 +152,8 @@ export const aBlockedDecoratedLocation = (dpsLocationId: string, blockedFrom: st
       locationStatus: 'TEMPORARILY_BLOCKED',
       blockedFrom,
       blockedTo,
+      blockedFromTime,
+      blockedToTime,
       locationUsage: 'SHARED',
       prisonVideoUrl: 'link',
       notes: 'comments',

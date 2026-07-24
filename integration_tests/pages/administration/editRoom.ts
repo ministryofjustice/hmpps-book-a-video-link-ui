@@ -42,6 +42,14 @@ export default class EditRoomPage extends AbstractPage {
 
   selectBlockedToDate = (date: Date) => this.blockedToDate.fill(formatDate(date, 'dd/MM/yyyy') as string)
 
+  async selectBlockedFromTime(hour: number, minute: number) {
+    await this.selectTime('blockedFrom', hour, minute)
+  }
+
+  async selectBlockedToTime(hour: number, minute: number) {
+    await this.selectTime('blockedTo', hour, minute)
+  }
+
   selectRoomStatus = (status: 'active' | 'inactive' | 'temporarily_blocked') =>
     this.page.locator(`input[name="roomStatus"][value="${status}"]`).check()
 
@@ -64,5 +72,12 @@ export default class EditRoomPage extends AbstractPage {
   async assertBlockedToDate(date: Date) {
     const actual = await this.blockedToDate.inputValue()
     expect(actual).toBe(formatDate(date, 'dd/MM/yyyy') as string)
+  }
+
+  async assertTimeValue(idPrefix: string, hours: number, minutes: number) {
+    const actualHour = await this.page.locator(`#${idPrefix}Time`).inputValue()
+    const actualMinutes = await this.page.locator(`#${idPrefix}Time-minute`).inputValue()
+    expect(actualHour).toBe(`${hours}`)
+    expect(actualMinutes).toBe(`${minutes}`)
   }
 }

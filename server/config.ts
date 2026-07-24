@@ -148,6 +148,7 @@ export default {
     courtOnlyPrisons: get('FEATURE_COURT_ONLY_PRISONS', null),
     selectAlternativeRooms: get('FEATURE_SELECT_ALTERNATIVE_ROOMS', false) === 'true',
     notAlternativeCourtRoomPrisons: get('FEATURE_NOT_ALTERNATIVE_COURT_ROOM_PRISONS', null),
+    roomBlockingWithTimes: get('FEATURE_ROOM_BLOCKING_WITH_TIMES', false) === 'true',
   },
   defaultCourtVideoUrl: get('DEFAULT_COURT_VIDEO_URL', 'meet.video.justice.gov.uk'),
 }

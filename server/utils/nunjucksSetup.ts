@@ -11,6 +11,7 @@ import {
   formatDate,
   initialiseName,
   parseDate,
+  parseTimeToISOString,
   plusMinutes,
   subtractMinutes,
   toDuration,
@@ -35,6 +36,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.environmentNameColour = config.environmentName === 'PRE-PRODUCTION' ? 'govuk-tag--green' : ''
   app.locals.feedbackUrl = config.feedbackUrl
   app.locals.reportAFaultUrl = config.reportAFaultUrl
+  app.locals.roomBlockingWithTimes = config.featureToggles.roomBlockingWithTimes
 
   app.use((req, res, next) => {
     res.locals.session = req.session
@@ -86,6 +88,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('toViewBookingsSearchParams', toViewBookingsSearchParams)
   njkEnv.addFilter('plusMinutes', plusMinutes)
   njkEnv.addFilter('subtractMinutes', subtractMinutes)
+  njkEnv.addFilter('parseTimeToIsoString', parseTimeToISOString)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
   njkEnv.addGlobal('now', () => new Date())

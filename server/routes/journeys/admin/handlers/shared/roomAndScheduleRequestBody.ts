@@ -3,8 +3,9 @@ import { IsNotEmpty, MaxLength, ValidateIf } from 'class-validator'
 import _ from 'lodash'
 import { isBefore, isValid, startOfToday } from 'date-fns'
 import Validator from '../../../../validators/validator'
-import { parseDatePickerDate, simpleTimeToDate } from '../../../../../utils/utils'
+import { dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../../utils/utils'
 import IsValidDate from '../../../../validators/isValidDate'
+import config from '../../../../../config'
 
 export default class RoomAndScheduleRequestBody {
   @Expose()
@@ -33,6 +34,33 @@ export default class RoomAndScheduleRequestBody {
   @IsValidDate({ message: 'Enter a valid date the room block will end' })
   @IsNotEmpty({ message: 'Enter the date the room block will end' })
   blockedTo: Date
+
+  @Expose()
+  @ValidateIf(
+    o => o.roomStatus && o.roomStatus === 'temporarily_blocked' && config.featureToggles.roomBlockingWithTimes,
+  )
+  @Transform(({ value }) => simpleTimeToDate(value))
+  @IsValidDate({ message: 'Enter a valid time the room block will start' })
+  @IsNotEmpty({ message: 'Enter the time the room block will start' })
+  blockedFromTime: Date
+
+  @Expose()
+  @ValidateIf(
+    o => o.roomStatus && o.roomStatus === 'temporarily_blocked' && config.featureToggles.roomBlockingWithTimes,
+  )
+  @Transform(({ value }) => simpleTimeToDate(value))
+  @Validator(
+    (blockedToTime, { blockedFrom, blockedTo, blockedFromTime }) =>
+      isValid(blockedFromTime) &&
+      isValid(blockedToTime) &&
+      !isBefore(dateAtTime(blockedTo, blockedToTime), dateAtTime(blockedFrom, blockedFromTime)),
+    {
+      message: 'Enter a date and time which is after the block start date and time',
+    },
+  )
+  @IsValidDate({ message: 'Enter a valid time the room block will end' })
+  @IsNotEmpty({ message: 'Enter the time the room block will end' })
+  blockedToTime: Date
 
   @Expose()
   @ValidateIf(o => o.videoUrl)

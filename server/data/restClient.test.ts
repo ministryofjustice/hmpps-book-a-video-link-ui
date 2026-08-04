@@ -28,32 +28,28 @@ const restClient = new TestRestClient()
 describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', method => {
   afterEach(() => {
     nock.cleanAll()
+    jest.resetAllMocks()
   })
 
   it('should return response body', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+
     nock('http://localhost:8080', {
       reqheaders: { authorization: 'Bearer systemToken' },
     })
       [method]('/api/test')
       .reply(200, { success: true })
 
-    const result = await restClient[method](
-      {
-        path: '/test',
-      },
-      user,
-    )
+    const result = await restClient[method]({ path: '/test' }, user)
 
     expect(nock.isDone()).toBe(true)
-
-    expect(result).toStrictEqual({
-      success: true,
-    })
+    expect(result).toStrictEqual({ success: true })
+    spy.mockReset()
   })
 
   it('should return raw response body', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+
     nock('http://localhost:8080', {
       reqheaders: { authorization: 'Bearer systemToken' },
     })
@@ -76,11 +72,13 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
       status: 200,
       text: '{"success":true}',
     })
+
+    spy.mockReset()
   })
 
   if (method === 'get' || method === 'delete') {
     it('should retry by default', async () => {
-      jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+      const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
       nock('http://localhost:8080', {
         reqheaders: { authorization: 'Bearer systemToken' },
       })
@@ -102,10 +100,11 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
       ).rejects.toThrow('Internal Server Error')
 
       expect(nock.isDone()).toBe(true)
+      spy.mockReset()
     })
   } else {
     it('should not retry by default', async () => {
-      jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+      const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
       nock('http://localhost:8080', {
         reqheaders: { authorization: 'Bearer systemToken' },
       })
@@ -123,10 +122,11 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
       ).rejects.toThrow('Internal Server Error')
 
       expect(nock.isDone()).toBe(true)
+      spy.mockReset()
     })
 
     it('should retry if configured to do so', async () => {
-      jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+      const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
       nock('http://localhost:8080', {
         reqheaders: { authorization: 'Bearer systemToken' },
       })
@@ -149,11 +149,12 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
       ).rejects.toThrow('Internal Server Error')
 
       expect(nock.isDone()).toBe(true)
+      spy.mockReset()
     })
   }
 
   it('can recover through retries', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
     nock('http://localhost:8080', {
       reqheaders: { authorization: 'Bearer systemToken' },
     })
@@ -175,10 +176,11 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
 
     expect(result).toStrictEqual({ success: true })
     expect(nock.isDone()).toBe(true)
+    spy.mockReset()
   })
 
   it("should use the user's token if configured to do so", async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
     nock('http://localhost:8080', {
       reqheaders: { authorization: 'Bearer userToken' },
     })
@@ -195,13 +197,12 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
 
     expect(nock.isDone()).toBe(true)
 
-    expect(result).toStrictEqual({
-      success: true,
-    })
+    expect(result).toStrictEqual({ success: true })
+    spy.mockReset()
   })
 
   it('should fetch a new system client token and cache it if one is not already cached', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue(null)
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue(null)
     const setToken = jest.spyOn(InMemoryTokenStore.prototype, 'setToken')
 
     nock('http://localhost:9090').post('/auth/oauth/token').reply(200, { access_token: 'newToken', expires_in: 220 })
@@ -222,21 +223,19 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
     expect(nock.isDone()).toBe(true)
     expect(setToken).toHaveBeenCalledWith('jbloggs', 'newToken', 160)
 
-    expect(result).toStrictEqual({
-      success: true,
-    })
+    expect(result).toStrictEqual({ success: true })
+    spy.mockReset()
   })
 })
 
 describe('Method: pipeFileStream', () => {
   afterEach(() => {
-    nock.isDone()
     nock.cleanAll()
     jest.resetAllMocks()
   })
 
   it('should pipe the response stream successfully', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
     const res = new PassThrough() as unknown as express.Response
     res.set = jest.fn()
 
@@ -260,9 +259,11 @@ describe('Method: pipeFileStream', () => {
     })
 
     expect(nock.isDone()).toBe(true)
+    spy.mockReset()
   })
 
   it('should use the user token if specified', async () => {
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
     const res = new PassThrough() as unknown as express.Response
     res.set = jest.fn()
 
@@ -287,10 +288,11 @@ describe('Method: pipeFileStream', () => {
     })
 
     expect(nock.isDone()).toBe(true)
+    spy.mockReset()
   })
 
   it('should handle failures', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue('systemToken')
     const res = new PassThrough() as unknown as express.Response
     res.set = jest.fn()
 
@@ -311,10 +313,11 @@ describe('Method: pipeFileStream', () => {
     ).rejects.toThrow()
 
     expect(nock.isDone()).toBe(true)
+    spy.mockReset()
   })
 
   it('should fetch a new system client token and cache it if one is not already cached', async () => {
-    jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue(null)
+    const spy = jest.spyOn(InMemoryTokenStore.prototype, 'getToken').mockResolvedValue(null)
     const setToken = jest.spyOn(InMemoryTokenStore.prototype, 'setToken')
 
     nock('http://localhost:9090').post('/auth/oauth/token').reply(200, { access_token: 'newToken', expires_in: 220 })
@@ -328,13 +331,7 @@ describe('Method: pipeFileStream', () => {
     const res = new PassThrough() as unknown as express.Response
     res.set = jest.fn()
 
-    await restClient.pipeFileStream(
-      {
-        path: '/test-file',
-      },
-      res,
-      user,
-    )
+    await restClient.pipeFileStream({ path: '/test-file' }, res, user)
 
     expect(setToken).toHaveBeenCalledWith('jbloggs', 'newToken', 160)
 
@@ -343,5 +340,8 @@ describe('Method: pipeFileStream', () => {
     })
 
     expect(nock.isDone()).toBe(true)
+
+    spy.mockReset()
+    setToken.mockReset()
   })
 })

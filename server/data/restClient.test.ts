@@ -230,7 +230,9 @@ describe.each(['get', 'patch', 'post', 'put', 'delete'] as const)('Method: %s', 
 
 describe('Method: pipeFileStream', () => {
   afterEach(() => {
+    nock.isDone()
     nock.cleanAll()
+    jest.resetAllMocks()
   })
 
   it('should pipe the response stream successfully', async () => {

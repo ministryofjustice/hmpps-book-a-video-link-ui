@@ -6,93 +6,28 @@
   "license": "MIT",
   "scripts": {
     "prepare": "hmpps-precommit-hooks-prepare",
-    "compile-assets": "grunt",
-    "watch-node": "nodemon --ignore '*.test.ts' -r dotenv/config ./server.ts",
-    "watch-assets": "npm run build:dev && grunt watch",
-    "build": "npm run compile-assets && tsc",
-    "build:dev": "npx grunt clean-dev-build",
+    "watch-ts": "tsc -w",
+    "build": "node esbuild/esbuild",
     "start": "node $NODE_OPTIONS dist/server.js | bunyan -o short",
-    "start:dev": "NODE_ENV=live-development concurrently --kill-signal=SIGKILL -k -p \"[{name}]\" -n \"TypeScript,Assets\" -c \"green.bold,blue.bold\" \"npm run watch-node\" \"npm run watch-assets\"",
+    "start:dev": "node esbuild/esbuild --watch",
     "start-feature": "export $(cat feature.env) && $(wiremock --port 9091 --root-dir integration_tests >> /dev/null &) && node $NODE_DEBUG_OPTION dist/server.js | bunyan -o short",
-    "start-feature:dev": "export $(cat feature.env) && $(wiremock --port 9091 --root-dir integration_tests >> /dev/null &) && npm run start:dev",
+    "start-feature:dev": "node esbuild/esbuild --watch --env feature.env",
     "lint": "eslint . --cache --max-warnings 0",
-    "lint:fix": "eslint . --cache --max-warnings 0 --fix",
-    "typecheck": "tsc && tsc -p integration_tests",
-    "test": "NODE_ENV=unit-test TZ=utc NODE_OPTIONS=--experimental-vm-modules jest --runInBand --detectOpenHandles --collectCoverage=true --testPathPatterns='(server|frontend)/.*'",
-    "test:ci": "NODE_ENV=unit-test TZ=utc NODE_OPTIONS=--experimental-vm-modules jest --runInBand --detectOpenHandles --collectCoverage=true --testPathPatterns='(server|frontend)/.*'",
+    "lint-fix": "eslint . --cache --max-warnings 0 --fix",
+    "typecheck": "tsc && tsc -p integration_tests && tsc -p assets/js",
+    "test": "TZ=utc jest",
+    "test:ci": "TZ=utc jest --runInBand",
     "security_audit": "npx audit-ci --config audit-ci.json",
     "int-test": "npx playwright test",
     "int-test-ui": "npx playwright test --ui",
     "int-test-init:ci": "npx playwright install",
-    "clean": "rm -rf dist node_modules test_results",
+    "clean": "rm -rf dist test_results",
     "rebuild": "npm run clean && npm run setup && npm run build",
-    "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
-    "precommit:lint": "node_modules/.bin/lint-staged",
-    "precommit:verify": "npm run typecheck && npm test",
     "setup": "npm ci && hmpps-npm-script-run-allowlist"
   },
   "engines": {
     "node": "^24",
     "npm": "^11"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": [
-        "ts-jest",
-        {
-          "isolatedModules": true
-        }
-      ]
-    },
-    "collectCoverageFrom": [
-      "server/**/*.{ts,js,jsx,mjs}"
-    ],
-    "testMatch": [
-      "<rootDir>/(server|job)/**/?(*.)(cy|test).{ts,js,jsx,mjs}"
-    ],
-    "testEnvironment": "node",
-    "reporters": [
-      "default",
-      [
-        "jest-junit",
-        {
-          "outputDirectory": "test_results/jest/"
-        }
-      ],
-      [
-        "./node_modules/jest-html-reporter",
-        {
-          "outputPath": "test_results/unit-test-reports.html"
-        }
-      ]
-    ],
-    "moduleFileExtensions": [
-      "web.js",
-      "js",
-      "json",
-      "node",
-      "ts"
-    ]
-  },
-  "nodemonConfig": {
-    "ignore": [
-      ".circleci/*",
-      "migrations/*",
-      "node_modules/*",
-      "test/*",
-      "integration_tests/*"
-    ],
-    "delay": 2500,
-    "ext": "js,json,html,njk"
-  },
-  "lint-staged": {
-    "*.{ts,js,css}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "*.json": [
-      "prettier --write"
-    ]
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.1094.0",
@@ -109,6 +44,7 @@
     "connect-redis": "^7.1.1",
     "csrf-sync": "^4.2.1",
     "date-fns": "^4.4.0",
+    "del": "8.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
     "govuk-frontend": "^5.14.0",
@@ -129,9 +65,11 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.12.1",
+    "@jgoz/esbuild-plugin-typecheck": "^4.0.4",
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
+    "@ministryofjustice/frontend-types": "2.0.0",
     "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.6",
-    "@ministryofjustice/hmpps-precommit-hooks": "^1.0.2",
+    "@ministryofjustice/hmpps-precommit-hooks": "^3.0.1",
     "@playwright/test": "^1.61.1",
     "@rollup/plugin-commonjs": "^28.0.9",
     "@rollup/plugin-node-resolve": "^15.3.1",
@@ -154,19 +92,16 @@
     "@types/superagent": "^8.1.11",
     "@types/supertest": "^6.0.3",
     "@types/uuid": "^10.0.0",
+    "audit-ci": "^7.1.0",
     "aws-sdk-client-mock": "^4.1.0",
     "axe-core": "^4.12.1",
-    "audit-ci": "^7.1.0",
     "cheerio": "^1.2.0",
     "concurrently": "^10.0.4",
     "dotenv": "^16.6.1",
-    "grunt": "^1.6.2",
-    "grunt-contrib-clean": "^2.0.1",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-sass": "^2.0.0",
-    "grunt-contrib-uglify": "^5.2.2",
-    "grunt-contrib-watch": "^1.1.0",
-    "grunt-rollup": "^12.0.0",
+    "esbuild": "^0.28.1",
+    "esbuild-plugin-copy": "^2.1.1",
+    "esbuild-plugin-manifest": "^1.0.5",
+    "esbuild-sass-plugin": "^3.7.0",
     "jest": "^30.4.2",
     "jest-html-reporter": "^4.4.0",
     "jest-junit": "^17.0.0",
@@ -184,11 +119,7 @@
     "typescript": "^5.9.3",
     "wiremock": "^3.13.2"
   },
-  "overrides-comments": {
-    "minimatch": "overrides dependency pulled in by numerous grunt dev dependencies"
-  },
   "overrides": {
-    "minimatch@>3.0.0 <3.1.4": "^3.1.4",
     "js-yaml": "4.3.0",
     "@opentelemetry/core": "2.10.0"
   }

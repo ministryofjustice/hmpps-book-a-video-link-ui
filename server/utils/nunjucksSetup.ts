@@ -5,6 +5,7 @@ import nunjucks from 'nunjucks'
 import express from 'express'
 import { flatten, groupBy, map, startsWith, uniq } from 'lodash'
 import { addYears } from 'date-fns'
+import fs from 'fs'
 import {
   convertToTitleCase,
   dateAtTime,
@@ -23,6 +24,7 @@ import config from '../config'
 import BavlJourneyType from '../routes/enumerator/bavlJourneyType'
 import { FieldValidationError } from '../middleware/setUpFlash'
 import TimePeriod from '../routes/enumerator/timePeriod'
+import logger from '../../logger'
 
 const production = process.env.NODE_ENV === 'production'
 
@@ -42,6 +44,17 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
     res.locals.session = req.session
     next()
   })
+
+  let assetManifest: Record<string, string> = {}
+
+  try {
+    const assetMetadataPath = path.resolve(__dirname, '../../assets/manifest.json')
+    assetManifest = JSON.parse(fs.readFileSync(assetMetadataPath, 'utf8'))
+  } catch (e) {
+    if (process.env.NODE_ENV !== 'test') {
+      logger.error(e, 'Could not read asset manifest file')
+    }
+  }
 
   // Cachebusting version string
   if (production) {
@@ -70,6 +83,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
 
   njkEnv.addFilter('initialiseName', initialiseName)
   njkEnv.addFilter('convertToTitleCase', convertToTitleCase)
+  njkEnv.addFilter('assetMap', (url: string) => assetManifest[url] || url)
   njkEnv.addFilter('map', map)
   njkEnv.addFilter('flatten', flatten)
   njkEnv.addFilter('groupBy', groupBy)

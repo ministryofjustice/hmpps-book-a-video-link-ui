@@ -4,7 +4,7 @@
 {% set mainClasses = 'govuk-main-wrapper--l' %}
 
 {% block head %}
-  <link href="/assets/stylesheets/application.css?{{ version }}" rel="stylesheet"/>
+  <link href="{{ '/assets/css/index.css' | assetMap }}" rel="stylesheet"/>
 {% endblock %}
 
 {% block pageTitle %}{{ "Error: " if validationErrors.length > 0 else "" }}{{ (pageTitle + " | ") if pageTitle else ""}}{{ applicationName + " | MoJ" }}{% endblock %}
@@ -44,5 +44,5 @@
 {% endblock %}
 
 {% block bodyEnd %}
-  <script type="module" src="/assets/javascript/bookAVideoLink.min.js"></script>
+  <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
 {% endblock %}

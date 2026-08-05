@@ -1,4 +1,4 @@
-import { nodeListForEach } from '../../utils'
+import { nodeListForEach } from './utils'
 
 function FormSpinner(container) {
   this.container = container

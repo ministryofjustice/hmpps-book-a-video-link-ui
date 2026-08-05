@@ -1,10 +1,10 @@
 import { nodeListForEach } from './utils'
-import BackLink from './components/back-link/back-link'
-import Card from './components/card/card'
-import FormSpinner from './components/form-spinner/form-spinner'
-import MojAddAnother from './components/moj-add-another/moj-add-another'
-import { ExportButton, PrintButton } from './components/action-bar/print-and-export'
-import overrideSkipLink from './components/skip-link/skip-link'
+import BackLink from './back-link'
+import Card from './card'
+import FormSpinner from './form-spinner'
+import MojAddAnother from './moj-add-another'
+import { ExportButton, PrintButton } from './print-and-export'
+import overrideSkipLink from './skip-link'
 
 function initAll() {
   var $backLinks = document.querySelectorAll('.govuk-back-link')

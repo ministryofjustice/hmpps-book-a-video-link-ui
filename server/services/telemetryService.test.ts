@@ -21,7 +21,7 @@ describe('telemetryService', () => {
     })
   })
 
-  it('should not through an exception if the telemetry service fails', () => {
+  it('should not throw an exception if the telemetry service fails', () => {
     telemetryClient.trackEvent.mockImplementation(() => {
       throw Error('Error')
     })

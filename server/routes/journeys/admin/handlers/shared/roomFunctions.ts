@@ -161,7 +161,7 @@ export const chooseAllowedParties = (
   courtCodes: string[],
   probationTeamCodes: string[],
 ): string[] => {
-  switch (permission) {
+  switch (permission.trim().toUpperCase()) {
     case 'COURT':
       return courtCodes
     case 'PROBATION':

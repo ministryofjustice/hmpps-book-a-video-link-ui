@@ -1,6 +1,4 @@
 function overrideSkipLink() {
-  console.log('Initialising skip link override...')
-
   const skipLink = document.querySelector('.govuk-skip-link')
   const mainContent = document.getElementById('main-content')
 

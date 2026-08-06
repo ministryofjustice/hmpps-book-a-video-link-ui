@@ -53,6 +53,11 @@ export default class EditRoomPage extends AbstractPage {
   selectRoomStatus = (status: 'active' | 'inactive' | 'temporarily_blocked') =>
     this.page.locator(`input[name="roomStatus"][value="${status}"]`).check()
 
+  selectCourt = (court: string, index: number) =>
+    this.page.locator('select[name="courtCodes"]').nth(index).selectOption(court)
+
+  addAnotherCourt = () => this.page.getByRole('button', { name: 'Add another court' }).click()
+
   assertRoomChangesSaved = () =>
     expect(this.page.locator('.moj-alert__content')).toContainText('Room changes have been saved')
 

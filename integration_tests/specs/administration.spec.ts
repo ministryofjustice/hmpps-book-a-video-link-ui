@@ -128,7 +128,7 @@ test.describe('Administration', () => {
             attributeId: 56,
             locationStatus: 'INACTIVE',
             locationUsage: 'COURT',
-            allowedParties: ['ABERCV'],
+            allowedParties: [],
             prisonVideoUrl: null,
             notes: null,
             schedule: [
@@ -167,6 +167,9 @@ test.describe('Administration', () => {
       await editRoomPage.assertRoomLink('')
       await editRoomPage.assertSelectedRoomPermission('court')
       await editRoomPage.selectRoomStatus('active')
+      await editRoomPage.selectCourt('DRBYMC', 0)
+      await editRoomPage.addAnotherCourt()
+      await editRoomPage.selectCourt('HERFMC', 1)
       await editRoomPage.enterRoomLink('https://prison-room-link')
       await editRoomPage.enterComments('This is a comment')
 
@@ -181,7 +184,7 @@ test.describe('Administration', () => {
           attributeId: 56,
           locationStatus: 'ACTIVE',
           locationUsage: 'COURT',
-          allowedParties: ['ABERCV'],
+          allowedParties: ['DRBYMC', 'HERFMC'],
           prisonVideoUrl: 'https://prison-room-link',
           notes: 'This is a comment',
           schedule: [

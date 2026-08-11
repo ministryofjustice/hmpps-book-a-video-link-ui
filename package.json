@@ -120,7 +120,6 @@
     "wiremock": "^3.13.2"
   },
   "overrides": {
-    "js-yaml": "4.3.0",
     "@opentelemetry/core": "2.10.0"
   }
 }

@@ -137,4 +137,8 @@ export default class RoomAndScheduleRequestBody {
   @ValidateIf(o => o.notes)
   @MaxLength(400, { message: 'The comments must be at most 400 characters' })
   notes: string
+
+  @Expose()
+  @IsNotEmpty({ message: 'Select a room area' })
+  roomArea: string
 }

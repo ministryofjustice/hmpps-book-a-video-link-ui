@@ -410,6 +410,38 @@ describe('View prison room handler', () => {
         })
     })
 
+    it(`should fail validation if no room area is selected`, () => {
+      const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
+
+      config.featureToggles.roomBlockingWithTimes = true
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'active',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          blockedFrom: todayAsDmy,
+          blockedTo: todayAsDmy,
+          blockedFromTime: { hour: 10, minute: 0 },
+          blockedToTime: null,
+        })
+        .expect(302)
+        .expect('location', '/')
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'roomArea',
+              href: '#roomArea',
+              text: 'Select a room area',
+            },
+          ])
+          expect(adminService.getLocationByDpsLocationId).not.toHaveBeenCalled()
+        })
+    })
+
     it(`should fail validation if no end time is set for a temporary room block`, () => {
       const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
 

@@ -131,6 +131,7 @@ test.describe('Administration', () => {
             allowedParties: [],
             prisonVideoUrl: null,
             notes: null,
+            roomArea: 'COURT_PROBATION',
             schedule: [
               {
                 scheduleId: 54,
@@ -164,9 +165,11 @@ test.describe('Administration', () => {
       await viewRoomsPage.viewOrEditLink('f1c78dca-733b-43cc-b03f-6c870941a2c7').click()
       const editRoomPage = await EditRoomPage.verifyOnPage(page)
       await editRoomPage.assertSelectedRoomStatus('inactive')
+      await editRoomPage.assertSelectedRoomArea('COURT_PROBATION')
       await editRoomPage.assertRoomLink('')
       await editRoomPage.assertSelectedRoomPermission('court')
       await editRoomPage.selectRoomStatus('active')
+      await editRoomPage.selectRoomArea('LEGAL_VISITS')
       await editRoomPage.selectCourt('DRBYMC', 0)
       await editRoomPage.addAnotherCourt()
       await editRoomPage.selectCourt('HERFMC', 1)
@@ -187,6 +190,7 @@ test.describe('Administration', () => {
           allowedParties: ['DRBYMC', 'HERFMC'],
           prisonVideoUrl: 'https://prison-room-link',
           notes: 'This is a comment',
+          roomArea: 'LEGAL_VISITS',
           schedule: [
             {
               scheduleId: 54,
@@ -204,6 +208,7 @@ test.describe('Administration', () => {
       await editRoomPage.saveButton.click()
       await editRoomPage.assertRoomChangesSaved()
       await editRoomPage.assertSelectedRoomStatus('active')
+      await editRoomPage.assertSelectedRoomArea('LEGAL_VISITS')
       await editRoomPage.assertRoomLink('https://prison-room-link')
       await editRoomPage.assertSelectedRoomPermission('court')
     })
@@ -239,6 +244,7 @@ test.describe('Administration', () => {
       const editRoomPage = await EditRoomPage.verifyOnPage(page)
       await editRoomPage.assertSelectedRoomStatus('inactive')
       await editRoomPage.selectRoomStatus('temporarily_blocked')
+      await editRoomPage.selectRoomArea('LEGAL_VISITS')
       await editRoomPage.selectBlockedFromDate(new Date())
       await editRoomPage.selectBlockedToDate(new Date())
       await editRoomPage.selectBlockedFromTime(10, 30)
@@ -262,6 +268,7 @@ test.describe('Administration', () => {
           allowedParties: [],
           prisonVideoUrl: null,
           notes: null,
+          roomArea: 'LEGAL_VISITS',
           schedule: [],
         },
       })
@@ -269,6 +276,7 @@ test.describe('Administration', () => {
       await editRoomPage.saveButton.click()
       await editRoomPage.assertRoomChangesSaved()
       await editRoomPage.assertSelectedRoomStatus('temporarily_blocked')
+      await editRoomPage.assertSelectedRoomArea('LEGAL_VISITS')
       await editRoomPage.assertSelectedRoomPermission('shared')
       await editRoomPage.assertBlockedFromDate(new Date())
       await editRoomPage.assertBlockedToDate(new Date())

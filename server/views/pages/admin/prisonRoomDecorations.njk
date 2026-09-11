@@ -61,7 +61,7 @@
                         }
                     },
                     hint: {
-                        text: "Select 'out of use' if the room is not available for any bookings"
+                        text: "Select 'out of use' if the room is not available for any bookings."
                     },
                     items: [
                         {
@@ -84,6 +84,35 @@
                         }
                     ],
                     errorMessage: validationErrors | findError('roomStatus')
+                }) }}
+
+
+                {{ govukRadios({
+                    classes: "govuk-radios--small",
+                    idPrefix: "roomArea",
+                    name: "roomArea",
+                    fieldset: {
+                        legend: {
+                            text: "Room area",
+                            classes: 'govuk-fieldset__legend--m'
+                        }
+                    },
+                    hint: {
+                        text: "This determines where email notifications for the room are sent."
+                    },
+                    items: [
+                        {
+                            value: "COURT_PROBATION",
+                            text: "Court / Probation",
+                            checked: formResponses.roomArea == 'COURT_PROBATION' or room.extraAttributes.roomArea == "COURT_PROBATION"
+                        },
+                        {
+                            value: "LEGAL_VISITS",
+                            text: "Legal Visits",
+                            checked: formResponses.roomArea == 'LEGAL_VISITS' or room.extraAttributes.roomArea == "LEGAL_VISITS"
+                        }
+                    ],
+                    errorMessage: validationErrors | findError('roomArea')
                 }) }}
 
                 {{ govukInput({

@@ -249,6 +249,29 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/video-events/prison/{prisonCode}/list-by-location': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Endpoint to retrieve video events at a prison sorted by location and start time
+     * @description Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     *     * BVLS_ACCESS__RW
+     *     * BVLS_ACCESS__R
+     */
+    post: operations['getVideoEventsForAPrison']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/utility/publish': {
     parameters: {
       query?: never
@@ -760,6 +783,7 @@ export interface paths {
      * @description Requires one of the following roles:
      *     * BOOK_A_VIDEO_LINK_ADMIN
      *     * BVLS_ACCESS__RW
+     *     * BVLS_ACCESS__RO
      */
     get: operations['prisonsList']
     put?: never
@@ -1043,6 +1067,10 @@ export interface components {
        * @example 46385765
        */
       guestPin?: string | null
+      /**
+       * @description The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
+       *           be ignored if not a probation booking.
+       */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
@@ -1174,6 +1202,12 @@ export interface components {
        * @example 15:00
        */
       blockedToTime?: string | null
+      /**
+       * @description This determines where email notifications for the rooms are sent.
+       * @example COURT_PROBATION
+       * @enum {string}
+       */
+      roomArea: 'COURT_PROBATION' | 'LEGAL_VISITS'
     }
     Location: {
       /**
@@ -1202,7 +1236,14 @@ export interface components {
        * @example ef88-efefef-3efggg-3323ddd
        */
       dpsLocationId: string
+      /** @description Additional location attributes returned if any are requested and available for this location */
       extraAttributes?: components['schemas']['RoomAttributes'] | null
+      /**
+       * Format: int32
+       * @description Working capacity of the location.
+       * @example 3
+       */
+      workingCapacity?: number | null
     }
     /** @description The additional attributes of a video location */
     RoomAttributes: {
@@ -1265,6 +1306,12 @@ export interface components {
        * @example 15:00
        */
       blockedToTime?: string | null
+      /**
+       * @description This determines where email notifications for the rooms are sent.
+       * @example COURT_PROBATION
+       * @enum {string}
+       */
+      roomArea: 'COURT_PROBATION' | 'LEGAL_VISITS'
     }
     /** @description The additional schedule of usage for a video room */
     RoomSchedule: {
@@ -1502,6 +1549,10 @@ export interface components {
        * @example 46385765
        */
       guestPin?: string | null
+      /**
+       * @description The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
+       *           be ignored if not a probation booking.
+       */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
@@ -1773,6 +1824,7 @@ export interface components {
        * @example 2024-03-14 14:45
        */
       amendedAt?: string | null
+      /** @description Additional details for the booking if there are any. */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
@@ -1866,6 +1918,10 @@ export interface components {
        * @example https://video.here.com
        */
       videoLinkUrl?: string | null
+      /**
+       * @description The additional booking details for the booking. Additional details are only applicable to probation bookings. Will
+       *           be ignored if not a probation booking.
+       */
       additionalBookingDetails?: components['schemas']['AdditionalBookingDetails'] | null
       /**
        * @description Private free text notes for the booking.
@@ -1929,6 +1985,116 @@ export interface components {
        *           Appointment dates and times must not overlap.
        */
       appointments: components['schemas']['RequestedAppointment'][]
+    }
+    /** @description A request to return video events at the prison */
+    VideoEventRequest: {
+      /**
+       * Format: date
+       * @description The start date for events to retrieve
+       * @example 2022-12-23
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description The end date for events to retrieve
+       * @example 2022-12-23
+       */
+      endDate: string
+    }
+    /** @description A booked event within a single location */
+    BookedEvent: {
+      /**
+       * Format: uuid
+       * @description The location where this event is scheduled to take place
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId: string
+      /**
+       * @description Event type booked (APPOINTMENT, OFFICIAL_VISIT, COURT, PROBATION)
+       * @example APPOINTMENT
+       */
+      eventType: string
+      /**
+       * @description The sub-type for this event. e.g. APPOINTMENT - VLOO, COURT - hearing type, PROBATION - meeting type
+       * @example BAIL
+       */
+      subType?: string | null
+      /**
+       * @description The sub-type description, the reference description for the event subtype
+       * @example Bail hearing
+       */
+      subTypeDescription?: string | null
+      /**
+       * Format: date
+       * @description The date of the event
+       * @example 2022-12-23
+       */
+      eventDate: string
+      /**
+       * @description Start time for the event
+       * @example 10:45
+       */
+      startTime: string
+      /**
+       * @description End time for the event
+       * @example 11:45
+       */
+      endTime: string
+      /**
+       * @description The prisoner this event is booked for
+       * @example G1234GV
+       */
+      prisonerNumber: string
+      /**
+       * Format: int64
+       * @description The event primary key in the remote service (e.g. appointmentId, officialVisitId, videoBookingId)
+       * @example 12345566
+       */
+      eventId?: number | null
+    }
+    /** @description A location where events are booked */
+    LocationEvent: {
+      /**
+       * Format: uuid
+       * @description The DPS location UUID where events are booked
+       * @example a4fe3fef-34fd-4354fde-a12efe
+       */
+      dpsLocationId?: string | null
+      /**
+       * @description The local name for this location
+       * @example VCC Room 1
+       */
+      localName?: string | null
+      /**
+       * Format: int32
+       * @description The working capacity of this room (in persons)
+       * @example 4
+       */
+      capacity?: number | null
+      /** @description The list of booked events in this date range and time period */
+      events: components['schemas']['BookedEvent'][]
+    }
+    /** @description Response containing booked events occupying video rooms in a prison */
+    VideoEventResponse: {
+      /**
+       * @description The prison code
+       * @example MDI
+       */
+      prisonCode: string
+      /**
+       * Format: date
+       * @description The start date for events retrieved
+       * @example 2022-12-23
+       */
+      startDate: string
+      /**
+       * Format: date
+       * @description The end date for events retrieved
+       * @example 2022-12-23
+       */
+      endDate: string
+      /** @description The list of locations and booked events occupying them */
+      locations: components['schemas']['LocationEvent'][]
     }
     /** @description Describes an event to be published to the domain events SNS topic */
     PublishEventUtilityModel: {
@@ -2307,6 +2473,12 @@ export interface components {
        * @example 15:00
        */
       blockedToTime?: string | null
+      /**
+       * @description This determines where email notifications for the rooms are sent.
+       * @example COURT_PROBATION
+       * @enum {string}
+       */
+      roomArea: 'COURT_PROBATION' | 'LEGAL_VISITS'
     }
     /** @description The request with the new schedule details */
     CreateRoomScheduleRequest: {
@@ -2399,9 +2571,11 @@ export interface components {
        * @example 2024-04-05
        */
       date: string
+      /** @description If present, the prison location and start/end time of the requested pre hearing, else null */
       preAppointment?: components['schemas']['LocationAndInterval'] | null
       /** @description The main appointment which is always present */
       mainAppointment: components['schemas']['LocationAndInterval']
+      /** @description If present, the prison location and start/end time of the post hearing, else null */
       postAppointment?: components['schemas']['LocationAndInterval'] | null
       /**
        * Format: int64
@@ -2451,9 +2625,11 @@ export interface components {
     }
     /** @description Video link booking option */
     BookingOption: {
+      /** @description The pre appointment location and time */
       pre?: components['schemas']['LocationAndInterval'] | null
       /** @description The main appointment location and time */
       main: components['schemas']['LocationAndInterval']
+      /** @description The post appointment location and time */
       post?: components['schemas']['LocationAndInterval'] | null
     }
     /** @description The search criteria for looking up available locations */
@@ -3485,6 +3661,59 @@ export interface operations {
           [name: string]: unknown
         }
         content?: never
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
+  getVideoEventsForAPrison: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        prisonCode: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['VideoEventRequest']
+      }
+    }
+    responses: {
+      /** @description A list of video events at the prison between two dates */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['VideoEventResponse']
+        }
+      }
+      /** @description Bad request. Message contains the detail. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
       }
       /** @description Unauthorised, requires a valid Oauth2 token */
       401: {

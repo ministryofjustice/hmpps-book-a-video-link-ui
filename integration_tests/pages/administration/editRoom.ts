@@ -53,6 +53,9 @@ export default class EditRoomPage extends AbstractPage {
   selectRoomStatus = (status: 'active' | 'inactive' | 'temporarily_blocked') =>
     this.page.locator(`input[name="roomStatus"][value="${status}"]`).check()
 
+  selectRoomArea = (area: 'COURT_PROBATION' | 'LEGAL_VISITS') =>
+    this.page.locator(`input[name="roomArea"][value="${area}"]`).check()
+
   selectCourt = (court: string, index: number) =>
     this.page.locator('select[name="courtCodes"]').nth(index).selectOption(court)
 
@@ -63,6 +66,9 @@ export default class EditRoomPage extends AbstractPage {
 
   assertSelectedRoomStatus = (status: 'active' | 'inactive' | 'temporarily_blocked') =>
     expect(this.page.locator(`input[name="roomStatus"][value="${status}"]`)).toBeChecked()
+
+  assertSelectedRoomArea = (area: 'COURT_PROBATION' | 'LEGAL_VISITS') =>
+    expect(this.page.locator(`input[name="roomArea"][value="${area}"]`)).toBeChecked()
 
   assertRoomLink = (roomLink: string) => expect(this.roomLink).toHaveValue(roomLink)
 

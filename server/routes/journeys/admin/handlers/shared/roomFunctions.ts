@@ -13,7 +13,7 @@ export const START_OF_DAY_TIME = new Date('1970-01-01T07:00:00.000Z')
 export const END_OF_DAY_TIME = new Date('1970-01-01T17:00:00.000Z')
 
 export const bodyToCreateRoomRequest = (req: Request): CreateDecoratedRoomRequest => {
-  const { videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
+  const { videoUrl, permission, notes, courtCodes, probationTeamCodes, roomArea } = req.body
   const details = locationStatusDetails(req)
 
   return {
@@ -26,11 +26,12 @@ export const bodyToCreateRoomRequest = (req: Request): CreateDecoratedRoomReques
     blockedTo: details.blockedTo,
     blockedFromTime: details.blockedFromTime,
     blockedToTime: details.blockedToTime,
+    roomArea,
   } as CreateDecoratedRoomRequest
 }
 
 export const bodyToAmendRoomRequest = (req: Request): AmendDecoratedRoomRequest => {
-  const { videoUrl, permission, notes, courtCodes, probationTeamCodes } = req.body
+  const { videoUrl, permission, notes, courtCodes, probationTeamCodes, roomArea } = req.body
   const details = locationStatusDetails(req)
 
   return {
@@ -43,6 +44,7 @@ export const bodyToAmendRoomRequest = (req: Request): AmendDecoratedRoomRequest 
     blockedTo: details.blockedTo,
     blockedFromTime: details.blockedFromTime,
     blockedToTime: details.blockedToTime,
+    roomArea,
   } as AmendDecoratedRoomRequest
 }
 

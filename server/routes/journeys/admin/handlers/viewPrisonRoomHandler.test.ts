@@ -250,6 +250,7 @@ describe('View prison room handler', () => {
           existingSchedule: 'false',
           videoUrl: 'link',
           notes: 'comments',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -267,6 +268,7 @@ describe('View prison room handler', () => {
               blockedTo: null,
               blockedFromTime: null,
               blockedToTime: null,
+              roomArea: 'COURT_PROBATION',
             } as CreateDecoratedRoomRequest,
             user,
           )
@@ -290,6 +292,7 @@ describe('View prison room handler', () => {
           notes: 'comments',
           blockedFrom: todayAsDmy,
           blockedTo: todayAsDmy,
+          roomArea: 'LEGAL_VISITS',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -307,6 +310,7 @@ describe('View prison room handler', () => {
               blockedTo: todayAsYmd,
               blockedFromTime: null,
               blockedToTime: null,
+              roomArea: 'LEGAL_VISITS',
             } as CreateDecoratedRoomRequest,
             user,
           )
@@ -334,6 +338,7 @@ describe('View prison room handler', () => {
           blockedTo: todayAsDmy,
           blockedFromTime: { hour: 10, minute: 0 },
           blockedToTime: { hour: 11, minute: 0 },
+          roomArea: 'LEGAL_VISITS',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -351,6 +356,7 @@ describe('View prison room handler', () => {
               blockedTo: todayAsYmd,
               blockedFromTime: startTime,
               blockedToTime: endTime,
+              roomArea: 'LEGAL_VISITS',
             } as CreateDecoratedRoomRequest,
             user,
           )
@@ -378,6 +384,7 @@ describe('View prison room handler', () => {
           blockedTo: todayAsDmy,
           blockedFromTime: { hour: 10, minute: 0 },
           blockedToTime: { hour: 12, minute: 0 },
+          roomArea: 'LEGAL_VISITS',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -395,10 +402,43 @@ describe('View prison room handler', () => {
               blockedTo: todayAsYmd,
               blockedFromTime: startTime,
               blockedToTime: endTime,
+              roomArea: 'LEGAL_VISITS',
             } as AmendDecoratedRoomRequest,
             user,
           )
           expect(adminService.createRoomSchedule).not.toHaveBeenCalled()
+        })
+    })
+
+    it(`should fail validation if no room area is selected`, () => {
+      const todayAsDmy = formatDate(new Date(), 'dd/MM/yyyy')
+
+      config.featureToggles.roomBlockingWithTimes = true
+
+      return request(app)
+        .post(`/admin/view-prison-room/HEI/${dpsLocationId}`)
+        .send({
+          roomStatus: 'active',
+          permission: 'shared',
+          existingSchedule: 'false',
+          videoUrl: 'link',
+          notes: 'comments',
+          blockedFrom: todayAsDmy,
+          blockedTo: todayAsDmy,
+          blockedFromTime: { hour: 10, minute: 0 },
+          blockedToTime: null,
+        })
+        .expect(302)
+        .expect('location', '/')
+        .expect(() => {
+          expectErrorMessages([
+            {
+              fieldId: 'roomArea',
+              href: '#roomArea',
+              text: 'Select a room area',
+            },
+          ])
+          expect(adminService.getLocationByDpsLocationId).not.toHaveBeenCalled()
         })
     })
 
@@ -419,6 +459,7 @@ describe('View prison room handler', () => {
           blockedTo: todayAsDmy,
           blockedFromTime: { hour: 10, minute: 0 },
           blockedToTime: null,
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', '/')
@@ -450,6 +491,7 @@ describe('View prison room handler', () => {
           scheduleCourtCodes: ['C1'],
           scheduleStartDay: '1',
           scheduleEndDay: '7',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -467,6 +509,7 @@ describe('View prison room handler', () => {
               blockedTo: null,
               blockedFromTime: null,
               blockedToTime: null,
+              roomArea: 'COURT_PROBATION',
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -500,6 +543,7 @@ describe('View prison room handler', () => {
           schedulePermission: 'PROBATION_COURT',
           scheduleStartDay: '1',
           scheduleEndDay: '7',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -517,6 +561,7 @@ describe('View prison room handler', () => {
               blockedTo: null,
               blockedFromTime: null,
               blockedToTime: null,
+              roomArea: 'COURT_PROBATION',
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -548,6 +593,7 @@ describe('View prison room handler', () => {
           existingSchedule: 'true',
           videoUrl: 'link',
           notes: 'comments',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', `/admin/view-prison-room/HEI/${dpsLocationId}`)
@@ -565,6 +611,7 @@ describe('View prison room handler', () => {
               blockedTo: null,
               blockedFromTime: null,
               blockedToTime: null,
+              roomArea: 'COURT_PROBATION',
             } as AmendDecoratedRoomRequest,
             user,
           )
@@ -582,6 +629,7 @@ describe('View prison room handler', () => {
           schedulePermission: null,
           scheduleStartDay: '1',
           scheduleEndDay: '7',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', '/')
@@ -608,6 +656,7 @@ describe('View prison room handler', () => {
           schedulePermission: 'BLOCKED',
           scheduleStartDay: '3',
           scheduleEndDay: '2',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', '/')
@@ -636,6 +685,7 @@ describe('View prison room handler', () => {
           scheduleEndDay: '3',
           scheduleStartTime: { hour: '11', minute: '00' },
           scheduleEndTime: { hour: '10', minute: '00' },
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', '/')
@@ -662,6 +712,7 @@ describe('View prison room handler', () => {
           schedulePermission: 'BLOCKED',
           scheduleStartDay: '1',
           scheduleEndDay: '7',
+          roomArea: 'COURT_PROBATION',
         })
         .expect(302)
         .expect('location', `/`)

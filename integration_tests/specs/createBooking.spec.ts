@@ -7,7 +7,6 @@ import HomePage from '../pages/homePage'
 import hmppsAuth from '../mockApis/hmppsAuth'
 import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
-import userPreferencesApi from '../mockApis/userPreferencesApi'
 import bobSmithCourtBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithCourtBooking.json'
 import nottinghamLocations from '../mockApis/fixtures/bookAVideoLinkApi/nottinghamLocations.json'
 import bobSmithProbationBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithProbationBooking.json'
@@ -43,7 +42,6 @@ test.describe('Create a booking', () => {
       hmppsAuth.stubSignInPage(),
       prisonerSearchApi.stubPrisoner(A0171DZ),
       prisonerSearchApi.stubPrisonerList([A0171DZ]),
-      userPreferencesApi.stubGetUserPreferences(),
     ])
   })
 

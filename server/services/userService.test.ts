@@ -2,20 +2,16 @@ import UserService from './userService'
 import ManageUsersApiClient from '../data/manageUsersApiClient'
 import { User, UserGroup } from '../@types/manageUsersApi/types'
 import createUser from '../testutils/createUser'
-import UserPreferencesApiClient from '../data/userPreferencesApiClient'
 
 jest.mock('../data/manageUsersApiClient')
-jest.mock('../data/userPreferencesApiClient')
 
 describe('User service', () => {
   let manageUsersApiClient: jest.Mocked<ManageUsersApiClient>
-  let userPreferencesApiClient: jest.Mocked<UserPreferencesApiClient>
   let userService: UserService
 
   beforeEach(() => {
     manageUsersApiClient = new ManageUsersApiClient() as jest.Mocked<ManageUsersApiClient>
-    userPreferencesApiClient = new UserPreferencesApiClient() as jest.Mocked<UserPreferencesApiClient>
-    userService = new UserService(manageUsersApiClient, userPreferencesApiClient)
+    userService = new UserService(manageUsersApiClient)
   })
 
   describe('getUser', () => {
@@ -102,19 +98,6 @@ describe('User service', () => {
       const result = await userService.getUser(createUser([]))
 
       expect(result.isAdminUser).toEqual(false)
-    })
-  })
-
-  describe('getUserPreferences', () => {
-    it('Retrieves user preferences from user preferences API', async () => {
-      const user = createUser([])
-      userPreferencesApiClient.getUserPreferences.mockResolvedValue({ items: [] })
-      const result = await userService.getUserPreferences(user)
-      expect(userPreferencesApiClient.getUserPreferences).toHaveBeenCalledWith(
-        'video_link_booking.preferred_courts',
-        user,
-      )
-      expect(result).toEqual({ items: [] })
     })
   })
 })

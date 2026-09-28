@@ -4,7 +4,6 @@ import tokenVerification from '../mockApis/tokenVerification'
 
 import { resetStubs } from '../testUtils'
 import prisonApi from '../mockApis/prisonApi'
-import userPreferencesApi from '../mockApis/userPreferencesApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 import prisonerSearchApi from '../mockApis/prisonerSearchApi'
@@ -23,7 +22,6 @@ test.describe('Health', () => {
         prisonApi.stubPing(),
         prisonerSearchApi.stubPing(),
         tokenVerification.stubPing(),
-        userPreferencesApi.stubPing(),
       ])
     })
 
@@ -55,7 +53,6 @@ test.describe('Health', () => {
         prisonApi.stubPing(),
         prisonerSearchApi.stubPing(),
         tokenVerification.stubPing(500),
-        userPreferencesApi.stubPing(),
       ])
     })
 

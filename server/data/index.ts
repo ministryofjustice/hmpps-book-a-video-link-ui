@@ -15,12 +15,10 @@ import config from '../config'
 import HmppsAuditClient from './hmppsAuditClient'
 import BookAVideoLinkApiClient from './bookAVideoLinkApiClient'
 import PrisonerOffenderSearchApiClient from './prisonerOffenderSearchApiClient'
-import UserPreferencesApiClient from './userPreferencesApiClient'
 
 export const dataAccess = () => ({
   applicationInfo,
   manageUsersApiClient: new ManageUsersApiClient(),
-  userPreferencesApiClient: new UserPreferencesApiClient(),
   hmppsAuditClient: new HmppsAuditClient(config.sqs.audit),
   bookAVideoLinkApiClient: new BookAVideoLinkApiClient(),
   prisonerOffenderSearchApiClient: new PrisonerOffenderSearchApiClient(),

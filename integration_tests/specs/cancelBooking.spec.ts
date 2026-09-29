@@ -8,7 +8,6 @@ import HomePage from '../pages/homePage'
 import hmppsAuth from '../mockApis/hmppsAuth'
 import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
 import manageUsersApi from '../mockApis/manageUsersApi'
-import userPreferencesApi from '../mockApis/userPreferencesApi'
 import SearchBookingsPage from '../pages/bookAVideoLink/searchBookings'
 import bobSmithCourtBooking from '../mockApis/fixtures/bookAVideoLinkApi/bobSmithCourtBooking.json'
 import courtBookingsForDay from '../mockApis/fixtures/bookAVideoLinkApi/courtBookingsForDay.json'
@@ -41,7 +40,6 @@ test.describe('Cancel a booking', () => {
       hmppsAuth.stubSignInPage(),
       prisonerSearchApi.stubPrisoner(A0171DZ),
       prisonerSearchApi.stubPrisonerList([A0171DZ]),
-      userPreferencesApi.stubGetUserPreferences(),
     ])
   })
 

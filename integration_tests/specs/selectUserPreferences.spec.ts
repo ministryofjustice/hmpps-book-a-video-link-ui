@@ -4,7 +4,6 @@ import hmppsAuth from '../mockApis/hmppsAuth'
 import { login, resetStubs } from '../testUtils'
 import manageUsersApi from '../mockApis/manageUsersApi'
 import bookAVideoLinkApi from '../mockApis/bookAVideoLinkApi'
-import userPreferencesApi from '../mockApis/userPreferencesApi'
 import SelectCourtPreferencesPage from '../pages/userPreferences/selectCourtPreferences'
 import CourtPreferencesConfirmationPage from '../pages/userPreferences/courtPreferencesConfirmation'
 import HomePage from '../pages/homePage'
@@ -23,7 +22,6 @@ test.describe('Select User Preferences', () => {
         bookAVideoLinkApi.stubSetUserCourtPreferences(),
         hmppsAuth.stubSignInPage(),
         manageUsersApi.stubCourtUser('john smith'),
-        userPreferencesApi.stubGetUserPreferences(),
       ])
     })
 
@@ -56,7 +54,6 @@ test.describe('Select User Preferences', () => {
     test.beforeEach(async () => {
       await Promise.all([
         hmppsAuth.stubSignInPage(),
-        userPreferencesApi.stubGetUserPreferences(),
         bookAVideoLinkApi.stubGetEnabledProbationTeams(),
         bookAVideoLinkApi.stubSetUserProbationTeamPreferences(),
         manageUsersApi.stubProbationUser('john smith'),

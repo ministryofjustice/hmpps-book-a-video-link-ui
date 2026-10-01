@@ -61,6 +61,8 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
       postHearingStartTime: formatDate(bookACourtHearing.postHearingStartTime, 'HH:mm'),
       postHearingEndTime: formatDate(bookACourtHearing.postHearingEndTime, 'HH:mm'),
       username: user?.username,
+      userUuid: user?.jwtUserUuid,
+      userId: user?.jwtUserId,
     }
 
     this.telemetryService.trackEvent('GetAlternativeRoomsForCourtBooking', eventToRecord)
@@ -105,6 +107,8 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
       postHearingStartTime: formatDate(journey.postHearingStartTime, 'HH:mm'),
       postHearingEndTime: formatDate(journey.postHearingEndTime, 'HH:mm'),
       username: user?.username,
+      userUuid: user?.jwtUserUuid,
+      userId: user?.jwtUserId,
     }
 
     this.telemetryService.trackEvent('PostAlternativeRoomsForCourtBooking', eventToRecord)

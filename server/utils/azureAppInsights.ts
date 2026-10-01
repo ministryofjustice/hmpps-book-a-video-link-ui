@@ -35,12 +35,28 @@ export function buildAppInsightsClient(
   if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
     defaultClient.context.tags['ai.cloud.role'] = overrideName || applicationName
     defaultClient.context.tags['ai.application.ver'] = buildNumber
+    defaultClient.addTelemetryProcessor(addUserDataToRequests)
     defaultClient.addTelemetryProcessor(parameterisePaths)
     defaultClient.addTelemetryProcessor(ignoredRequestsProcessor)
     defaultClient.addTelemetryProcessor(ignoredDependenciesProcessor)
     return defaultClient
   }
   return null
+}
+
+function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObjects: ContextObject) {
+  const isRequest = envelope.data.baseType === Contracts.TelemetryTypeString.Request
+  if (isRequest) {
+    const user = contextObjects?.['http.ServerRequest']?.res?.locals?.user
+    const { properties } = envelope.data.baseData
+    // eslint-disable-next-line no-param-reassign
+    envelope.data.baseData.properties = {
+      userId: user?.jwtUserId,
+      userUuid: user?.jwtUserUuid,
+      ...properties,
+    }
+  }
+  return true
 }
 
 function parameterisePaths(envelope: EnvelopeTelemetry, contextObjects: ContextObject) {

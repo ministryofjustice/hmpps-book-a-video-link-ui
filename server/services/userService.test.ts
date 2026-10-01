@@ -99,5 +99,25 @@ describe('User service', () => {
 
       expect(result.isAdminUser).toEqual(false)
     })
+
+    it('jwtUserId is set to the value of user_id from the token', async () => {
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
+      manageUsersApiClient.getUserGroups.mockResolvedValue([])
+
+      const userId = '123'
+      const result = await userService.getUser(createUser([], { user_id: userId }))
+
+      expect(result.jwtUserId).toEqual(userId)
+    })
+
+    it('jwtUserUuid is set to the value of user_uuid from the token', async () => {
+      manageUsersApiClient.getUser.mockResolvedValue({ name: 'john smith' } as User)
+      manageUsersApiClient.getUserGroups.mockResolvedValue([])
+
+      const userUuid = '00000000-0000-0000-0000-000000000000'
+      const result = await userService.getUser(createUser([], { user_uuid: userUuid }))
+
+      expect(result.jwtUserUuid).toEqual(userUuid)
+    })
   })
 })

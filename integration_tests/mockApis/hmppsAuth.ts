@@ -16,6 +16,8 @@ function createToken(userToken: UserToken) {
     authorities: userToken.roles,
     jti: 'a610a10-cca6-41db-985f-e87efb303aaf',
     client_id: 'clientid',
+    user_id: '00000000-0000-0000-0000-000000000000',
+    user_uuid: '00000000-0000-0000-0000-000000000000',
   }
 
   return jwt.sign(payload, 'secret', { expiresIn: '1h' })

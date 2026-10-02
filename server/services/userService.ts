@@ -9,6 +9,14 @@ export interface UserDetails extends User {
   isProbationUser: boolean
   isCourtUser: boolean
   isAdminUser: boolean
+  jwtUserId?: string
+  jwtUserUuid?: string
+}
+
+interface JwtPayload {
+  authorities?: string[]
+  user_id?: string
+  user_uuid?: string
 }
 
 export default class UserService {
@@ -21,7 +29,10 @@ export default class UserService {
     const isDeliusUser = serviceUser.authSource === 'delius'
 
     const userGroups = isAuthUser && (await this.manageUsersApiClient.getUserGroups(serviceUser.userId, user))
-    const roles = this.getUserRoles(user.token)
+    const jwtPayload = this.getJwtPayload(user.token)
+    const roles = this.getUserRoles(jwtPayload)
+    const userId = this.getUserId(jwtPayload)
+    const userUuid = this.getUserUuid(jwtPayload)
 
     // Probation users can authenticate in two ways
     // - An external account with group membership of VIDEO_LINK_PROBATION and the role VIDEO_LINK_COURT_USER
@@ -43,11 +54,27 @@ export default class UserService {
       isProbationUser,
       isCourtUser,
       isAdminUser,
+      jwtUserId: userId,
+      jwtUserUuid: userUuid,
     }
   }
 
-  private getUserRoles(token: string): string[] {
-    const { authorities: roles = [] } = jwtDecode(token) as { authorities?: string[] }
+  private getJwtPayload(token: string): JwtPayload {
+    return jwtDecode(token) as JwtPayload
+  }
+
+  private getUserRoles(jwtPayload: JwtPayload): string[] {
+    const { authorities: roles = [] } = jwtPayload
     return roles.map(role => role.substring(role.indexOf('_') + 1))
+  }
+
+  private getUserId(jwtPayload: JwtPayload): string | undefined {
+    const { user_id: userId } = jwtPayload
+    return userId
+  }
+
+  private getUserUuid(jwtPayload: JwtPayload): string | undefined {
+    const { user_uuid: userUuid } = jwtPayload
+    return userUuid
   }
 }

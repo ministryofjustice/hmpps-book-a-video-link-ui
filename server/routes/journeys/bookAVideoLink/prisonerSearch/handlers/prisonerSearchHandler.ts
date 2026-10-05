@@ -9,6 +9,9 @@ import Validator from '../../../../validators/validator'
 import { simpleDateToDate, toDateString } from '../../../../../utils/utils'
 import IsValidDate from '../../../../validators/isValidDate'
 import PrisonService from '../../../../../services/prisonService'
+import TelemetryService from '../../../../../services/telemetryService'
+
+const FILTERS = ['dateOfBirth', 'firstName', 'lastName', 'pncNumber', 'prison', 'prisonerNumber'] as const
 
 class Body {
   @Expose()
@@ -51,7 +54,10 @@ export default class PrisonerSearchHandler implements PageHandler {
 
   public BODY = Body
 
-  constructor(private readonly prisonService: PrisonService) {}
+  constructor(
+    private readonly prisonService: PrisonService,
+    private readonly telemetryService: TelemetryService,
+  ) {}
 
   public GET = async (req: Request, res: Response) => {
     const { user } = res.locals
@@ -61,6 +67,8 @@ export default class PrisonerSearchHandler implements PageHandler {
 
   public POST = async (req: Request, res: Response) => {
     const { body } = req
+    const { user } = res.locals
+
     req.session.journey.prisonerSearch = {
       firstName: body.firstName,
       lastName: body.lastName,
@@ -69,6 +77,25 @@ export default class PrisonerSearchHandler implements PageHandler {
       prisonerNumber: body.prisonerNumber,
       pncNumber: body.pncNumber,
     }
+
+    const { prisonerSearch } = req.session.journey
+
+    const appliedFilters = FILTERS.filter(key => prisonerSearch[key]).join(',')
+
+    const eventToRecord = {
+      journeyType: req.routeContext?.type,
+      hasFirstName: (!!prisonerSearch.firstName).toString(),
+      hasLastName: (!!prisonerSearch.lastName).toString(),
+      hasDateOfBirth: (!!prisonerSearch.dateOfBirth).toString(),
+      hasPrison: (!!prisonerSearch.prison).toString(),
+      hasPrisonerNumber: (!!prisonerSearch.prisonerNumber).toString(),
+      hasPncNumber: (!!prisonerSearch.pncNumber).toString(),
+      appliedFilters,
+      userUuid: user?.jwtUserUuid,
+      userId: user?.jwtUserId,
+    }
+
+    this.telemetryService.trackEvent('BVLS_PrisonerSearch', eventToRecord)
 
     res.redirect('results')
   }

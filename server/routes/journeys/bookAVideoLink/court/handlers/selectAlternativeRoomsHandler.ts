@@ -60,7 +60,6 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
       endTime: formatDate(bookACourtHearing.endTime, 'HH:mm'),
       postHearingStartTime: formatDate(bookACourtHearing.postHearingStartTime, 'HH:mm'),
       postHearingEndTime: formatDate(bookACourtHearing.postHearingEndTime, 'HH:mm'),
-      username: user?.username,
       userUuid: user?.jwtUserUuid,
       userId: user?.jwtUserId,
     }
@@ -106,7 +105,6 @@ export default class SelectAlternativeRoomsHandler implements PageHandler {
       locationId: journey.locationId,
       postHearingStartTime: formatDate(journey.postHearingStartTime, 'HH:mm'),
       postHearingEndTime: formatDate(journey.postHearingEndTime, 'HH:mm'),
-      username: user?.username,
       userUuid: user?.jwtUserUuid,
       userId: user?.jwtUserId,
     }

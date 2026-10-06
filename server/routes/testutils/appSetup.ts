@@ -43,6 +43,8 @@ export const user: Express.User = {
   isCourtUser: true,
   isProbationUser: true,
   isAdminUser: true,
+  jwtUserId: 'id',
+  jwtUserUuid: '00000000-0000-0000-0000-000000000000',
 }
 
 export const flashProvider = jest.fn()

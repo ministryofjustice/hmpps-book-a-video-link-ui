@@ -41,7 +41,6 @@ export default class BookingNotAvailableHandler implements PageHandler {
       endTime: formatDate(endTime, 'HH:mm'),
       postHearingStartTime: formatDate(postHearingStartTime, 'HH:mm'),
       postHearingEndTime: formatDate(postHearingEndTime, 'HH:mm'),
-      username: user?.username,
       userUuid: user?.jwtUserUuid,
       userId: user?.jwtUserId,
     }

@@ -125,7 +125,8 @@ describe('Booking availability handler', () => {
             endTime: '14:30',
             postHearingStartTime: '14:30',
             postHearingEndTime: '14:45',
-            username: 'user1',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
           })
         })
     })
@@ -262,7 +263,8 @@ describe('Booking availability handler', () => {
             endTime: '15:45',
             postHearingEndTime: '16:00',
             postHearingStartTime: '15:45',
-            username: 'user1',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
           })
         })
         .then(() =>

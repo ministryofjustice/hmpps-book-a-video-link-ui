@@ -7,18 +7,21 @@ import { getPageHeader } from '../../../../testutils/cheerio'
 import PrisonService from '../../../../../services/prisonService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
+import TelemetryService from '../../../../../services/telemetryService'
 
 jest.mock('../../../../../services/auditService')
 jest.mock('../../../../../services/prisonService')
+jest.mock('../../../../../services/telemetryService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const prisonService = new PrisonService(null) as jest.Mocked<PrisonService>
+const telemetryService = new TelemetryService(null) as jest.Mocked<TelemetryService>
 
 let app: Express
 
 const appSetup = (journeySession = {}) => {
   app = appWithAllRoutes({
-    services: { auditService, prisonService },
+    services: { auditService, prisonService, telemetryService },
     userSupplier: () => user,
     journeySessionSupplier: () => journeySession,
   })
@@ -74,6 +77,7 @@ describe('Prisoner search handler', () => {
             },
           ]),
         )
+        .expect(() => expect(telemetryService.trackEvent).not.toHaveBeenCalled())
     })
 
     it('should validate that the date of birth is valid', () => {
@@ -89,6 +93,7 @@ describe('Prisoner search handler', () => {
             },
           ]),
         )
+        .expect(() => expect(telemetryService.trackEvent).not.toHaveBeenCalled())
     })
 
     it('should validate that the date of birth is in the past', () => {
@@ -104,6 +109,7 @@ describe('Prisoner search handler', () => {
             },
           ]),
         )
+        .expect(() => expect(telemetryService.trackEvent).not.toHaveBeenCalled())
     })
 
     it('should validate that the prisoner number is in the correct format', () => {
@@ -119,6 +125,7 @@ describe('Prisoner search handler', () => {
             },
           ]),
         )
+        .expect(() => expect(telemetryService.trackEvent).not.toHaveBeenCalled())
     })
 
     it('should validate that the PNC number is in the correct format', () => {
@@ -134,6 +141,7 @@ describe('Prisoner search handler', () => {
             },
           ]),
         )
+        .expect(() => expect(telemetryService.trackEvent).not.toHaveBeenCalled())
     })
 
     it('should accept firstName on its own as the search criteria', () => {
@@ -141,6 +149,20 @@ describe('Prisoner search handler', () => {
         .post(`/court/prisoner-search/${journeyId()}/search`)
         .send({ dateOfBirth: {}, firstName: 'John' })
         .expect(() => expectNoErrorMessages())
+        .expect(() =>
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('BVLS_PrisonerSearch', {
+            journeyType: 'court',
+            hasFirstName: 'true',
+            hasLastName: 'false',
+            hasDateOfBirth: 'false',
+            hasPrison: 'false',
+            hasPrisonerNumber: 'false',
+            hasPncNumber: 'false',
+            appliedFilters: 'firstName',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
+          }),
+        )
     })
 
     it('should accept lastName on its own as the search criteria', () => {
@@ -148,6 +170,20 @@ describe('Prisoner search handler', () => {
         .post(`/court/prisoner-search/${journeyId()}/search`)
         .send({ dateOfBirth: {}, lastName: 'Smith' })
         .expect(() => expectNoErrorMessages())
+        .expect(() =>
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('BVLS_PrisonerSearch', {
+            journeyType: 'court',
+            hasFirstName: 'false',
+            hasLastName: 'true',
+            hasDateOfBirth: 'false',
+            hasPrison: 'false',
+            hasPrisonerNumber: 'false',
+            hasPncNumber: 'false',
+            appliedFilters: 'lastName',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
+          }),
+        )
     })
 
     it('should accept prisonerNumber on its own as the search criteria', () => {
@@ -155,6 +191,20 @@ describe('Prisoner search handler', () => {
         .post(`/court/prisoner-search/${journeyId()}/search`)
         .send({ dateOfBirth: {}, prisonerNumber: 'A1234AA' })
         .expect(() => expectNoErrorMessages())
+        .expect(() =>
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('BVLS_PrisonerSearch', {
+            journeyType: 'court',
+            hasFirstName: 'false',
+            hasLastName: 'false',
+            hasDateOfBirth: 'false',
+            hasPrison: 'false',
+            hasPrisonerNumber: 'true',
+            hasPncNumber: 'false',
+            appliedFilters: 'prisonerNumber',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
+          }),
+        )
     })
 
     it('should accept PNC number on its own as the search criteria', () => {
@@ -162,6 +212,20 @@ describe('Prisoner search handler', () => {
         .post(`/court/prisoner-search/${journeyId()}/search`)
         .send({ dateOfBirth: {}, pncNumber: '2001/23456A' })
         .expect(() => expectNoErrorMessages())
+        .expect(() =>
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('BVLS_PrisonerSearch', {
+            journeyType: 'court',
+            hasFirstName: 'false',
+            hasLastName: 'false',
+            hasDateOfBirth: 'false',
+            hasPrison: 'false',
+            hasPrisonerNumber: 'false',
+            hasPncNumber: 'true',
+            appliedFilters: 'pncNumber',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
+          }),
+        )
     })
 
     it('should hold the posted fields in session', () => {
@@ -178,6 +242,20 @@ describe('Prisoner search handler', () => {
             pncNumber: '2001/23456A',
             prison: 'MDI',
             prisonerNumber: 'A1234AA',
+          }),
+        )
+        .then(() =>
+          expect(telemetryService.trackEvent).toHaveBeenCalledWith('BVLS_PrisonerSearch', {
+            journeyType: 'court',
+            hasFirstName: 'true',
+            hasLastName: 'true',
+            hasDateOfBirth: 'true',
+            hasPrison: 'true',
+            hasPrisonerNumber: 'true',
+            hasPncNumber: 'true',
+            appliedFilters: 'dateOfBirth,firstName,lastName,pncNumber,prison,prisonerNumber',
+            userId: user.jwtUserId,
+            userUuid: user.jwtUserUuid,
           }),
         )
     })

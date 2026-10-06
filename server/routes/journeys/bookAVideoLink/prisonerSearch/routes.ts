@@ -7,7 +7,7 @@ import PrisonerSearchHandler from './handlers/prisonerSearchHandler'
 import PrisonerSearchResultsHandler from './handlers/prisonerSearchResultsHandler'
 import PrisonerNotListedHandler from './handlers/prisonerNotListedHandler'
 
-export default function Routes({ auditService, prisonService, prisonerService }: Services): Router {
+export default function Routes({ auditService, prisonService, prisonerService, telemetryService }: Services): Router {
   const router = Router({ mergeParams: true })
 
   const route = (path: string | string[], handler: PageHandler) =>
@@ -15,7 +15,7 @@ export default function Routes({ auditService, prisonService, prisonerService }:
     handler.POST &&
     router.post(path, validationMiddleware(handler.BODY), handler.POST)
 
-  route('/search', new PrisonerSearchHandler(prisonService))
+  route('/search', new PrisonerSearchHandler(prisonService, telemetryService))
 
   // Prisoner search journey is required in session for the following routes
   router.use((req, res, next) => {

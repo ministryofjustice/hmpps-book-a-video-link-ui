@@ -2,7 +2,7 @@
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { ArrayNotEmpty } from 'class-validator'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'

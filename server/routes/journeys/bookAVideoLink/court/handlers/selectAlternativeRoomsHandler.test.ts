@@ -1,8 +1,9 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { getPageHeader, radioOptions } from '../../../../testutils/cheerio'
 import { expectErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
@@ -12,7 +13,7 @@ import { BookACourtHearingJourney } from '../journey'
 import config from '../../../../../config'
 import TelemetryService from '../../../../../services/telemetryService'
 
-jest.mock('../../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../../services/courtBookingService')
 jest.mock('../../../../../services/telemetryService')
 

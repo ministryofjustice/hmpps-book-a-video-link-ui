@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { differenceInDays, formatDate, isValid, startOfToday } from 'date-fns'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
 import CourtsService from '../../../../services/courtsService'

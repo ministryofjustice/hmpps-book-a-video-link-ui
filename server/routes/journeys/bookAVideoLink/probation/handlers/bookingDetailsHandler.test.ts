@@ -1,9 +1,10 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { dropdownOptions, existsByLabel, getByDataQa, getPageHeader, radioOptions } from '../../../../testutils/cheerio'
 import ProbationTeamsService from '../../../../../services/probationTeamsService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -15,7 +16,7 @@ import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import VideoLinkService from '../../../../../services/videoLinkService'
 
-jest.mock('../../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../../services/probationTeamsService')
 jest.mock('../../../../../services/prisonerService')
 jest.mock('../../../../../services/referenceDataService')

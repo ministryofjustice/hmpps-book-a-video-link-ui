@@ -1,14 +1,15 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import CourtsService, { CourtsByLetter } from '../../../../services/courtsService'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
 import ProbationTeamsService, { ProbationTeamsByLetter } from '../../../../services/probationTeamsService'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/courtsService')
 jest.mock('../../../../services/probationTeamsService')
 

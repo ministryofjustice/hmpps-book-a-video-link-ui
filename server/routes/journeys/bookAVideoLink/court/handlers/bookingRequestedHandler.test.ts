@@ -1,12 +1,13 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 
-jest.mock('../../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 

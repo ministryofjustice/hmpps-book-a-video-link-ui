@@ -1,12 +1,12 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { Express } from 'express'
 import { Readable } from 'node:stream'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService from '../../../../services/auditService'
 import VideoLinkService from '../../../../services/videoLinkService'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>

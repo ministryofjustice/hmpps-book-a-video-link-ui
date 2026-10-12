@@ -1,13 +1,14 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import CourtsService from '../../../../services/courtsService'
 import { Court, ProbationTeam } from '../../../../@types/bookAVideoLinkApi/types'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/courtsService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>

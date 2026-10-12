@@ -1,3 +1,4 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import express, { Express, RequestHandler } from 'express'
 import { NotFound } from 'http-errors'
 import { v4 as uuidv4 } from 'uuid'
@@ -8,7 +9,6 @@ import errorHandler from '../../errorHandler'
 import * as auth from '../../authentication/auth'
 import type { Services } from '../../services'
 import type { ApplicationInfo } from '../../applicationInfo'
-import AuditService from '../../services/auditService'
 import setUpWebSession from '../../middleware/setUpWebSession'
 import { Journey } from '../../@types/express'
 import { testUtilRoutes } from './testUtilRoute'
@@ -17,7 +17,7 @@ import CourtsService from '../../services/courtsService'
 import ProbationTeamsService from '../../services/probationTeamsService'
 import { Court, ProbationTeam } from '../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../services/courtsService')
 jest.mock('../../services/probationTeamsService')
 

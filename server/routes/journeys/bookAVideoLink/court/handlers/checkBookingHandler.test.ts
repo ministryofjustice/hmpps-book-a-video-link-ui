@@ -1,8 +1,9 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { existsByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
@@ -12,7 +13,7 @@ import { AvailabilityResponse, Court, Location, ReferenceCode } from '../../../.
 import ReferenceDataService from '../../../../../services/referenceDataService'
 import CourtBookingService from '../../../../../services/courtBookingService'
 
-jest.mock('../../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../../services/courtBookingService')
 jest.mock('../../../../../services/courtsService')
 jest.mock('../../../../../services/prisonService')

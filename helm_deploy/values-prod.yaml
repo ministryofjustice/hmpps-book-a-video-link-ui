@@ -22,6 +22,3 @@ generic-service:
       - moj_cloud_platform
       - digital_staff_and_mojo
       - analytic-platform
-
-generic-prometheus-alerts:
-  alertSeverity: hmpps-book-a-video-link-prod

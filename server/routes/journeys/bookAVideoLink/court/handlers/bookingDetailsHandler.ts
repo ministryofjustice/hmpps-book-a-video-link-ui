@@ -13,7 +13,7 @@ import {
   ValidationArguments,
 } from 'class-validator'
 import CustomOneOrTheOther from '../../../../../validators/customOneOrTheOther'
-import { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
 import { dateAtTime, parseDatePickerDate, simpleTimeToDate } from '../../../../../utils/utils'

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import VideoLinkService from '../../../../services/videoLinkService'
 
 export default class ExtractPrisonRoomConfigHandler implements PageHandler {

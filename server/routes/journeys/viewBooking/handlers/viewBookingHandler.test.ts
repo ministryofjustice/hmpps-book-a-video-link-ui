@@ -1,8 +1,9 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { existsByDataQa, existsByKey, getByDataQa, getPageHeader, getValueByKey } from '../../../testutils/cheerio'
 import VideoLinkService from '../../../../services/videoLinkService'
 import PrisonerService from '../../../../services/prisonerService'
@@ -10,7 +11,7 @@ import PrisonService from '../../../../services/prisonService'
 import { Prisoner } from '../../../../@types/prisonerOffenderSearchApi/types'
 import { Location, Prison, VideoLinkBooking } from '../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/videoLinkService')
 jest.mock('../../../../services/prisonerService')
 jest.mock('../../../../services/prisonService')

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import CourtsService from '../../../../../services/courtsService'
 import TelemetryService from '../../../../../services/telemetryService'

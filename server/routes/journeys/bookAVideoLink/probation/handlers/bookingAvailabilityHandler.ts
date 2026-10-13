@@ -4,7 +4,7 @@ import { Expose, Transform } from 'class-transformer'
 import { IsNotEmpty } from 'class-validator'
 import { parse } from 'date-fns'
 import { enGB } from 'date-fns/locale'
-import { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { PageHandler } from '../../../../interfaces/pageHandler'
 import ProbationBookingService from '../../../../../services/probationBookingService'
 

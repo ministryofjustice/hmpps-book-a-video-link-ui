@@ -1,15 +1,16 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import { startOfDay, formatDate } from 'date-fns'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import CourtsService from '../../../../services/courtsService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { Court, ProbationTeam, ScheduleItem } from '../../../../@types/bookAVideoLinkApi/types'
 import config from '../../../../config'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/courtsService')
 jest.mock('../../../../services/probationTeamsService')
 jest.mock('../../../../services/videoLinkService')

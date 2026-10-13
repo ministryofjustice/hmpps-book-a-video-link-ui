@@ -4,7 +4,7 @@ import { startOfDay, isValid, parse } from 'date-fns'
 import _ from 'lodash'
 import { enGB } from 'date-fns/locale'
 import { PageHandler } from '../../../interfaces/pageHandler'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import VideoLinkService from '../../../../services/videoLinkService'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
 import {

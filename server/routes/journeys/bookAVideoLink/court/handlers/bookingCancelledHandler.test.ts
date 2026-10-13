@@ -1,9 +1,10 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { formatDate, startOfToday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import VideoLinkService from '../../../../../services/videoLinkService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -12,7 +13,7 @@ import { VideoLinkBooking } from '../../../../../@types/bookAVideoLinkApi/types'
 import { Prisoner } from '../../../../../@types/prisonerOffenderSearchApi/types'
 import { toViewBookingsSearchParams } from '../../../../../utils/utils'
 
-jest.mock('../../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../../services/videoLinkService')
 jest.mock('../../../../../services/prisonerService')
 

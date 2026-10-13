@@ -1,15 +1,16 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow } from 'date-fns'
 import { Readable } from 'node:stream'
 import { appWithAllRoutes, user } from '../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { expectErrorMessages } from '../../../testutils/expectErrorMessage'
 import VideoLinkService from '../../../../services/videoLinkService'
 import { formatDate } from '../../../../utils/utils'
 
-jest.mock('../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../services/videoLinkService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>

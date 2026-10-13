@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { NotFound } from 'http-errors'
-import { Page } from '../../../../services/auditService'
+import Page from '../../../enumerator/page'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import PrisonService from '../../../../services/prisonService'
 import ProbationTeamsService from '../../../../services/probationTeamsService'

@@ -1,15 +1,16 @@
+import { AuditService } from '@ministryofjustice/hmpps-audit-client'
 import type { Express } from 'express'
 import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
-import AuditService, { Page } from '../../../../../services/auditService'
+import Page from '../../../../enumerator/page'
 import { getPageHeader } from '../../../../testutils/cheerio'
 import PrisonService from '../../../../../services/prisonService'
 import { expectErrorMessages, expectNoErrorMessages } from '../../../../testutils/expectErrorMessage'
 import expectJourneySession from '../../../../testutils/testUtilRoute'
 import { Prison } from '../../../../../@types/bookAVideoLinkApi/types'
 
-jest.mock('../../../../../services/auditService')
+jest.mock('@ministryofjustice/hmpps-audit-client')
 jest.mock('../../../../../services/prisonService')
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>

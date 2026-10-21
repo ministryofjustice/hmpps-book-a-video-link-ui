@@ -4,7 +4,7 @@ import request from 'supertest'
 import * as cheerio from 'cheerio'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import Page from '../../../../enumerator/page'
-import { getPageHeader } from '../../../../testutils/cheerio'
+import { getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
 import config from '../../../../../config'
@@ -83,7 +83,7 @@ describe('Prisoner search results handler', () => {
       )
     })
 
-    it('should not offer booking links for grey release prisons in config', async () => {
+    it('should offer the correct links for grey release prisons in config', async () => {
       config.featureToggles.greyReleasePrisons = 'BXI,BMI'
 
       // Two enabled prisons
@@ -142,9 +142,13 @@ describe('Prisoner search results handler', () => {
 
           expect(heading).toContain('Search for a prisoner results')
 
-          // One of the rows should have hidden text where the book a video link is not shown
-          const rowWithNoLink = $('span.govuk-visually-hidden').text()
-          expect(rowWithNoLink).toContain('Prison not enabled for book a video link')
+          const bookVideoLink = getByDataQa($, 'book-video-link-A1111AA')
+          expect(bookVideoLink.attr('href')).toContain('../../booking/create/A1111AA/video-link-booking')
+
+          const contactPrisonLink = getByDataQa($, 'contact-prison-link-B2222BB')
+          expect(contactPrisonLink.attr('href')).toContain(
+            'https://www.gov.uk/government/collections/prisons-in-england-and-wales',
+          )
         })
 
       expect(prisonerService.searchPrisonersByCriteria).toHaveBeenCalledWith(
@@ -154,7 +158,7 @@ describe('Prisoner search results handler', () => {
       )
     })
 
-    it('should not offer booking links for courts into probation-only prisons in config', async () => {
+    it('should offer the correct links for courts into probation-only prisons in config', async () => {
       config.featureToggles.probationOnlyPrisons = 'BXI,BMI'
 
       // Two enabled prisons
@@ -212,10 +216,13 @@ describe('Prisoner search results handler', () => {
           const heading = getPageHeader($)
 
           expect(heading).toContain('Search for a prisoner results')
+          const bookVideoLink = getByDataQa($, 'book-video-link-A1111AA')
+          expect(bookVideoLink.attr('href')).toContain('../../booking/create/A1111AA/video-link-booking')
 
-          // One of the rows should have hidden text where the book a video link is not shown
-          const rowWithNoLink = $('span.govuk-visually-hidden').text()
-          expect(rowWithNoLink).toContain('Prison not enabled for book a video link')
+          const contactPrisonLink = getByDataQa($, 'contact-prison-link-B2222BB')
+          expect(contactPrisonLink.attr('href')).toContain(
+            'https://www.gov.uk/government/collections/prisons-in-england-and-wales',
+          )
         })
 
       expect(prisonerService.searchPrisonersByCriteria).toHaveBeenCalledWith(
@@ -225,7 +232,7 @@ describe('Prisoner search results handler', () => {
       )
     })
 
-    it('should not offer booking links for probation into court-only prisons in config', async () => {
+    it('should offer the correct links for probation into court-only prisons in config', async () => {
       config.featureToggles.courtOnlyPrisons = 'BXI,BMI'
 
       // Two enabled prisons
@@ -284,9 +291,13 @@ describe('Prisoner search results handler', () => {
 
           expect(heading).toContain('Search for a prisoner results')
 
-          // One of the rows should have hidden text where the book a video link is not shown
-          const rowWithNoLink = $('span.govuk-visually-hidden').text()
-          expect(rowWithNoLink).toContain('Prison not enabled for book a video link')
+          const bookVideoLink = getByDataQa($, 'book-video-link-A1111AA')
+          expect(bookVideoLink.attr('href')).toContain('../../booking/create/A1111AA/video-link-booking')
+
+          const contactPrisonLink = getByDataQa($, 'contact-prison-link-B2222BB')
+          expect(contactPrisonLink.attr('href')).toContain(
+            'https://www.gov.uk/government/collections/prisons-in-england-and-wales',
+          )
         })
 
       expect(prisonerService.searchPrisonersByCriteria).toHaveBeenCalledWith(

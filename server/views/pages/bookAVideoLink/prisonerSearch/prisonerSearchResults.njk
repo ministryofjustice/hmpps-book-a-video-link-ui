@@ -23,17 +23,23 @@
 
                 {% set rows = [] %}
                 {% for result in results.content %}
+                    {% set prisonerName = (result.firstName + " " + result.lastName) | convertToTitleCase %}
+
                     {% set bookLinkHtml %}
-                        <a data-qa="{{ result.prisonerNumber }}" href="../../booking/create/{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ result.name }}, prison number {{ result.prisonerNumber }}</span></a>
+                        <a data-qa="book-video-link-{{ result.prisonerNumber }}" href="../../booking/create/{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ prisonerName }}, prisoner number {{ result.prisonerNumber }}</span></a>
+                    {% endset %}
+
+                    {% set contactPrisonLinkHtml %}
+                        <a data-qa="contact-prison-link-{{ result.prisonerNumber }}" href="https://www.gov.uk/government/collections/prisons-in-england-and-wales" target="_blank" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">Contact prison<span class="govuk-visually-hidden"> for {{ prisonerName }}, prisoner number {{ result.prisonerNumber }}</span></a>
                     {% endset %}
 
                     {% set rows = (rows.push([
-                        { text: (result.firstName + " " + result.lastName) | convertToTitleCase },
+                        { text: prisonerName },
                         { text: result.prisonerNumber },
                         { text: result.dateOfBirth | formatDate },
                         { text: result.prisonName },
                         { text: result.pncNumber or '--' },
-                        { html: bookLinkHtml if result.prisonId in enabledPrisons | map('code') else '<span class="govuk-visually-hidden">Prison not enabled for book a video link</span>' }
+                        { html: bookLinkHtml if result.prisonId in enabledPrisons | map('code') else contactPrisonLinkHtml }
                     ]), rows) %}
                 {% endfor %}
 

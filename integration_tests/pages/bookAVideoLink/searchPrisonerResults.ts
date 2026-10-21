@@ -20,6 +20,10 @@ export default class SearchPrisonerResultsPage extends AbstractPage {
   }
 
   async selectPrisoner(prisonerNumber: string) {
-    await this.page.locator(`a[data-qa='${prisonerNumber}']`, { hasText: 'Book video link' }).click()
+    await this.page.locator(`a[data-qa='book-video-link-${prisonerNumber}']`, { hasText: 'Book video link' }).click()
+  }
+
+  async assertContactPrisonLinkVisibleForPrisoner(prisonerNumber: string) {
+    await expect(this.page.locator(`a[data-qa='contact-prison-link-${prisonerNumber}']`)).toHaveCount(1)
   }
 }

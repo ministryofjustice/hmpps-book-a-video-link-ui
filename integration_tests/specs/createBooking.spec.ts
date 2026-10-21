@@ -74,6 +74,7 @@ test.describe('Create a booking', () => {
       await searchPrisonerPage.searchButton.click()
 
       const searchPrisonerResultsPage = await SearchPrisonerResultsPage.verifyOnPage(page)
+      await searchPrisonerResultsPage.assertContactPrisonLinkVisibleForPrisoner('A0489EA')
       await searchPrisonerResultsPage.selectPrisoner('A0171DZ')
 
       const newBookingPage = await NewBookingPage.verifyOnPage(page)
@@ -248,6 +249,7 @@ test.describe('Create a booking', () => {
       await searchPrisonerPage.searchButton.click()
 
       const searchPrisonerResultsPage = await SearchPrisonerResultsPage.verifyOnPage(page)
+      await searchPrisonerResultsPage.assertContactPrisonLinkVisibleForPrisoner('A8423DZ')
       await searchPrisonerResultsPage.selectPrisoner('A0171DZ')
 
       const bookingDetailsPage = await BookingDetailsPage.verifyOnPage(page)

@@ -11,8 +11,8 @@
 
 {% set mode = session.req.routeContext.mode %}
 {% set prisonerName = ((prisoner.firstName + ' ' + prisoner.lastName) | convertToTitleCase) %}
-{% set pageTitle = "Change video link booking" if mode == 'amend' else "Select a date and time for the court video link hearing" %}
-{% set pageHeading = "Change " + prisonerName + "'s video link booking" if mode == 'amend' else "Select a date and time for " + prisonerName +"'s court video link hearing" %}
+{% set pageTitle = "Change video link booking" if mode == 'amend' else "Enter court hearing video link booking details" %}
+{% set pageHeading = "Change " + prisonerName + "'s video link booking" if mode == 'amend' else "Enter court hearing video link booking details for " + prisonerName %}
 
 {% block content %}
     <div class="govuk-grid-row">

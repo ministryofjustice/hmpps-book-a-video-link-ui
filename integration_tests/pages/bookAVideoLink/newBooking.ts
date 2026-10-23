@@ -17,7 +17,7 @@ export default class NewBookingPage extends AbstractPage {
 
   private constructor(page: Page) {
     super(page)
-    this.header = page.locator('h1', { hasText: `Select a date and time for` })
+    this.header = page.locator('h1', { hasText: `Enter court hearing video link booking details for` })
     this.court = page.getByLabel('Select the court the hearing is for')
     this.courtHearingType = page.getByLabel('Select the court hearing type')
     this.date = page.getByLabel('Date')

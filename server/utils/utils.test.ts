@@ -7,6 +7,7 @@ import {
   formatDate,
   getDaysOfWeek,
   initialiseName,
+  isJusticeEmail,
   isValidPrisonerNumber,
   parseDate,
   parseDatePickerDate,
@@ -323,5 +324,20 @@ describe('parseTimeToIsoString', () => {
     [undefined, undefined],
   ])('time [%s] to [%s]', (input, expected) => {
     expect(parseTimeToISOString(input)).toEqual(expected)
+  })
+})
+
+describe('isJusticeEmail', () => {
+  it.each([
+    ['EMAIL@JUSTICE.GOV.UK', true],
+    ['email@justice.gov.uk', true],
+    ['email@jusTIce.gOV.Uk', true],
+    [' email@justice.gov.uk ', true],
+    ['email@digital.justice.gov.uk', false],
+    ['email@justice.gov.ukk', false],
+    [undefined, false],
+    [null, false],
+  ])('email [%s] expected [%s]', (email, expected) => {
+    expect(isJusticeEmail(email)).toEqual(expected)
   })
 })

@@ -150,3 +150,9 @@ export const subtractMinutes = (time: string, minutes: number = 15) =>
 
 export const parseTimeToISOString = (time: string) =>
   time ? parse(time, 'HH:mm', new Date(0)).toISOString() : undefined
+
+export const isJusticeEmail = (email: string): boolean => {
+  if (!email) return false
+
+  return email.trim().toUpperCase().endsWith('@JUSTICE.GOV.UK')
+}

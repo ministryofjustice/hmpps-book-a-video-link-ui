@@ -52,10 +52,25 @@ afterEach(() => {
 })
 
 describe('GET', () => {
-  it('should render the correct view page', () => {
+  const confirmationTextForProbationOfficerWithoutJusticeEmail =
+    'We have emailed you with the video link details. An email has also been sent to the prison.'
+  const confirmationTextFprProbationOfficerWithJusticeEmail =
+    'We have emailed you, and the probation officer with the video link details. An email has also been sent to the prison.'
+
+  it.each([
+    ['EMAIL@JUSTICE.GOV.UK', confirmationTextFprProbationOfficerWithJusticeEmail],
+    ['email@justice.gov.uk', confirmationTextFprProbationOfficerWithJusticeEmail],
+    ['email@jusTIce.gOV.Uk', confirmationTextFprProbationOfficerWithJusticeEmail],
+    ['email@digital.justice.gov.uk', confirmationTextForProbationOfficerWithoutJusticeEmail],
+    ['email@justice.gov.ukk', confirmationTextForProbationOfficerWithoutJusticeEmail],
+    [undefined, confirmationTextForProbationOfficerWithoutJusticeEmail],
+    [null, confirmationTextForProbationOfficerWithoutJusticeEmail],
+  ])('should render the correct view page for officer details [%s] expected [%s]', async (email, expected) => {
     appSetup()
 
-    return request(app)
+    videoLinkService.getVideoLinkBookingById.mockResolvedValue(getProbationBooking('AA1234A', email))
+
+    await request(app)
       .get(`/probation/booking/create/${journeyId()}/A1234AA/video-link-booking/confirmation/1`)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -70,19 +85,21 @@ describe('GET', () => {
 
         const $ = cheerio.load(res.text)
         const heading = getPageHeader($)
+        const confirmationText = getByDataQa($, 'confirmation-text')
         const bookAnotherLink = getByDataQa($, 'bookAnotherLink').attr('href')
 
         expect(heading).toEqual('The video link has been booked')
+        expect(confirmationText.text()).toContain(expected)
         expect(bookAnotherLink).toEqual(`/probation/prisoner-search/search`)
 
         expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')
         expect(getValueByKey($, 'Prison')).toEqual('Moorland (HMP)')
         expect(getValueByKey($, 'Notes for prison staff')).toEqual('staff notes')
       })
-      .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
+    return expectJourneySession(app, 'bookAProbationMeeting', null)
   })
 
-  it('should render the correct page in amend mode', () => {
+  it('should render the correct page in amend mode', async () => {
     const journeySession = {
       agencyCode: 'ALL',
       fromDate: formatDate(startOfToday(), 'dd-MM-yyyy'),
@@ -95,7 +112,7 @@ describe('GET', () => {
 
     videoLinkService.bookingIsAmendable.mockReturnValue(true)
 
-    return request(app)
+    await request(app)
       .get(`/probation/booking/amend/1/${journeyId()}/video-link-booking/confirmation`)
       .expect('Content-Type', /html/)
       .expect(res => {
@@ -115,11 +132,11 @@ describe('GET', () => {
         const exitToAllBookingsLink = getByDataQa($, 'exit-to-all-bookings-link').attr('href')
         expect(exitToAllBookingsLink).toEqual(`/probation/view-booking?${toViewBookingsSearchParams(journeySession)}`)
       })
-      .then(() => expectJourneySession(app, 'bookAProbationMeeting', null))
+    return expectJourneySession(app, 'bookAProbationMeeting', null)
   })
 })
 
-const getProbationBooking = (prisonerNumber: string) =>
+const getProbationBooking = (prisonerNumber: string, probationOfficerEmail: string = null) =>
   ({
     bookingType: 'PROBATION',
     probationTeamCode: 'PROBATION_CODE',
@@ -139,4 +156,7 @@ const getProbationBooking = (prisonerNumber: string) =>
     probationMeetingTypeDescription: 'Pre-sentence report',
     videoLinkUrl: 'https://video.here.com',
     notesForStaff: 'staff notes',
+    additionalBookingDetails: {
+      contactEmail: probationOfficerEmail,
+    },
   }) as VideoLinkBooking

@@ -20,6 +20,7 @@ import routes from './routes'
 import type { Services } from './services'
 import AuthorisedRoles from './enumeration/authorisedRoles'
 import setUpFlash from './middleware/setUpFlash'
+import migrateDeliusPreferencesMiddleware from './middleware/migrateDeliusPreferencesMiddleware'
 
 export default function createApp(services: Services): express.Application {
   const app = express()
@@ -47,6 +48,10 @@ export default function createApp(services: Services): express.Application {
   app.use(setUpCsrf())
   app.use(setUpFlash())
   app.use(setUpCurrentUser(services))
+
+  // A temporary middleware feature whilst moving probation users from external accounts to their nDelius accounts
+  app.use(migrateDeliusPreferencesMiddleware(services))
+
   app.use(routes(services))
 
   app.use((req, res, next) => next(createError(404, 'Not found')))

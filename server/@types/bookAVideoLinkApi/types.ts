@@ -2,6 +2,7 @@ import { components } from '.'
 
 export type Court = components['schemas']['Court']
 export type ProbationTeam = components['schemas']['ProbationTeam']
+export type MigratedProbationTeamPreferencesResponse = components['schemas']['MigratedProbationTeamPreferencesResponse']
 export type Location = components['schemas']['Location']
 export type Prison = components['schemas']['Prison']
 export type AvailabilityRequest = components['schemas']['AvailabilityRequest']

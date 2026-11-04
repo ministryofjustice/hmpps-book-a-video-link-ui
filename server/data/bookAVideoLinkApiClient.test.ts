@@ -17,6 +17,7 @@ import {
   RequestVideoBookingRequest,
   RoomSchedule,
   DateTimeAvailabilityRequest,
+  MigratedProbationTeamPreferencesResponse,
 } from '../@types/bookAVideoLinkApi/types'
 
 jest.mock('./tokenStore/inMemoryTokenStore')
@@ -118,6 +119,21 @@ describe('bookAVideoLinkApiClient', () => {
         .reply(200, response)
 
       const output = await bookAVideoLinkApiClient.setUserProbationTeamPreferences(['TEST'], user)
+      expect(output).toEqual(response)
+    })
+  })
+
+  describe('migrateDeliusUserPreferences', () => {
+    it('should put the request', async () => {
+      const response = { probationTeamsMigrated: 1 } as MigratedProbationTeamPreferencesResponse
+
+      fakeBookAVideoLinkApiClient
+        .put('/probation-teams/user-preferences/delius-migrate')
+        .matchHeader('authorization', `Bearer systemToken`)
+        .reply(200, response)
+
+      const output = await bookAVideoLinkApiClient.migrateDeliusUserPreferences(user)
+
       expect(output).toEqual(response)
     })
   })

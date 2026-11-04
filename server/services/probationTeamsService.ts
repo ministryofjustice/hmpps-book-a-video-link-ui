@@ -1,6 +1,6 @@
-import { groupBy, Dictionary } from 'lodash'
+import { Dictionary, groupBy } from 'lodash'
 import BookAVideoLinkApiClient from '../data/bookAVideoLinkApiClient'
-import { ProbationTeam } from '../@types/bookAVideoLinkApi/types'
+import { MigratedProbationTeamPreferencesResponse, ProbationTeam } from '../@types/bookAVideoLinkApi/types'
 
 export type ProbationTeamsByLetter = Dictionary<ProbationTeam[]>
 
@@ -15,6 +15,10 @@ export default class ProbationTeamsService {
   public async getUserPreferences(user: Express.User): Promise<ProbationTeam[]> {
     const probationTeamsList = await this.bookAVideoLinkApiClient.getUserProbationTeamPreferences(user)
     return this.sortAlphabetically(probationTeamsList)
+  }
+
+  public async migrateDeliusUserPreferences(user: Express.User): Promise<MigratedProbationTeamPreferencesResponse> {
+    return this.bookAVideoLinkApiClient.migrateDeliusUserPreferences(user)
   }
 
   public setUserPreferences(probationTeamCodes: string[], user: Express.User): Promise<void> {

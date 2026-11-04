@@ -24,6 +24,7 @@ import {
   RoomSchedule,
   AmendPrisonRequest,
   PagedModelScheduleItem,
+  MigratedProbationTeamPreferencesResponse,
 } from '../@types/bookAVideoLinkApi/types'
 
 import { formatDate } from '../utils/utils'
@@ -71,6 +72,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
       },
       user,
     )
+  }
+
+  public migrateDeliusUserPreferences(user: Express.User): Promise<MigratedProbationTeamPreferencesResponse> {
+    return this.put({ path: `/probation-teams/user-preferences/delius-migrate` }, user)
   }
 
   public getAppointmentLocations(prisonCode: string, videoLinkOnly: boolean, user: Express.User): Promise<Location[]> {

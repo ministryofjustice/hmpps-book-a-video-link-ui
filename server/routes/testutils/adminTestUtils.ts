@@ -9,8 +9,8 @@ import {
 
 export const userPreferencesProbation = () => {
   return [
-    { code: 'P1', description: 'Probation 1' },
-    { code: 'P2', description: 'Probation 2' },
+    { code: 'P1', description: 'Probation 1', enabled: true },
+    { code: 'P2', description: 'Probation 2', enabled: true },
   ] as ProbationTeam[]
 }
 

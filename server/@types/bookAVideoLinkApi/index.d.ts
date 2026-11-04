@@ -162,6 +162,30 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/probation-teams/user-preferences/delius-migrate': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Endpoint to migrate the probation team preferences for an nDelius user from a matching external account.
+     *           This is called by the UI when the current nDelius user has no team preferences, and a matching external
+     *           account email does have preferences set. It uses the user's email address to match accounts.
+     *           Role required: BOOK_A_VIDEO_LINK_ADMIN.
+     * @description Requires one of the following roles:
+     *     * BOOK_A_VIDEO_LINK_ADMIN
+     */
+    put: operations['migrateProbationTeamPreferences']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/prison-admin/{prisonCode}': {
     parameters: {
       query?: never
@@ -947,27 +971,6 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/booking-contacts/id/{videoBookingId}': {
-    parameters: {
-      query?: never
-      header?: never
-      path?: never
-      cookie?: never
-    }
-    /**
-     * Endpoint to return a list of contacts associated with a booking
-     * @description Requires one of the following roles:
-     *     * BOOK_A_VIDEO_LINK_ADMIN
-     */
-    get: operations['getContactsForBooking']
-    put?: never
-    post?: never
-    delete?: never
-    options?: never
-    head?: never
-    patch?: never
-    trace?: never
-  }
 }
 export type webhooks = Record<string, never>
 export interface components {
@@ -1109,11 +1112,13 @@ export interface components {
        */
       date: string
       /**
+       * Format: time-local
        * @description Start time for the appointment on the day
        * @example 10:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for the appointment on the day
        * @example 11:45
        */
@@ -1193,11 +1198,13 @@ export interface components {
        */
       blockedTo?: string | null
       /**
+       * Format: time-local
        * @description The start time which a location is blocked from. Only applies to temporarily blocked locations.
        * @example 10:00
        */
       blockedFromTime?: string | null
       /**
+       * Format: time-local
        * @description The end time which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
        * @example 15:00
        */
@@ -1297,11 +1304,13 @@ export interface components {
        */
       blockedTo?: string | null
       /**
+       * Format: time-local
        * @description The start time which a location is blocked from. Only applies to temporarily blocked locations.
        * @example 10:00
        */
       blockedFromTime?: string | null
       /**
+       * Format: time-local
        * @description The end time which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
        * @example 15:00
        */
@@ -1334,11 +1343,13 @@ export interface components {
        */
       endDayOfWeek: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
       /**
+       * Format: time-local
        * @description Start time of this slot (24 hr clock, HH:MI)
        * @example 10:00
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time of this slot (24 hr clock, HH:MI)
        * @example 16:00
        */
@@ -1381,11 +1392,13 @@ export interface components {
        */
       endDayOfWeek: number
       /**
+       * Format: time-local
        * @description Start time for the schedule
        * @example 12:00
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for the schedule
        * @example 15:00
        */
@@ -1403,6 +1416,14 @@ export interface components {
     PurgeQueueResult: {
       /** Format: int32 */
       messagesFoundCount: number
+    }
+    /** @description Describes the response from migrated probation team preferences */
+    MigratedProbationTeamPreferencesResponse: {
+      /**
+       * Format: int32
+       * @description The count of probation teams migrated from a matching (by email address_ external account
+       */
+      probationTeamsMigrated: number
     }
     /** @description The request with the prison amendment details */
     AmendPrisonRequest: {
@@ -1591,11 +1612,13 @@ export interface components {
        */
       date: string
       /**
+       * Format: time-local
        * @description Start time for the appointment on the day
        * @example 10:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for the appointment on the day
        * @example 11:45
        */
@@ -1621,6 +1644,11 @@ export interface components {
        */
       prisonCode: string
       /**
+       * @description The name of the prison where this appointment will take place
+       * @example Moorland HMP
+       */
+      prisonName: string
+      /**
        * @description The prisoner number for the person attending this appointment
        * @example AA1234A
        */
@@ -1643,17 +1671,29 @@ export interface components {
        */
       dpsLocationId: string
       /**
+       * @description The description for the location
+       * @example VIDEO LINK
+       */
+      dpsLocationDescription: string
+      /**
+       * @description The prison video URL for the location
+       * @example https://prison-video-link.co.uk
+       */
+      prisonVideoUrl?: string | null
+      /**
        * Format: date
        * @description The date of the appointment
        * @example 2024-04-05
        */
       appointmentDate: string
       /**
+       * Format: time-local
        * @description The start time for this appointment
        * @example 11:30
        */
       startTime: string
       /**
+       * Format: time-local
        * @description The end time for this appointment
        * @example 12:30
        */
@@ -1943,11 +1983,13 @@ export interface components {
        */
       date: string
       /**
+       * Format: time-local
        * @description Start time for the appointment on the day
        * @example 10:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for the appointment on the day
        * @example 11:45
        */
@@ -2031,11 +2073,13 @@ export interface components {
        */
       eventDate: string
       /**
+       * Format: time-local
        * @description Start time for the event
        * @example 10:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for the event
        * @example 11:45
        */
@@ -2321,11 +2365,13 @@ export interface components {
        */
       appointmentDate: string
       /**
+       * Format: time-local
        * @description The start time for the appointment ISO time format (HH:MI)
        * @example 12:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description The end time for the appointment ISO time format (HH:MI)
        * @example 13:15
        */
@@ -2390,17 +2436,17 @@ export interface components {
     }
     PageMetadata: {
       /** Format: int64 */
-      size?: number
+      size: number
       /** Format: int64 */
-      number?: number
+      number: number
       /** Format: int64 */
-      totalElements?: number
+      totalElements: number
       /** Format: int64 */
-      totalPages?: number
+      totalPages: number
     }
     PagedModelScheduleItem: {
-      content?: components['schemas']['ScheduleItem'][]
-      page?: components['schemas']['PageMetadata']
+      content: components['schemas']['ScheduleItem'][]
+      page: components['schemas']['PageMetadata']
     }
     /** @description A request to find bookings for a date and list of court codes */
     FindCourtBookingsRequest: {
@@ -2464,11 +2510,13 @@ export interface components {
        */
       blockedTo?: string | null
       /**
+       * Format: time-local
        * @description The start time which a location is blocked from. Only applies to temporarily blocked locations.
        * @example 10:00
        */
       blockedFromTime?: string | null
       /**
+       * Format: time-local
        * @description The end time which a location is blocked to, must be on or after the blocked from date. Only applies to temporarily blocked locations.
        * @example 15:00
        */
@@ -2506,11 +2554,13 @@ export interface components {
        */
       endDayOfWeek: number
       /**
+       * Format: time-local
        * @description Start time for the schedule
        * @example 12:00
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for the schedule
        * @example 15:00
        */
@@ -2586,11 +2636,13 @@ export interface components {
     /** @description A time interval between a start and end time */
     Interval: {
       /**
+       * Format: time-local
        * @description The interval start time, inclusive. ISO-8601 format (hh:mm)
        * @example 09:00
        */
       start: string
       /**
+       * Format: time-local
        * @description The interval end time (inclusive). ISO-8601 format (hh:mm)
        * @example 09:30
        */
@@ -2683,11 +2735,13 @@ export interface components {
     AvailableLocation: {
       name: string
       /**
+       * Format: time-local
        * @description The start time in 15 minute slots when the location is available in ISO time format (HH:MI)
        * @example 12:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description The end time in 15 minute slots when the location is available in ISO time format (HH:MI)
        * @example 12:45
        */
@@ -2749,11 +2803,13 @@ export interface components {
        */
       date: string
       /**
+       * Format: time-local
        * @description Start time for on the day
        * @example 10:45
        */
       startTime: string
       /**
+       * Format: time-local
        * @description End time for on the day
        * @example 11:45
        */
@@ -2913,48 +2969,6 @@ export interface components {
        * @example Free form notes
        */
       notes?: string | null
-    }
-    /** @description Describes the details of a booking contact */
-    BookingContact: {
-      /**
-       * Format: int64
-       * @description Describes the internal id of the video booking
-       * @example 123
-       */
-      videoBookingId: number
-      /**
-       * @description Describes the contact type
-       * @example PRISON
-       * @enum {string}
-       */
-      contactType: 'USER' | 'COURT' | 'PROBATION' | 'PRISON' | 'THIRD_PARTY'
-      /**
-       * @description Describes the contact name (optional)
-       * @example Mr. Person-contact
-       */
-      name?: string | null
-      /**
-       * @description Describes the position or role of the contact person (optional)
-       * @example BVLS Administrator
-       */
-      position?: string | null
-      /**
-       * @description Describes the email address of this contact (optional)
-       * @example example@example.com
-       */
-      email?: string | null
-      /**
-       * @description Describes the telephone number of this contact (optional)
-       * @example 00902 0909779
-       */
-      telephone?: string | null
-      /**
-       * @description Describes the whether the contact is a primary contact or not, true if yes otherwise false.
-       *
-       *         There will only ever be one primary contact for each contact type e.g. a court will only have one primary contact.
-       * @example true
-       */
-      primaryContact: boolean
     }
   }
   responses: never
@@ -3509,6 +3523,44 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
+  migrateProbationTeamPreferences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Response containing the number of migrated probation teams */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['MigratedProbationTeamPreferencesResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -4076,9 +4128,9 @@ export interface operations {
         jobName:
           | 'COURT_HEARING_LINK_REMINDER'
           | 'PROBATION_OFFICER_DETAILS_REMINDER'
+          | 'PROBATION_OFFICER_ATTENDANCE_REMINDER'
           | 'NEW_PRISON_VIDEO_ROOM'
           | 'REACTIVATE_BLOCKED_LOCATIONS'
-          | 'MERGE_PROBATION_RECALL_MEETING_TYPES'
       }
       cookie?: never
     }
@@ -5068,55 +5120,6 @@ export interface operations {
       }
       /** @description Forbidden, requires an appropriate role */
       403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-    }
-  }
-  getContactsForBooking: {
-    parameters: {
-      query?: never
-      header?: never
-      path: {
-        videoBookingId: number
-      }
-      cookie?: never
-    }
-    requestBody?: never
-    responses: {
-      /** @description Contacts for this booking */
-      200: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['BookingContact'][]
-        }
-      }
-      /** @description Unauthorised, requires a valid Oauth2 token */
-      401: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description Forbidden, requires an appropriate role */
-      403: {
-        headers: {
-          [name: string]: unknown
-        }
-        content: {
-          'application/json': components['schemas']['ErrorResponse']
-        }
-      }
-      /** @description The video booking ID was not found. */
-      404: {
         headers: {
           [name: string]: unknown
         }

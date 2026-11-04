@@ -90,4 +90,12 @@ describe('Probation teams service', () => {
       expect(bookAVideoLinkApiClient.setUserProbationTeamPreferences).toHaveBeenCalledWith(['TEST'], user)
     })
   })
+
+  describe('migrateDeliusUserPreferences', () => {
+    it('should call the rest client to migrate the nDelius user preferences', async () => {
+      await probationTeamsService.migrateDeliusUserPreferences(user)
+
+      expect(bookAVideoLinkApiClient.migrateDeliusUserPreferences).toHaveBeenCalledWith(user)
+    })
+  })
 })

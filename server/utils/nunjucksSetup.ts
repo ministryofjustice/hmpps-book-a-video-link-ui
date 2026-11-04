@@ -11,6 +11,7 @@ import {
   dateAtTime,
   formatDate,
   initialiseName,
+  isJusticeEmail,
   parseDate,
   parseTimeToISOString,
   plusMinutes,
@@ -103,6 +104,7 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   njkEnv.addFilter('plusMinutes', plusMinutes)
   njkEnv.addFilter('subtractMinutes', subtractMinutes)
   njkEnv.addFilter('parseTimeToIsoString', parseTimeToISOString)
+  njkEnv.addFilter('isJusticeEmail', isJusticeEmail)
 
   njkEnv.addGlobal('exampleDatePickerDate', () => `29/9/${formatDate(addYears(new Date(), 1), 'yyyy')}`)
   njkEnv.addGlobal('now', () => new Date())

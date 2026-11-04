@@ -26,7 +26,7 @@
             <form method='POST'>
                 <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
-                {{ govukSummaryList({
+                {{ null if mode != 'request' else govukSummaryList({
                     classes: "govuk-summary-list--no-border",
                     rows: [
                         {
@@ -36,7 +36,7 @@
                             value: {
                                 text: ((prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase) + ((' (' + prisoner.prisonerNumber + ')') if prisoner.prisonerNumber)
                             }
-                        } if mode == 'request',
+                        },
                         {
                             key: {
                                 text: "Date of birth"
@@ -44,7 +44,7 @@
                             value: {
                                 text: prisoner.dateOfBirth | formatDate
                             }
-                        } if mode == 'request',
+                        },
                         {
                             key: {
                                 text: "Prison"
@@ -60,22 +60,20 @@
                             value: {
                                 text: courts[0].description
                             }
-                        } if courts.length == 1,
-                        {
-                            key: {
-                                text: "Court"
-                            },
-                            value: {
-                                text: (courts | find('code', session.journey.bookACourtHearing.courtCode)).description
-                            }
-                        } if mode == 'amend' and courts.length > 1
+                        } if courts.length == 1
                     ]
                 }) }}
 
-                {% if courts.length === 1 %}
+                {% if mode == 'create' and courts.length == 1 %}
+                    <span class="govuk-label govuk-label--s">Court</span>
                     <input type="hidden" name="courtCode" value="{{ courts[0].code }}" />
-                {% elseif mode === 'amend' %}
+                    <p class="govuk-body govuk-!-margin-bottom-6">{{ courts[0].description }}</p>
+                {% elif mode == 'amend' %}
+                    <span class="govuk-label govuk-label--s">Court</span>
                     <input type="hidden" name="courtCode" value="{{ session.journey.bookACourtHearing.courtCode }}" />
+                    <p class="govuk-body govuk-!-margin-bottom-6">{{ (courts | find('code', session.journey.bookACourtHearing.courtCode)).description }}</p>
+                {% elif mode == 'request' and courts.length == 1 %}
+                    <input type="hidden" name="courtCode" value="{{ courts[0].code }}" />
                 {% else %}
                     {% set items = [{ text: "Select court", value: "" }] %}
                     {% for court in courts %}

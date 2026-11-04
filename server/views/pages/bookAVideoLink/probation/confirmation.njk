@@ -13,7 +13,11 @@
         <div class="govuk-grid-column-two-thirds">
             {{ govukPanel({ titleText: pageTitle, classes: 'govuk-!-margin-bottom-6' }) }}
 
-            <p class='govuk-body'>We have emailed you with the video link details. An email has also been sent to the prison.</p>
+            {% if booking.additionalBookingDetails.contactEmail | isJusticeEmail %}
+                <p data-qa="confirmation-text" class='govuk-body'>We have emailed you, and the probation officer with the video link details. An email has also been sent to the prison.</p>
+            {% else %}
+                <p data-qa="confirmation-text" class='govuk-body'>We have emailed you with the video link details. An email has also been sent to the prison.</p>
+            {% endif %}
 
             <h2 class='govuk-heading-m'>Video link details</h2>
             {{ govukSummaryList({

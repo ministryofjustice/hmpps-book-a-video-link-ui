@@ -5,7 +5,7 @@ import * as cheerio from 'cheerio'
 import { startOfToday, startOfTomorrow, startOfYesterday } from 'date-fns'
 import { appWithAllRoutes, journeyId, user } from '../../../../testutils/appSetup'
 import Page from '../../../../enumerator/page'
-import { existsByLabel, getByDataQa, getPageHeader } from '../../../../testutils/cheerio'
+import { existsByLabel, existsByName, getByDataQa, getByName, getPageHeader } from '../../../../testutils/cheerio'
 import CourtsService from '../../../../../services/courtsService'
 import PrisonService from '../../../../../services/prisonService'
 import PrisonerService from '../../../../../services/prisonerService'
@@ -117,6 +117,26 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should render the correct view with one court', () => {
+      courtsService.getUserPreferences.mockResolvedValue([{ code: 'C1', description: 'Court 1' }] as Court[])
+
+      appSetup()
+
+      return request(app)
+        .get(`/court/booking/create/${journeyId()}/A1234AA/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(false)
+          expect(existsByName($, 'courtCode')).toBe(true)
+          const [courtCodeInput] = getByName($, 'courtCode')
+          expect(courtCodeInput.tagName).toBe('input')
+          expect(courtCodeInput.attribs.type).toBe('hidden')
+          expect(courtCodeInput.attribs.value).toBe('C1')
+        })
+    })
+
     it('should redirect home when invalid prisoner number', () => {
       appSetup()
 
@@ -152,6 +172,59 @@ describe('Booking details handler', () => {
         })
     })
 
+    it('should render the correct view for request with one court', () => {
+      courtsService.getUserPreferences.mockResolvedValue([{ code: 'C1', description: 'Court 1' }] as Court[])
+
+      appSetup({
+        bookACourtHearing: {
+          prisoner: {
+            prisonId: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Smith',
+            dateOfBirth: '1970-01-01',
+            prisonName: 'Moorland',
+          },
+        },
+      })
+
+      return request(app)
+        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(false)
+          expect(existsByName($, 'courtCode')).toBe(true)
+          const [courtCodeInput] = getByName($, 'courtCode')
+          expect(courtCodeInput.tagName).toBe('input')
+          expect(courtCodeInput.attribs.type).toBe('hidden')
+          expect(courtCodeInput.attribs.value).toBe('C1')
+        })
+    })
+
+    it('should render the correct view for request with multiple courts', () => {
+      appSetup({
+        bookACourtHearing: {
+          prisoner: {
+            prisonId: 'MDI',
+            firstName: 'Joe',
+            lastName: 'Smith',
+            dateOfBirth: '1970-01-01',
+            prisonName: 'Moorland',
+          },
+        },
+      })
+
+      return request(app)
+        .get(`/court/booking/request/${journeyId()}/prisoner/video-link-booking`)
+        .expect('Content-Type', /html/)
+        .expect(res => {
+          const $ = cheerio.load(res.text)
+
+          expect(existsByLabel($, 'Select the court the hearing is for')).toBe(true)
+        })
+    })
+
     it('should populate the session with an existing booking for amending', async () => {
       await request(app)
         .get(`/court/booking/amend/1/${journeyId()}/video-link-booking`)
@@ -162,6 +235,11 @@ describe('Booking details handler', () => {
 
           expect(heading).toEqual("Change Joe Smith's video link booking")
           expect(existsByLabel($, 'Select the court the hearing is for')).toBe(false)
+          expect(existsByName($, 'courtCode')).toBe(true)
+          const [courtCodeInput] = getByName($, 'courtCode')
+          expect(courtCodeInput.tagName).toBe('input')
+          expect(courtCodeInput.attribs.type).toBe('hidden')
+          expect(courtCodeInput.attribs.value).toBe('COURT_CODE')
           expect(existsByLabel($, 'Notes for prison staff (optional)')).toBe(true)
 
           expect(auditService.logPageView).toHaveBeenCalledWith(Page.BOOKING_DETAILS_PAGE, {

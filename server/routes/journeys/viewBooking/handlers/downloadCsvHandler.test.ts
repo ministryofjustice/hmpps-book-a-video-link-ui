@@ -63,7 +63,7 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
-        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv"`,
+        `attachment; filename=VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv`,
       )
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
@@ -99,7 +99,7 @@ describe('GET', () => {
     return request(app)
       .get('/court/view-booking/download-csv?fromDate=03-10-2024&toDate=04-10-2024&agencyCode=ALL')
       .expect('Content-Type', /text\/csv; charset=utf-8/)
-      .expect('Content-Disposition', `attachment; filename="VideoLinkBookings-2024-10-03-to-2024-10-04-all-court.csv"`)
+      .expect('Content-Disposition', `attachment; filename=VideoLinkBookings-2024-10-03-to-2024-10-04-all-court.csv`)
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
           who: user.username,
@@ -154,7 +154,7 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
-        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv"`,
+        `attachment; filename=VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Court_1.csv`,
       )
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
@@ -188,7 +188,7 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
-        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Probation_1.csv"`,
+        `attachment; filename=VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-Probation_1.csv`,
       )
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {
@@ -226,7 +226,7 @@ describe('GET', () => {
       .expect('Content-Type', /text\/csv; charset=utf-8/)
       .expect(
         'Content-Disposition',
-        `attachment; filename="VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-all-probation.csv"`,
+        `attachment; filename=VideoLinkBookings-${formatDate(new Date(), 'yyyy-MM-dd')}-all-probation.csv`,
       )
       .expect(res => {
         expect(auditService.logPageView).toHaveBeenCalledWith(Page.DOWNLOAD_BOOKINGS_PAGE, {

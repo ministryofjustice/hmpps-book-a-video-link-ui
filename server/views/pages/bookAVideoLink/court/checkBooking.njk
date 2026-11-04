@@ -312,12 +312,8 @@
                         type: 'submit'
                     }) }}
 
-                    <a href='../video-link-booking' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">{{ 'Change request' if mode == 'request' else 'Change booking' }}</a>
+                    <a href="{{ '/' if mode == 'create' or mode == 'request' else ('/court/view-booking/' + session.journey.bookACourtHearing.bookingId) }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 </div>
-
-                {% if mode == 'amend' %}
-                    <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
-                {% endif %}
             </form>
         </div>
     </div>

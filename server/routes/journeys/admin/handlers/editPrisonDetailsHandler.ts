@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import { NextFunction, Request, Response } from 'express'
 import { NotFound } from 'http-errors'
 import { IsEnum, IsInt, IsNotEmpty, Max, Min, ValidateIf } from 'class-validator'

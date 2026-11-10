@@ -10,6 +10,7 @@ export default [
       'dot-notation': 'off',
       'import/prefer-default-export': 0,
       'no-bitwise': 0,
+      'max-classes-per-file': 'off',
     },
   },
 ]

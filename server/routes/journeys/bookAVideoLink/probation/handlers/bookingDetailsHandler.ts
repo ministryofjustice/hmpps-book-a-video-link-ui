@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import { Request, Response } from 'express'
 import { Expose, Transform } from 'class-transformer'
 import { ArrayNotEmpty, IsEmail, IsEnum, IsNotEmpty, IsOptional, MaxLength, ValidateIf } from 'class-validator'

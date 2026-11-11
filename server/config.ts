@@ -144,4 +144,5 @@ export default {
     roomBlockingWithTimes: get('FEATURE_ROOM_BLOCKING_WITH_TIMES', false) === 'true',
   },
   defaultCourtVideoUrl: get('DEFAULT_COURT_VIDEO_URL', 'meet.video.justice.gov.uk'),
+  applicationInsightsConnectionString: get('APPLICATIONINSIGHTS_CONNECTION_STRING', '', requiredInProduction),
 }

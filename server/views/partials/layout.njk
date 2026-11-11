@@ -44,5 +44,11 @@
 {% endblock %}
 
 {% block bodyEnd %}
+  <script type="text/javascript" nonce="{{ cspNonce }}">
+    window.applicationInsightsConnectionString = "{{ applicationInsightsConnectionString }}"
+    window.applicationInsightsApplicationName = "{{ applicationInsightsApplicationName }}"
+    window.buildNumber = "{{ buildNumber }}"
+    window.authenticatedUser = "{{ user.jwtUserUuid }}"
+  </script>
   <script type="module" src="{{ '/assets/js/index.js' | assetMap }}"></script>
 {% endblock %}

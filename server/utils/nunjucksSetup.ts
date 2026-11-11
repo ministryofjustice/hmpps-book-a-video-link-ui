@@ -40,6 +40,9 @@ export default function nunjucksSetup(app: express.Express, applicationInfo: App
   app.locals.feedbackUrl = config.feedbackUrl
   app.locals.reportAFaultUrl = config.reportAFaultUrl
   app.locals.roomBlockingWithTimes = config.featureToggles.roomBlockingWithTimes
+  app.locals.applicationInsightsConnectionString = config.applicationInsightsConnectionString
+  app.locals.applicationInsightsApplicationName = applicationInfo.applicationName
+  app.locals.buildNumber = config.buildNumber
 
   app.use((req, res, next) => {
     res.locals.session = req.session

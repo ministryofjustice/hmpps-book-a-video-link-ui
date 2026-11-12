@@ -20,7 +20,10 @@
 
         {{ govukButton({
             text: "Extract data",
-            type: "submit"
+            type: "submit",
+            attributes: {
+                'data-custom-id': 'extract-data'
+            }
         }) }}
     </form>
 

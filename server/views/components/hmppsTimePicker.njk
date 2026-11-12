@@ -59,7 +59,8 @@
                         items: hoursItems,
                         classes: "govuk-select--error" if params.errorMessage,
                         attributes: {
-                            'aria-label': 'Hour'
+                            'aria-label': 'Hour',
+                            'data-custom-id': params.id + 'hour'
                         }
                     }) }}
                 </div>
@@ -73,7 +74,8 @@
                         classes: "govuk-select--error" if params.errorMessage,
                         items: minutesItems,
                         attributes: {
-                            'aria-label': 'Minute'
+                            'aria-label': 'Minute',
+                            'data-custom-id': params.id + 'minute'
                         }
                     }) }}
                 </div>

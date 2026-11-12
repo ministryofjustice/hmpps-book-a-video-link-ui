@@ -40,18 +40,20 @@ Parameters passed in:
                     label: {
                         text: "Allocate probation team (optional)"
                     },
+                    attributes: {
+                        'data-custom-id': 'allocate-probatiob-team'
+                    },
                     errorMessage: validationErrors | findError(fieldName)
                 }) }}
 
                 {% if selectsToRender.length > 1 %}
-                    <button type="button" class="moj-add-another__remove-button">Remove</button>
+                    <button data-custom-id="remove-probation-team" type="button" class="moj-add-another__remove-button">Remove</button>
                 {% endif %}
             </fieldset>
         {% endfor %}
 
         <div class="moj-button-action">
-            <button type="button" class="moj-add-another__add-button">Add another probation team</button>
+            <button data-custom-id="add-probation-team" type="button" class="moj-add-another__add-button">Add another probation team</button>
         </div>
     </div>
 {% endmacro %}
-

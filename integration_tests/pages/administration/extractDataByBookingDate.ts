@@ -14,7 +14,7 @@ export default class ExtractDataByBookingDatePage extends AbstractPage {
   private constructor(page: Page) {
     super(page)
     this.header = page.locator('h1', { hasText: 'Extract summary data by booking date' })
-    this.startDate = page.locator('#startDate')
+    this.startDate = page.locator('#start-date')
     this.numberOfDays = page.getByLabel('Enter a number of days from the start date')
     this.extractDataButton = page.getByRole('button', { name: 'Extract data' })
   }

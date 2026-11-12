@@ -67,16 +67,25 @@
                         {
                             value: "active",
                             text: "Active",
+                            attributes: {
+                              'data-custom-id': 'active'
+                            },
                             checked: formResponses.roomStatus == 'active' or room.extraAttributes.locationStatus == "ACTIVE"
                         },
                         {
                             value: "inactive",
                             text: "Out of use",
+                            attributes: {
+                              'data-custom-id': 'out-of-use'
+                            },
                             checked: formResponses.roomStatus == 'inactive' or room.extraAttributes.locationStatus == "INACTIVE" or (not room.extraAttributes and not formResponses)
                         },
                         {
                             value: "temporarily_blocked",
                             text: "Temporary block",
+                            attributes: {
+                              'data-custom-id': 'temporarily-blocked'
+                            },
                             checked: formResponses.roomStatus == 'temporarily_blocked' or room.extraAttributes.locationStatus == "TEMPORARILY_BLOCKED",
                             conditional: {
                               html: blockedHtml
@@ -104,11 +113,17 @@
                         {
                             value: "COURT_PROBATION",
                             text: "Prison to Court Video Link (PCVL) or Video Conferencing Centres (VCC)",
+                            attributes: {
+                              'data-custom-id': 'court-probation'
+                            },
                             checked: formResponses.roomArea == 'COURT_PROBATION' or room.extraAttributes.roomArea == "COURT_PROBATION"
                         },
                         {
                             value: "LEGAL_VISITS",
                             text: "Other, including Legal Visits, Segregation (SEG), Healthcare (HC), Mother and Baby Unit (MBU)",
+                            attributes: {
+                              'data-custom-id': 'legal-visits'
+                            },
                             checked: formResponses.roomArea == 'LEGAL_VISITS' or room.extraAttributes.roomArea == "LEGAL_VISITS"
                         }
                     ],
@@ -124,6 +139,9 @@
                     },
                     errorMessage: validationErrors | findError('videoUrl'),
                     classes: 'govuk-!-width-three-quarters',
+                    attributes: {
+                        'data-custom-id': 'room-video-link'
+                    },
                     value: formResponses.videoUrl or room.extraAttributes.prisonVideoUrl
                 }) }}
 
@@ -161,22 +179,34 @@
                             value: "court",
                             text: "Court",
                             checked: formResponses.permission == 'court' or room.extraAttributes.locationUsage == "COURT",
+                            attributes: {
+                              'data-custom-id': 'court-permission'
+                            },
                             conditional: { html: courtHtml }
                         },
                         {
                             value: "probation",
                             text: "Probation",
                             checked: formResponses.permission == 'probation' or room.extraAttributes.locationUsage == "PROBATION",
+                            attributes: {
+                              'data-custom-id': 'probation-permission'
+                            },
                             conditional: { html: probationHtml }
                         },
                         {
                             value: "shared",
                             text: "Shared",
+                            attributes: {
+                              'data-custom-id': 'shared-permission'
+                            },
                             checked: formResponses.permission == 'shared' or room.extraAttributes.locationUsage == "SHARED" or (not room.extraAttributes and not formResponses)
                         },
                         {
                             value: "schedule",
                             text: "Schedule",
+                            attributes: {
+                              'data-custom-id': 'schedule-permission'
+                            },
                             checked: formResponses.permission == 'schedule' or room.extraAttributes.locationUsage == "SCHEDULE",
                             conditional: { html: scheduleHtml }
                         }
@@ -196,6 +226,9 @@
                             },
                             maxlength: 400,
                             rows: 6,
+                            attributes: {
+                                'data-custom-id': 'notes'
+                            },
                             value: formResponses.notes or room.extraAttributes.notes
                         }) }}
                     </div>
@@ -205,10 +238,13 @@
                     {{ govukButton({
                         text: "Save",
                         preventDoubleClick: true,
-                        type: "submit"
+                        type: "submit",
+                        attributes: {
+                            'data-custom-id': 'room-settings-save'
+                        }
                     }) }}
 
-                    <a href="/admin/view-prison-locations/{{ prison.code }}"
+                    <a data-custom-id="room-settings-cancel" href="/admin/view-prison-locations/{{ prison.code }}"
                        class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">
                        Cancel
                     </a>

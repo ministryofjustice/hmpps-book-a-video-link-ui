@@ -53,7 +53,10 @@
         },
         errorMessage: validationErrors | findError("scheduleStartDay"),
         value: formResponses.scheduleStartDay or editValues.scheduleStartDay,
-        classes: "govuk-!-width-one-third"
+        classes: "govuk-!-width-one-third",
+        attributes: {
+            'data-custom-id': 'select-start-of-day'
+        }
     }) }}
 
     {{ govukSelect({
@@ -65,7 +68,10 @@
         },
         errorMessage: validationErrors | findError("scheduleEndDay"),
         value: formResponses.scheduleEndDay or editValues.scheduleEndDay,
-        classes: "govuk-!-width-one-third"
+        classes: "govuk-!-width-one-third",
+        attributes: {
+            'data-custom-id': 'select-end-of-day'
+        }
     }) }}
 
     {# Conditionally revealed select list for courts #}
@@ -99,6 +105,9 @@
                 value: "COURT",
                 text: "Court",
                 checked: formResponses.schedulePermission == 'COURT' or editValues.schedulePermission == 'COURT',
+                attributes: {
+                  'data-custom-id': 'court-schedule'
+                },
                 conditional: {
                     html: courtScheduleHtml
                 }
@@ -107,6 +116,9 @@
                 value: "PROBATION",
                 text: "Probation",
                 checked: formResponses.schedulePermission == 'PROBATION' or editValues.schedulePermission == 'PROBATION',
+                attributes: {
+                  'data-custom-id': 'probation-schedule'
+                },
                 conditional: {
                     html: probationScheduleHtml
                 }
@@ -114,16 +126,25 @@
             {
                 value: "PROBATION_COURT",
                 text: "Probation - court teams",
+                attributes: {
+                  'data-custom-id': 'probation-court-schedule'
+                },
                 checked: formResponses.schedulePermission == 'PROBATION_COURT' or editValues.schedulePermission == 'PROBATION_COURT'
             },
             {
                 value: "PROBATION_SENTENCE",
                 text: "Probation - sentence management teams",
+                attributes: {
+                  'data-custom-id': 'probation-sentence-schedule'
+                },
                 checked: formResponses.schedulePermission == 'PROBATION_SENTENCE' or editValues.schedulePermission == 'PROBATION_SENTENCE'
             },
             {
                 value: "BLOCKED",
                 text: "Blocked",
+                attributes: {
+                  'data-custom-id': 'blocked-schedule'
+                },
                 checked: formResponses.schedulePermission == 'BLOCKED' or editValues.schedulePermission == 'BLOCKED'
             }
         ]
@@ -133,7 +154,7 @@
 
     {% set timesHtml %}
         {{ hmppsTimePicker({
-            id: 'scheduleStartTime',
+            id: 'schedule-start-time',
             name: 'scheduleStartTime',
             label: {
                 text: 'Start time',
@@ -144,7 +165,7 @@
         }) }}
 
         {{ hmppsTimePicker({
-            id: 'scheduleEndTime',
+            id: 'schedule-end-time',
             name: 'scheduleEndTime',
             label: {
                 text: 'End time',
@@ -171,12 +192,18 @@
             {
                 value: "Yes",
                 text: "All day 8:00 to 18:00",
+                attributes: {
+                  'data-custom-id': 'all-day-yes'
+                },
                 checked: formResponses.allDay == 'Yes' or editValues.allDay == 'Yes'
             },
             {
                 value: "No",
                 text: "Choose the times",
                 checked: (formResponses and formResponses.allDay != 'Yes') or (editValues and editValues.allDay != 'Yes'),
+                attributes: {
+                  'data-custom-id': 'all-day-no'
+                },
                 conditional: {
                     html: timesHtml
                 }

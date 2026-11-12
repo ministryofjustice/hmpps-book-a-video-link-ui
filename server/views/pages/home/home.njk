@@ -11,6 +11,7 @@
         {% if user.isCourtUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "book-court-booking",
                     "href": "/court/prisoner-search/search",
                     "clickable": "true",
                     "heading": "Book a new video link",
@@ -21,6 +22,7 @@
 
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "view-change-court-booking",
                     "href": "/court/view-booking",
                     "clickable": "true",
                     "heading": "View and change video links",
@@ -31,6 +33,7 @@
 
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "manage-courts",
                     "href": "/court/user-preferences",
                     "clickable": "true",
                     "heading": "Manage your list of courts",
@@ -43,6 +46,7 @@
         {% if user.isProbationUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "book-probation-booking",
                     "href": "/probation/prisoner-search/search",
                     "clickable": "true",
                     "heading": "Book a new video link",
@@ -53,6 +57,7 @@
 
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "view-change-probation-booking",
                     "href": "/probation/view-booking",
                     "clickable": "true",
                     "heading": "View and change video links",
@@ -63,6 +68,7 @@
 
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "manage-probation-teams",
                     "href": "/probation/user-preferences",
                     "clickable": "true",
                     "heading": "Manage your list of probation teams",
@@ -75,6 +81,7 @@
         {% if user.isAdminUser %}
             <div class="govuk-grid-column-one-third card-group__item">
                 {{ card({
+                    "id": "admin",
                     "href": "/admin",
                     "clickable": "true",
                     "heading": "Administration area",

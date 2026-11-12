@@ -10,18 +10,6 @@ if (window.applicationInsightsConnectionString) {
       customDataPrefix: 'data-custom-',
       dntDataTag: 'do-not-track',
     },
-    callback: {
-      contentName: element => {
-        const attribute = element.getAttribute('data-qa')
-
-        // Override the account menu link details from being captured
-        if (attribute && attribute.startsWith('header-user-name')) {
-          return 'account-menu'
-        }
-
-        return element.innerText
-      },
-    },
   }
 
   const init = new ApplicationInsights({

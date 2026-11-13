@@ -27,6 +27,9 @@
     {{ govukButton({
         text: "Continue",
         href: '/',
-        attributes: { 'data-qa': 'confirm'}
+        attributes: {
+            'data-qa': 'continue',
+            'data-custom-id': ('court' if type == BavlJourneyType.COURT else 'probation') + '-user-preferences-continue'
+        }
     }) }}
 {% endblock %}

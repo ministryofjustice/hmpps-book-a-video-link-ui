@@ -42,6 +42,9 @@
                           },
                           id: "customPickUpTime",
                           name: "customPickUpTime",
+                          attributes: {
+                              'data-custom-id': 'custom-pick-up-time'
+                          },
                           value: formResponses.customPickUpTime or prison.pickUpTime if prison.pickUpTime !== 15 and prison.pickUpTime !== 30 and prison.pickUpTime !== 45
                         }) }}
                     </div>
@@ -70,25 +73,37 @@
                           value: "15",
                           text: "15",
                           checked: formResponses.pickUpTime === '15' or prison.pickUpTime === 15,
-                          attributes: { 'data-qa': 'pick-up-time-15' }
+                          attributes: {
+                            'data-qa': 'pick-up-time-15',
+                            'data-custom-id': 'pick-up-time-15'
+                          }
                         },
                         {
                           value: "30",
                           text: "30",
                           checked: formResponses.pickUpTime === '30' or prison.pickUpTime === 30,
-                          attributes: { 'data-qa': 'pick-up-time-30' }
+                          attributes: {
+                            'data-qa': 'pick-up-time-30',
+                            'data-custom-id': 'pick-up-time-30'
+                          }
                         },
                         {
                           value: "45",
                           text: "45",
                           checked: formResponses.pickUpTime === '45' or prison.pickUpTime === 45,
-                          attributes: { 'data-qa': 'pick-up-time-45' }
+                          attributes: {
+                            'data-qa': 'pick-up-time-45',
+                            'data-custom-id': 'pick-up-time-45'
+                          }
                         },
                         {
                           value: "custom",
                           checked: formResponses.pickUpTime === 'custom' or (prison.pickUpTime and prison.pickUpTime !== 15 and prison.pickUpTime !== 30 and prison.pickUpTime !== 45),
                           html: customPickUpTimeHtml,
-                          attributes: { 'data-qa': 'pick-up-time-custom' }
+                          attributes: {
+                            'data-qa': 'pick-up-time-custom',
+                            'data-custom-id': 'pick-up-time-custom'
+                          }
                         }
                       ]
                     }) }}
@@ -118,13 +133,19 @@
                       conditional: {
                         html: choosePickUpTimeHtml
                       },
-                      attributes: { 'data-qa': 'pick-up-time-on' }
+                      attributes: {
+                        'data-qa': 'pick-up-time-on',
+                        'data-custom-id': 'pick-up-time-on'
+                      }
                     },
                     {
                       value: "off",
                       text: "Off",
                       checked: (not formResponses.pickUpTimeOnOff) and (not prison.pickUpTime),
-                      attributes: { 'data-qa': 'pick-up-time-off' }
+                      attributes: {
+                        'data-qa': 'pick-up-time-off',
+                        'data-custom-id': 'pick-up-time-off'
+                      }
                     }
                   ]
                 }) }}
@@ -133,10 +154,13 @@
                     {{ govukButton({
                         text: "Save",
                         preventDoubleClick: true,
-                        type: "submit"
+                        type: "submit",
+                        attributes: {
+                          'data-custom-id': 'view-edit-prison-details-save'
+                        }
                     }) }}
 
-                    <a href="/admin/view-prison-details" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                    <a data-custom-id="view-edit-prison-details-cancel" href="/admin/view-prison-details" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 </div>
             </form>
         </div>

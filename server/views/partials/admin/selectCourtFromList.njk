@@ -40,17 +40,20 @@
                     label: {
                         text: "Allocate court (optional)"
                     },
+                    attributes: {
+                        'data-custom-id': 'allocate-court'
+                    },
                     errorMessage: validationErrors | findError(fieldName)
                 }) }}
 
                 {% if selectsToRender.length > 1 %}
-                    <button type="button" class="moj-add-another__remove-button">Remove</button>
+                    <button data-custom-id="remove-court" type="button" class="moj-add-another__remove-button">Remove</button>
                 {% endif %}
             </fieldset>
         {% endfor %}
 
         <div class="moj-button-action">
-            <button type="button" class="moj-add-another__add-button">Add another court</button>
+            <button data-custom-id="add-court" type="button" class="moj-add-another__add-button">Add another court</button>
         </div>
     </div>
 {% endmacro %}

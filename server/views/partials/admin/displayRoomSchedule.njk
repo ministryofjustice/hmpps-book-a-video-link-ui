@@ -21,11 +21,11 @@
 
         {% set editLinksHtml %}
             <div class="links-with-separators">
-                <a href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                <a data-custom-id="delete-schedule-link" href="/admin/delete-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
                    class="govuk-link govuk-link--no-visited-state links-col">Delete
                 </a>
 
-                <a href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
+                <a data-custom-id="edit-schedule-link" href="/admin/edit-schedule/{{ prison.code }}/{{ room.dpsLocationId }}/{{ schedule.scheduleId }}"
                    class="govuk-link govuk-link--no-visited-state links-col">Edit
                 </a>
             </div>
@@ -83,7 +83,10 @@
             {{ govukButton({
                 classes: "govuk-button--secondary",
                 text: "Add another schedule",
-                href: '/admin/add-schedule/' + prison.code + '/' + room.dpsLocationId + ''
+                href: '/admin/add-schedule/' + prison.code + '/' + room.dpsLocationId + '',
+                attributes: {
+                    'data-custom-id': 'add-another-schedule-link'
+                }
             }) }}
         </div>
     {% endif %}

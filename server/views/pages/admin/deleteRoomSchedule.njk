@@ -34,10 +34,13 @@
                         text: "Yes, delete this schedule",
                         classes: "govuk-button--warning",
                         preventDoubleClick: true,
-                        type: "submit"
+                        type: "submit",
+                        attributes: {
+                          'data-custom-id': 'delete-room-schedule'
+                        }
                     }) }}
 
-                    <a href="/admin/view-prison-room/{{ prison.code }}/{{ room.dpsLocationId }}"
+                    <a data-custom-id="view-edit-prison-room-cancel-link" href="/admin/view-prison-room/{{ prison.code }}/{{ room.dpsLocationId }}"
                        class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">
                         Cancel
                     </a>

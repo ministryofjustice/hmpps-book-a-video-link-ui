@@ -1,8 +1,8 @@
 {% macro card(params) %}
-<div id="{{ params.id }}" class="card{% if params.clickable %} card--clickable{% endif %}" data-qa="{{ params['data-qa'] }}">
+<div id="{{ params.id }}-tile" data-custom-id="{{ params.id }}-link" class="card{% if params.clickable %} card--clickable{% endif %}" data-qa="{{ params['data-qa'] }}">
     <h2 class="govuk-heading-m card__heading">
         {%- if params.href %}
-            <a class="govuk-link govuk-link--no-visited-state card__link" href="{{ params.href }}">{{ params.heading | safe }}</a>
+            <a id="{{ params.id }}-link" data-custom-id="{{ params.id }}-link" class="govuk-link govuk-link--no-visited-state card__link" href="{{ params.href }}">{{ params.heading | safe }}</a>
         {%- else %}
             {{ params.heading }}
         {%- endif %}

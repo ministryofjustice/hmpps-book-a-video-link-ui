@@ -34,18 +34,24 @@
                         {
                             value: "court",
                             text: "Court",
-                            checked: formResponses.type == 'court'
+                            checked: formResponses.type == 'court',
+                            attributes: {
+                              'data-custom-id': 'court'
+                            }
                         },
                         {
                             value: "probation",
                             text: "Probation",
-                            checked: formResponses.type == 'probation'
+                            checked: formResponses.type == 'probation',
+                            attributes: {
+                              'data-custom-id': 'probation'
+                            }
                         }
                     ]
                 }) }}
 
                 {{ mojDatePicker({
-                    id: 'startDate',
+                    id: 'start-date',
                     name: 'startDate',
                     label: {
                         text: "Start date",
@@ -67,12 +73,18 @@
                     },
                     classes: 'govuk-!-width-one-quarter',
                     errorMessage: validationErrors | findError('numberOfDays'),
+                    attributes: {
+                        'data-custom-id': 'number-of-days'
+                    },
                     value: formResponses.numberOfDays
                 }) }}
 
                 {{ govukButton({
                     text: "Extract data",
-                    type: "submit"
+                    type: "submit",
+                    attributes: {
+                        'data-custom-id': 'extract-data'
+                    }
                 }) }}
             </form>
         </div>

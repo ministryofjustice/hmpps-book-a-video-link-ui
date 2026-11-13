@@ -26,11 +26,11 @@
                     {% set prisonerName = (result.firstName + " " + result.lastName) | convertToTitleCase %}
 
                     {% set bookLinkHtml %}
-                        <a data-qa="book-video-link-{{ result.prisonerNumber }}" href="../../booking/create/{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ prisonerName }}, prisoner number {{ result.prisonerNumber }}</span></a>
+                        <a data-custom-id="book-a-video-link-{{ result.prisonId }}" data-qa="book-video-link-{{ result.prisonerNumber }}" href="../../booking/create/{{ result.prisonerNumber }}/video-link-booking" class="govuk-link govuk-link--no-visited-state">Book video link<span class="govuk-visually-hidden"> for {{ prisonerName }}, prisoner number {{ result.prisonerNumber }}</span></a>
                     {% endset %}
 
                     {% set contactPrisonLinkHtml %}
-                        <a data-qa="contact-prison-link-{{ result.prisonerNumber }}" href="https://www.gov.uk/government/collections/prisons-in-england-and-wales" target="_blank" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">Contact prison<span class="govuk-visually-hidden"> for {{ prisonerName }}, prisoner number {{ result.prisonerNumber }}</span></a>
+                        <a data-custom-id="contact-prison-link-{{ result.prisonId }}" data-qa="contact-prison-link-{{ result.prisonerNumber }}" href="https://www.gov.uk/government/collections/prisons-in-england-and-wales" target="_blank" rel="noopener noreferrer" class="govuk-link govuk-link--no-visited-state">Contact prison<span class="govuk-visually-hidden"> for {{ prisonerName }}, prisoner number {{ result.prisonerNumber }}</span></a>
                     {% endset %}
 
                     {% set rows = (rows.push([
@@ -57,7 +57,7 @@
             {% else %}
                 <p class="govuk-body">
                     There are no results for this search criteria.
-                    <a href="search" class="govuk-link govuk-!-font-size-19">Search again</a>
+                    <a data-custom-id="search-again-link" href="search" class="govuk-link govuk-!-font-size-19">Search again</a>
                 </p>
             {% endif %}
 
@@ -69,7 +69,10 @@
                             {
                                 number: i + 1,
                                 href: "?page=" + i,
-                                current: (i === results.number)
+                                current: (i === results.number),
+                                attributes: {
+                                    'data-custom-id': 'page-' + (i + 1) + '-link'
+                                }
                             }
                         ), paginationItems) %}
                         {% elif i === 1 or i === results.totalPages - 2 %}
@@ -79,16 +82,22 @@
 
                 {{ govukPagination({
                     previous: {
-                        href: "?page=" + (results.number - 1)
+                        href: "?page=" + (results.number - 1),
+                        attributes: {
+                            'data-custom-id': 'previous-page-link'
+                        }
                     } if not results.first,
                     next: {
-                        href: "?page=" + (results.number + 1)
+                        href: "?page=" + (results.number + 1),
+                        attributes: {
+                            'data-custom-id': 'next-page-link'
+                        }
                     } if not results.last,
                     items: paginationItems
                 }) }}
             {% endif %}
 
-            <a href="prisoner-not-listed" class="govuk-link govuk-!-font-size-19">The prisoner is not listed</a>
+            <a data-custom-id="prison-not-list-link" href="prisoner-not-listed" class="govuk-link govuk-!-font-size-19">The prisoner is not listed</a>
         </div>
     </div>
 {% endblock %}

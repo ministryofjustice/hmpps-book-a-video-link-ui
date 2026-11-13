@@ -55,6 +55,9 @@
                                     classes: "govuk-visually-hidden"
                                 }
                             },
+                            attributes: {
+                                'data-custom-id': ('court-' if type == BavlJourneyType.COURT else 'probation-') + letter + '-agencies'
+                            },
                             items: items
                         }) }}
                     {% endset %}
@@ -69,13 +72,19 @@
 
                 {{ govukAccordion({
                     id: "agencies-accordian",
+                    attributes: {
+                        'data-custom-id': ('court' if type == BavlJourneyType.COURT else 'probation') + '-agencies-accordian'
+                    },
                     items: sections
                 }) }}
 
                 <div class="govuk-button-group">
                     {{ govukButton({
                         text: "Confirm",
-                        preventDoubleClick: true
+                        preventDoubleClick: true,
+                        attributes: {
+                            'data-custom-id': ('court' if type == BavlJourneyType.COURT else 'probation') + '-user-preferences-confirm'
+                        }
                     }) }}
                 </div>
             </form>

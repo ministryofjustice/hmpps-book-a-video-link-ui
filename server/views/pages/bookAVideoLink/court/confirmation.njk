@@ -154,11 +154,11 @@
             <div class="govuk-button-group">
                 {% if mode == 'create' %}
                     {{ govukButton({ text: "Exit to main menu", href: '/' }) }}
-                    <a href='/court/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+                    <a data-custom-id="book-another-video-link" href='/court/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
                 {% else %}
                     {{ govukButton({ text: "Return to booking", href: '/court/view-booking/' + booking.videoLinkBookingId }) }}
                     {% set searchParams = session.journey.viewMultipleAgencyBookingsJourney | toViewBookingsSearchParams %}
-                    <a href='/court/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
+                    <a data-custom-id="exit-to-all-bookings-link" href='/court/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
                 {% endif %}
             </div>
         </div>

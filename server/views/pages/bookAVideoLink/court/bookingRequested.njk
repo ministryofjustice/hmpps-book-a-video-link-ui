@@ -16,10 +16,10 @@
                 We have emailed the prison to book the video link. The details have also been sent to you.
                 The prison will email your court when they have booked the video link.
             </p>
-            
+
             <div class="govuk-button-group">
-                {{ govukButton({ text: "Exit to main menu", href: '/' }) }}
-                <a href='/court/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+                {{ govukButton({ text: "Exit to main menu", href: '/', 'data-custom-id': 'exit-to-main-menu' }) }}
+                <a data-custom-id='book-another-video-link' href='/court/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
             </div>
         </div>
     </div>

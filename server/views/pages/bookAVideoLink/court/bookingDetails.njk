@@ -93,7 +93,8 @@
                         },
                         items: items,
                         errorMessage: validationErrors | findError("courtCode"),
-                        classes: "govuk-!-width-one-third"
+                        classes: "govuk-!-width-one-third",
+                        attributes: { 'data-custom-id': 'court-select' }
                     }) }}
                 {% endif %}
 
@@ -119,7 +120,8 @@
                     },
                     items: items,
                     errorMessage: validationErrors | findError("hearingTypeCode"),
-                    classes: "govuk-!-width-one-third"
+                    classes: "govuk-!-width-one-third",
+                    attributes: { 'data-custom-id': 'court-hearing-type-select' }
                 }) }}
 
                 {% set courtHearingLinkHtml %}
@@ -140,7 +142,8 @@
                         inputmode: "numeric",
                         classes: 'govuk-input--width-5',
                         errorMessage: validationErrors | findError('hmctsNumber'),
-                        value: formResponses.hmctsNumber if (formResponses.cvpRequired == 'yes') else session.journey.bookACourtHearing.hmctsNumber
+                        value: formResponses.hmctsNumber if (formResponses.cvpRequired == 'yes') else session.journey.bookACourtHearing.hmctsNumber,
+                        attributes: { 'data-custom-id': 'hmcts-number' }
                     }) }}
 
                     <p>Or</p>
@@ -157,7 +160,8 @@
                         },
                         classes: 'govuk-!-width-three-quarters',
                         errorMessage: validationErrors | findError('videoLinkUrl'),
-                        value: formResponses.videoLinkUrl if (formResponses.cvpRequired == 'yes') else session.journey.bookACourtHearing.videoLinkUrl
+                        value: formResponses.videoLinkUrl if (formResponses.cvpRequired == 'yes') else session.journey.bookACourtHearing.videoLinkUrl,
+                        attributes: { 'data-custom-id': 'video-link-url' }
                     }) }}
                 {% endset %}
 
@@ -172,7 +176,8 @@
                         inputmode: "numeric",
                         classes: 'govuk-input--width-10',
                         errorMessage: validationErrors | findError('guestPin'),
-                        value: formResponses.guestPin or session.journey.bookACourtHearing.guestPin
+                        value: formResponses.guestPin or session.journey.bookACourtHearing.guestPin,
+                        attributes: { 'data-custom-id': 'guest-pin' }
                     }) }}
                 {% endset %}
 
@@ -193,12 +198,14 @@
                             checked: formResponses.cvpRequired == 'yes' or session.journey.bookACourtHearing.videoLinkUrl or session.journey.bookACourtHearing.hmctsNumber,
                             conditional: {
                                 html: courtHearingLinkHtml
-                            }
+                            },
+                            attributes: { 'data-custom-id': 'cvp-required-yes' }
                         },
                         {
                             value: 'no',
                             text: "No",
-                            checked: formResponses.cvpRequired == 'no' or (session.journey.bookACourtHearing.cvpRequired == false and not formResponses)
+                            checked: formResponses.cvpRequired == 'no' or (session.journey.bookACourtHearing.cvpRequired == false and not formResponses),
+                            attributes: { 'data-custom-id': 'cvp-required-no' }
                         }
                     ]
                 }) }}
@@ -222,13 +229,15 @@
                             text: "Yes",
                             checked: formResponses.guestPinRequired == 'yes' or session.journey.bookACourtHearing.guestPin,
                             conditional: {
-                            html: guestPinHtml
+                            html: guestPinHtml,
+                            attributes: { 'data-custom-id': 'guest-pin-required-yes' }
                         }
                         },
                         {
                             value: 'no',
                             text: "No",
-                            checked: formResponses.guestPinRequired == 'no' or (session.journey.bookACourtHearing.guestPinRequired == false and not formResponses)
+                            checked: formResponses.guestPinRequired == 'no' or (session.journey.bookACourtHearing.guestPinRequired == false and not formResponses),
+                            attributes: { 'data-custom-id': 'guest-pin-required-no' }
                         }
                     ]
                 }) }}
@@ -285,12 +294,14 @@
                         {
                             value: "yes",
                             text: "Yes",
-                            checked: formResponses.preRequired == 'yes' or (session.journey.bookACourtHearing.preHearingStartTime and not formResponses.preRequired)
+                            checked: formResponses.preRequired == 'yes' or (session.journey.bookACourtHearing.preHearingStartTime and not formResponses.preRequired),
+                            attributes: { 'data-custom-id': 'pre-required-yes' }
                         },
                         {
                             value: "no",
                             text: "No",
-                            checked: formResponses.preRequired == 'no' or (session.journey.bookACourtHearing.startTime and not session.journey.bookACourtHearing.preHearingStartTime and not formResponses.preRequired)
+                            checked: formResponses.preRequired == 'no' or (session.journey.bookACourtHearing.startTime and not session.journey.bookACourtHearing.preHearingStartTime and not formResponses.preRequired),
+                            attributes: { 'data-custom-id': 'pre-required-no' }
                         }
                     ]
                 }) }}
@@ -309,12 +320,14 @@
                         {
                             value: "yes",
                             text: "Yes",
-                            checked: formResponses.postRequired == 'yes' or (session.journey.bookACourtHearing.postHearingStartTime and not formResponses.postRequired)
+                            checked: formResponses.postRequired == 'yes' or (session.journey.bookACourtHearing.postHearingStartTime and not formResponses.postRequired),
+                            attributes: { 'data-custom-id': 'post-required-yes' }
                         },
                         {
                             value: "no",
                             text: "No",
-                            checked: formResponses.postRequired == 'no' or (session.journey.bookACourtHearing.startTime and not session.journey.bookACourtHearing.postHearingStartTime and not formResponses.postRequired)
+                            checked: formResponses.postRequired == 'no' or (session.journey.bookACourtHearing.startTime and not session.journey.bookACourtHearing.postHearingStartTime and not formResponses.postRequired),
+                            attributes: { 'data-custom-id': 'post-required-no' }
                         }
                     ]
                 }) }}
@@ -323,13 +336,14 @@
 
                 {{ govukButton({
                     text: "Continue",
-                    type: "submit"
+                    type: "submit",
+                    attributes: { 'data-custom-id': 'continue' }
                 }) }}
 
             </form>
 
             {% if mode == 'amend' %}
-                <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a data-custom-id="cancel-link" href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

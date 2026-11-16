@@ -26,10 +26,11 @@
                         text: "Yes, cancel the booking",
                         classes: "govuk-button--warning",
                         preventDoubleClick: true,
-                        type: "submit"
+                        type: "submit",
+                        attributes: { 'data-custom-id': 'confirm-booking-cancel' }
                     }) }}
 
-                    <a href='/court/view-booking/{{ session.req.params.bookingId }}' class="govuk-link govuk-link--no-visited-state">Return to view the booking</a>
+                    <a data-custom-id="return-to-booking-link" href='/court/view-booking/{{ session.req.params.bookingId }}' class="govuk-link govuk-link--no-visited-state">Return to view the booking</a>
                 </div>
             </form>
         </div>

@@ -17,6 +17,7 @@
             classes: 'govuk-!-width-two-thirds'
         },
         errorMessage: validationErrors | findError('notesForStaff'),
-        value: formFieldNotesForStaff or sessionFieldNotesForStaff
+        value: formFieldNotesForStaff or sessionFieldNotesForStaff,
+        attributes: { 'data-custom-id': 'notes-for-staff' }
     }) }}
 {% endmacro %}

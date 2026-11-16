@@ -83,14 +83,15 @@
                 {{ govukButton({
                     classes: 'govuk-button--blue',
                     text: "Change times",
-                    href: "../video-link-booking"
+                    href: "../video-link-booking",
+                    attributes: { 'data-custom-id': 'change-times-link' }
                 }) }}
             </div>
 
             {% if mode == 'create' or mode == 'request' %}
-                <a href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
+                <a data-custom-id="return-to-prisoner-search-link" href="../../../../../prisoner-search/search" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Return to prisoner search</a>
             {% else %}
-                <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                <a data-custom-id="cancel-link" href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
             {% endif %}
         </div>
     </div>

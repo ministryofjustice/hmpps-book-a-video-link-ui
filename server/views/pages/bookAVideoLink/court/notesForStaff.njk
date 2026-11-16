@@ -22,11 +22,12 @@
                 {{ govukButton({
                     text: "Continue",
                     preventDoubleClick: true,
-                    type: "submit"
+                    type: "submit",
+                    attributes: { 'data-custom-id': 'continue' }
                 }) }}
             </form>
 
-            <a href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='cancel-link'>Cancel</a>
+            <a data-custom-i="cancel-link" href="/court/view-booking/{{ session.journey.bookACourtHearing.bookingId }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa='cancel-link'>Cancel</a>
         </div>
     </div>
 {% endblock %}

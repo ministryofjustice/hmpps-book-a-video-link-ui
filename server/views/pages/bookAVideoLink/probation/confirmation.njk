@@ -124,12 +124,16 @@
 
             <div class="govuk-button-group">
                 {% if mode == 'create' %}
-                    {{ govukButton({ text: "Exit to main menu", href: '/' }) }}
-                    <a href='/probation/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
+                    {{ govukButton({
+                        text: "Exit to main menu",
+                        href: '/',
+                        attributes: { 'data-custom-id': 'exit-to-main-menu' }
+                    }) }}
+                    <a data-custom-id="book-another-video-link" href='/probation/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
                 {% else %}
-                    {{ govukButton({ text: "Return to booking", href: '/probation/view-booking/' + booking.videoLinkBookingId }) }}
+                    {{ govukButton({ text: "Return to booking", href: '/probation/view-booking/' + booking.videoLinkBookingId, attributes: { 'data-custom-id': 'return-to-booking' } }) }}
                     {% set searchParams = session.journey.viewMultipleAgencyBookingsJourney | toViewBookingsSearchParams %}
-                    <a href='/probation/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
+                    <a data-custom-id="exit-to-all-bookings-link" href='/probation/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state" data-qa='exit-to-all-bookings-link'>Exit to all video link bookings</a>
                 {% endif %}
             </div>
 

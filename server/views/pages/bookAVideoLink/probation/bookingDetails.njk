@@ -48,7 +48,8 @@
                         },
                         items: items,
                         errorMessage: validationErrors | findError("probationTeamCode"),
-                        classes: "govuk-!-width-one-half"
+                        classes: "govuk-!-width-one-half",
+                        attributes: { 'data-custom-id': 'probation-team' }
                     }) }}
                 {% endif %}
 
@@ -65,7 +66,8 @@
                                 classes: 'govuk-!-margin-bottom-3'
                             },
                             classes: "govuk-!-width-one-half",
-                            value: formResponses.officerFullName or session.journey.bookAProbationMeeting.officer.fullName
+                            value: formResponses.officerFullName or session.journey.bookAProbationMeeting.officer.fullName,
+                            attributes: { 'data-custom-id': 'probation-officer-full-name' }
                         }) }}
 
                         {{ govukInput({
@@ -79,7 +81,8 @@
                                 classes: 'govuk-!-margin-bottom-3'
                             },
                             classes: "govuk-!-width-one-half",
-                            value: formResponses.officerEmail or session.journey.bookAProbationMeeting.officer.email
+                            value: formResponses.officerEmail or session.journey.bookAProbationMeeting.officer.email,
+                            attributes: { 'data-custom-id': 'probation-officer-full-email' }
                         }) }}
 
                         {{ govukInput({
@@ -90,7 +93,8 @@
                             },
                             errorMessage: validationErrors | findError('officerTelephone'),
                             classes: "govuk-!-width-one-half",
-                            value: formResponses.officerTelephone or session.journey.bookAProbationMeeting.officer.telephone
+                            value: formResponses.officerTelephone or session.journey.bookAProbationMeeting.officer.telephone,
+                            attributes: { 'data-custom-id': 'probation-officer-telephone' }
                         }) }}
                     {% endset %}
 
@@ -104,6 +108,7 @@
                                 classes: "govuk-fieldset__legend--s"
                             }
                         },
+                        attributes: { 'data-custom-id': 'probation-officer-details-known' },
                         hint: {
                             text: "We will also send a copy of the video link details to the probation officer if they have a justice.gov.uk email address."
                         },
@@ -113,13 +118,15 @@
                                 text: "Yes",
                                 checked: formResponses.probationOfficerDetailsKnown == 'yes' or session.journey.bookAProbationMeeting.probationOfficerDetailsKnown === true,
                                 conditional: {
-                                html: probationOfficerDetailsHtml
+                                html: probationOfficerDetailsHtml,
+                                attributes: { 'data-custom-id': 'probation-officer-details-known-yes' }
                             }
                             },
                             {
                                 value: 'no',
                                 text: "No",
-                                checked: formResponses.probationOfficerDetailsKnown == 'no' or (session.journey.bookAProbationMeeting.probationOfficerDetailsKnown === false and not formResponses)
+                                checked: formResponses.probationOfficerDetailsKnown == 'no' or (session.journey.bookAProbationMeeting.probationOfficerDetailsKnown === false and not formResponses),
+                                attributes: { 'data-custom-id': 'probation-officer-details-known-no' }
                             }
                         ]
                     }) }}
@@ -148,7 +155,8 @@
                         },
                         items: items,
                         errorMessage: validationErrors | findError("meetingTypeCode"),
-                        classes: "govuk-!-width-one-half"
+                        classes: "govuk-!-width-one-half",
+                        attributes: { 'data-custom-id': 'probation-meeting-type' }
                     }) }}
                 {% else %}
                     {% for meetingType in meetingTypes %}
@@ -170,7 +178,8 @@
                         },
                         items: items,
                         errorMessage: validationErrors | findError("meetingTypeCode"),
-                        classes: "govuk-!-width-one-third"
+                        classes: "govuk-!-width-one-third",
+                        attributes: { 'data-custom-id': 'probation-meeting-type' }
                     }) }}
                 {% endif %}
 
@@ -223,26 +232,31 @@
                                 classes: "govuk-fieldset__legend--s"
                             }
                         },
+                        attributes: { 'data-custom-id': 'duration' },
                         items: [
                             {
                                 value: "30",
                                 text: 30 | toDuration,
-                                checked: formResponses.duration == 30 or session.journey.bookAProbationMeeting.duration == 30
+                                checked: formResponses.duration == 30 or session.journey.bookAProbationMeeting.duration == 30,
+                                attributes: { 'data-custom-id': 'duration-30' }
                             },
                             {
                                 value: "60",
                                 text: 60 | toDuration,
-                                checked: formResponses.duration == 60 or session.journey.bookAProbationMeeting.duration == 60
+                                checked: formResponses.duration == 60 or session.journey.bookAProbationMeeting.duration == 60,
+                                attributes: { 'data-custom-id': 'duration-60' }
                             },
                             {
                                 value: "90",
                                 text: 90 | toDuration,
-                                checked: formResponses.duration == 90 or session.journey.bookAProbationMeeting.duration == 90
+                                checked: formResponses.duration == 90 or session.journey.bookAProbationMeeting.duration == 90,
+                                attributes: { 'data-custom-id': 'duration-90' }
                             },
                             {
                                 value: "120",
                                 text: 120 | toDuration,
-                                checked: formResponses.duration == 120 or session.journey.bookAProbationMeeting.duration == 120
+                                checked: formResponses.duration == 120 or session.journey.bookAProbationMeeting.duration == 120,
+                                attributes: { 'data-custom-id': 'duration-120' }
                             }
                         ],
                         errorMessage: validationErrors | findError("duration"),
@@ -262,17 +276,20 @@
                             {
                                 value: "AM",
                                 text: TimePeriod['AM'],
-                                checked: (formResponses.timePeriods and 'AM' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'AM' in session.journey.bookAProbationMeeting.timePeriods)
+                                checked: (formResponses.timePeriods and 'AM' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'AM' in session.journey.bookAProbationMeeting.timePeriods),
+                                attributes: { 'data-custom-id': 'time-period-am' }
                             },
                             {
                                 value: "PM",
                                 text: TimePeriod['PM'],
-                                checked: (formResponses.timePeriods and 'PM' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'PM' in session.journey.bookAProbationMeeting.timePeriods)
+                                checked: (formResponses.timePeriods and 'PM' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'PM' in session.journey.bookAProbationMeeting.timePeriods),
+                                attributes: { 'data-custom-id': 'time-period-pm' }
                             },
                             {
                                 value: "ED",
                                 text: TimePeriod['ED'],
-                                checked: (formResponses.timePeriods and 'ED' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'ED' in session.journey.bookAProbationMeeting.timePeriods)
+                                checked: (formResponses.timePeriods and 'ED' in formResponses.timePeriods) or (session.journey.bookAProbationMeeting.timePeriods and 'ED' in session.journey.bookAProbationMeeting.timePeriods),
+                                attributes: { 'data-custom-id': 'time-period-ed' }
                             }
                         ],
                         errorMessage: validationErrors | findError("timePeriods"),
@@ -284,7 +301,8 @@
 
                 {{ govukButton({
                     text: "Continue",
-                    type: "submit"
+                    type: "submit",
+                    attributes: { 'data-custom-id': 'continue' }
                 }) }}
             </form>
         </div>

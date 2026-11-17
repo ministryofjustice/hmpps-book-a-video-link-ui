@@ -71,7 +71,8 @@
                                     href: "../../../../../prisoner-search/search",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "prisoner"
+                                    visuallyHiddenText: "prisoner",
+                                    attributes: { 'data-custom-id': 'change-prisoner-link' }
                                 }
                             ]
                         } if mode == 'create' or mode == 'request'
@@ -105,7 +106,8 @@
                                     href: "../video-link-booking#probationTeamCode",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "probation team"
+                                    visuallyHiddenText: "probation team",
+                                    attributes: { 'data-custom-id': 'change-probation-team-link' }
                                 }
                             ]
                         } if (mode == 'create' or mode == 'request') and probationTeams.length > 1
@@ -123,7 +125,8 @@
                                     href: "../video-link-booking#officerFullName",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "probation officer's full name"
+                                    visuallyHiddenText: "probation officer's full name",
+                                    attributes: { 'data-custom-id': 'change-probation-officer-name-link' }
                                 }
                             ]
                         }
@@ -141,7 +144,8 @@
                                     href: "../video-link-booking#officerEmail",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "probation officer's email address"
+                                    visuallyHiddenText: "probation officer's email address",
+                                    attributes: { 'data-custom-id': 'change-probation-officer-email-link' }
                                 }
                             ]
                         }
@@ -159,7 +163,8 @@
                                     href: "../video-link-booking#officerTelephone",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "probation officer's telephone"
+                                    visuallyHiddenText: "probation officer's telephone",
+                                    attributes: { 'data-custom-id': 'change-probation-officer-phone-link' }
                                 }
                             ]
                         }
@@ -177,7 +182,8 @@
                                     href: "../video-link-booking#meetingTypeCode",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "meeting type"
+                                    visuallyHiddenText: "meeting type",
+                                    attributes: { 'data-custom-id': 'change-meeting-type-link' }
                                 }
                             ]
                         }
@@ -195,7 +201,8 @@
                                     href: "../video-link-booking#date",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "date"
+                                    visuallyHiddenText: "date",
+                                    attributes: { 'data-custom-id': 'change-date-link' }
                                 }
                             ]
                         }
@@ -213,7 +220,8 @@
                                     href: "../video-link-booking#duration",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "duration"
+                                    visuallyHiddenText: "duration",
+                                    attributes: { 'data-custom-id': 'change-duration-link' }
                                 }
                             ]
                         }
@@ -231,7 +239,8 @@
                                     href: "../video-link-booking#timePeriods",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "time period"
+                                    visuallyHiddenText: "time period",
+                                    attributes: { 'data-custom-id': 'change-time-period-link' }
                                 }
                             ]
                         }
@@ -249,7 +258,8 @@
                                     href: "availability" if mode != 'request' else "../video-link-booking#startTime",
                                     text: "Change",
                                     classes: 'govuk-link--no-visited-state',
-                                    visuallyHiddenText: "meeting time"
+                                    visuallyHiddenText: "meeting time",
+                                    attributes: { 'data-custom-id': 'change-meeting-time-link' }
                                 }
                             ]
                         }
@@ -282,7 +292,8 @@
                                 {
                                     href: "../video-link-booking#notesForStaff",
                                     classes: 'govuk-link--no-visited-state',
-                                    text: "Change"
+                                    text: "Change",
+                                    attributes: { 'data-custom-id': 'change-notes-for-staff-link' }
                                 }
                             ]
                         }
@@ -317,10 +328,11 @@
                     {{ govukButton({
                         text: callToActionText,
                         preventDoubleClick: true,
-                        type: 'submit'
+                        type: 'submit',
+                        attributes: { 'data-custom-id': callToActionText }
                     }) }}
 
-                    <a href="{{ '/' if mode == 'create' or mode == 'request' else ('/probation/view-booking/' + session.journey.bookAProbationMeeting.bookingId) }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
+                    <a data-custom-id="cancel" href="{{ '/' if mode == 'create' or mode == 'request' else ('/probation/view-booking/' + session.journey.bookAProbationMeeting.bookingId) }}" class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19">Cancel</a>
                 </div>
             </form>
         </div>

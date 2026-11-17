@@ -18,7 +18,11 @@
             </p>
 
             <div class="govuk-button-group">
-                {{ govukButton({ text: "Exit to main menu", href: '/', 'data-custom-id': 'exit-to-main-menu' }) }}
+                {{ govukButton({
+                    text: "Exit to main menu",
+                    href: '/',
+                    attributes: {'data-custom-id': 'exit-to-main-menu'}
+                }) }}
                 <a data-custom-id='book-another-video-link' href='/court/prisoner-search/search' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link</a>
             </div>
         </div>

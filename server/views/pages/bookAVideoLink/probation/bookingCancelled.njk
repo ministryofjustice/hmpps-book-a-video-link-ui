@@ -15,8 +15,8 @@
 
             <div class="govuk-button-group">
                 {% set searchParams = session.journey.viewMultipleAgencyBookingsJourney | toViewBookingsSearchParams %}
-                {{ govukButton({ text: "Return to all video link bookings", href: '/probation/view-booking?' + searchParams, attributes: {'data-qa': 'return-to-all-bookings-link'} }) }}
-                <a href='/probation/booking/create/{{ prisoner.prisonerNumber }}/video-link-booking' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
+                {{ govukButton({ text: "Return to all video link bookings", href: '/probation/view-booking?' + searchParams, attributes: {'data-qa': 'return-to-all-bookings-link', 'data-custom-id': 'return-to-all-bookings-link'} }) }}
+                <a data-custom-id="book-another-video-link" href='/probation/booking/create/{{ prisoner.prisonerNumber }}/video-link-booking' class="govuk-link govuk-link--no-visited-state" data-qa='bookAnotherLink'>Book another video link for {{ (prisoner.firstName + " " + prisoner.lastName) | convertToTitleCase }}</a>
             </div>
         </div>
     </div>

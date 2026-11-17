@@ -81,7 +81,8 @@
             {{ govukButton({
                 text: "Change date" if noBookings else "Change",
                 href: '../video-link-booking' + ('#date' if noBookings else "#timePeriods"),
-                classes: 'govuk-button--blue'
+                classes: 'govuk-button--blue',
+                attributes: { 'data-custom-id': 'change-date' }
             }) }}
 
             {% if availableBookings or otherBookingsAvailableOnly %}
@@ -120,11 +121,13 @@
                             name: "option",
                             items: items,
                             errorMessage: validationErrors | findError("option"),
-                            classes: 'govuk-radios--double-label'
+                            classes: 'govuk-radios--double-label',
+                            attributes: { 'data-custom-id': 'option' }
                         }) }}
 
                         {{ govukButton({
-                            text: "Continue"
+                            text: "Continue",
+                            attributes: { 'data-custom-id': 'continue' }
                         }) }}
                     </div>
                 </div>

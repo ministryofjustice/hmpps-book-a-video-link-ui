@@ -25,7 +25,8 @@
                     label: { text: "First name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('firstName'),
-                    value: formResponses.firstName or session.journey.bookAProbationMeeting.prisoner.firstName
+                    value: formResponses.firstName or session.journey.bookAProbationMeeting.prisoner.firstName,
+                    attributes: { 'data-custom-id': 'prisoner-first-name' }
                 }) }}
 
                 {{ govukInput({
@@ -34,7 +35,8 @@
                     label: { text: "Last name" },
                     classes: 'govuk-!-width-one-third',
                     errorMessage: validationErrors | findError('lastName'),
-                    value: formResponses.lastName or session.journey.bookAProbationMeeting.prisoner.lastName
+                    value: formResponses.lastName or session.journey.bookAProbationMeeting.prisoner.lastName,
+                    attributes: { 'data-custom-id': 'prisoner-last-name' }
                 }) }}
 
                 {{ govukDateInput({
@@ -47,6 +49,7 @@
                     hint: {
                         text: "For example, 31 3 1980"
                     },
+                    attributes: { 'data-custom-id': 'prisoner-dob' },
                     errorMessage: validationErrors | findError('dateOfBirth'),
                     items: [
                         {
@@ -54,21 +57,24 @@
                             name: "dateOfBirth[day]",
                             label: "Day",
                             classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['day'] or session.journey.bookAProbationMeeting.prisoner.dateOfBirth | formatDate('dd')
+                            value: formResponses.dateOfBirth['day'] or session.journey.bookAProbationMeeting.prisoner.dateOfBirth | formatDate('dd'),
+                            attributes: { 'data-custom-id': 'prisoner-dob-day' }
                         },
                         {
                             id: "dateOfBirth-month",
                             name: "dateOfBirth[month]",
                             label: "Month",
                             classes: "govuk-input--width-2" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['month'] or session.journey.bookAProbationMeeting.prisoner.dateOfBirth | formatDate('MM')
+                            value: formResponses.dateOfBirth['month'] or session.journey.bookAProbationMeeting.prisoner.dateOfBirth | formatDate('MM'),
+                            attributes: { 'data-custom-id': 'prisoner-dob-month' }
                         },
                         {
                             id: "dateOfBirth-year",
                             name: "dateOfBirth[year]",
                             label: "Year",
                             classes: "govuk-input--width-4" + (" govuk-input--error" if validationErrors | findError('dateOfBirth')),
-                            value: formResponses.dateOfBirth['year'] or session.journey.bookAProbationMeeting.prisoner.dateOfBirth | formatDate('yyyy')
+                            value: formResponses.dateOfBirth['year'] or session.journey.bookAProbationMeeting.prisoner.dateOfBirth | formatDate('yyyy'),
+                            attributes: { 'data-custom-id': 'prisoner-dob-year' }
                         }
                     ]
                 }) }}
@@ -88,13 +94,15 @@
                         text: "Prison"
                     },
                     errorMessage: validationErrors | findError('prison'),
-                    items: items
+                    items: items,
+                    attributes: { 'data-custom-id': 'prisons' }
                 }) }}
 
                 {{ govukButton({
                     html: "Continue",
                     type: "submit",
-                    classes: 'govuk-!-margin-top-6'
+                    classes: 'govuk-!-margin-top-6',
+                    attributes: { 'data-custom-id': 'continue' }
                 }) }}
             </form>
         </div>

@@ -103,9 +103,9 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
     return res.render('pages/viewBooking/viewMultiDateBookings', {
       agencies,
       appointments: appointments.content,
-      firstName: firstName || '',
-      lastName: lastName || '',
-      prisonerNumber: prisonerNumber || '',
+      firstName,
+      lastName,
+      prisonerNumber,
       onlyMissingCourtHearingLink,
       onlyMissingProbationOfficerDetails,
       pagination: {

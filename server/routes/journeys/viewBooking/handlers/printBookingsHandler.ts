@@ -27,6 +27,8 @@ export default class PrintBookingsHandler implements PageHandler {
     const fromDate = parseDatePickerDate(session.journey.viewMultipleAgencyBookingsJourney.fromDate as string)
     const toDate = parseDatePickerDate(session.journey.viewMultipleAgencyBookingsJourney.toDate as string)
     const agencyCode = session.journey.viewMultipleAgencyBookingsJourney.agencyCode as string
+    const { firstName, lastName, prisonerNumber, onlyMissingCourtHearingLink, onlyMissingProbationOfficerDetails } =
+      session.journey.viewMultipleAgencyBookingsJourney
     const sort = session.journey.viewMultipleAgencyBookingsJourney.sort as string
 
     const agencies =
@@ -40,7 +42,18 @@ export default class PrintBookingsHandler implements PageHandler {
     const appointments =
       agencyCodes.length > 0
         ? await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-            { agencyType: type, agencyCodes, fromDate, toDate, sort: this.getSortFields(type, sort) },
+            {
+              agencyType: type,
+              agencyCodes,
+              fromDate,
+              toDate,
+              firstName: firstName || null,
+              lastName: lastName || null,
+              prisonerNumbers: prisonerNumber ? [prisonerNumber] : null,
+              hasCourtHearingLink: onlyMissingCourtHearingLink ? false : null,
+              hasProbationOfficerDetails: onlyMissingProbationOfficerDetails ? false : null,
+              sort: this.getSortFields(type, sort),
+            },
             user,
           )
         : []

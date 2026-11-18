@@ -135,9 +135,15 @@ export const toViewBookingsSearchParams = (journey: ViewMultipleAgencyBookingsJo
     fromDate: journey.fromDate,
     toDate: journey.toDate,
     agencyCode: journey.agencyCode,
+    firstName: journey.firstName,
+    lastName: journey.lastName,
+    prisonerNumber: journey.prisonerNumber,
     page: journey.page.toString(),
     sort: journey.sort,
   })
+
+  if (journey.onlyMissingCourtHearingLink) queryParams.set('onlyMissingCourtHearingLink', 'true')
+  if (journey.onlyMissingProbationOfficerDetails) queryParams.set('onlyMissingProbationOfficerDetails', 'true')
 
   return queryParams.toString()
 }

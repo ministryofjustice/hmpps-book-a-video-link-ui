@@ -37,6 +37,11 @@ beforeEach(() => {
       agencyCode: 'ALL',
       fromDate: '05-04-202',
       toDate: '05-04-202',
+      firstName: '',
+      lastName: '',
+      prisonerNumber: '',
+      onlyMissingCourtHearingLink: false,
+      onlyMissingProbationOfficerDetails: false,
       page: 0,
       sort: 'DATE_TIME',
     },
@@ -94,7 +99,7 @@ describe('GET', () => {
         expect(existsByDataQa($, 'cancelled-banner')).toBe(false)
         expect(changeLink).toEqual(`/${journey}/booking/amend/1001/video-link-booking`)
         expect(returnToAllBookingsLink).toEqual(
-          `/${journey}/view-booking?fromDate=05-04-202&toDate=05-04-202&agencyCode=ALL&page=0&sort=DATE_TIME`,
+          `/${journey}/view-booking?fromDate=05-04-202&toDate=05-04-202&agencyCode=ALL&firstName=&lastName=&prisonerNumber=&page=0&sort=DATE_TIME`,
         )
 
         expect(getValueByKey($, 'Prisoner name')).toEqual('Joe Bloggs (AA1234A)')

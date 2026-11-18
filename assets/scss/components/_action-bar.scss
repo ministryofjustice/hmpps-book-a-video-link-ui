@@ -44,6 +44,10 @@
         border-color: transparent;
       }
 
+      &--negative-margin {
+        margin-bottom: -12px;
+      }
+
       &.hmpps-print-and-export--export {
         background: url("/assets/images/icon-document.png") no-repeat 10px 50%;
       }

@@ -2,6 +2,7 @@ import * as converter from 'json-2-csv'
 import { Request, Response } from 'express'
 import { startOfDay, isValid, parse } from 'date-fns'
 import _ from 'lodash'
+import type { ParsedQs } from 'qs'
 import { enGB } from 'date-fns/locale'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import Page from '../../../enumerator/page'
@@ -34,6 +35,11 @@ export default class DownloadCsvHandler implements PageHandler {
     const dateToQueryParam = parseDatePickerDate(req.query.toDate as string)
     const fromDate = startOfDay(isValid(dateFromQueryParam) ? dateFromQueryParam : new Date())
     const toDate = startOfDay(isValid(dateToQueryParam) ? dateToQueryParam : fromDate)
+    const firstName = this.parseString(req.query.firstName)
+    const lastName = this.parseString(req.query.lastName)
+    const prisonerNumber = this.parseString(req.query.prisonerNumber)
+    const onlyMissingCourtHearingLink = this.parseBoolean(req.query.onlyMissingCourtHearingLink)
+    const onlyMissingProbationOfficerDetails = this.parseBoolean(req.query.onlyMissingProbationOfficerDetails)
 
     const agencies =
       type === BavlJourneyType.COURT
@@ -45,7 +51,17 @@ export default class DownloadCsvHandler implements PageHandler {
       agencyCode === 'ALL' ? agencies.map(a => a.code) : agencies.filter(a => a.code === agencyCode).map(a => a.code)
     const agency = agencies.find(a => a.code === agencyCode)
     const appointments = await this.videoLinkService.getUnpaginatedMultipleAgenciesVideoLinkSchedules(
-      { agencyType: type, agencyCodes, fromDate, toDate },
+      {
+        agencyType: type,
+        agencyCodes,
+        fromDate,
+        toDate,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        prisonerNumbers: prisonerNumber ? [prisonerNumber] : null,
+        hasCourtHearingLink: onlyMissingCourtHearingLink ? false : null,
+        hasProbationOfficerDetails: onlyMissingProbationOfficerDetails ? false : null,
+      },
       user,
     )
 
@@ -142,5 +158,13 @@ export default class DownloadCsvHandler implements PageHandler {
     }
 
     return undefined
+  }
+
+  private parseBoolean(value: ParsedQs[string]): boolean {
+    return value === 'true'
+  }
+
+  private parseString(value: ParsedQs[string]): string {
+    return typeof value === 'string' ? value : ''
   }
 }

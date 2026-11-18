@@ -90,6 +90,11 @@ describe('GET', () => {
       agencyCode: 'ALL',
       fromDate: formatDate(startOfToday(), 'dd/MM/yyyy'),
       toDate: formatDate(startOfToday(), 'dd/MM/yyyy'),
+      firstName: '',
+      lastName: '',
+      prisonerNumber: '',
+      onlyMissingCourtHearingLink: false,
+      onlyMissingProbationOfficerDetails: false,
       page: 1,
       sort: 'DATE_TIME',
     }

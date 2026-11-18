@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { differenceInDays, formatDate, isValid, startOfToday } from 'date-fns'
+import type { ParsedQs } from 'qs'
 import Page from '../../../enumerator/page'
 import { PageHandler } from '../../../interfaces/pageHandler'
 import BavlJourneyType from '../../../enumerator/bavlJourneyType'
@@ -24,6 +25,11 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
     const { user, validationErrors } = res.locals
     const fromDate = parseDatePickerDate(req.query.fromDate as string) || startOfToday()
     const toDate = parseDatePickerDate(req.query.toDate as string) || startOfToday()
+    const firstName = this.parseString(req.query.firstName)
+    const lastName = this.parseString(req.query.lastName)
+    const prisonerNumber = this.parseString(req.query.prisonerNumber)
+    const onlyMissingCourtHearingLink = this.parseBoolean(req.query.onlyMissingCourtHearingLink)
+    const onlyMissingProbationOfficerDetails = this.parseBoolean(req.query.onlyMissingProbationOfficerDetails)
     const page = req.query.page ? Number(req.query.page) : 1
     const sort = (req.query.sort as string) || 'AGENCY_DATE_TIME'
 
@@ -55,6 +61,11 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
       agencyCodes,
       fromDate,
       toDate: toDate || fromDate,
+      firstName: firstName || null,
+      lastName: lastName || null,
+      prisonerNumbers: prisonerNumber ? [prisonerNumber] : null,
+      hasCourtHearingLink: onlyMissingCourtHearingLink ? false : null,
+      hasProbationOfficerDetails: onlyMissingProbationOfficerDetails ? false : null,
       pagination: { page: page - 1, size: 10, sort: this.getSortFields(type, sort) },
     }
 
@@ -67,14 +78,24 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
       agencyCode,
       fromDate: formatDate(fromDate, 'dd/MM/yyyy'),
       toDate: formatDate(toDate, 'dd/MM/yyyy'),
+      firstName,
+      lastName,
+      prisonerNumber,
       sort,
     })
+    if (onlyMissingCourtHearingLink) queryParams.set('onlyMissingCourtHearingLink', 'true')
+    if (onlyMissingProbationOfficerDetails) queryParams.set('onlyMissingProbationOfficerDetails', 'true')
 
     req.session.journey ??= {}
     req.session.journey.viewMultipleAgencyBookingsJourney = {
       agencyCode,
       fromDate: formatDate(fromDate, 'dd/MM/yyyy'),
       toDate: formatDate(toDate, 'dd/MM/yyyy'),
+      firstName,
+      lastName,
+      prisonerNumber,
+      onlyMissingCourtHearingLink,
+      onlyMissingProbationOfficerDetails,
       page: appointments.page.number + 1,
       sort,
     }
@@ -82,6 +103,11 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
     return res.render('pages/viewBooking/viewMultiDateBookings', {
       agencies,
       appointments: appointments.content,
+      firstName: firstName || '',
+      lastName: lastName || '',
+      prisonerNumber: prisonerNumber || '',
+      onlyMissingCourtHearingLink,
+      onlyMissingProbationOfficerDetails,
       pagination: {
         ...appointments.page,
         page: appointments.page.number + 1,
@@ -105,5 +131,13 @@ export default class ViewMultiDateBookingsHandler implements PageHandler {
     }
 
     return agencies.length > 1 ? 'ALL' : agencies[0].code
+  }
+
+  private parseBoolean(value: ParsedQs[string]): boolean {
+    return value === 'true'
+  }
+
+  private parseString(value: ParsedQs[string]): string {
+    return typeof value === 'string' ? value : ''
   }
 }

@@ -55,6 +55,10 @@ test.describe('View booking', () => {
             fromDate: today,
             toDate: today,
             courtCodes: ['ABERCV', 'ABERFC'],
+            firstName: null,
+            lastName: null,
+            prisonerNumbers: null,
+            hasCourtHearingLink: null,
           },
           response: {
             content: [],
@@ -74,12 +78,16 @@ test.describe('View booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-      await homePage.verifyPageHasText('There are no video link bookings for this date')
+      await homePage.verifyPageHasText('There are no video link bookings that match the search')
       await bookAVideoLinkApi.stubPostCourtSchedule({
         requestBody: {
           fromDate: '2050-01-01',
           toDate: '2050-01-31',
           courtCodes: ['ABERFC'],
+          firstName: null,
+          lastName: null,
+          prisonerNumbers: null,
+          hasCourtHearingLink: null,
         },
         response: {
           content: courtBookingsForDay as unknown as ScheduleItem[],
@@ -102,6 +110,11 @@ test.describe('View booking', () => {
         agencyCode: 'ABERFC',
         fromDate: '01/01/2050',
         toDate: '31/01/2050',
+        firstName: '',
+        lastName: '',
+        prisonerNumber: '',
+        onlyMissingCourtHearingLink: false,
+        onlyMissingProbationOfficerDetails: false,
         page: 1,
         sort: 'AGENCY_DATE_TIME',
       })
@@ -113,12 +126,16 @@ test.describe('View booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-      await homePage.verifyPageHasText('There are no video link bookings for this date')
+      await homePage.verifyPageHasText('There are no video link bookings that match the search')
       await bookAVideoLinkApi.stubPostCourtSchedule({
         requestBody: {
           fromDate: '2050-01-01',
           toDate: '2050-01-01',
           courtCodes: ['ABERFC'],
+          firstName: null,
+          lastName: null,
+          prisonerNumbers: null,
+          hasCourtHearingLink: null,
         },
         response: {
           content: courtBookingsForDay as unknown as ScheduleItem[],
@@ -147,6 +164,10 @@ test.describe('View booking', () => {
             fromDate: today,
             toDate: today,
             probationTeamCodes: ['BLKPPP', 'BURNPM'],
+            firstName: null,
+            lastName: null,
+            prisonerNumbers: null,
+            hasProbationOfficerDetails: null,
           },
           response: {
             content: [],
@@ -167,12 +188,16 @@ test.describe('View booking', () => {
       await login(page)
       const homePage = await HomePage.verifyOnPage(page)
       await homePage.viewAndChangeVideoLinks.click()
-      await homePage.verifyPageHasText('There are no video link bookings for this date')
+      await homePage.verifyPageHasText('There are no video link bookings that match the search')
       await bookAVideoLinkApi.stubPostProbationTeamSchedule({
         requestBody: {
           fromDate: '2050-01-01',
           toDate: '2050-01-01',
           probationTeamCodes: ['BLKPPP'],
+          firstName: null,
+          lastName: null,
+          prisonerNumbers: null,
+          hasProbationOfficerDetails: null,
         },
         response: {
           content: probationBookingsForDay as unknown as ScheduleItem[],
@@ -195,6 +220,11 @@ test.describe('View booking', () => {
         agencyCode: 'BLKPPP',
         fromDate: '01/01/2050',
         toDate: '01/01/2050',
+        firstName: '',
+        lastName: '',
+        prisonerNumber: '',
+        onlyMissingCourtHearingLink: false,
+        onlyMissingProbationOfficerDetails: false,
         page: 1,
         sort: 'AGENCY_DATE_TIME',
       })

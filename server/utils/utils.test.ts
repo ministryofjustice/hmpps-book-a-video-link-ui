@@ -284,12 +284,17 @@ describe('toViewBookingsLinkParams', () => {
       agencyCode: 'ALL',
       fromDate: '01/01/2026',
       toDate: '31/12/2026',
+      firstName: '',
+      lastName: '',
+      prisonerNumber: '',
+      onlyMissingCourtHearingLink: false,
+      onlyMissingProbationOfficerDetails: false,
       page: 0,
       sort: 'DATE_TIME',
     }
 
     expect(toViewBookingsSearchParams(request)).toEqual(
-      'fromDate=01%2F01%2F2026&toDate=31%2F12%2F2026&agencyCode=ALL&page=0&sort=DATE_TIME',
+      'fromDate=01%2F01%2F2026&toDate=31%2F12%2F2026&agencyCode=ALL&firstName=&lastName=&prisonerNumber=&page=0&sort=DATE_TIME',
     )
   })
 })

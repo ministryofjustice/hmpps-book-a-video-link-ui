@@ -89,6 +89,11 @@ describe('GET', () => {
             agencyCodes: ['P1', 'P2'],
             fromDate: startOfToday(),
             toDate: startOfToday(),
+            firstName: null,
+            lastName: null,
+            prisonerNumbers: null,
+            hasCourtHearingLink: null,
+            hasProbationOfficerDetails: null,
             sort: ['appointmentDate', 'startTime'],
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -103,6 +108,11 @@ describe('GET', () => {
             agencyCodes: ['C1', 'C2'],
             fromDate: startOfToday(),
             toDate: startOfToday(),
+            firstName: null,
+            lastName: null,
+            prisonerNumbers: null,
+            hasCourtHearingLink: null,
+            hasProbationOfficerDetails: null,
             sort: ['appointmentDate', 'startTime'],
           }
           expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
@@ -155,6 +165,11 @@ describe('GET', () => {
               agencyCodes: ['P1'],
               fromDate: startOfToday(),
               toDate: startOfToday(),
+              firstName: null,
+              lastName: null,
+              prisonerNumbers: null,
+              hasCourtHearingLink: null,
+              hasProbationOfficerDetails: null,
               sort: ['appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -172,6 +187,11 @@ describe('GET', () => {
               agencyCodes: ['C1'],
               fromDate: startOfToday(),
               toDate: startOfToday(),
+              firstName: null,
+              lastName: null,
+              prisonerNumbers: null,
+              hasCourtHearingLink: null,
+              hasProbationOfficerDetails: null,
               sort: ['appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)
@@ -227,6 +247,11 @@ describe('GET', () => {
               agencyCodes: ['P1', 'P2'],
               fromDate: startOfToday(),
               toDate: startOfToday(),
+              firstName: null,
+              lastName: null,
+              prisonerNumbers: null,
+              hasCourtHearingLink: null,
+              hasProbationOfficerDetails: null,
               sort: ['probationTeamDescription', 'appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(1)
@@ -243,6 +268,11 @@ describe('GET', () => {
               agencyCodes: ['C1', 'C2'],
               fromDate: startOfToday(),
               toDate: startOfToday(),
+              firstName: null,
+              lastName: null,
+              prisonerNumbers: null,
+              hasCourtHearingLink: null,
+              hasProbationOfficerDetails: null,
               sort: ['courtDescription', 'appointmentDate', 'startTime'],
             }
             expect(courtsService.getUserPreferences).toHaveBeenCalledTimes(2)

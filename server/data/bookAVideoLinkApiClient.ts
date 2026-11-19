@@ -169,6 +169,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
             fromDate: formatDate(paginateBookingsRequest.fromDate, 'yyyy-MM-dd'),
             toDate: formatDate(paginateBookingsRequest.toDate, 'yyyy-MM-dd'),
             courtCodes: paginateBookingsRequest.agencyCodes,
+            firstName: paginateBookingsRequest.firstName,
+            lastName: paginateBookingsRequest.lastName,
+            prisonerNumbers: paginateBookingsRequest.prisonerNumbers,
+            hasCourtHearingLink: paginateBookingsRequest.hasCourtHearingLink,
           },
         },
         user,
@@ -183,6 +187,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
           fromDate: formatDate(paginateBookingsRequest.fromDate, 'yyyy-MM-dd'),
           toDate: formatDate(paginateBookingsRequest.toDate, 'yyyy-MM-dd'),
           probationTeamCodes: paginateBookingsRequest.agencyCodes,
+          firstName: paginateBookingsRequest.firstName,
+          lastName: paginateBookingsRequest.lastName,
+          prisonerNumbers: paginateBookingsRequest.prisonerNumbers,
+          hasProbationOfficerDetails: paginateBookingsRequest.hasProbationOfficerDetails,
         },
       },
       user,
@@ -202,6 +210,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
             fromDate: formatDate(unpaginatedBookingsRequest.fromDate, 'yyyy-MM-dd'),
             toDate: formatDate(unpaginatedBookingsRequest.toDate, 'yyyy-MM-dd'),
             courtCodes: unpaginatedBookingsRequest.agencyCodes,
+            firstName: unpaginatedBookingsRequest.firstName,
+            lastName: unpaginatedBookingsRequest.lastName,
+            prisonerNumbers: unpaginatedBookingsRequest.prisonerNumbers,
+            hasCourtHearingLink: unpaginatedBookingsRequest.hasCourtHearingLink,
           },
         },
         user,
@@ -215,6 +227,10 @@ export default class BookAVideoLinkApiClient extends RestClient {
           fromDate: formatDate(unpaginatedBookingsRequest.fromDate, 'yyyy-MM-dd'),
           toDate: formatDate(unpaginatedBookingsRequest.toDate, 'yyyy-MM-dd'),
           probationTeamCodes: unpaginatedBookingsRequest.agencyCodes,
+          firstName: unpaginatedBookingsRequest.firstName,
+          lastName: unpaginatedBookingsRequest.lastName,
+          prisonerNumbers: unpaginatedBookingsRequest.prisonerNumbers,
+          hasProbationOfficerDetails: unpaginatedBookingsRequest.hasProbationOfficerDetails,
         },
       },
       user,
@@ -350,6 +366,11 @@ export type UnpaginatedBookingsRequest = {
   agencyCodes: string[]
   fromDate: Date
   toDate: Date
+  firstName: string | null
+  lastName: string | null
+  prisonerNumbers: string[] | null
+  hasCourtHearingLink: boolean | null
+  hasProbationOfficerDetails: boolean | null
   sort?: string[]
 }
 
@@ -358,6 +379,11 @@ export type PaginatedBookingsRequest = {
   agencyCodes: string[]
   fromDate: Date
   toDate: Date
+  firstName: string | null
+  lastName: string | null
+  prisonerNumbers: string[] | null
+  hasCourtHearingLink: boolean | null
+  hasProbationOfficerDetails: boolean | null
   pagination: Pagination
 }
 

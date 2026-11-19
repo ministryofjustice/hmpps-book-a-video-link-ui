@@ -20,6 +20,10 @@
     margin: 0 0 0 auto;
     justify-content: space-between;
 
+    &--negative-margin {
+      margin-top: -12px;
+    }
+
     button, a {
       @extend .govuk-link;
       margin: 0;

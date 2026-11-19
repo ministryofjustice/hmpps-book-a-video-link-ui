@@ -1,6 +1,10 @@
 .search-form {
   background-color: #f3f2f1;
   padding: govuk-spacing(3);
+
+  .govuk-radios__label:before {
+    background-color: white;
+  }
 }
 
 .horizontal-form {

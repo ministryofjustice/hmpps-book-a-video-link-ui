@@ -20,6 +20,10 @@
     margin: 0 0 0 auto;
     justify-content: space-between;
 
+    &--negative-margin {
+      margin-bottom: -12px;
+    }
+
     button, a {
       @extend .govuk-link;
       margin: 0;
@@ -42,10 +46,6 @@
         text-decoration: none;
         box-decoration-break: clone;
         border-color: transparent;
-      }
-
-      &--negative-margin {
-        margin-bottom: -12px;
       }
 
       &.hmpps-print-and-export--export {

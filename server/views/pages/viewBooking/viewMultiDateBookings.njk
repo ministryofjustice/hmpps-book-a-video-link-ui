@@ -41,7 +41,8 @@
                                     name: "agencyCode",
                                     id: "agencyCode",
                                     label: { text: "Court" if type == 'court' else "Probation team" },
-                                    items: items
+                                    items: items,
+                                    attributes: { 'data-custom-id': ('court' if type == 'court' else 'probation-team') + '-select' }
                                 }) }}
                             {% else %}
                                 {% set items = [] %}
@@ -56,7 +57,8 @@
                                     name: "agencyCode",
                                     id: "agencyCode",
                                     label: { text: "Court" if type == 'court' else "Probation team" },
-                                    items: items
+                                    items: items,
+                                    attributes: { 'data-custom-id': ('court' if type == 'court' else 'probation-team') + '-select' }
                                 }) }}
                             {% endif %}
 
@@ -81,6 +83,7 @@
                                 classes: "govuk-radios--inline govuk-radios--small",
                                 name: "onlyMissingCourtHearingLink",
                                 id: "only-missing-court-hearing-link",
+                                attributes: { 'data-custom-id': 'missing-court-hearing-link-radio' },
                                 fieldset: {
                                     legend: {
                                         text: "Only show bookings with missing hearing links"
@@ -90,12 +93,14 @@
                                     {
                                         value: "true",
                                         text: "Yes",
-                                        checked: onlyMissingCourtHearingLink
+                                        checked: onlyMissingCourtHearingLink,
+                                        attributes: { 'data-custom-id': 'missing-court-hearing-link-radio-yes' }
                                     },
                                     {
                                         value: "false",
                                         text: "No",
-                                        checked: not onlyMissingCourtHearingLink
+                                        checked: not onlyMissingCourtHearingLink,
+                                        attributes: { 'data-custom-id': 'missing-court-hearing-link-radio-no' }
                                     }
                                 ]
                             }) }}
@@ -104,6 +109,7 @@
                                 classes: "govuk-radios--inline govuk-radios--small",
                                 name: "onlyMissingProbationOfficerDetails",
                                 id: "only-missing-probation-officer-details",
+                                attributes: { 'data-custom-id': 'missing-probation-officer-link-radio' },
                                 fieldset: {
                                     legend: {
                                         text: "Only show bookings with missing probation officer details"
@@ -113,12 +119,14 @@
                                     {
                                         value: "true",
                                         text: "Yes",
-                                        checked: onlyMissingProbationOfficerDetails
+                                        checked: onlyMissingProbationOfficerDetails,
+                                        attributes: { 'data-custom-id': 'missing-probation-officer-link-radio-yes' }
                                     },
                                     {
                                         value: "false",
                                         text: "No",
-                                        checked: not onlyMissingProbationOfficerDetails
+                                        checked: not onlyMissingProbationOfficerDetails,
+                                        attributes: { 'data-custom-id': 'missing-probation-officer-link-radio-no' }
                                     }
                                 ]
                             }) }}
@@ -137,7 +145,8 @@
                                 classes: "govuk-input--width-20",
                                 id: "first-name",
                                 name: "firstName",
-                                value: firstName
+                                value: firstName,
+                                attributes: { 'data-custom-id': 'first-name' }
                             }) }}
 
                             {{ govukInput({
@@ -147,7 +156,8 @@
                                 classes: "govuk-input--width-20",
                                 id: "last-name",
                                 name: "lastName",
-                                value: lastName
+                                value: lastName,
+                                attributes: { 'data-custom-id': 'first-name' }
                             }) }}
 
                             {{ govukInput({
@@ -157,26 +167,28 @@
                                 classes: "govuk-input--width-20",
                                 id: "prisoner-number",
                                 name: "prisonerNumber",
-                                value: prisonerNumber
+                                value: prisonerNumber,
+                                attributes: { 'data-custom-id': 'prisoner-number' }
                             }) }}
                         {% endcall %}
                     </div>
 
                     <div class="horizontal-form self-start">
                         {% set sortByItems = [
-                            { text: "Court, date and time" if type == 'court' else "Team, date and time", value: "AGENCY_DATE_TIME", selected: session.req.query.sort == 'AGENCY_DATE_TIME' },
-                            { text: "Date and time", value: "DATE_TIME", selected: session.req.query.sort == 'DATE_TIME' }
+                            { text: "Court, date and time" if type == 'court' else "Team, date and time", value: "AGENCY_DATE_TIME", selected: session.req.query.sort == 'AGENCY_DATE_TIME', attributes: { 'data-custom-id': 'sort-court-date-time-select' } },
+                            { text: "Date and time", value: "DATE_TIME", selected: session.req.query.sort == 'DATE_TIME', attributes: { 'data-custom-id': 'sort-date-time-select' } }
                         ] %}
                         {{ govukSelect({
                             name: "sort",
                             id: "sort",
                             label: { text: "Sort by" },
-                            items: sortByItems
+                            items: sortByItems,
+                            attributes: { 'data-custom-id': 'sort-select' }
                         }) }}
                     </div>
                 </div>
 
-                {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print govuk-!-margin-bottom-0" }) }}
+                {{ govukButton({ text: "Update results", type: "submit", classes: "govuk-!-display-none-print govuk-!-margin-bottom-0", attributes: { 'data-custom-id': 'update-results' } }) }}
             </form>
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-display-none-print" aria-hidden="true">
@@ -207,8 +219,8 @@
 
                     <div class="hmpps-action-bar">
                         <div class="hmpps-print-and-export hmpps-print-and-export--negative-margin">
-                            <button class="hmpps-print-and-export--export" data-qa="export-bookings">Export as spreadsheet (.csv file)</button>
-                            <a class="hmpps-print-and-export--link" href="view-booking/print-bookings" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print list">
+                            <button data-custom-id="export-csv-link" class="hmpps-print-and-export--export" data-qa="export-bookings">Export as spreadsheet (.csv file)</button>
+                            <a data-custom-id="print-bookings-link" class="hmpps-print-and-export--link" href="view-booking/print-bookings" rel="noreferrer noopener" target="_blank" data-qa='print-bookings' aria-label="Print list">
                                 Print list<span class="govuk-visually-hidden">(opens in new tab)</span>
                             </a>
                         </div>

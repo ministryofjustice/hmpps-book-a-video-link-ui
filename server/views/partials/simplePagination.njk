@@ -3,12 +3,13 @@
 
 {% macro simplePagination(params) %}
   {% if params.totalPages > 1 %}
-    {% set previous = undefined if params.page <= 1 else ({ text: 'Previous', visuallyHiddenText: ' Results page', href: params.hrefTemplate | replace('%7Bpage%7D', params.page - 1) }) %}
-    {% set next = undefined if params.page >= params.totalPages else 
+    {% set previous = undefined if params.page <= 1 else ({ text: 'Previous', visuallyHiddenText: ' Results page', href: params.hrefTemplate | replace('%7Bpage%7D', params.page - 1), attributes: { 'data-custom-id': 'previous-page' } }) %}
+    {% set next = undefined if params.page >= params.totalPages else
       ({
         text: 'Next',
         visuallyHiddenText: ' Results page',
-        href: params.hrefTemplate | replace('%7Bpage%7D', params.page + 1)
+        href: params.hrefTemplate | replace('%7Bpage%7D', params.page + 1),
+        attributes: { 'data-custom-id': 'next-page' }
       }) %}
 
     {% set items = [] %}

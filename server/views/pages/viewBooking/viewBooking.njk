@@ -97,7 +97,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#hearingTypeCode',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-hearing-type'}
+                                    attributes: { 'data-qa': 'change-hearing-type', 'data-custom-id': 'change-hearing-type-link' }
                                 }
                             ]
                         } if isAmendable
@@ -123,7 +123,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#date',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-court-date'}
+                                    attributes: { 'data-qa': 'change-court-date', 'data-custom-id': 'change-court-date-link' }
                                 }
                             ]
                         } if isAmendable
@@ -157,7 +157,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/select-rooms#preLocation',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-pre-location'}
+                                    attributes: {'data-qa': 'change-pre-location', 'data-custom-id': 'change-pre-location-link' }
                                 }
                             ]
                         } if isAmendable
@@ -183,7 +183,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#startTime',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-court-time'}
+                                    attributes: { 'data-qa': 'change-court-time', 'data-custom-id': 'change-court-time-link' }
                                 }
                             ]
                         } if isAmendable
@@ -201,7 +201,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/select-rooms#location',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-location'}
+                                    attributes: { 'data-qa': 'change-location', 'data-custom-id': 'change-location-link' }
                                 }
                             ]
                         } if isAmendable
@@ -219,7 +219,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#videoLinkUrl',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-video-url'}
+                                    attributes: { 'data-qa': 'change-video-url', 'data-custom-id': 'change-video-url-link' }
                                 }
                             ]
                         } if isAmendable
@@ -237,7 +237,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking#guestPin',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-guest-pin'}
+                                    attributes: { 'data-qa': 'change-guest-pin', 'data-custom-id': 'change-guest-pin-link' }
                                 }
                             ]
                          } if isAmendable
@@ -263,7 +263,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/select-rooms#postLocation',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-post-location'}
+                                    attributes: { 'data-qa': 'change-post-location', 'data-custom-id': 'change-post-location-link' }
                                 }
                             ]
                         } if isAmendable
@@ -313,7 +313,7 @@
                                     href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking/comments',
                                     text: "Change",
                                     classes: "govuk-link--no-visited-state",
-                                    attributes: {"data-qa": 'change-notes'}
+                                    attributes: { 'data-qa': 'change-notes', 'data-custom-id': 'change-notes-link' }
                                 }
                             ]
                         } if isAmendable
@@ -323,12 +323,12 @@
 
             {% if isAmendable %}
                 <div class="govuk-button-group">
-                    {{ govukButton({ text: "Change booking details", href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking', attributes: { 'data-qa': 'change-link'} }) }}
-                    {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/cancel/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary" }) }}
+                    {{ govukButton({ text: "Change booking details", href: '/' + booking.bookingType | lower + '/booking/amend/' + booking.videoLinkBookingId + '/video-link-booking', attributes: { 'data-qa': 'change-link', 'data-custom-id': 'change-link' } }) }}
+                    {{ govukButton({ text: "Cancel video link", href: '/' + booking.bookingType | lower + '/booking/cancel/' + booking.videoLinkBookingId + '/confirm', classes: "govuk-button--secondary", attributes: { 'data-custom-id': 'cancel-video-link' } }) }}
                 </div>
             {% endif %}
             {% set searchParams = session.journey.viewMultipleAgencyBookingsJourney | toViewBookingsSearchParams %}
-            <a href='/{{ booking.bookingType | lower }}/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-all-bookings-link">Return to all video link bookings</a>
+            <a data-custom-id="return-to-all-bookings-link" href='/{{ booking.bookingType | lower }}/view-booking?{{ searchParams }}' class="govuk-link govuk-link--no-visited-state govuk-!-font-size-19" data-qa="return-to-all-bookings-link">Return to all video link bookings</a>
         </div>
     </div>
 {% endblock %}

@@ -39,7 +39,8 @@
                 {{ govukButton({
                     text: "Print all bookings" if appointments.length > 1 else "Print booking",
                     classes: "govuk-button--blue js-print no-js-hidden",
-                    preventDoubleClick: true
+                    preventDoubleClick: true,
+                    attributes: { 'data-custom-id': 'print-all-bookings' }
                 }) }}
             </div>
 

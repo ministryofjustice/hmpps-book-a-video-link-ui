@@ -10,6 +10,10 @@
   flex-wrap: wrap;
 }
 
+.gap-y-3 {
+  row-gap: govuk-spacing(3);
+}
+
 .items-baseline-last {
   align-items: last baseline;
 }

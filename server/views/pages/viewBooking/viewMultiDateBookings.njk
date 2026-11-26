@@ -25,7 +25,7 @@
             <form method='GET' class="search-form">
                 <h2 class="govuk-heading-m">Filter by {{ "court" if type == 'court' else "team" }} and date</h2>
 
-                <div class="flex flex-wrap">
+                <div class="govuk-!-margin-bottom-6 flex flex-wrap gap-y-3">
                     <div class="flex-1">
                         <div class="horizontal-form horizontal-form--row-gap govuk-!-margin-bottom-6">
                             {% if agencies.length > 1 %}
@@ -62,20 +62,22 @@
                                 }) }}
                             {% endif %}
 
-                            {{ mojDatePicker({
-                                id: 'fromDate',
-                                name: 'fromDate',
-                                label: { text: "From date" },
-                                errorMessage: {} if validationErrors | findError('fromDate'),
-                                value: session.req.query.fromDate or now() | formatDate('dd/MM/yyyy')
-                            }) }}
-                            {{ mojDatePicker({
-                                id: 'toDate',
-                                name: 'toDate',
-                                label: { text: "To date" },
-                                errorMessage: {} if validationErrors | findError('toDate'),
-                                value: session.req.query.toDate or now() | formatDate('dd/MM/yyyy')
-                            }) }}
+                            <div class="horizontal-form horizontal-form--row-gap govuk-!-margin-top-0">
+                                {{ mojDatePicker({
+                                    id: 'fromDate',
+                                    name: 'fromDate',
+                                    label: { text: "From date" },
+                                    errorMessage: {} if validationErrors | findError('fromDate'),
+                                    value: session.req.query.fromDate or now() | formatDate('dd/MM/yyyy')
+                                }) }}
+                                {{ mojDatePicker({
+                                    id: 'toDate',
+                                    name: 'toDate',
+                                    label: { text: "To date" },
+                                    errorMessage: {} if validationErrors | findError('toDate'),
+                                    value: session.req.query.toDate or now() | formatDate('dd/MM/yyyy')
+                                }) }}
+                            </div>
                         </div>
 
                         {% if type == 'court' %}
@@ -133,6 +135,7 @@
                         {% endif %}
 
                         {% call govukDetails({
+                            classes: "govuk-!-margin-bottom-0",
                             summaryText: "Search by prisoner",
                             open: true if firstName or lastName or prisonerNumber else false
                         }) %}
